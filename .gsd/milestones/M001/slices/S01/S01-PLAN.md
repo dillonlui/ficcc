@@ -36,7 +36,7 @@
   - Estimate: 15min
   - Files: vercel.json
   - Verify: vercel deploy succeeds. Preview URL returns 200.
-- [ ] **T04: Configure Lighthouse CI** — 1. Install @lhci/cli as devDependency
+- [x] **T04: Lighthouse CI configured and passing with perf/a11y/SEO/best-practices thresholds** — 1. Install @lhci/cli as devDependency
 2. Create lighthouserc.js configuration:
    - Assert performance >= 90, accessibility >= 95, SEO >= 95
    - Upload to temporary public storage (or local for now)
