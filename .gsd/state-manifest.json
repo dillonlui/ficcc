@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-03-31T22:38:00.153Z",
+  "exported_at": "2026-03-31T22:42:41.542Z",
   "milestones": [
     {
       "id": "M001",
@@ -805,19 +805,32 @@
       "milestone_id": "M001",
       "slice_id": "S01",
       "id": "T01",
-      "title": "Initialize Monorepo & Git Config",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Initialized Astro + Sanity monorepo with TypeScript, i18n routing, and personal git config",
+      "status": "complete",
+      "one_liner": "Initialized Astro + Sanity monorepo with TypeScript, i18n routing, and personal git config",
+      "narrative": "Initialized the Astro + Sanity monorepo with TypeScript strict mode, sitemap integration, and bilingual i18n routing (en/zh). Set git identity to personal GitHub account. Created project structure with src/ for Astro site, studio/ for Sanity Studio, and lib/ for shared utilities including the Sanity client helper. Build succeeds and produces static output with sitemap.",
+      "verification_result": "npm run build succeeds (1 page built in 345ms). git log shows commit with personal email (dillonlui@gmail.com).",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-03-31T22:41:19.881Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Used manual Astro setup instead of create-astro CLI (non-empty directory). Added Astro i18n config with en/zh locales upfront since bilingual routing is a known requirement. Added path aliases in tsconfig for cleaner imports.",
+      "known_issues": "Sanity Studio config uses placeholder projectId — will be replaced in M001/S04.",
+      "key_files": [
+        "package.json",
+        "astro.config.mjs",
+        "tsconfig.json",
+        "src/pages/index.astro",
+        "src/lib/sanity.ts",
+        "studio/sanity.config.ts",
+        ".gitignore",
+        ".nvmrc"
+      ],
+      "key_decisions": [
+        "Astro i18n routing configured with prefixDefaultLocale: false (EN at /, ZH at /zh/)",
+        "Path aliases for @components, @layouts, @lib, @styles",
+        "Static output mode (not SSR) — matches PRD recommendation"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S01\nmilestone: M001\nkey_files:\n  - package.json\n  - astro.config.mjs\n  - tsconfig.json\n  - src/pages/index.astro\n  - src/lib/sanity.ts\n  - studio/sanity.config.ts\n  - .gitignore\n  - .nvmrc\nkey_decisions:\n  - Astro i18n routing configured with prefixDefaultLocale: false (EN at /, ZH at /zh/)\n  - Path aliases for @components, @layouts, @lib, @styles\n  - Static output mode (not SSR) — matches PRD recommendation\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-31T22:41:19.882Z\nblocker_discovered: false\n---\n\n# T01: Initialized Astro + Sanity monorepo with TypeScript, i18n routing, and personal git config\n\n**Initialized Astro + Sanity monorepo with TypeScript, i18n routing, and personal git config**\n\n## What Happened\n\nInitialized the Astro + Sanity monorepo with TypeScript strict mode, sitemap integration, and bilingual i18n routing (en/zh). Set git identity to personal GitHub account. Created project structure with src/ for Astro site, studio/ for Sanity Studio, and lib/ for shared utilities including the Sanity client helper. Build succeeds and produces static output with sitemap.\n\n## Verification\n\nnpm run build succeeds (1 page built in 345ms). git log shows commit with personal email (dillonlui@gmail.com).\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 345ms |\n| 2 | `git log -1 --format='%an <%ae>'` | 0 | ✅ pass — Dillon Lui <dillonlui@gmail.com> | 50ms |\n\n\n## Deviations\n\nUsed manual Astro setup instead of create-astro CLI (non-empty directory). Added Astro i18n config with en/zh locales upfront since bilingual routing is a known requirement. Added path aliases in tsconfig for cleaner imports.\n\n## Known Issues\n\nSanity Studio config uses placeholder projectId — will be replaced in M001/S04.\n\n## Files Created/Modified\n\n- `package.json`\n- `astro.config.mjs`\n- `tsconfig.json`\n- `src/pages/index.astro`\n- `src/lib/sanity.ts`\n- `studio/sanity.config.ts`\n- `.gitignore`\n- `.nvmrc`\n",
       "description": "1. Set git user.name and user.email for personal GitHub on this repo\n2. Initialize Astro project (astro@latest) with TypeScript, minimal template\n3. Create /studio directory for Sanity Studio\n4. Set up monorepo structure:\n   - /src (Astro site)\n   - /studio (Sanity Studio)\n   - /public (static assets)\n5. Add .gitignore (node_modules, .env, .vercel, dist)\n6. Add .nvmrc with Node version\n7. Install core dependencies: astro, @sanity/client, sanity\n8. Create initial package.json scripts: dev, build, preview\n9. Commit with clean initial state",
       "estimate": "20min",
       "files": [
@@ -849,19 +862,21 @@
       "milestone_id": "M001",
       "slice_id": "S01",
       "id": "T02",
-      "title": "Create GitHub Repo & Push",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created public GitHub repo and pushed via personal SSH key",
+      "status": "complete",
+      "one_liner": "Created public GitHub repo and pushed via personal SSH key",
+      "narrative": "Created public repo dillonlui/ficcc on personal GitHub via gh CLI. Switched remote from HTTPS to personal SSH alias (github.com-personal) for key-based auth. Pushed main branch successfully.",
+      "verification_result": "git push succeeded. Remote shows github.com-personal alias. Repo accessible at github.com/dillonlui/ficcc.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-03-31T22:42:41.526Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
+      "deviations": "Used gh CLI to create repo (faster than manual), then switched remote from HTTPS to personal SSH alias.",
+      "known_issues": "None.",
       "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "key_decisions": [
+        "Public repo as agreed — supports G8 reusable template goal"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S01\nmilestone: M001\nkey_files:\n  - (none)\nkey_decisions:\n  - Public repo as agreed — supports G8 reusable template goal\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-31T22:42:41.527Z\nblocker_discovered: false\n---\n\n# T02: Created public GitHub repo and pushed via personal SSH key\n\n**Created public GitHub repo and pushed via personal SSH key**\n\n## What Happened\n\nCreated public repo dillonlui/ficcc on personal GitHub via gh CLI. Switched remote from HTTPS to personal SSH alias (github.com-personal) for key-based auth. Pushed main branch successfully.\n\n## Verification\n\ngit push succeeded. Remote shows github.com-personal alias. Repo accessible at github.com/dillonlui/ficcc.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `git push -u origin main` | 0 | ✅ pass | 2000ms |\n| 2 | `git remote -v` | 0 | ✅ pass — git@github.com-personal:dillonlui/ficcc.git | 50ms |\n\n\n## Deviations\n\nUsed gh CLI to create repo (faster than manual), then switched remote from HTTPS to personal SSH alias.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\nNone.\n",
       "description": "1. Create ficcc repo on personal GitHub (public or private per user preference)\n2. Add remote using personal SSH alias: git remote add origin git@github.com-personal:dillonlui/ficcc.git\n3. Push main branch\n4. Verify push succeeded and repo accessible on GitHub",
       "estimate": "10min",
       "files": [],
@@ -1057,5 +1072,50 @@
       "superseded_by": null
     }
   ],
-  "verification_evidence": []
+  "verification_evidence": [
+    {
+      "id": 1,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 345,
+      "created_at": "2026-03-31T22:41:19.881Z"
+    },
+    {
+      "id": 2,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M001",
+      "command": "git log -1 --format='%an <%ae>'",
+      "exit_code": 0,
+      "verdict": "✅ pass — Dillon Lui <dillonlui@gmail.com>",
+      "duration_ms": 50,
+      "created_at": "2026-03-31T22:41:19.881Z"
+    },
+    {
+      "id": 3,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M001",
+      "command": "git push -u origin main",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 2000,
+      "created_at": "2026-03-31T22:42:41.527Z"
+    },
+    {
+      "id": 4,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M001",
+      "command": "git remote -v",
+      "exit_code": 0,
+      "verdict": "✅ pass — git@github.com-personal:dillonlui/ficcc.git",
+      "duration_ms": 50,
+      "created_at": "2026-03-31T22:42:41.527Z"
+    }
+  ]
 }

@@ -26,3 +26,4 @@ Thumbs.db
 # GSD browser state (may contain auth tokens)
 .gsd/browser-state/
 .gsd/browser-baselines/
+.vercel

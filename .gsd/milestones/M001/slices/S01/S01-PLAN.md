@@ -4,7 +4,7 @@
 **Demo:** After this: Astro + Sanity monorepo deploys to Vercel with preview URLs on PRs
 
 ## Tasks
-- [ ] **T01: Initialize Monorepo & Git Config** — 1. Set git user.name and user.email for personal GitHub on this repo
+- [x] **T01: Initialized Astro + Sanity monorepo with TypeScript, i18n routing, and personal git config** — 1. Set git user.name and user.email for personal GitHub on this repo
 2. Initialize Astro project (astro@latest) with TypeScript, minimal template
 3. Create /studio directory for Sanity Studio
 4. Set up monorepo structure:
@@ -19,7 +19,7 @@
   - Estimate: 20min
   - Files: package.json, .gitignore, .nvmrc, astro.config.mjs, tsconfig.json, src/pages/index.astro, studio/sanity.config.ts
   - Verify: npm run build succeeds. git log shows commit with personal email.
-- [ ] **T02: Create GitHub Repo & Push** — 1. Create ficcc repo on personal GitHub (public or private per user preference)
+- [x] **T02: Created public GitHub repo and pushed via personal SSH key** — 1. Create ficcc repo on personal GitHub (public or private per user preference)
 2. Add remote using personal SSH alias: git remote add origin git@github.com-personal:dillonlui/ficcc.git
 3. Push main branch
 4. Verify push succeeded and repo accessible on GitHub
