@@ -1,0 +1,1061 @@
+{
+  "version": 1,
+  "exported_at": "2026-03-31T22:38:00.153Z",
+  "milestones": [
+    {
+      "id": "M001",
+      "title": "Foundation & Design System",
+      "status": "active",
+      "depends_on": [],
+      "created_at": "2026-03-31T22:32:16.176Z",
+      "completed_at": null,
+      "vision": "Establish the full project scaffold, design system, CMS schema, and shared infrastructure so that all subsequent page-building milestones can move fast without re-solving foundational problems.",
+      "success_criteria": [
+        "Astro + Sanity monorepo deploys to Vercel with preview URLs on every PR",
+        "Design tokens (color, typography, spacing) implemented with CJK font loading solved under 100KB",
+        "All base components render at 375px, 768px, and 1280px",
+        "Sanity Studio deployed with all document types and singletons",
+        "Form endpoint works end-to-end: Turnstile → Resend email",
+        "Sanity preview mode shows draft content on live site",
+        "SEO infrastructure: sitemap.xml, robots.txt, meta/OG component, JSON-LD helpers",
+        "Security headers configured",
+        "Lighthouse CI runs on every preview deploy",
+        "404 page and empty state patterns implemented"
+      ],
+      "key_risks": [
+        {
+          "risk": "CJK font loading exceeds performance budget",
+          "whyItMatters": "Chinese fonts are 5-20MB unsubsetted — every ZH page fails Lighthouse if not solved in foundation"
+        },
+        {
+          "risk": "Design tokens don't translate 'gathered warmth' into code",
+          "whyItMatters": "Wrong typography/color/spacing decisions cascade through every page"
+        },
+        {
+          "risk": "Sanity schema needs rework after page building starts",
+          "whyItMatters": "Schema changes after content seeding are painful — must get document types right before M002"
+        }
+      ],
+      "proof_strategy": [
+        {
+          "riskOrUnknown": "CJK font performance",
+          "retireIn": "S02",
+          "whatWillBeProven": "CJK font loads under 100KB with dynamic subsetting, no layout shift"
+        },
+        {
+          "riskOrUnknown": "Design language translation to code",
+          "retireIn": "S03",
+          "whatWillBeProven": "Styleguide page with all tokens + components reviewed and approved"
+        },
+        {
+          "riskOrUnknown": "Sanity schema completeness",
+          "retireIn": "S04",
+          "whatWillBeProven": "All document types created, sample content queryable via GROQ"
+        }
+      ],
+      "verification_contract": "All components render without errors at all breakpoints. Lighthouse CI passes. Form endpoint delivers email with valid Turnstile token.",
+      "verification_integration": "Sanity webhook triggers Vercel deploy. Preview mode shows draft content. Components consume design tokens from shared system.",
+      "verification_operational": "Preview deploys on every PR. Production deploys on merge to main. Security headers present on all responses.",
+      "verification_uat": "Design tokens and components reviewed in-browser. Typography, color, spacing feel like 'gathered warmth'. CJK text renders cleanly alongside English.",
+      "definition_of_done": [
+        "Monorepo deploys to Vercel with zero build errors",
+        "Sanity Studio accessible with all schema types",
+        "Design tokens on /styleguide page",
+        "All base components responsive at 3 breakpoints",
+        "Form endpoint tested end-to-end",
+        "Preview mode functional",
+        "Security headers verified",
+        "Lighthouse CI green on preview deploys"
+      ],
+      "requirement_coverage": "G3 (CMS maintainability), G4 (bespoke visual identity), G6 (Lighthouse targets), G8 (reusable template foundation)",
+      "boundary_map_markdown": "```\\nM001 Foundation\\n├── S01 Project Scaffold & CI/CD\\n├── S02 Design Tokens & Typography\\n├── S03 Base Components\\n├── S04 Sanity Schema & Studio\\n├── S05 Forms, SEO & Security\\n└── S06 Preview Mode & Wiring\\n```"
+    },
+    {
+      "id": "M002",
+      "title": "",
+      "status": "queued",
+      "depends_on": [],
+      "created_at": "2026-03-31T22:32:24.635Z",
+      "completed_at": null,
+      "vision": "Build all English Ministry pages with real content, establishing the full user experience for English-speaking visitors.",
+      "success_criteria": [
+        "Homepage answers Who/When/What-next within 10 seconds on mobile",
+        "All EN pages live with real Sanity content",
+        "Sermon library filterable by series/speaker/date",
+        "All 4 form types working",
+        "All photos + PDFs migrated to Sanity CDN",
+        "Every page responsive at 3 breakpoints",
+        "Lighthouse >= 90 all pages"
+      ],
+      "key_risks": [
+        {
+          "risk": "Homepage design doesn't achieve 'gathered warmth' feel",
+          "whyItMatters": "Homepage is the design proof. If it feels templated, entire project direction is undermined."
+        },
+        {
+          "risk": "Sermon library YouTube integration complexity",
+          "whyItMatters": "Need to embed YouTube videos performantly without blocking LCP"
+        },
+        {
+          "risk": "Content migration takes longer than expected",
+          "whyItMatters": "Vision statement is ~2000 words of carefully written copy needing proper Sanity formatting"
+        }
+      ],
+      "proof_strategy": [
+        {
+          "riskOrUnknown": "Design language at page level",
+          "retireIn": "S01",
+          "whatWillBeProven": "Homepage reviewed and approved as embodying gathered warmth"
+        },
+        {
+          "riskOrUnknown": "YouTube embed performance",
+          "retireIn": "S04",
+          "whatWillBeProven": "Sermon page with lazy-loaded YouTube, LCP < 2.5s"
+        },
+        {
+          "riskOrUnknown": "Content migration completeness",
+          "retireIn": "S07",
+          "whatWillBeProven": "All must-migrate content present in Sanity"
+        }
+      ],
+      "verification_contract": "All pages render with Sanity content. Forms deliver email. YouTube embeds load. Lighthouse >= 90.",
+      "verification_integration": "Pages pull from Sanity. Featured content auto-pulls. Events auto-archive.",
+      "verification_operational": "Editors can create sermons, events, update homepage from Studio.",
+      "verification_uat": "Homepage feels like gathered warmth. Service info in < 10s. Vision statement reads well.",
+      "definition_of_done": [
+        "All EN pages built and rendering with real content from Sanity",
+        "All forms functional (contact, prayer, ride request, volunteer)",
+        "Sermon library with YouTube embeds, filter by series/speaker",
+        "All 7 existing photos seeded in Sanity CDN",
+        "Content migrated from em.ficcc.org into Sanity",
+        "Lighthouse Performance >= 90 on all pages",
+        "Every page responsive at 375px, 768px, 1280px"
+      ],
+      "requirement_coverage": "G1 (unified domain for EN), G2 (time-to-answer < 10s), G3 (all content in Sanity), G4 (bespoke identity), G5 (clear next steps), G6 (Lighthouse 90+), G7 (sermon archive)",
+      "boundary_map_markdown": "```\\nM002 English Ministry Pages\\n├── S01 Homepage\\n├── S02 About / Beliefs / Staff\\n├── S03 Sundays / Plan a Visit\\n├── S04 Sermons Library\\n├── S05 Community & Ministries\\n├── S06 Events, Give & Contact\\n└── S07 Resources & Content Migration\\n```"
+    },
+    {
+      "id": "M003",
+      "title": "",
+      "status": "queued",
+      "depends_on": [],
+      "created_at": "2026-03-31T22:33:46.380Z",
+      "completed_at": null,
+      "vision": "Build all Chinese Ministry pages with bespoke CM content, wire the bilingual language toggle, and migrate all content from cm.ficcc.org — completing the unified bilingual site.",
+      "success_criteria": [
+        "All ZH pages live with real CM content",
+        "Language toggle works end-to-end on every page",
+        "hreflang tags validated on all page pairs",
+        "7-stop ZH bus route accurately rendered",
+        "WeChat contact present on ZH side",
+        "Church history (1983-2009) on ZH About",
+        "All CM content migrated from cm.ficcc.org",
+        "lang attribute correct on every page"
+      ],
+      "key_risks": [
+        {
+          "risk": "CJK content rendering issues at scale",
+          "whyItMatters": "Traditional + Simplified Chinese mixed on CM site. Font must handle both cleanly."
+        },
+        {
+          "risk": "ZH content is sparse on some CM pages",
+          "whyItMatters": "Some CM WordPress pages are mostly navigation with minimal content. May need placeholder strategy."
+        },
+        {
+          "risk": "Language toggle UX confusion",
+          "whyItMatters": "Users must understand they're switching between bespoke ministry content, not just translations"
+        }
+      ],
+      "proof_strategy": [
+        {
+          "riskOrUnknown": "CJK rendering at page scale",
+          "retireIn": "S01",
+          "whatWillBeProven": "ZH pages render Traditional + Simplified Chinese correctly across all components"
+        },
+        {
+          "riskOrUnknown": "Language toggle clarity",
+          "retireIn": "S04",
+          "whatWillBeProven": "Toggle clearly communicates switching between ministry content, URL updates, lang attribute switches"
+        }
+      ],
+      "verification_contract": "All ZH pages render with Sanity content. CJK renders cleanly. hreflang tags valid. Forms deliver email to CM contacts.",
+      "verification_integration": "Language toggle switches content, URL, lang attribute. ZH pages query language='zh' documents.",
+      "verification_operational": "CM editors can publish ZH content independently from EM content.",
+      "verification_uat": "Chinese-speaking user can find CM service time, fellowship info, and contact pastor in < 30 seconds from homepage.",
+      "definition_of_done": [
+        "All ZH pages built and rendering with real CM content",
+        "Language toggle works end-to-end (EN ↔ ZH)",
+        "hreflang tags cross-linking all page pairs",
+        "ZH bus route (7 stops) accurately rendered",
+        "WeChat contact channel present on ZH side",
+        "Church history timeline (1983-2009) on ZH About page",
+        "All CM content migrated from cm.ficcc.org",
+        "lang attribute set correctly per route"
+      ],
+      "requirement_coverage": "G1 (unified bilingual domain), G2 (ZH visitors find service time quickly), G3 (CM content in Sanity), G5 (clear next steps for Chinese-speaking visitors)",
+      "boundary_map_markdown": "```\\nM003 Chinese Ministry Pages\\n├── S01 ZH Homepage & Core Pages\\n├── S02 ZH Community & Ministries\\n├── S03 ZH Sermons, Events & Transactional\\n├── S04 Language Toggle & Bilingual Wiring\\n└── S05 CM Content Migration\\n```"
+    },
+    {
+      "id": "M004",
+      "title": "",
+      "status": "queued",
+      "depends_on": [],
+      "created_at": "2026-03-31T22:34:27.649Z",
+      "completed_at": null,
+      "vision": "Bring the site to production quality — performance, accessibility, SEO, search, analytics, testing, staff training — and execute a clean DNS cutover to launch ficcc.org as the unified home for FICCC.",
+      "success_criteria": [
+        "Lighthouse >= 90 perf, >= 95 a11y, >= 95 SEO on all page types",
+        "LCP < 2.5s, CLS < 0.1, page weight < 500KB",
+        "Pagefind search works for EN + ZH with CJK support",
+        "Vercel Web Analytics live with custom event tracking",
+        "E2E and responsive tests passing in CI",
+        "Staff documentation delivered and training completed",
+        "ficcc.org serving new site with valid SSL",
+        "All legacy redirects working (em.ficcc.org + cm.ficcc.org)",
+        "Monthly Sanity backup running",
+        "Uptime monitoring active"
+      ],
+      "key_risks": [
+        {
+          "risk": "DNS propagation delays during cutover",
+          "whyItMatters": "Site may be unavailable to some visitors during propagation window"
+        },
+        {
+          "risk": "Redirect map misses edge-case URLs",
+          "whyItMatters": "Broken bookmarks erode trust with existing congregation"
+        },
+        {
+          "risk": "Staff struggles with Sanity Studio",
+          "whyItMatters": "If editors can't publish content independently, the maintenance promise fails"
+        }
+      ],
+      "proof_strategy": [
+        {
+          "riskOrUnknown": "Performance targets met",
+          "retireIn": "S01",
+          "whatWillBeProven": "Lighthouse scores meet all thresholds on every page type"
+        },
+        {
+          "riskOrUnknown": "Responsive quality across devices",
+          "retireIn": "S03",
+          "whatWillBeProven": "Playwright tests pass at 4 viewports"
+        },
+        {
+          "riskOrUnknown": "Staff CMS competency",
+          "retireIn": "S05",
+          "whatWillBeProven": "Staff can publish sermon, create event, and update announcement without developer help"
+        },
+        {
+          "riskOrUnknown": "Zero-downtime launch",
+          "retireIn": "S06",
+          "whatWillBeProven": "All redirects work. SSL valid. Analytics receiving data."
+        }
+      ],
+      "verification_contract": "Lighthouse meets all thresholds. All tests pass. All redirects verified. Analytics receiving data.",
+      "verification_integration": "Search indexes all content. Analytics tracks all custom events. Backup exports full dataset.",
+      "verification_operational": "Staff publishes content independently. Uptime monitoring alerts on failure. CI catches regressions.",
+      "verification_uat": "Staff confirms they can publish sermon, create event, update announcement. All redirects verified by navigating old bookmarked URLs.",
+      "definition_of_done": [
+        "Lighthouse >= 90 perf, >= 95 a11y, >= 95 SEO on all pages",
+        "LCP < 2.5s on 4G mobile",
+        "CLS < 0.1",
+        "Pagefind search working for EN + ZH",
+        "Vercel Web Analytics with custom event tracking live",
+        "E2E smoke tests passing in CI",
+        "Responsive tests at 4 viewports passing",
+        "Staff cheat sheet + Loom walkthrough delivered",
+        "DNS cutover complete, ficcc.org serving new site",
+        "All em.ficcc.org and cm.ficcc.org redirects working",
+        "Favicons, web manifest, OG images all configured",
+        "Monthly Sanity backup GitHub Action running",
+        "Uptime monitoring active"
+      ],
+      "requirement_coverage": "G2 (time-to-answer measured via analytics), G3 (staff can update with zero dev involvement, proven in training), G6 (Lighthouse 90+ verified), G8 (reusable pipeline documented)",
+      "boundary_map_markdown": "```\\nM004 Quality, Performance & Launch\\n├── S01 Performance & Accessibility Audit\\n├── S02 SEO & Analytics\\n├── S03 Responsive & E2E Testing\\n├── S04 Pagefind Search Integration\\n├── S05 Staff Documentation & Training\\n└── S06 DNS Cutover & Launch\\n```"
+    }
+  ],
+  "slices": [
+    {
+      "milestone_id": "M001",
+      "id": "S01",
+      "title": "Project Scaffold & CI/CD Pipeline",
+      "status": "pending",
+      "risk": "low",
+      "depends": [],
+      "demo": "Astro + Sanity monorepo deploys to Vercel with preview URLs on PRs",
+      "created_at": "2026-03-31T22:32:16.176Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Working Astro + Sanity monorepo deployed to Vercel with automated CI/CD pipeline, Lighthouse CI on preview deploys, and GitHub remote configured with personal account",
+      "success_criteria": "Monorepo created with Astro site + Sanity Studio subdirectory. Git config set to personal GitHub. Remote added via personal SSH alias. Vercel project linked and auto-deploying. Lighthouse CI configured. README with project setup instructions.",
+      "proof_level": "CI green on scaffold deploy. Vercel preview URL accessible. Lighthouse CI report generated.",
+      "integration_closure": "Vercel project connected to GitHub repo with deploy hooks. Every PR gets preview URL. Merges to main deploy to production.",
+      "observability_impact": "Deploy status visible in GitHub PR checks. Lighthouse scores on every preview deploy.",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M001",
+      "id": "S02",
+      "title": "Design Tokens & Typography",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "/styleguide page showing full color palette, EN + ZH type scale, spacing scale",
+      "created_at": "2026-03-31T22:32:16.176Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Complete design token system with CJK font loading under 100KB",
+      "success_criteria": "Color palette, type scale, spacing defined as CSS custom properties. CJK font < 100KB. No FOIT. Styleguide page renders all tokens.",
+      "proof_level": "Lighthouse perf > 90 on styleguide with CJK content",
+      "integration_closure": "All subsequent components consume these tokens",
+      "observability_impact": "Font loading visible in Lighthouse CI",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M001",
+      "id": "S03",
+      "title": "Base Components",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S02"
+      ],
+      "demo": "All components on /styleguide — Header, Footer, Hero, Cards, Accordion, Forms, ImageMosaic, AudioPlayer",
+      "created_at": "2026-03-31T22:32:16.176Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Full responsive component library embodying gathered-warmth design language",
+      "success_criteria": "Every component renders at 375px, 768px, 1280px. Uses tokens exclusively. Keyboard navigable. Accessible markup.",
+      "proof_level": "Visual review at all breakpoints + axe-core zero violations",
+      "integration_closure": "Components are Astro components ready for page composition",
+      "observability_impact": "Accessibility violations caught by axe-core in CI",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M001",
+      "id": "S04",
+      "title": "Sanity Schema & Studio",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Sanity Studio with all document types. Sample content created and queryable.",
+      "created_at": "2026-03-31T22:32:16.176Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Complete CMS schema with all document types, singletons, and modular content blocks",
+      "success_criteria": "10 document types created. Singletons configured. Modular blocks defined. Sample content queryable via GROQ.",
+      "proof_level": "GROQ queries return expected data for all document types",
+      "integration_closure": "Astro data layer fetches all content types from Sanity",
+      "observability_impact": "Sanity Studio accessible at studio subdomain",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M001",
+      "id": "S05",
+      "title": "Forms, SEO & Security Infrastructure",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Form submission delivers email. sitemap.xml, robots.txt, security headers all verified.",
+      "created_at": "2026-03-31T22:32:16.176Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Shared infrastructure for forms, SEO, and security",
+      "success_criteria": "Form endpoint with Turnstile + Resend working. sitemap.xml auto-generated. robots.txt configured. BaseHead with meta/OG/JSON-LD. Security headers in vercel.json. 404 page.",
+      "proof_level": "Form delivers email. curl confirms headers. Lighthouse SEO > 95.",
+      "integration_closure": "All pages inherit SEO and security automatically",
+      "observability_impact": "Form submissions in Resend dashboard. Headers verifiable via curl.",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M001",
+      "id": "S06",
+      "title": "Preview Mode & Integration Wiring",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S04",
+        "S05"
+      ],
+      "demo": "Editor creates draft in Sanity, clicks Preview, sees draft rendered on live site. Publish triggers redeploy.",
+      "created_at": "2026-03-31T22:32:16.176Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Content preview and publish-to-deploy pipeline end-to-end",
+      "success_criteria": "Preview route uses previewDrafts perspective. Webhook triggers Vercel deploy on publish. Deploy completes within 2 minutes.",
+      "proof_level": "Draft visible on preview URL. Published content appears on production within 2 minutes.",
+      "integration_closure": "Editorial workflow complete: draft → preview → publish → live",
+      "observability_impact": "Deploy hooks visible in Vercel dashboard",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M002",
+      "id": "S01",
+      "title": "Homepage",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [],
+      "demo": "Homepage with hero, service times, photo mosaic, pillars, featured content, next-steps cards",
+      "created_at": "2026-03-31T22:33:41.124Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Design proof homepage answering Who/When/What-next in 10 seconds",
+      "success_criteria": "Hero with church photo. Service time block above fold on mobile. Photo mosaic. Mission pillars. Featured content strip. Next-steps cards. Footer.",
+      "proof_level": "Lighthouse >= 90. Service time above fold on mobile.",
+      "integration_closure": "Pulls dynamic content from Sanity",
+      "observability_impact": "Lighthouse scores on deploy",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M002",
+      "id": "S02",
+      "title": "About / Beliefs / Staff",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Bespoke Who We Are layout, Beliefs accordion, Staff grid",
+      "created_at": "2026-03-31T22:33:41.124Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Identity pages communicating FICCC's depth",
+      "success_criteria": "Bespoke Who We Are layout with grid-breaking moments. Beliefs accordion (9 statements). Staff page with Pastor Zhida bio. Vision statement. EFCA affiliation.",
+      "proof_level": "Content accuracy verified against em.ficcc.org",
+      "integration_closure": "Person documents from Sanity",
+      "observability_impact": "N/A",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M002",
+      "id": "S03",
+      "title": "Sundays / Plan a Visit",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Plan a Visit with FAQ, transportation, schedule, ride request form",
+      "created_at": "2026-03-31T22:33:41.124Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Answer every first-time visitor question",
+      "success_criteria": "What to Expect section. FAQ accordion (4 items). Transportation with 4 pickups + FB Messenger. Schedule with seasonal variations. Ride request form.",
+      "proof_level": "4 FAQ items present. Pickup times accurate. Form delivers email.",
+      "integration_closure": "FAQ from Sanity. Schedule from siteSettings. Form uses shared infrastructure.",
+      "observability_impact": "Ride request submissions tracked",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M002",
+      "id": "S04",
+      "title": "Sermons Library",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Sermon library with series filter, detail page with YouTube embed",
+      "created_at": "2026-03-31T22:33:41.124Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Browsable sermon archive from YouTube @FICCCenglish",
+      "success_criteria": "Listing with filter by series/speaker/date. Detail with YouTube embed, scripture, notes. Series view. Malachi series seeded.",
+      "proof_level": "Filter by series works. YouTube loads. LCP < 2.5s.",
+      "integration_closure": "Sermon/sermonSeries from Sanity. YouTube lazy-loaded.",
+      "observability_impact": "Sermon play events tracked",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M002",
+      "id": "S05",
+      "title": "Community & Ministries",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Community hub + ministry detail pages",
+      "created_at": "2026-03-31T22:33:41.124Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Show the full life of the church beyond Sunday",
+      "success_criteria": "Community page with Discipleship Groups, Midweek Bible Study, Youth Group, Prayer Meeting. Ministries hub. Ministry detail pages.",
+      "proof_level": "All EN groups/ministries present",
+      "integration_closure": "Ministry documents from Sanity with person references",
+      "observability_impact": "N/A",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M002",
+      "id": "S06",
+      "title": "Events, Give & Contact",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Events, Give page, all 4 contact forms",
+      "created_at": "2026-03-31T22:33:41.124Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Transactional pages for events, giving, and contact",
+      "success_criteria": "Events listing with auto-archive. Event detail with map. Give page with PayPal. Contact, prayer, ride, volunteer forms.",
+      "proof_level": "Events render. PayPal works. All 4 forms deliver email.",
+      "integration_closure": "Event documents auto-archive. Forms use shared infrastructure.",
+      "observability_impact": "Give clicks and form submissions tracked",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M002",
+      "id": "S07",
+      "title": "Resources & Content Migration",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S02",
+        "S04"
+      ],
+      "demo": "Resources page live. All em.ficcc.org content in Sanity.",
+      "created_at": "2026-03-31T22:33:41.125Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Spiritual Resources page + complete EM content migration",
+      "success_criteria": "Resources with campus ministries, Readathon, articles, PDFs. Photos in Sanity CDN. All text migrated. Redirect map for em.ficcc.org.",
+      "proof_level": "Every must-migrate item from site audit present",
+      "integration_closure": "All EN content in Sanity",
+      "observability_impact": "N/A",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M003",
+      "id": "S01",
+      "title": "ZH Homepage & Core Pages",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [],
+      "demo": "ZH Homepage, About (with 1983-2009 history timeline), Beliefs (EFCA 11-point), Staff, Sundays (with 7-stop bus route)",
+      "created_at": "2026-03-31T22:34:23.911Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Core Chinese Ministry pages with accurate content from cm.ficcc.org",
+      "success_criteria": "ZH Homepage with CM service info (11:15am). ZH About with church history timeline. ZH Beliefs with EFCA statement. ZH Staff with Pastor Simon Ye. ZH Sundays with 7-stop bus route and seasonal schedule.",
+      "proof_level": "All content accurate vs cm.ficcc.org. CJK renders cleanly.",
+      "integration_closure": "ZH pages pull from Sanity documents with language='zh'",
+      "observability_impact": "N/A",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M003",
+      "id": "S02",
+      "title": "ZH Community & Ministries",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "ZH Community with all 7 fellowship groups. ZH Ministries with Sunday School and Discipleship.",
+      "created_at": "2026-03-31T22:34:23.911Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Chinese Ministry community and ministry pages",
+      "success_criteria": "ZH Community with all 7 fellowships (中文查經班 through 康村之家). ZH Ministries with Children's/Adult Sunday School, Discipleship. ZH Testimonies section (unique to CM).",
+      "proof_level": "All 7 fellowship groups present with accurate names",
+      "integration_closure": "Ministry documents with language='zh'",
+      "observability_impact": "N/A",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M003",
+      "id": "S03",
+      "title": "ZH Sermons, Events & Transactional",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "ZH Sermons, Events, Give, and Contact pages with WeChat",
+      "created_at": "2026-03-31T22:34:23.911Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "ZH transactional pages including WeChat contact",
+      "success_criteria": "ZH Sermons (may launch sparse — architecture ready). ZH Events. ZH Give with PayPal. ZH Contact with WeChat (ithacachen), phone, CM email.",
+      "proof_level": "WeChat ID present. Forms deliver to CM contacts. Give page works.",
+      "integration_closure": "ZH forms route to CM email contacts",
+      "observability_impact": "ZH form submissions tracked",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M003",
+      "id": "S04",
+      "title": "Language Toggle & Bilingual Wiring",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Language toggle switches between /about and /zh/about. URL, lang attribute, and cookie all update.",
+      "created_at": "2026-03-31T22:34:23.911Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Bilingual wiring: language toggle, hreflang tags, lang attribute, route-level separation",
+      "success_criteria": "EN ↔ ZH toggle on every page. URL updates to /zh/ prefix. lang attribute switches. Cookie persists preference. hreflang tags on all page pairs.",
+      "proof_level": "Toggle works on every page. hreflang tags validated. lang attribute correct.",
+      "integration_closure": "All EN pages have corresponding ZH links and vice versa",
+      "observability_impact": "Language toggle usage tracked in analytics",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M003",
+      "id": "S05",
+      "title": "CM Content Migration",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01",
+        "S02",
+        "S03"
+      ],
+      "demo": "All CM content from cm.ficcc.org migrated into Sanity. Redirect map complete.",
+      "created_at": "2026-03-31T22:34:23.911Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Complete content migration from cm.ficcc.org with redirect map",
+      "success_criteria": "All CM text content in Sanity. Church history timeline migrated. Fellowship descriptions migrated. Contact info accurate. Redirect map for all cm.ficcc.org URLs.",
+      "proof_level": "Every must-migrate CM item present. Redirect map covers all cm.ficcc.org URLs.",
+      "integration_closure": "All ZH content in Sanity, cm.ficcc.org can be retired",
+      "observability_impact": "N/A",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M004",
+      "id": "S01",
+      "title": "Performance & Accessibility Audit",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [],
+      "demo": "Lighthouse report showing >= 90 perf, >= 95 a11y on all page types. axe-core zero violations. Manual keyboard test passed.",
+      "created_at": "2026-03-31T22:35:14.813Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Meet all performance and accessibility targets from PRD",
+      "success_criteria": "Lighthouse >= 90 perf, >= 95 a11y, >= 95 SEO on homepage, sermons, about, sundays (both EN and ZH). LCP < 2.5s. CLS < 0.1. Page weight < 500KB. axe-core zero violations. Keyboard navigation works. Color contrast WCAG AA. skip-to-content link.",
+      "proof_level": "Lighthouse reports for every page type. axe-core clean. Keyboard test documented.",
+      "integration_closure": "Lighthouse CI thresholds enforced in CI pipeline going forward",
+      "observability_impact": "Performance budgets enforced in CI",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M004",
+      "id": "S02",
+      "title": "SEO & Analytics",
+      "status": "pending",
+      "risk": "low",
+      "depends": [],
+      "demo": "Structured data validated. OG previews working. Analytics dashboard with custom events. Google Search Console configured.",
+      "created_at": "2026-03-31T22:35:14.813Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "SEO infrastructure validated and analytics tracking key interactions",
+      "success_criteria": "JSON-LD validated (Church, Event, VideoObject). OG images per page type. Social sharing tested. hreflang validated. Sitemap submitted to GSC. Vercel Web Analytics enabled with custom events. Favicons + web manifest + apple-touch-icon.",
+      "proof_level": "Schema.org validator passes. Social share previews render. Analytics events firing.",
+      "integration_closure": "Search Console receiving data. Analytics tracking sermon plays, form submits, give clicks, language toggle.",
+      "observability_impact": "Analytics dashboard visible in Vercel. GSC crawl data available.",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M004",
+      "id": "S03",
+      "title": "Responsive & E2E Testing",
+      "status": "pending",
+      "risk": "low",
+      "depends": [],
+      "demo": "Playwright test suite passing at 4 viewports. E2E smoke tests in CI.",
+      "created_at": "2026-03-31T22:35:14.813Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Automated responsive and E2E testing in CI pipeline",
+      "success_criteria": "Playwright responsive tests at 375px, 768px, 1280px, 1440px. E2E smoke: homepage loads (both languages), nav works, form submits, sermon plays, language toggle, transportation section renders.",
+      "proof_level": "All tests green. Coverage includes both EN and ZH pages.",
+      "integration_closure": "Tests run on every preview deploy",
+      "observability_impact": "Test results visible in PR checks",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M004",
+      "id": "S04",
+      "title": "Pagefind Search Integration",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Search UI on site. User types query, results show sermons, pages, and ZH content.",
+      "created_at": "2026-03-31T22:35:14.813Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Build-time search index covering EN + ZH content with CJK support",
+      "success_criteria": "Pagefind integrated into Astro build. Search UI component. EN and ZH content indexed. CJK queries work. Index size reasonable.",
+      "proof_level": "Search returns relevant results for EN and ZH queries. Index < 500KB.",
+      "integration_closure": "Pagefind index built at deploy time, search UI component on site",
+      "observability_impact": "Search usage tracked in analytics",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M004",
+      "id": "S05",
+      "title": "Staff Documentation & Training",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "Staff can publish a sermon, create an event, and update the announcement bar without developer help.",
+      "created_at": "2026-03-31T22:35:14.813Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Staff trained and documentation delivered",
+      "success_criteria": "1-page Sanity cheat sheet (publish sermon, add event, update announcement, update schedule). Loom walkthrough recorded. Monthly Sanity backup GitHub Action configured. Staff completes training tasks.",
+      "proof_level": "Staff completes publish sermon + create event + update announcement without assistance.",
+      "integration_closure": "Staff independently managing content",
+      "observability_impact": "N/A",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M004",
+      "id": "S06",
+      "title": "DNS Cutover & Launch",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05"
+      ],
+      "demo": "ficcc.org serves the new site. em.ficcc.org and cm.ficcc.org redirect correctly. SSL valid. Analytics receiving production traffic.",
+      "created_at": "2026-03-31T22:35:14.813Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Zero-downtime DNS cutover with all redirects working",
+      "success_criteria": "ficcc.org DNS pointed to Vercel. em.ficcc.org 301 redirects (6 routes). cm.ficcc.org 301 redirects (8+ routes). SSL valid. Analytics confirmed. Uptime monitoring active. Google Search Console notified. Launch checklist complete.",
+      "proof_level": "All redirects verified. SSL valid on all domains. Analytics receiving data. Uptime check green.",
+      "integration_closure": "Legacy sites retired. Single domain serving all content.",
+      "observability_impact": "Uptime monitoring active. Analytics confirmed.",
+      "sequence": 0,
+      "replan_triggered_at": null
+    }
+  ],
+  "tasks": [
+    {
+      "milestone_id": "M001",
+      "slice_id": "S01",
+      "id": "T01",
+      "title": "Initialize Monorepo & Git Config",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "1. Set git user.name and user.email for personal GitHub on this repo\n2. Initialize Astro project (astro@latest) with TypeScript, minimal template\n3. Create /studio directory for Sanity Studio\n4. Set up monorepo structure:\n   - /src (Astro site)\n   - /studio (Sanity Studio)\n   - /public (static assets)\n5. Add .gitignore (node_modules, .env, .vercel, dist)\n6. Add .nvmrc with Node version\n7. Install core dependencies: astro, @sanity/client, sanity\n8. Create initial package.json scripts: dev, build, preview\n9. Commit with clean initial state",
+      "estimate": "20min",
+      "files": [
+        "package.json",
+        ".gitignore",
+        ".nvmrc",
+        "astro.config.mjs",
+        "tsconfig.json",
+        "src/pages/index.astro",
+        "studio/sanity.config.ts"
+      ],
+      "verify": "npm run build succeeds. git log shows commit with personal email.",
+      "inputs": [
+        "ficcc-prd.docx",
+        "ficcc-design-language.docx"
+      ],
+      "expected_output": [
+        "package.json",
+        "astro.config.mjs",
+        ".gitignore",
+        ".nvmrc",
+        "src/pages/index.astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S01",
+      "id": "T02",
+      "title": "Create GitHub Repo & Push",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "1. Create ficcc repo on personal GitHub (public or private per user preference)\n2. Add remote using personal SSH alias: git remote add origin git@github.com-personal:dillonlui/ficcc.git\n3. Push main branch\n4. Verify push succeeded and repo accessible on GitHub",
+      "estimate": "10min",
+      "files": [],
+      "verify": "git push succeeds. git remote -v shows github.com-personal remote.",
+      "inputs": [],
+      "expected_output": [],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S01",
+      "id": "T03",
+      "title": "Link Vercel Project & Configure Deploys",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "1. Link project to Vercel via vercel link\n2. Configure Vercel project settings:\n   - Framework: Astro\n   - Build command: npm run build\n   - Output directory: dist\n3. Configure environment variables placeholder (SANITY_PROJECT_ID, SANITY_DATASET will be set in S04)\n4. Push and verify auto-deploy triggers\n5. Verify preview URL is accessible",
+      "estimate": "15min",
+      "files": [
+        "vercel.json"
+      ],
+      "verify": "vercel deploy succeeds. Preview URL returns 200.",
+      "inputs": [],
+      "expected_output": [
+        "vercel.json"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S01",
+      "id": "T04",
+      "title": "Configure Lighthouse CI",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "1. Install @lhci/cli as devDependency\n2. Create lighthouserc.js configuration:\n   - Assert performance >= 90, accessibility >= 95, SEO >= 95\n   - Upload to temporary public storage (or local for now)\n3. Add lighthouse CI script to package.json\n4. Test locally against dev server\n5. Document how to run: npm run lhci",
+      "estimate": "15min",
+      "files": [
+        "lighthouserc.js",
+        "package.json"
+      ],
+      "verify": "npm run lhci runs and generates report against local dev server.",
+      "inputs": [],
+      "expected_output": [
+        "lighthouserc.js"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S01",
+      "id": "T05",
+      "title": "Create README & Project Documentation",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "1. Write README.md with:\n   - Project overview (FICCC website rebuild)\n   - Tech stack (Astro + Sanity + Vercel)\n   - Setup instructions (clone, npm install, npm run dev)\n   - Environment variables needed\n   - Project structure explanation\n   - Deployment workflow (PR -> preview, merge -> production)\n2. Create .env.example with placeholder variables\n3. Commit and push",
+      "estimate": "10min",
+      "files": [
+        "README.md",
+        ".env.example"
+      ],
+      "verify": "README renders correctly on GitHub. New developer can follow setup instructions.",
+      "inputs": [
+        "ficcc-prd.docx"
+      ],
+      "expected_output": [
+        "README.md",
+        ".env.example"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    }
+  ],
+  "decisions": [
+    {
+      "seq": 1,
+      "id": "D001",
+      "when_context": "",
+      "scope": "architecture",
+      "decision": "Core tech stack for FICCC website rebuild",
+      "choice": "Astro + Sanity.io + Vercel",
+      "rationale": "Astro provides static-first output with island architecture for interactive components. Sanity provides headless CMS with free tier covering 20 users and 10K documents. Vercel provides edge CDN deployment with free tier, preview deploys, and built-in analytics. Stack delivers zero-server-maintenance goal from PRD.",
+      "revisable": "Yes",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 2,
+      "id": "D002",
+      "when_context": "",
+      "scope": "architecture",
+      "decision": "Analytics platform",
+      "choice": "Vercel Web Analytics (free tier, 2500 events/day)",
+      "rationale": "Zero cost, zero maintenance, already in the Vercel stack. Privacy-friendly, no cookie banner needed. Sufficient for church site traffic. GA4 available as future backup if deeper funnel analysis needed.",
+      "revisable": "Yes",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 3,
+      "id": "D003",
+      "when_context": "",
+      "scope": "architecture",
+      "decision": "Bilingual content architecture",
+      "choice": "Separate documents with language field, not i18n field duplication",
+      "rationale": "EN and ZH content is bespoke per ministry, not translations. CM sermons are different sermons, CM fellowships are different groups. Language field on documents with GROQ filtering is simpler and lets each ministry own content independently. Shared nav structure with language toggle at route level (/ for EN, /zh/ for ZH).",
+      "revisable": "Yes",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 4,
+      "id": "D004",
+      "when_context": "",
+      "scope": "library",
+      "decision": "Search technology",
+      "choice": "Pagefind (static build-time index)",
+      "rationale": "Zero runtime cost, builds index at static generation time, ~5KB client bundle, supports CJK characters for Chinese content. Perfect fit for Astro static output.",
+      "revisable": "Yes",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 5,
+      "id": "D005",
+      "when_context": "",
+      "scope": "architecture",
+      "decision": "Sermon hosting and delivery",
+      "choice": "YouTube embeds via @FICCCenglish channel, Sanity stores metadata + video ID",
+      "rationale": "Church already uploads weekly sermons to YouTube with structured naming (date, title, scripture). YouTube handles video hosting/bandwidth at zero cost. Sanity stores sermon metadata (title, speaker, series, scripture, YouTube ID) for filtering and search. No need for self-hosted audio/video.",
+      "revisable": "Yes",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 6,
+      "id": "D006",
+      "when_context": "",
+      "scope": "design",
+      "decision": "Logo treatment",
+      "choice": "Humanist serif wordmark in both EN and ZH (no graphic logo)",
+      "rationale": "No existing graphic logo. Text-mark in the serif headline font is consistent with the 'honest, not branded' design direction. Church name in both languages: 'First Ithaca Chinese Christian Church' / '伊的家華人基督教會'. Graphic logo may be created later.",
+      "revisable": "Yes",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 7,
+      "id": "D007",
+      "when_context": "",
+      "scope": "design",
+      "decision": "Design language and visual direction",
+      "choice": "\"Gathered Warmth\" — humanist serif headlines, warm neutral palette, real candid photography, unhurried spacing",
+      "rationale": "Design Language doc defines 6 tone descriptors (Unhurried, Rooted, Textured, Legible, Familiar, Honest) and the core frame of 'long-table hospitality' vs 'venue hospitality'. Typography: humanist serif (Lora/Cormorant) for headlines + clean sans (Inter/DM Sans) for body + CJK serif pairing. Warm neutrals (off-white, warm stone) with muted terracotta + deep ink primary. Real FICCC community photos are a hard requirement.",
+      "revisable": "Yes",
+      "made_by": "collaborative",
+      "superseded_by": null
+    }
+  ],
+  "verification_evidence": []
+}
