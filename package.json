@@ -8,11 +8,15 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lhci": "npm run build && lhci autorun"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
     "@sanity/client": "^7.3.0",
     "astro": "^5.5.5"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.15.1"
   }
 }

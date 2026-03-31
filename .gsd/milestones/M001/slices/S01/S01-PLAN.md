@@ -25,7 +25,7 @@
 4. Verify push succeeded and repo accessible on GitHub
   - Estimate: 10min
   - Verify: git push succeeds. git remote -v shows github.com-personal remote.
-- [ ] **T03: Link Vercel Project & Configure Deploys** — 1. Link project to Vercel via vercel link
+- [x] **T03: Vercel project linked with auto-deploy and security headers verified on ficcc.vercel.app** — 1. Link project to Vercel via vercel link
 2. Configure Vercel project settings:
    - Framework: Astro
    - Build command: npm run build
