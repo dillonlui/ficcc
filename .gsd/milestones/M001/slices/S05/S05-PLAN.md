@@ -16,7 +16,7 @@ Key constraints:
   - Estimate: 1h30m
   - Files: api/contact.ts, src/components/ContactForm.astro, package.json, .env.example
   - Verify: npm run build && test -f api/contact.ts && grep -q 'turnstile' src/components/ContactForm.astro && grep -q 'resend' package.json
-- [ ] **T02: Add robots.txt, verify sitemap output, harden security headers, and run Lighthouse CI** — Complete the SEO and security infrastructure:
+- [x] **T02: Created robots.txt with absolute Sitemap URL, added HSTS header to vercel.json, verified sitemap-index.xml generation, and confirmed all Lighthouse CI thresholds pass** — Complete the SEO and security infrastructure:
 
 1. Create public/robots.txt — Allow all crawlers, include absolute Sitemap URL (https://ficcc.org/sitemap-index.xml). Keep it simple.
 

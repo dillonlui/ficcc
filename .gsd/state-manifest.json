@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T01:45:55.597Z",
+  "exported_at": "2026-04-01T01:50:14.836Z",
   "milestones": [
     {
       "id": "M001",
@@ -1538,19 +1538,24 @@
       "milestone_id": "M001",
       "slice_id": "S05",
       "id": "T02",
-      "title": "Add robots.txt, verify sitemap output, harden security headers, and run Lighthouse CI",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created robots.txt with absolute Sitemap URL, added HSTS header to vercel.json, verified sitemap-index.xml generation, and confirmed all Lighthouse CI thresholds pass",
+      "status": "complete",
+      "one_liner": "Created robots.txt with absolute Sitemap URL, added HSTS header to vercel.json, verified sitemap-index.xml generation, and confirmed all Lighthouse CI thresholds pass",
+      "narrative": "Created public/robots.txt allowing all crawlers with absolute Sitemap directive. Added Strict-Transport-Security header (2-year max-age, includeSubDomains, preload) to vercel.json global headers. Verified sitemap-index.xml generation via npm run build. Ran Lighthouse CI with all 6 runs passing assertion thresholds across both URLs.",
+      "verification_result": "robots.txt exists with Sitemap directive. Build produces dist/sitemap-index.xml with valid XML. HSTS header present in vercel.json. Lighthouse CI passes all thresholds (performance, accessibility, SEO, best-practices) for / and /styleguide/.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T01:50:14.817Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "public/robots.txt",
+        "vercel.json"
+      ],
+      "key_decisions": [
+        "HSTS max-age set to 63072000 (2 years) with includeSubDomains and preload per OWASP best practice"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S05\nmilestone: M001\nkey_files:\n  - public/robots.txt\n  - vercel.json\nkey_decisions:\n  - HSTS max-age set to 63072000 (2 years) with includeSubDomains and preload per OWASP best practice\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:50:14.818Z\nblocker_discovered: false\n---\n\n# T02: Created robots.txt with absolute Sitemap URL, added HSTS header to vercel.json, verified sitemap-index.xml generation, and confirmed all Lighthouse CI thresholds pass\n\n**Created robots.txt with absolute Sitemap URL, added HSTS header to vercel.json, verified sitemap-index.xml generation, and confirmed all Lighthouse CI thresholds pass**\n\n## What Happened\n\nCreated public/robots.txt allowing all crawlers with absolute Sitemap directive. Added Strict-Transport-Security header (2-year max-age, includeSubDomains, preload) to vercel.json global headers. Verified sitemap-index.xml generation via npm run build. Ran Lighthouse CI with all 6 runs passing assertion thresholds across both URLs.\n\n## Verification\n\nrobots.txt exists with Sitemap directive. Build produces dist/sitemap-index.xml with valid XML. HSTS header present in vercel.json. Lighthouse CI passes all thresholds (performance, accessibility, SEO, best-practices) for / and /styleguide/.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f public/robots.txt && grep -q 'Sitemap' public/robots.txt` | 0 | ✅ pass | 100ms |\n| 2 | `npm run build && test -f dist/sitemap-index.xml` | 0 | ✅ pass | 7200ms |\n| 3 | `grep -q 'Strict-Transport-Security' vercel.json` | 0 | ✅ pass | 100ms |\n| 4 | `npm run lhci` | 0 | ✅ pass | 75700ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `public/robots.txt`\n- `vercel.json`\n",
       "description": "Complete the SEO and security infrastructure:\n\n1. Create public/robots.txt — Allow all crawlers, include absolute Sitemap URL (https://ficcc.org/sitemap-index.xml). Keep it simple.\n\n2. Verify sitemap — Run npm run build and confirm dist/sitemap-index.xml exists with valid XML content. The @astrojs/sitemap integration is already configured in astro.config.mjs with site: 'https://ficcc.org'.\n\n3. Security header hardening — Add Strict-Transport-Security header to vercel.json (max-age=63072000; includeSubDomains; preload). Review CSP for completeness — the existing CSP already covers the new /api/contact endpoint via connect-src 'self'. Verify no headers are missing per OWASP recommendations.\n\n4. Lighthouse CI — Run npm run build && npm run lhci to confirm all existing thresholds pass. The form page is not a separate route (ContactForm is a component), so no new LHCI URL needed. If any thresholds regress, investigate and fix.\n\nKey constraints:\n- robots.txt Sitemap URL must be absolute (https://ficcc.org/sitemap-index.xml)\n- HSTS max-age should be at least 1 year (31536000), using 2 years (63072000) per best practice\n- Do NOT change Lighthouse performance thresholds — K002 documents why they're at 0.75/0.50",
       "estimate": "30m",
       "files": [
@@ -2280,6 +2285,50 @@
       "verdict": "✅ pass",
       "duration_ms": 50,
       "created_at": "2026-04-01T01:45:55.579Z"
+    },
+    {
+      "id": 53,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "test -f public/robots.txt && grep -q 'Sitemap' public/robots.txt",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T01:50:14.817Z"
+    },
+    {
+      "id": 54,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "npm run build && test -f dist/sitemap-index.xml",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7200,
+      "created_at": "2026-04-01T01:50:14.817Z"
+    },
+    {
+      "id": 55,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "grep -q 'Strict-Transport-Security' vercel.json",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T01:50:14.817Z"
+    },
+    {
+      "id": 56,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "npm run lhci",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 75700,
+      "created_at": "2026-04-01T01:50:14.817Z"
     }
   ]
 }
