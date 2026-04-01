@@ -47,7 +47,7 @@
   - Estimate: 1h
   - Files: src/components/Header.astro, src/components/Footer.astro, src/layouts/BaseLayout.astro, src/styles/global.css, src/pages/styleguide.astro
   - Verify: npm run build && test -f src/components/Header.astro && test -f src/components/Footer.astro && grep -q 'Header' src/layouts/BaseLayout.astro && grep -q 'Footer' src/layouts/BaseLayout.astro
-- [ ] **T02: Build Hero, Card, and ImageMosaic components** — Create the three visual/content components — Hero (full-width with background image), Card (versatile content card), and ImageMosaic (CSS Grid image gallery) — and add all three to the styleguide page.
+- [x] **T02: Created Hero, Card, and ImageMosaic Astro components using design tokens and added all three with sample data to the /styleguide page** — Create the three visual/content components — Hero (full-width with background image), Card (versatile content card), and ImageMosaic (CSS Grid image gallery) — and add all three to the styleguide page.
 
 ## Steps
 

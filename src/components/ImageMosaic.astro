@@ -1,0 +1,99 @@
+---
+interface Props {
+  images: { src: string; alt: string }[];
+}
+
+const { images } = Astro.props;
+---
+
+<div class="mosaic">
+  {images.map((img, i) => (
+    <figure class={`mosaic__cell mosaic__cell--${(i % 6) + 1}`}>
+      <img
+        class="mosaic__img"
+        src={img.src}
+        alt={img.alt}
+        loading="lazy"
+      />
+    </figure>
+  ))}
+</div>
+
+<style>
+  .mosaic {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+  }
+
+  .mosaic__cell {
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+
+  /* Vary cell sizes for visual interest */
+  .mosaic__cell--1 {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .mosaic__cell--4 {
+    grid-column: span 2;
+  }
+
+  .mosaic__img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Spanned cells get different ratios */
+  .mosaic__cell--1 .mosaic__img {
+    aspect-ratio: 1;
+  }
+
+  .mosaic__cell--4 .mosaic__img {
+    aspect-ratio: 2 / 1;
+  }
+
+  @media (max-width: 1024px) {
+    .mosaic {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mosaic__cell--1 {
+      grid-column: span 2;
+      grid-row: span 1;
+    }
+
+    .mosaic__cell--1 .mosaic__img {
+      aspect-ratio: 2 / 1;
+    }
+
+    .mosaic__cell--4 {
+      grid-column: span 1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mosaic {
+      grid-template-columns: 1fr;
+    }
+
+    .mosaic__cell--1,
+    .mosaic__cell--4 {
+      grid-column: span 1;
+    }
+
+    .mosaic__img {
+      aspect-ratio: 16 / 9;
+    }
+
+    .mosaic__cell--1 .mosaic__img,
+    .mosaic__cell--4 .mosaic__img {
+      aspect-ratio: 16 / 9;
+    }
+  }
+</style>

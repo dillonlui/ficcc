@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Card from '../components/Card.astro';
+import ImageMosaic from '../components/ImageMosaic.astro';
 
 /* Design-token definitions for rendering in the page */
 const colors = [
@@ -166,6 +169,69 @@ const spacingTokens = [
         <strong>Behavior:</strong> Dark background (<code>--color-bg-dark</code>), responsive grid layout.<br />
         <strong>Tokens used:</strong> <code>--color-bg-dark</code>, <code>--color-bg</code>, <code>--color-stone</code>, <code>--color-terracotta</code>, <code>--color-focus</code>, <code>--max-width</code>, <code>--font-heading</code>, <code>--font-cjk</code>
       </div>
+    </section>
+
+    <!-- ================================================================
+         HERO COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Hero</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        Full-width hero section with background image (or gradient), dark overlay for text readability, headline, optional subtitle, and call-to-action button.
+      </p>
+    </section>
+
+    <Hero
+      title="Welcome Home"
+      subtitle="A warm community rooted in faith, gathering in Ithaca."
+      ctaText="Join Us This Sunday"
+      ctaHref="/about"
+      backgroundImage="linear-gradient(135deg, #C4745A 0%, #1A1A2E 100%)"
+    />
+
+    <!-- ================================================================
+         CARD COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16); margin-block-start: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Card</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        Versatile content card with optional image and optional link wrapping. Works at various widths inside grid layouts.
+      </p>
+      <div style={`display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: var(--space-6);`}>
+        <Card
+          title="Sunday Worship"
+          body="Join us every Sunday at 10:00 AM for bilingual worship, fellowship, and community."
+          image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23C4745A' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='24'%3EWorship%3C/text%3E%3C/svg%3E"
+          href="/about"
+        />
+        <Card
+          title="Bible Study"
+          body="Midweek Bible study groups in English and Chinese — deepening our understanding together."
+          image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%231A1A2E' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='24'%3EBible Study%3C/text%3E%3C/svg%3E"
+        />
+        <Card
+          title="Community Events"
+          body="From potlucks to outreach, there's always something happening at FICCC."
+        />
+      </div>
+    </section>
+
+    <!-- ================================================================
+         IMAGE MOSAIC COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Image Mosaic</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        CSS Grid image gallery with varying cell sizes. Responsive: 3 columns on desktop, 2 on tablet, 1 on mobile. Uses <code>object-fit: cover</code> and <code>aspect-ratio</code> to prevent layout shifts.
+      </p>
+      <ImageMosaic images={[
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect fill='%23C4745A' width='600' height='600'/%3E%3Ctext x='300' y='310' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E1%3C/text%3E%3C/svg%3E", alt: "Placeholder 1" },
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%231A1A2E' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E2%3C/text%3E%3C/svg%3E", alt: "Placeholder 2" },
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23E8E0D8' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%231A1A2E' font-size='20'%3E3%3C/text%3E%3C/svg%3E", alt: "Placeholder 3" },
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Crect fill='%232D2D2D' width='600' height='300'/%3E%3Ctext x='300' y='160' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E4%3C/text%3E%3C/svg%3E", alt: "Placeholder 4" },
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23b3654b' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E5%3C/text%3E%3C/svg%3E", alt: "Placeholder 5" },
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23FAF8F5' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%231A1A2E' font-size='20'%3E6%3C/text%3E%3C/svg%3E", alt: "Placeholder 6" },
+      ]} />
     </section>
   </main>
 </BaseLayout>

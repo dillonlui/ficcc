@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T00:56:21.045Z",
+  "exported_at": "2026-04-01T00:59:23.023Z",
   "milestones": [
     {
       "id": "M001",
@@ -1197,19 +1197,28 @@
       "milestone_id": "M001",
       "slice_id": "S03",
       "id": "T02",
-      "title": "Build Hero, Card, and ImageMosaic components",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created Hero, Card, and ImageMosaic Astro components using design tokens and added all three with sample data to the /styleguide page",
+      "status": "complete",
+      "one_liner": "Created Hero, Card, and ImageMosaic Astro components using design tokens and added all three with sample data to the /styleguide page",
+      "narrative": "Built three visual/content components: Hero (full-width with background-image prop, dark overlay, heading/subtitle/CTA), Card (optional image with aspect-ratio 3/2, optional link wrapping as <a> vs <div>), and ImageMosaic (CSS Grid with modulo-based cell spanning, responsive 3/2/1-column breakpoints). All use design tokens exclusively. Extended styleguide.astro with showcase sections using gradient background for Hero, 3 Card variants, and 6-image mosaic with inline SVG placeholders.",
+      "verification_result": "npm run build exits 0 with 2 pages built. All three component files exist. All three component names found in styleguide.astro imports and usage.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T00:59:23.007Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/Hero.astro",
+        "src/components/Card.astro",
+        "src/components/ImageMosaic.astro",
+        "src/pages/styleguide.astro"
+      ],
+      "key_decisions": [
+        "Hero uses CSS background-image so any URL or CSS gradient works as backgroundImage prop",
+        "Card renders as <a> when href provided, <div> otherwise",
+        "ImageMosaic uses modulo-based class assignment for varied grid spans"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S03\nmilestone: M001\nkey_files:\n  - src/components/Hero.astro\n  - src/components/Card.astro\n  - src/components/ImageMosaic.astro\n  - src/pages/styleguide.astro\nkey_decisions:\n  - Hero uses CSS background-image so any URL or CSS gradient works as backgroundImage prop\n  - Card renders as <a> when href provided, <div> otherwise\n  - ImageMosaic uses modulo-based class assignment for varied grid spans\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T00:59:23.008Z\nblocker_discovered: false\n---\n\n# T02: Created Hero, Card, and ImageMosaic Astro components using design tokens and added all three with sample data to the /styleguide page\n\n**Created Hero, Card, and ImageMosaic Astro components using design tokens and added all three with sample data to the /styleguide page**\n\n## What Happened\n\nBuilt three visual/content components: Hero (full-width with background-image prop, dark overlay, heading/subtitle/CTA), Card (optional image with aspect-ratio 3/2, optional link wrapping as <a> vs <div>), and ImageMosaic (CSS Grid with modulo-based cell spanning, responsive 3/2/1-column breakpoints). All use design tokens exclusively. Extended styleguide.astro with showcase sections using gradient background for Hero, 3 Card variants, and 6-image mosaic with inline SVG placeholders.\n\n## Verification\n\nnpm run build exits 0 with 2 pages built. All three component files exist. All three component names found in styleguide.astro imports and usage.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 3100ms |\n| 2 | `test -f src/components/Hero.astro && test -f src/components/Card.astro && test -f src/components/ImageMosaic.astro` | 0 | ✅ pass | 10ms |\n| 3 | `grep -q Hero src/pages/styleguide.astro && grep -q Card src/pages/styleguide.astro && grep -q ImageMosaic src/pages/styleguide.astro` | 0 | ✅ pass | 10ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/Hero.astro`\n- `src/components/Card.astro`\n- `src/components/ImageMosaic.astro`\n- `src/pages/styleguide.astro`\n",
       "description": "Create the three visual/content components — Hero (full-width with background image), Card (versatile content card), and ImageMosaic (CSS Grid image gallery) — and add all three to the styleguide page.\n\n## Steps\n\n1. Create `src/components/Hero.astro`:\n   - Full-width section with background image (via CSS `background-image` from a prop)\n   - Overlay for text readability (semi-transparent dark layer)\n   - Props: `title` (string), `subtitle` (string, optional), `ctaText` (string, optional), `ctaHref` (string, optional), `backgroundImage` (string — URL/path)\n   - Headline in heading font at `--text-4xl`, subtitle at `--text-lg`, CTA as styled link/button\n   - Responsive: scale text sizes on mobile, maintain readable overlay\n   - Use `aspect-ratio` or min-height for consistent hero height\n2. Create `src/components/Card.astro`:\n   - Props: `title` (string), `body` (string, optional), `image` (string — URL/path, optional), `href` (string, optional)\n   - Optional image at top with `aspect-ratio: 3/2` + `object-fit: cover`\n   - Title as `<h3>`, body as `<p>`, optional wrapping `<a>` if href provided\n   - Border radius, subtle border or shadow using tokens\n   - Works at various widths (used in grid layouts by parent)\n3. Create `src/components/ImageMosaic.astro`:\n   - Props: `images` (array of `{ src: string, alt: string }`)\n   - CSS Grid layout with varying cell sizes (some span 2 columns or 2 rows)\n   - Images use `object-fit: cover` and `aspect-ratio` to prevent layout shifts\n   - Responsive: 3-column on desktop, 2-column on tablet, 1-column on mobile\n   - Use `<figure>` for each image cell\n4. Add all three components to `src/pages/styleguide.astro` with sample data:\n   - Hero with a placeholder gradient background (no real image needed — use CSS gradient as backgroundImage prop)\n   - 3 sample Cards in a grid\n   - ImageMosaic with 5-6 placeholder colored divs or gradient images\n5. Run `npm run build` to verify.\n\n## Must-Haves\n\n- [ ] Hero renders full-width with overlay, headline, subtitle, and CTA\n- [ ] Card handles with/without image and with/without link gracefully\n- [ ] ImageMosaic uses CSS Grid with responsive columns\n- [ ] All images use `aspect-ratio` + `object-fit: cover`\n- [ ] All styles use only CSS custom properties\n- [ ] All three render on /styleguide with sample data\n- [ ] `npm run build` succeeds\n\n## Verification\n\n- `npm run build` succeeds with 0 errors\n- `test -f src/components/Hero.astro && test -f src/components/Card.astro && test -f src/components/ImageMosaic.astro` passes\n- `grep -q 'Hero' src/pages/styleguide.astro && grep -q 'Card' src/pages/styleguide.astro && grep -q 'ImageMosaic' src/pages/styleguide.astro` confirms styleguide integration",
       "estimate": "1h",
       "files": [
@@ -1631,6 +1640,39 @@
       "verdict": "✅ pass",
       "duration_ms": 10,
       "created_at": "2026-04-01T00:56:21.029Z"
+    },
+    {
+      "id": 23,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 3100,
+      "created_at": "2026-04-01T00:59:23.007Z"
+    },
+    {
+      "id": 24,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "test -f src/components/Hero.astro && test -f src/components/Card.astro && test -f src/components/ImageMosaic.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T00:59:23.007Z"
+    },
+    {
+      "id": 25,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "grep -q Hero src/pages/styleguide.astro && grep -q Card src/pages/styleguide.astro && grep -q ImageMosaic src/pages/styleguide.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T00:59:23.007Z"
     }
   ]
 }
