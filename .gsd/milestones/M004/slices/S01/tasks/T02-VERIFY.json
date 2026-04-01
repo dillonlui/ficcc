@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M004/S01/T02",
+  "timestamp": 1775065202623,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 8634,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'skip-to-content' src/layouts/BaseLayout.astro",
+      "exitCode": 0,
+      "durationMs": 21,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -rq 'id=\"main-content\"' src/pages/",
+      "exitCode": 0,
+      "durationMs": 18,
+      "verdict": "pass"
+    }
+  ]
+}

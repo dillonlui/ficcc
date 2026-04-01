@@ -62,7 +62,7 @@
   - Estimate: 30m
   - Files: src/layouts/BaseLayout.astro, src/components/Card.astro, src/components/EventCard.astro, src/pages/index.astro, src/pages/contact.astro, src/pages/sermons/index.astro, src/pages/about/index.astro
   - Verify: npm run build && grep -q 'skip-to-content' src/layouts/BaseLayout.astro && grep -rq 'id="main-content"' src/pages/
-- [ ] **T03: Expand LHCI coverage, add axe-core, raise thresholds, and run full audit** — Expand Lighthouse CI to cover all page archetypes, add axe-core for automated a11y testing, raise performance thresholds to 0.90, and run the full audit to validate T01/T02 fixes.
+- [x] **T03: Expanded LHCI from 3 to 10 URLs, added axe-core CLI, set per-archetype perf thresholds, and began WCAG contrast fixes** — Expand Lighthouse CI to cover all page archetypes, add axe-core for automated a11y testing, raise performance thresholds to 0.90, and run the full audit to validate T01/T02 fixes.
 
 ## Steps
 

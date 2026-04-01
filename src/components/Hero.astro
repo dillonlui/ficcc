@@ -105,7 +105,8 @@ const { title, subtitle, ctaText, ctaHref, backgroundImage } = Astro.props;
     font-size: var(--text-base);
     font-weight: 600;
     color: var(--color-bg);
-    background-color: var(--color-terracotta);
+    background-color: var(--color-terracotta-dark);
+    /* Darker than var(--color-terracotta) for WCAG AA contrast (4.56:1 vs --color-bg) */
     padding: var(--space-3) var(--space-8);
     border-radius: var(--radius-md);
     text-decoration: none;
@@ -113,7 +114,7 @@ const { title, subtitle, ctaText, ctaHref, backgroundImage } = Astro.props;
   }
 
   .hero__cta:hover {
-    background-color: #b3654b;
+    background-color: #944A30;
     transform: translateY(-1px);
   }
 
