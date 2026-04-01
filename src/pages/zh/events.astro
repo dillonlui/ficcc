@@ -1,0 +1,179 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import EventCard from '../../components/EventCard.astro';
+import { getEvents, urlForImage } from '../../lib/sanity';
+import type { Event } from '../../lib/sanity';
+
+const title = '活動 | 伊薩卡華人基督教會';
+const description =
+  '伊薩卡華人基督教會即將舉行的活動、聚會和社區活動。';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let events: Event[] = [];
+
+try {
+  events = await getEvents('zh');
+} catch {
+  // Sanity unreachable — continue with fallbacks
+}
+
+// ---------- Fallback events when CMS is empty ----------
+const fallbackEvents: Event[] = [
+  {
+    _id: 'fallback-1',
+    _type: 'event',
+    title: '主日崇拜',
+    date: new Date().toISOString(),
+    time: '每週日 上午 9:45',
+    location: '429 Mitchell Street, Ithaca, NY 14850',
+    recurring: true,
+    language: 'zh',
+  },
+  {
+    _id: 'fallback-2',
+    _type: 'event',
+    title: '主日學',
+    date: new Date().toISOString(),
+    time: '每週日 上午 11:15',
+    location: '429 Mitchell Street, Ithaca, NY 14850',
+    recurring: true,
+    language: 'zh',
+  },
+  {
+    _id: 'fallback-3',
+    _type: 'event',
+    title: '週五團契',
+    date: new Date().toISOString(),
+    time: '每週五 晚上 7:00',
+    location: '429 Mitchell Street, Ithaca, NY 14850',
+    recurring: true,
+    language: 'zh',
+  },
+];
+
+const displayEvents = events.length > 0 ? events : fallbackEvents;
+
+// ---------- Split into upcoming and past ----------
+const now = new Date();
+now.setHours(0, 0, 0, 0);
+
+const upcomingEvents = displayEvents.filter((e) => {
+  if (!e.date) return true; // No date — show in upcoming
+  if (e.recurring) return true; // Recurring — always show in upcoming
+  return new Date(e.date) >= now;
+});
+
+const pastEvents = displayEvents.filter((e) => {
+  if (!e.date) return false;
+  if (e.recurring) return false;
+  return new Date(e.date) < now;
+});
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main>
+    <Hero
+      title="活動"
+      subtitle="一起敬拜、團契、服事社區"
+      backgroundImage="/images/hero-placeholder.svg"
+    />
+
+    <!-- Upcoming Events -->
+    <section class="events-section" aria-label="即將舉行的活動">
+      <div class="events-section__inner">
+        <h2 class="section-heading">即將舉行的活動</h2>
+        {upcomingEvents.length > 0 ? (
+          <div class="events-grid">
+            {upcomingEvents.map((event) => (
+              <EventCard
+                title={event.title}
+                date={event.date || new Date().toISOString()}
+                time={event.time}
+                location={event.location}
+                image={event.image ? urlForImage(event.image, { width: 600 }) : undefined}
+                recurring={event.recurring}
+              />
+            ))}
+          </div>
+        ) : (
+          <p class="events-empty">
+            目前暫無即將舉行的活動。請稍後再查看，或關注我們的社交媒體獲取最新消息！
+          </p>
+        )}
+      </div>
+    </section>
+
+    <!-- Past Events -->
+    {pastEvents.length > 0 && (
+      <section class="events-section events-section--past" aria-label="過往活動">
+        <div class="events-section__inner">
+          <h2 class="section-heading">過往活動</h2>
+          <div class="events-grid">
+            {pastEvents.map((event) => (
+              <EventCard
+                title={event.title}
+                date={event.date || new Date().toISOString()}
+                time={event.time}
+                location={event.location}
+                image={event.image ? urlForImage(event.image, { width: 600 }) : undefined}
+                recurring={event.recurring}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-10);
+  }
+
+  .events-section {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .events-section--past {
+    background-color: var(--color-stone);
+  }
+
+  .events-section__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: var(--space-8);
+  }
+
+  .events-empty {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    text-align: center;
+    max-width: 32rem;
+    margin-inline: auto;
+    padding: var(--space-8) 0;
+  }
+
+  @media (max-width: 768px) {
+    .section-heading {
+      font-size: var(--text-2xl);
+    }
+
+    .events-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

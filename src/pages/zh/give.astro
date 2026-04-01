@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+
+const title = '奉獻 | 伊薩卡華人基督教會';
+const description =
+  '透過您的慷慨奉獻，支持伊薩卡華人基督教會的事工。';
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main>
+    <Hero
+      title="奉獻"
+      subtitle="您的慷慨帶來改變"
+      backgroundImage="/images/hero-placeholder.svg"
+    />
+
+    <!-- Why We Give -->
+    <section class="give-section" aria-label="為什麼奉獻">
+      <div class="give-section__inner">
+        <h2 class="section-heading">為什麼奉獻</h2>
+        <div class="give-prose">
+          <p>
+            奉獻是敬拜和信靠的行動。當我們慷慨奉獻時，我們參與了神的事工——
+            支持教會群體、關懷有需要的人、傳揚耶穌基督的福音。
+          </p>
+          <blockquote class="give-verse">
+            <p>
+              「各人要隨本心所酌定的，不要作難，不要勉強，因為捐得樂意的人是神所喜愛的。」
+            </p>
+            <cite>— 哥林多後書 9:7</cite>
+          </blockquote>
+          <p>
+            無論您是第一次奉獻還是多年來一直支持我們教會，每一份奉獻——無論大小——
+            都幫助我們繼續服事伊薩卡及周邊社區。感謝您的忠心。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ways to Give -->
+    <section class="give-section give-section--alt" aria-label="奉獻方式">
+      <div class="give-section__inner">
+        <h2 class="section-heading">奉獻方式</h2>
+        <div class="give-methods">
+
+          <!-- Online via PayPal -->
+          <div class="give-method">
+            <div class="give-method__icon" aria-hidden="true">💳</div>
+            <h3 class="give-method__title">網上奉獻 / PayPal</h3>
+            <p class="give-method__desc">
+              透過 PayPal 安全地進行網上奉獻。您可以使用 PayPal 帳戶、
+              借記卡或信用卡。
+            </p>
+            <a
+              class="give-method__link"
+              href="https://www.paypal.com/donate/?hosted_button_id=PLACEHOLDER"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              透過 PayPal 奉獻 →
+            </a>
+          </div>
+
+          <!-- By Check -->
+          <div class="give-method">
+            <div class="give-method__icon" aria-hidden="true">✉️</div>
+            <h3 class="give-method__title">支票奉獻</h3>
+            <p class="give-method__desc">
+              支票抬頭請寫 <strong>First Ithaca Chinese Christian
+              Church</strong>，並郵寄至：
+            </p>
+            <address class="give-method__address">
+              First Ithaca Chinese Christian Church<br />
+              429 Mitchell Street<br />
+              Ithaca, NY 14850
+            </address>
+          </div>
+
+          <!-- In Person -->
+          <div class="give-method">
+            <div class="give-method__icon" aria-hidden="true">🏠</div>
+            <h3 class="give-method__title">現場奉獻</h3>
+            <p class="give-method__desc">
+              主日崇拜時備有奉獻信封。您可以將奉獻放入聖殿內的奉獻箱中。
+            </p>
+            <p class="give-method__note">
+              每週日上午 9:45 · 429 Mitchell Street
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Questions -->
+    <section class="give-section" aria-label="關於奉獻的問題">
+      <div class="give-section__inner give-section__centered">
+        <h2 class="section-heading">有問題嗎？</h2>
+        <p class="give-prose">
+          如果您對奉獻、免稅收據或其他支持教會的方式有任何疑問，請隨時
+          <a href="/zh/contact">聯繫我們</a>。我們很樂意為您解答。
+        </p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-10);
+  }
+
+  .give-section {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .give-section--alt {
+    background-color: var(--color-stone);
+  }
+
+  .give-section__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .give-section__centered {
+    text-align: center;
+  }
+
+  /* ---------- Prose ---------- */
+  .give-prose {
+    max-width: 42rem;
+    margin-inline: auto;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .give-prose p {
+    margin-block-end: var(--space-4);
+  }
+
+  .give-prose p:last-child {
+    margin-block-end: 0;
+  }
+
+  .give-prose a {
+    color: var(--color-terracotta);
+    text-decoration: underline;
+  }
+
+  .give-prose a:hover {
+    color: #b3654b;
+  }
+
+  /* ---------- Verse ---------- */
+  .give-verse {
+    border-inline-start: 3px solid var(--color-terracotta);
+    padding: var(--space-6) var(--space-8);
+    margin: var(--space-8) 0;
+    background-color: var(--color-stone);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .give-verse p {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    font-style: italic;
+    line-height: var(--leading-relaxed);
+    color: var(--color-ink);
+    margin-block-end: var(--space-2);
+  }
+
+  .give-verse cite {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-style: normal;
+    color: var(--color-body);
+  }
+
+  /* ---------- Methods Grid ---------- */
+  .give-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-8);
+  }
+
+  .give-method {
+    background-color: var(--color-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(26, 26, 46, 0.08);
+    padding: var(--space-8) var(--space-6);
+    text-align: center;
+  }
+
+  .give-method__icon {
+    font-size: 2rem;
+    margin-block-end: var(--space-4);
+  }
+
+  .give-method__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-3);
+  }
+
+  .give-method__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    margin-block-end: var(--space-4);
+  }
+
+  .give-method__desc strong {
+    color: var(--color-ink);
+  }
+
+  .give-method__link {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-bg);
+    background-color: var(--color-terracotta);
+    padding: var(--space-3) var(--space-8);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .give-method__link:hover {
+    background-color: #b3654b;
+    transform: translateY(-1px);
+  }
+
+  .give-method__link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .give-method__address {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-style: normal;
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .give-method__note {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-terracotta);
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .section-heading {
+      font-size: var(--text-2xl);
+    }
+
+    .give-methods {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

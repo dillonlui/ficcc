@@ -12,7 +12,7 @@ The detail page needs: getStaticPaths calling getSermons('zh'), Chinese meta lab
   - Estimate: 30m
   - Files: src/pages/zh/sermons/index.astro, src/pages/zh/sermons/[slug].astro
   - Verify: npm run build && test -f dist/client/zh/sermons/index.html && grep -q 'lang="zh"' dist/client/zh/sermons/index.html && grep -q '講' dist/client/zh/sermons/index.html
-- [ ] **T02: Create ZH Events and Give pages** — Clone EN events (src/pages/events.astro) to src/pages/zh/events.astro and EN give (src/pages/give.astro) to src/pages/zh/give.astro. Both are single-file clone-and-swap.
+- [x] **T02: Created Chinese events and give pages at /zh/events/ and /zh/give/ with fully translated UI text, CMS-driven content, and Chinese fallback events** — Clone EN events (src/pages/events.astro) to src/pages/zh/events.astro and EN give (src/pages/give.astro) to src/pages/zh/give.astro. Both are single-file clone-and-swap.
 
 ZH Events: Swap getEvents('en') to getEvents('zh'). Translate Hero text, section headings (即將舉行的活動, 過往活動), empty state text, fallback events to Chinese (主日崇拜, 主日學, 週五團契 with Chinese descriptions). Pass lang='zh' to BaseLayout.
 

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T17:00:39.220Z",
+  "exported_at": "2026-04-01T17:02:28.872Z",
   "milestones": [
     {
       "id": "M001",
@@ -2853,19 +2853,25 @@
       "milestone_id": "M003",
       "slice_id": "S03",
       "id": "T02",
-      "title": "Create ZH Events and Give pages",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created Chinese events and give pages at /zh/events/ and /zh/give/ with fully translated UI text, CMS-driven content, and Chinese fallback events",
+      "status": "complete",
+      "one_liner": "Created Chinese events and give pages at /zh/events/ and /zh/give/ with fully translated UI text, CMS-driven content, and Chinese fallback events",
+      "narrative": "Cloned EN events page to src/pages/zh/events.astro — swapped getEvents('en') to getEvents('zh'), translated hero text, section headings (即將舉行的活動, 過往活動), empty state, and fallback events (主日崇拜, 主日學, 週五團契). Cloned EN give page to src/pages/zh/give.astro — translated all prose including Bible verse to Chinese Union Version (哥林多後書 9:7), giving methods (網上奉獻/PayPal, 支票奉獻, 現場奉獻), and updated contact link to /zh/contact.",
+      "verification_result": "npm run build succeeded. Verified dist/client/zh/events/index.html and dist/client/zh/give/index.html exist and contain expected Chinese characters (活動, 奉獻).",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T17:02:28.857Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/pages/zh/events.astro",
+        "src/pages/zh/give.astro"
+      ],
+      "key_decisions": [
+        "Used 活動 for events page title and 奉獻 for give page title",
+        "Translated Bible verse to Chinese Union Version (哥林多後書 9:7)"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S03\nmilestone: M003\nkey_files:\n  - src/pages/zh/events.astro\n  - src/pages/zh/give.astro\nkey_decisions:\n  - Used 活動 for events page title and 奉獻 for give page title\n  - Translated Bible verse to Chinese Union Version (哥林多後書 9:7)\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:02:28.858Z\nblocker_discovered: false\n---\n\n# T02: Created Chinese events and give pages at /zh/events/ and /zh/give/ with fully translated UI text, CMS-driven content, and Chinese fallback events\n\n**Created Chinese events and give pages at /zh/events/ and /zh/give/ with fully translated UI text, CMS-driven content, and Chinese fallback events**\n\n## What Happened\n\nCloned EN events page to src/pages/zh/events.astro — swapped getEvents('en') to getEvents('zh'), translated hero text, section headings (即將舉行的活動, 過往活動), empty state, and fallback events (主日崇拜, 主日學, 週五團契). Cloned EN give page to src/pages/zh/give.astro — translated all prose including Bible verse to Chinese Union Version (哥林多後書 9:7), giving methods (網上奉獻/PayPal, 支票奉獻, 現場奉獻), and updated contact link to /zh/contact.\n\n## Verification\n\nnpm run build succeeded. Verified dist/client/zh/events/index.html and dist/client/zh/give/index.html exist and contain expected Chinese characters (活動, 奉獻).\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8600ms |\n| 2 | `test -f dist/client/zh/events/index.html` | 0 | ✅ pass | 100ms |\n| 3 | `test -f dist/client/zh/give/index.html` | 0 | ✅ pass | 100ms |\n| 4 | `grep -q '活動' dist/client/zh/events/index.html` | 0 | ✅ pass | 100ms |\n| 5 | `grep -q '奉獻' dist/client/zh/give/index.html` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/pages/zh/events.astro`\n- `src/pages/zh/give.astro`\n",
       "description": "Clone EN events (src/pages/events.astro) to src/pages/zh/events.astro and EN give (src/pages/give.astro) to src/pages/zh/give.astro. Both are single-file clone-and-swap.\n\nZH Events: Swap getEvents('en') to getEvents('zh'). Translate Hero text, section headings (即將舉行的活動, 過往活動), empty state text, fallback events to Chinese (主日崇拜, 主日學, 週五團契 with Chinese descriptions). Pass lang='zh' to BaseLayout.\n\nZH Give: Translate all prose to Chinese — Why We Give section (奉獻 heading, Chinese explanation of giving), verse in Chinese (哥林多後書 9:7), giving methods with Chinese labels (網上奉獻/PayPal, 支票奉獻, 現場奉獻). Change /contact link to /zh/contact. PayPal link and church address stay the same. Pass lang='zh' to BaseLayout.",
       "estimate": "30m",
       "files": [
@@ -4969,6 +4975,61 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T17:00:39.201Z"
+    },
+    {
+      "id": 168,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8600,
+      "created_at": "2026-04-01T17:02:28.858Z"
+    },
+    {
+      "id": 169,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "test -f dist/client/zh/events/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:02:28.858Z"
+    },
+    {
+      "id": 170,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "test -f dist/client/zh/give/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:02:28.858Z"
+    },
+    {
+      "id": 171,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "grep -q '活動' dist/client/zh/events/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:02:28.858Z"
+    },
+    {
+      "id": 172,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "grep -q '奉獻' dist/client/zh/give/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:02:28.858Z"
     }
   ]
 }
