@@ -1,120 +1,105 @@
 ---
-/* RideRequestForm — ride request form with Cloudflare Turnstile spam
-   protection and client-side fetch submission to /api/ride-request.
+/* ConnectForm — newcomer connection form with Cloudflare Turnstile spam
+   protection and client-side fetch submission to /api/connect.
    Adapted from ContactForm pattern. */
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
-<form class="ride-form" novalidate>
-  <div class="ride-form__row">
-    <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-name">Name <span aria-hidden="true">*</span></label>
+<form class="connect-form" novalidate>
+  <div class="connect-form__row">
+    <div class="connect-form__field">
+      <label class="connect-form__label" for="connect-name">Name <span aria-hidden="true">*</span></label>
       <input
-        class="ride-form__input"
+        class="connect-form__input"
         type="text"
-        id="ride-name"
+        id="connect-name"
         name="name"
         required
         minlength="2"
         autocomplete="name"
         placeholder="Your name"
       />
-      <span class="ride-form__error" data-field="name"></span>
+      <span class="connect-form__error" data-field="name"></span>
     </div>
 
-    <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-email">Email <span aria-hidden="true">*</span></label>
+    <div class="connect-form__field">
+      <label class="connect-form__label" for="connect-email">Email <span aria-hidden="true">*</span></label>
       <input
-        class="ride-form__input"
+        class="connect-form__input"
         type="email"
-        id="ride-email"
+        id="connect-email"
         name="email"
         required
         autocomplete="email"
         placeholder="you@example.com"
       />
-      <span class="ride-form__error" data-field="email"></span>
+      <span class="connect-form__error" data-field="email"></span>
     </div>
   </div>
 
-  <div class="ride-form__row">
-    <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-phone">Phone</label>
-      <input
-        class="ride-form__input"
-        type="tel"
-        id="ride-phone"
-        name="phone"
-        autocomplete="tel"
-        placeholder="(optional)"
-      />
-      <span class="ride-form__error" data-field="phone"></span>
-    </div>
-
-    <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-date">Preferred Date</label>
-      <input
-        class="ride-form__input"
-        type="date"
-        id="ride-date"
-        name="preferredDate"
-      />
-      <span class="ride-form__error" data-field="preferredDate"></span>
-    </div>
-  </div>
-
-  <div class="ride-form__field">
-    <label class="ride-form__label" for="ride-pickup">Pickup Location <span aria-hidden="true">*</span></label>
+  <div class="connect-form__field">
+    <label class="connect-form__label" for="connect-phone">Phone</label>
     <input
-      class="ride-form__input"
-      type="text"
-      id="ride-pickup"
-      name="pickupLocation"
-      required
-      minlength="5"
-      placeholder="e.g. campus dorm name or street address"
+      class="connect-form__input"
+      type="tel"
+      id="connect-phone"
+      name="phone"
+      autocomplete="tel"
+      placeholder="(optional)"
     />
-    <span class="ride-form__error" data-field="pickupLocation"></span>
+    <span class="connect-form__error" data-field="phone"></span>
   </div>
 
-  <div class="ride-form__field">
-    <label class="ride-form__label" for="ride-notes">Notes</label>
+  <div class="connect-form__field">
+    <label class="connect-form__label" for="connect-interests">What are you interested in?</label>
     <textarea
-      class="ride-form__input ride-form__textarea"
-      id="ride-notes"
-      name="notes"
+      class="connect-form__input connect-form__textarea"
+      id="connect-interests"
+      name="interests"
       rows="3"
-      placeholder="Anything else we should know? (optional)"
+      placeholder="Small groups, volunteering, Bible study, worship team…"
     ></textarea>
-    <span class="ride-form__error" data-field="notes"></span>
+    <span class="connect-form__error" data-field="interests"></span>
+  </div>
+
+  <div class="connect-form__field">
+    <label class="connect-form__label" for="connect-message">Message</label>
+    <textarea
+      class="connect-form__input connect-form__textarea"
+      id="connect-message"
+      name="message"
+      rows="3"
+      placeholder="Anything else you'd like us to know? (optional)"
+    ></textarea>
+    <span class="connect-form__error" data-field="message"></span>
   </div>
 
   <!-- Cloudflare Turnstile widget -->
-  <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
-  <span class="ride-form__error" data-field="turnstileToken"></span>
+  <div class="connect-form__turnstile cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+  <span class="connect-form__error" data-field="turnstileToken"></span>
 
-  <button class="ride-form__submit" type="submit">
-    <span class="ride-form__submit-text">Request a Ride</span>
-    <span class="ride-form__spinner" aria-hidden="true"></span>
+  <button class="connect-form__submit" type="submit">
+    <span class="connect-form__submit-text">Connect With Us</span>
+    <span class="connect-form__spinner" aria-hidden="true"></span>
   </button>
 
   <!-- General error banner -->
-  <div class="ride-form__banner ride-form__banner--error" role="alert" hidden></div>
+  <div class="connect-form__banner connect-form__banner--error" role="alert" hidden></div>
 
   <!-- Success message -->
-  <div class="ride-form__banner ride-form__banner--success" role="status" hidden></div>
+  <div class="connect-form__banner connect-form__banner--success" role="status" hidden></div>
 </form>
 
 <script is:inline>
 (function () {
-  const form = document.querySelector('.ride-form');
+  var form = document.querySelector('.connect-form');
   if (!form) return;
 
-  const submitBtn = form.querySelector('.ride-form__submit');
-  const submitText = form.querySelector('.ride-form__submit-text');
-  const spinner = form.querySelector('.ride-form__spinner');
-  const errorBanner = form.querySelector('.ride-form__banner--error');
-  const successBanner = form.querySelector('.ride-form__banner--success');
+  var submitBtn = form.querySelector('.connect-form__submit');
+  var submitText = form.querySelector('.connect-form__submit-text');
+  var spinner = form.querySelector('.connect-form__spinner');
+  var errorBanner = form.querySelector('.connect-form__banner--error');
+  var successBanner = form.querySelector('.connect-form__banner--success');
 
   /* ---- Helpers ---- */
 
@@ -125,16 +110,16 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       el.hidden = false;
     }
     var input = form.querySelector('[name="' + field + '"]');
-    if (input) input.classList.add('ride-form__input--error');
+    if (input) input.classList.add('connect-form__input--error');
   }
 
   function clearErrors() {
-    form.querySelectorAll('.ride-form__error').forEach(function (el) {
+    form.querySelectorAll('.connect-form__error').forEach(function (el) {
       el.textContent = '';
       el.hidden = true;
     });
-    form.querySelectorAll('.ride-form__input--error').forEach(function (el) {
-      el.classList.remove('ride-form__input--error');
+    form.querySelectorAll('.connect-form__input--error').forEach(function (el) {
+      el.classList.remove('connect-form__input--error');
     });
     errorBanner.hidden = true;
     errorBanner.textContent = '';
@@ -142,7 +127,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   function setLoading(loading) {
     submitBtn.disabled = loading;
-    submitText.textContent = loading ? 'Sending\u2026' : 'Request a Ride';
+    submitText.textContent = loading ? 'Sending\u2026' : 'Connect With Us';
     spinner.hidden = !loading;
   }
 
@@ -154,16 +139,12 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     var errors = [];
     var name = form.querySelector('[name="name"]').value.trim();
     var email = form.querySelector('[name="email"]').value.trim();
-    var pickup = form.querySelector('[name="pickupLocation"]').value.trim();
 
     if (name.length < 2) {
       errors.push({ field: 'name', message: 'Name is required (min 2 characters)' });
     }
     if (!EMAIL_RE.test(email)) {
       errors.push({ field: 'email', message: 'A valid email address is required' });
-    }
-    if (pickup.length < 5) {
-      errors.push({ field: 'pickupLocation', message: 'Pickup location is required (min 5 characters)' });
     }
     return errors;
   }
@@ -196,14 +177,13 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       name: form.querySelector('[name="name"]').value.trim(),
       email: form.querySelector('[name="email"]').value.trim(),
       phone: form.querySelector('[name="phone"]').value.trim(),
-      pickupLocation: form.querySelector('[name="pickupLocation"]').value.trim(),
-      preferredDate: form.querySelector('[name="preferredDate"]').value,
-      notes: form.querySelector('[name="notes"]').value.trim(),
+      interests: form.querySelector('[name="interests"]').value.trim(),
+      message: form.querySelector('[name="message"]').value.trim(),
       turnstileToken: turnstileToken,
     };
 
     try {
-      var res = await fetch('/api/ride-request', {
+      var res = await fetch('/api/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -212,15 +192,12 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       var data = await res.json();
 
       if (!res.ok) {
-        /* Field-level errors from server */
         if (data.fields && Array.isArray(data.fields)) {
           data.fields.forEach(function (err) { showFieldError(err.field, err.message); });
         }
-        /* General error */
         errorBanner.textContent = data.error || 'Something went wrong. Please try again.';
         errorBanner.hidden = false;
 
-        /* Reset Turnstile on failure so user can retry */
         if (typeof turnstile !== 'undefined') {
           turnstile.reset();
         }
@@ -228,14 +205,14 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       }
 
       /* Success */
-      successBanner.textContent = data.message || 'Your ride request has been submitted! We\u2019ll be in touch soon.';
+      successBanner.textContent = data.message || 'Thank you for reaching out! We will be in touch soon.';
       successBanner.hidden = false;
       form.reset();
       if (typeof turnstile !== 'undefined') {
         turnstile.reset();
       }
     } catch (err) {
-      errorBanner.textContent = 'Unable to submit your request right now. Please try again later or contact us directly.';
+      errorBanner.textContent = 'Network error. Please check your connection and try again.';
       errorBanner.hidden = false;
     } finally {
       setLoading(false);
@@ -245,37 +222,37 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 </script>
 
 <style>
-  .ride-form {
+  .connect-form {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
     max-width: 36rem;
   }
 
-  .ride-form__row {
+  .connect-form__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-6);
   }
 
-  .ride-form__field {
+  .connect-form__field {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  .ride-form__label {
+  .connect-form__label {
     font-family: var(--font-body);
     font-size: var(--text-sm);
     font-weight: 600;
     color: var(--color-ink);
   }
 
-  .ride-form__label span {
+  .connect-form__label span {
     color: var(--color-terracotta, #c0392b);
   }
 
-  .ride-form__input {
+  .connect-form__input {
     font-family: var(--font-body);
     font-size: var(--text-base);
     color: var(--color-body);
@@ -286,38 +263,38 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     transition: border-color var(--transition), box-shadow var(--transition);
   }
 
-  .ride-form__input::placeholder {
+  .connect-form__input::placeholder {
     color: var(--color-stone);
   }
 
-  .ride-form__input:focus {
+  .connect-form__input:focus {
     outline: none;
     border-color: var(--color-focus);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 25%, transparent);
   }
 
-  .ride-form__input--error {
+  .connect-form__input--error {
     border-color: var(--color-terracotta, #c0392b);
   }
 
-  .ride-form__textarea {
+  .connect-form__textarea {
     resize: vertical;
     min-height: 5rem;
   }
 
-  .ride-form__error {
+  .connect-form__error {
     font-family: var(--font-body);
     font-size: var(--text-sm);
     color: var(--color-terracotta, #c0392b);
     min-height: 0;
   }
 
-  .ride-form__error:empty,
-  .ride-form__error[hidden] {
+  .connect-form__error:empty,
+  .connect-form__error[hidden] {
     display: none;
   }
 
-  .ride-form__submit {
+  .connect-form__submit {
     align-self: flex-start;
     display: inline-flex;
     align-items: center;
@@ -334,58 +311,58 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     transition: background-color var(--transition), box-shadow var(--transition), opacity var(--transition);
   }
 
-  .ride-form__submit:hover:not(:disabled) {
+  .connect-form__submit:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--color-terracotta) 85%, black);
   }
 
-  .ride-form__submit:focus-visible {
+  .connect-form__submit:focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
 
-  .ride-form__submit:disabled {
+  .connect-form__submit:disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
 
   /* Spinner */
-  .ride-form__spinner {
+  .connect-form__spinner {
     display: none;
     width: 1em;
     height: 1em;
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-    animation: ride-spin 0.6s linear infinite;
+    animation: connect-spin 0.6s linear infinite;
   }
 
-  .ride-form__submit:disabled .ride-form__spinner {
+  .connect-form__submit:disabled .connect-form__spinner {
     display: inline-block;
   }
 
-  @keyframes ride-spin {
+  @keyframes connect-spin {
     to { transform: rotate(360deg); }
   }
 
   /* Banners */
-  .ride-form__banner {
+  .connect-form__banner {
     font-family: var(--font-body);
     font-size: var(--text-sm);
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-sm);
   }
 
-  .ride-form__banner[hidden] {
+  .connect-form__banner[hidden] {
     display: none;
   }
 
-  .ride-form__banner--error {
+  .connect-form__banner--error {
     color: #991b1b;
     background-color: #fef2f2;
     border: 1px solid #fecaca;
   }
 
-  .ride-form__banner--success {
+  .connect-form__banner--success {
     color: #166534;
     background-color: #f0fdf4;
     border: 1px solid #bbf7d0;
@@ -393,7 +370,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   /* ---------- Responsive ---------- */
   @media (max-width: 768px) {
-    .ride-form__row {
+    .connect-form__row {
       grid-template-columns: 1fr;
     }
   }

@@ -1,99 +1,99 @@
 ---
-/* ContactForm — form with Cloudflare Turnstile spam protection and
-   client-side fetch submission to /api/contact. */
+/* PrayerRequestForm — prayer request form with Cloudflare Turnstile spam
+   protection and client-side fetch submission to /api/prayer-request.
+   Adapted from ContactForm pattern. */
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
-<form class="contact-form" novalidate>
-  <div class="contact-form__field">
-    <label class="contact-form__label" for="contact-name">Name</label>
+<form class="prayer-form" novalidate>
+  <div class="prayer-form__field">
+    <label class="prayer-form__label" for="prayer-name">Name <span aria-hidden="true">*</span></label>
     <input
-      class="contact-form__input"
+      class="prayer-form__input"
       type="text"
-      id="contact-name"
+      id="prayer-name"
       name="name"
       required
       minlength="2"
       autocomplete="name"
       placeholder="Your name"
     />
-    <span class="contact-form__error" data-field="name"></span>
+    <span class="prayer-form__error" data-field="name"></span>
   </div>
 
-  <div class="contact-form__field">
-    <label class="contact-form__label" for="contact-email">Email</label>
+  <div class="prayer-form__field">
+    <label class="prayer-form__label" for="prayer-email">Email</label>
     <input
-      class="contact-form__input"
+      class="prayer-form__input"
       type="email"
-      id="contact-email"
+      id="prayer-email"
       name="email"
-      required
       autocomplete="email"
-      placeholder="you@example.com"
+      placeholder="you@example.com (optional)"
     />
-    <span class="contact-form__error" data-field="email"></span>
+    <span class="prayer-form__error" data-field="email"></span>
   </div>
 
-  <div class="contact-form__field">
-    <label class="contact-form__label" for="contact-message">Message</label>
+  <div class="prayer-form__field">
+    <label class="prayer-form__label" for="prayer-request">Prayer Request <span aria-hidden="true">*</span></label>
     <textarea
-      class="contact-form__input contact-form__textarea"
-      id="contact-message"
-      name="message"
+      class="prayer-form__input prayer-form__textarea"
+      id="prayer-request"
+      name="request"
       required
       minlength="10"
       rows="5"
-      placeholder="How can we help?"
+      placeholder="Share your prayer request with us…"
     ></textarea>
-    <span class="contact-form__error" data-field="message"></span>
+    <span class="prayer-form__error" data-field="request"></span>
   </div>
 
   <!-- Cloudflare Turnstile widget -->
-  <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
-  <span class="contact-form__error" data-field="turnstileToken"></span>
+  <div class="prayer-form__turnstile cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+  <span class="prayer-form__error" data-field="turnstileToken"></span>
 
-  <button class="contact-form__submit" type="submit">
-    <span class="contact-form__submit-text">Send Message</span>
-    <span class="contact-form__spinner" aria-hidden="true"></span>
+  <button class="prayer-form__submit" type="submit">
+    <span class="prayer-form__submit-text">Submit Prayer Request</span>
+    <span class="prayer-form__spinner" aria-hidden="true"></span>
   </button>
 
   <!-- General error banner -->
-  <div class="contact-form__banner contact-form__banner--error" role="alert" hidden></div>
+  <div class="prayer-form__banner prayer-form__banner--error" role="alert" hidden></div>
 
   <!-- Success message -->
-  <div class="contact-form__banner contact-form__banner--success" role="status" hidden></div>
+  <div class="prayer-form__banner prayer-form__banner--success" role="status" hidden></div>
 </form>
 
 <script is:inline>
 (function () {
-  const form = document.querySelector('.contact-form');
+  var form = document.querySelector('.prayer-form');
   if (!form) return;
 
-  const submitBtn = form.querySelector('.contact-form__submit');
-  const submitText = form.querySelector('.contact-form__submit-text');
-  const spinner = form.querySelector('.contact-form__spinner');
-  const errorBanner = form.querySelector('.contact-form__banner--error');
-  const successBanner = form.querySelector('.contact-form__banner--success');
+  var submitBtn = form.querySelector('.prayer-form__submit');
+  var submitText = form.querySelector('.prayer-form__submit-text');
+  var spinner = form.querySelector('.prayer-form__spinner');
+  var errorBanner = form.querySelector('.prayer-form__banner--error');
+  var successBanner = form.querySelector('.prayer-form__banner--success');
 
   /* ---- Helpers ---- */
 
   function showFieldError(field, msg) {
-    const el = form.querySelector('[data-field="' + field + '"]');
+    var el = form.querySelector('[data-field="' + field + '"]');
     if (el) {
       el.textContent = msg;
       el.hidden = false;
     }
-    const input = form.querySelector('[name="' + field + '"]');
-    if (input) input.classList.add('contact-form__input--error');
+    var input = form.querySelector('[name="' + field + '"]');
+    if (input) input.classList.add('prayer-form__input--error');
   }
 
   function clearErrors() {
-    form.querySelectorAll('.contact-form__error').forEach(function (el) {
+    form.querySelectorAll('.prayer-form__error').forEach(function (el) {
       el.textContent = '';
       el.hidden = true;
     });
-    form.querySelectorAll('.contact-form__input--error').forEach(function (el) {
-      el.classList.remove('contact-form__input--error');
+    form.querySelectorAll('.prayer-form__input--error').forEach(function (el) {
+      el.classList.remove('prayer-form__input--error');
     });
     errorBanner.hidden = true;
     errorBanner.textContent = '';
@@ -101,28 +101,22 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   function setLoading(loading) {
     submitBtn.disabled = loading;
-    submitText.textContent = loading ? 'Sending…' : 'Send Message';
+    submitText.textContent = loading ? 'Sending\u2026' : 'Submit Prayer Request';
     spinner.hidden = !loading;
   }
 
   /* ---- Client-side validation ---- */
 
-  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   function validate() {
     var errors = [];
     var name = form.querySelector('[name="name"]').value.trim();
-    var email = form.querySelector('[name="email"]').value.trim();
-    var message = form.querySelector('[name="message"]').value.trim();
+    var request = form.querySelector('[name="request"]').value.trim();
 
     if (name.length < 2) {
       errors.push({ field: 'name', message: 'Name is required (min 2 characters)' });
     }
-    if (!EMAIL_RE.test(email)) {
-      errors.push({ field: 'email', message: 'A valid email address is required' });
-    }
-    if (message.length < 10) {
-      errors.push({ field: 'message', message: 'Message is required (min 10 characters)' });
+    if (request.length < 10) {
+      errors.push({ field: 'request', message: 'Prayer request is required (min 10 characters)' });
     }
     return errors;
   }
@@ -154,12 +148,12 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     var payload = {
       name: form.querySelector('[name="name"]').value.trim(),
       email: form.querySelector('[name="email"]').value.trim(),
-      message: form.querySelector('[name="message"]').value.trim(),
+      request: form.querySelector('[name="request"]').value.trim(),
       turnstileToken: turnstileToken,
     };
 
     try {
-      var res = await fetch('/api/contact', {
+      var res = await fetch('/api/prayer-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -168,15 +162,12 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       var data = await res.json();
 
       if (!res.ok) {
-        /* Field-level errors from server */
         if (data.fields && Array.isArray(data.fields)) {
           data.fields.forEach(function (err) { showFieldError(err.field, err.message); });
         }
-        /* General error */
         errorBanner.textContent = data.error || 'Something went wrong. Please try again.';
         errorBanner.hidden = false;
 
-        /* Reset Turnstile on failure so user can retry */
         if (typeof turnstile !== 'undefined') {
           turnstile.reset();
         }
@@ -184,7 +175,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       }
 
       /* Success */
-      successBanner.textContent = data.message || 'Your message has been sent!';
+      successBanner.textContent = data.message || 'Your prayer request has been received. We will be praying for you.';
       successBanner.hidden = false;
       form.reset();
       if (typeof turnstile !== 'undefined') {
@@ -201,27 +192,31 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 </script>
 
 <style>
-  .contact-form {
+  .prayer-form {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
     max-width: 36rem;
   }
 
-  .contact-form__field {
+  .prayer-form__field {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  .contact-form__label {
+  .prayer-form__label {
     font-family: var(--font-body);
     font-size: var(--text-sm);
     font-weight: 600;
     color: var(--color-ink);
   }
 
-  .contact-form__input {
+  .prayer-form__label span {
+    color: var(--color-terracotta, #c0392b);
+  }
+
+  .prayer-form__input {
     font-family: var(--font-body);
     font-size: var(--text-base);
     color: var(--color-body);
@@ -232,38 +227,38 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     transition: border-color var(--transition), box-shadow var(--transition);
   }
 
-  .contact-form__input::placeholder {
+  .prayer-form__input::placeholder {
     color: var(--color-stone);
   }
 
-  .contact-form__input:focus {
+  .prayer-form__input:focus {
     outline: none;
     border-color: var(--color-focus);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 25%, transparent);
   }
 
-  .contact-form__input--error {
+  .prayer-form__input--error {
     border-color: var(--color-terracotta, #c0392b);
   }
 
-  .contact-form__textarea {
+  .prayer-form__textarea {
     resize: vertical;
     min-height: 8rem;
   }
 
-  .contact-form__error {
+  .prayer-form__error {
     font-family: var(--font-body);
     font-size: var(--text-sm);
     color: var(--color-terracotta, #c0392b);
     min-height: 0;
   }
 
-  .contact-form__error:empty,
-  .contact-form__error[hidden] {
+  .prayer-form__error:empty,
+  .prayer-form__error[hidden] {
     display: none;
   }
 
-  .contact-form__submit {
+  .prayer-form__submit {
     align-self: flex-start;
     display: inline-flex;
     align-items: center;
@@ -280,58 +275,58 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     transition: background-color var(--transition), box-shadow var(--transition), opacity var(--transition);
   }
 
-  .contact-form__submit:hover:not(:disabled) {
+  .prayer-form__submit:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--color-terracotta) 85%, black);
   }
 
-  .contact-form__submit:focus-visible {
+  .prayer-form__submit:focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
 
-  .contact-form__submit:disabled {
+  .prayer-form__submit:disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
 
   /* Spinner */
-  .contact-form__spinner {
+  .prayer-form__spinner {
     display: none;
     width: 1em;
     height: 1em;
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-    animation: contact-spin 0.6s linear infinite;
+    animation: prayer-spin 0.6s linear infinite;
   }
 
-  .contact-form__submit:disabled .contact-form__spinner {
+  .prayer-form__submit:disabled .prayer-form__spinner {
     display: inline-block;
   }
 
-  @keyframes contact-spin {
+  @keyframes prayer-spin {
     to { transform: rotate(360deg); }
   }
 
   /* Banners */
-  .contact-form__banner {
+  .prayer-form__banner {
     font-family: var(--font-body);
     font-size: var(--text-sm);
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-sm);
   }
 
-  .contact-form__banner[hidden] {
+  .prayer-form__banner[hidden] {
     display: none;
   }
 
-  .contact-form__banner--error {
+  .prayer-form__banner--error {
     color: #991b1b;
     background-color: #fef2f2;
     border: 1px solid #fecaca;
   }
 
-  .contact-form__banner--success {
+  .prayer-form__banner--success {
     color: #166534;
     background-color: #f0fdf4;
     border: 1px solid #bbf7d0;

@@ -77,7 +77,7 @@ Create a shared helper (`src/lib/form-helpers.ts`) to avoid duplicating Turnstil
   - Estimate: 40m
   - Files: sanity/schemas/documents/event.ts, src/lib/sanity.ts, src/components/EventCard.astro, src/pages/events.astro, src/pages/give.astro
   - Verify: test -f src/pages/events.astro && test -f src/pages/give.astro && test -f src/components/EventCard.astro && npm run build
-- [ ] **T03: Build Contact page with all 4 forms in tabbed sections** — Create PrayerRequestForm and ConnectForm components following the existing ContactForm pattern, then compose the Contact page with all 4 forms organized in tab/section UI. The tab approach solves the multiple-Turnstile-widgets-per-page pitfall — only one form is visible at a time.
+- [x] **T03: Built Contact page with 4 tabbed forms (General Contact, Prayer Request, Ride Request, Connect), accessible tab navigation, centralized Turnstile management, and church info sidebar** — Create PrayerRequestForm and ConnectForm components following the existing ContactForm pattern, then compose the Contact page with all 4 forms organized in tab/section UI. The tab approach solves the multiple-Turnstile-widgets-per-page pitfall — only one form is visible at a time.
 
 ### Steps
 

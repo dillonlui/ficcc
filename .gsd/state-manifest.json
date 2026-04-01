@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T14:13:22.503Z",
+  "exported_at": "2026-04-01T14:18:12.914Z",
   "milestones": [
     {
       "id": "M001",
@@ -2456,19 +2456,30 @@
       "milestone_id": "M002",
       "slice_id": "S06",
       "id": "T03",
-      "title": "Build Contact page with all 4 forms in tabbed sections",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Built Contact page with 4 tabbed forms (General Contact, Prayer Request, Ride Request, Connect), accessible tab navigation, centralized Turnstile management, and church info sidebar",
+      "status": "complete",
+      "one_liner": "Built Contact page with 4 tabbed forms (General Contact, Prayer Request, Ride Request, Connect), accessible tab navigation, centralized Turnstile management, and church info sidebar",
+      "narrative": "Created PrayerRequestForm and ConnectForm components following the established form pattern. Built Contact page with accessible tablist/tab/tabpanel UI and keyboard navigation. Refactored Turnstile script loading out of form components into consuming pages to support explicit render mode on the contact page — only one Turnstile widget renders at a time via render/remove on tab switch. Added church information sidebar with address, phone, email, and service times.",
+      "verification_result": "All three expected output files exist. npm run build succeeds with /contact/index.html pre-rendered cleanly.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T14:18:12.890Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Extracted Turnstile script tag from ContactForm.astro and RideRequestForm.astro into consuming pages (visit.astro, styleguide.astro) to avoid implicit/explicit Turnstile mode conflict on the contact page.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/PrayerRequestForm.astro",
+        "src/components/ConnectForm.astro",
+        "src/pages/contact.astro",
+        "src/components/ContactForm.astro",
+        "src/components/RideRequestForm.astro",
+        "src/pages/visit.astro",
+        "src/pages/styleguide.astro"
+      ],
+      "key_decisions": [
+        "Extracted Turnstile script loading from form components into consuming pages for explicit/implicit mode separation",
+        "Tab switching uses turnstile.render/remove to ensure only one widget at a time"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S06\nmilestone: M002\nkey_files:\n  - src/components/PrayerRequestForm.astro\n  - src/components/ConnectForm.astro\n  - src/pages/contact.astro\n  - src/components/ContactForm.astro\n  - src/components/RideRequestForm.astro\n  - src/pages/visit.astro\n  - src/pages/styleguide.astro\nkey_decisions:\n  - Extracted Turnstile script loading from form components into consuming pages for explicit/implicit mode separation\n  - Tab switching uses turnstile.render/remove to ensure only one widget at a time\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:18:12.891Z\nblocker_discovered: false\n---\n\n# T03: Built Contact page with 4 tabbed forms (General Contact, Prayer Request, Ride Request, Connect), accessible tab navigation, centralized Turnstile management, and church info sidebar\n\n**Built Contact page with 4 tabbed forms (General Contact, Prayer Request, Ride Request, Connect), accessible tab navigation, centralized Turnstile management, and church info sidebar**\n\n## What Happened\n\nCreated PrayerRequestForm and ConnectForm components following the established form pattern. Built Contact page with accessible tablist/tab/tabpanel UI and keyboard navigation. Refactored Turnstile script loading out of form components into consuming pages to support explicit render mode on the contact page — only one Turnstile widget renders at a time via render/remove on tab switch. Added church information sidebar with address, phone, email, and service times.\n\n## Verification\n\nAll three expected output files exist. npm run build succeeds with /contact/index.html pre-rendered cleanly.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f src/components/PrayerRequestForm.astro && test -f src/components/ConnectForm.astro && test -f src/pages/contact.astro && npm run build` | 0 | ✅ pass | 8500ms |\n\n\n## Deviations\n\nExtracted Turnstile script tag from ContactForm.astro and RideRequestForm.astro into consuming pages (visit.astro, styleguide.astro) to avoid implicit/explicit Turnstile mode conflict on the contact page.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/PrayerRequestForm.astro`\n- `src/components/ConnectForm.astro`\n- `src/pages/contact.astro`\n- `src/components/ContactForm.astro`\n- `src/components/RideRequestForm.astro`\n- `src/pages/visit.astro`\n- `src/pages/styleguide.astro`\n",
       "description": "Create PrayerRequestForm and ConnectForm components following the existing ContactForm pattern, then compose the Contact page with all 4 forms organized in tab/section UI. The tab approach solves the multiple-Turnstile-widgets-per-page pitfall — only one form is visible at a time.\n\n### Steps\n\n1. Create `src/components/PrayerRequestForm.astro`:\n   - Follow ContactForm.astro pattern exactly (inline script, scoped CSS, Turnstile widget)\n   - Fields: name (required, min 2), email (optional), prayer request text (required, min 10)\n   - Posts to `/api/prayer-request`\n   - Use BEM class prefix `prayer-form__`\n   - Turnstile widget with explicit render: add `data-callback` and unique container ID\n   - Success message: 'Your prayer request has been received. We will be praying for you.'\n\n2. Create `src/components/ConnectForm.astro`:\n   - Follow ContactForm.astro pattern\n   - Fields: name (required), email (required), phone (optional), interests (optional text — 'What are you interested in?'), message (optional)\n   - Posts to `/api/connect`\n   - Use BEM class prefix `connect-form__`\n   - Success message: 'Thank you for reaching out! We will be in touch soon.'\n\n3. Create `src/pages/contact.astro`:\n   - Use BaseLayout, Hero\n   - Tab/section UI with 4 tabs: General Contact, Prayer Request, Ride Request, Connect With Us\n   - Each tab shows one form component (ContactForm, PrayerRequestForm, RideRequestForm, ConnectForm)\n   - Tab switching via inline script — show/hide sections, load Turnstile per visible form\n   - Use `details/summary` or custom tab implementation with `role=\"tablist\"`, `role=\"tab\"`, `role=\"tabpanel\"` for accessibility\n   - Church contact info sidebar/section: address, phone, email, Sunday service times\n   - Only load Turnstile script once (not per-form) — use explicit render mode: `<script src=\"...api.js?render=explicit\">` and call `turnstile.render()` on tab switch\n   - Default to General Contact tab\n\n### Constraints\n- Only one Turnstile widget renders at a time — tab switching must reset/render the widget for the active form\n- Forms use inline `<script is:inline>` blocks per D010 — no client:* directives\n- Each form's inline script must scope to its own class prefix to avoid conflicts when all 4 are in the DOM\n- Accessible tab implementation with keyboard navigation (arrow keys between tabs, Enter/Space to activate)\n- Pure Astro, scoped CSS, CSS custom properties only",
       "estimate": "50m",
       "files": [
@@ -4230,6 +4241,17 @@
       "verdict": "✅ pass",
       "duration_ms": 8500,
       "created_at": "2026-04-01T14:13:22.482Z"
+    },
+    {
+      "id": 142,
+      "task_id": "T03",
+      "slice_id": "S06",
+      "milestone_id": "M002",
+      "command": "test -f src/components/PrayerRequestForm.astro && test -f src/components/ConnectForm.astro && test -f src/pages/contact.astro && npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8500,
+      "created_at": "2026-04-01T14:18:12.890Z"
     }
   ]
 }
