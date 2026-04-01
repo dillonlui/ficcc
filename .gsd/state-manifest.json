@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T14:37:55.703Z",
+  "exported_at": "2026-04-01T14:41:40.726Z",
   "milestones": [
     {
       "id": "M001",
@@ -73,10 +73,10 @@
     {
       "id": "M002",
       "title": "",
-      "status": "queued",
+      "status": "complete",
       "depends_on": [],
       "created_at": "2026-03-31T22:32:24.635Z",
-      "completed_at": null,
+      "completed_at": "2026-04-01T14:41:40.700Z",
       "vision": "Build all English Ministry pages with real content, establishing the full user experience for English-speaking visitors.",
       "success_criteria": [
         "Homepage answers Who/When/What-next within 10 seconds on mobile",
@@ -564,7 +564,7 @@
       "milestone_id": "M002",
       "id": "S07",
       "title": "Resources & Content Migration",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S02",
@@ -572,9 +572,9 @@
       ],
       "demo": "Resources page live. All em.ficcc.org content in Sanity.",
       "created_at": "2026-03-31T22:33:41.125Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T14:40:18.090Z",
+      "full_summary_md": "---\nid: S07\nparent: M002\nmilestone: M002\nprovides:\n  - Resources page at /resources with CMS-with-fallback pattern\n  - Complete em.ficcc.org content migration coverage across all EN pages\nrequires:\n  - slice: S02\n    provides: aboutPage schema and about page structure\n  - slice: S04\n    provides: Sanity fetch patterns and GROQ helpers\naffects:\n  []\nkey_files:\n  - sanity/schemas/singletons/resourcesPage.ts\n  - src/pages/resources.astro\n  - src/pages/about/index.astro\n  - src/pages/contact.astro\n  - src/pages/ministries/index.astro\n  - sanity/schemas/singletons/aboutPage.ts\n  - src/lib/sanity.ts\nkey_decisions:\n  - Resource categories modeled as nested array-of-objects matching em.ficcc.org structure\n  - Resource items typed as article/pdf/link with conditional link behavior\n  - Vision statement and church stats added as CMS-editable fields on aboutPage\n  - Ministries page gets inline fallback group cards instead of empty state\npatterns_established:\n  - (none)\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M002/slices/S07/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M002/slices/S07/tasks/T02-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:40:18.091Z\nblocker_discovered: false\n---\n\n# S07: Resources & Content Migration\n\n**Resources page live at /resources with 4 content categories, and full em.ficcc.org content migration audit completed with gaps fixed across about, contact, and ministries pages**\n\n## What Happened\n\nT01 built the /resources page end-to-end: resourcesPage Sanity singleton schema with nested category/resource arrays, GROQ helper, and full hardcoded fallbacks covering Spiritual Growth articles, Bible Readathon PDF, Newcomer Recommendations PDF, and 7 Cornell Campus Ministries with links. T02 systematically audited every Must Migrate and Should Migrate item from SITE-AUDIT.md Section 4 against existing schemas and page fallbacks. Found and fixed: wrong address on contact page (309 College Ave → 429 Mitchell Street), missing vision statement on about page (added \"Develop Humble Servants\" 3-part vision with CMS fields), missing church stats (added stats grid: ~150 members, ~20 baptisms/yr, 18 ministers sent, 40+ years), and empty ministries fallback (added 6 fellowship group cards). All em.ficcc.org content is now accounted for in Sanity schemas and Astro page fallbacks.\n\n## Verification\n\nnpm run build succeeds for both tasks. All 15 static routes prerendered including /resources, /about, /contact, /ministries. T01 verified schema registration, GROQ helper, and no client directives. T02 verified build after audit fixes.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nT02 scope expanded beyond just documenting gaps to actually fixing them (added vision statement, stats, ministry fallbacks, address fix). This was the right call — documenting gaps without fixing them would have left the milestone incomplete.\n\n## Known Limitations\n\nPlaceholder PDFs are text files — actual PDF assets need sourcing from em.ficcc.org. Real photos still use placeholder SVGs. Full church history timeline (cm.ficcc.org 40-year history) deferred to M003. PayPal donate button has placeholder hosted_button_id. WeChat contact not on EN pages (ZH-specific).\n\n## Follow-ups\n\nNone — remaining content (ZH pages, history timeline, WeChat) is M003 scope.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/resourcesPage.ts` — New resourcesPage singleton schema with hero + nested resourceCategories\n- `sanity/schemas/index.ts` — Registered resourcesPage with EN/ZH singleton IDs\n- `src/lib/sanity.ts` — Added ResourcesPage interface, getResourcesPage() helper, vision/stats fields on AboutPage\n- `src/pages/resources.astro` — New resources page with 4 categories and CMS-with-fallback pattern\n- `src/pages/about/index.astro` — Added vision statement section and church stats grid\n- `src/pages/contact.astro` — Fixed address from 309 College Ave to 429 Mitchell Street\n- `src/pages/ministries/index.astro` — Added 6 fallback fellowship group cards replacing empty state\n- `sanity/schemas/singletons/aboutPage.ts` — Added visionHeading, visionBody, churchStats fields\n",
+      "full_uat_md": "# S07: Resources & Content Migration — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01T14:40:18.091Z\n\n## UAT: S07 — Resources & Content Migration\n\n### Test 1: Resources page renders\n1. Navigate to /resources\n2. Verify Hero section with \"Resources\" title\n3. Verify 4 category sections: Spiritual Growth, Bible Readathon, Newcomer Recommendations, Cornell Campus Ministries\n4. Verify PDF download links for readathon and newcomer PDFs\n5. Verify 7 campus ministry external links\n\n### Test 2: About page has vision and stats\n1. Navigate to /about\n2. Verify \"Our Vision\" section with \"Develop Humble Servants\" content\n3. Verify \"By the Numbers\" stats grid with 4 items\n\n### Test 3: Contact page address is correct\n1. Navigate to /contact\n2. Verify address reads \"429 Mitchell Street\" (not 309 College Ave)\n\n### Test 4: Ministries page shows fallback groups\n1. Navigate to /ministries\n2. Verify 6 fallback group cards visible (Discipleship, Bible Study, Youth, Prayer, Children's SS, Adult SS)\n\n### Test 5: Build succeeds\n1. Run `npm run build`\n2. Verify all routes prerender without errors\n",
       "goal": "Resources page live at /resources with categorized links, downloadable PDFs, and campus ministry list. All em.ficcc.org content from SITE-AUDIT.md accounted for in Sanity schemas and Astro page fallbacks.",
       "success_criteria": "- `npm run build` succeeds with `/resources` in the output\n- `resourcesPage` singleton registered in schema index with EN/ZH doc IDs\n- `getResourcesPage()` GROQ helper exists in `src/lib/sanity.ts`\n- Resources page has zero `client:*` directives (fully static)\n- Fallback content includes spiritual growth resources, campus ministries, and PDF links\n- Content migration audit confirms every \"Must Migrate\" and \"Should Migrate\" item from SITE-AUDIT.md has a Sanity schema field and fallback data in an Astro page",
       "proof_level": "contract — static build proves page renders with fallback content; no runtime CMS required",

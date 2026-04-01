@@ -12,4 +12,4 @@ Build all English Ministry pages with real content, establishing the full user e
 | S04 | Sermons Library | medium | S01 | ✅ | Sermon library with series filter, detail page with YouTube embed |
 | S05 | Community & Ministries | low | S01 | ✅ | Community hub + ministry detail pages |
 | S06 | Events, Give & Contact | low | S01 | ✅ | Events, Give page, all 4 contact forms |
-| S07 | Resources & Content Migration | low | S02, S04 | ⬜ | Resources page live. All em.ficcc.org content in Sanity. |
+| S07 | Resources & Content Migration | low | S02, S04 | ✅ | Resources page live. All em.ficcc.org content in Sanity. |
