@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M003/S03/T02",
+  "timestamp": 1775062951601,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 8682,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f dist/client/zh/events/index.html",
+      "exitCode": 0,
+      "durationMs": 8,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f dist/client/zh/give/index.html",
+      "exitCode": 0,
+      "durationMs": 6,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q '活動' dist/client/zh/events/index.html",
+      "exitCode": 0,
+      "durationMs": 8,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q '奉獻' dist/client/zh/give/index.html",
+      "exitCode": 0,
+      "durationMs": 8,
+      "verdict": "pass"
+    }
+  ]
+}

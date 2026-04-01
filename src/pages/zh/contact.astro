@@ -1,0 +1,533 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+
+const title = '聯繫我們 | 伊薩卡華人基督教會';
+const description =
+  '聯繫伊薩卡華人基督教會。透過微信或表單與我們取得聯繫。';
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main>
+    <Hero
+      title="聯繫我們"
+      subtitle="我們期待與您聯繫"
+      backgroundImage="/images/hero-placeholder.svg"
+    />
+
+    <section class="contact-section" aria-label="聯繫方式">
+      <div class="contact-section__inner">
+        <div class="contact-layout">
+          <!-- Main content: WeChat + form -->
+          <div class="contact-main">
+            <!-- WeChat section — primary contact method for Chinese ministry -->
+            <div class="wechat-section" aria-label="微信聯繫">
+              <div class="wechat-section__header">
+                <svg class="wechat-section__icon" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true">
+                  <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05a6.127 6.127 0 0 1-.231-1.676c0-3.56 3.143-6.448 7.02-6.448.186 0 .367.013.55.025C16.339 4.79 12.87 2.188 8.69 2.188zm-2.6 4.408a1.09 1.09 0 1 1 0 2.181 1.09 1.09 0 0 1 0-2.18zm5.198 0a1.09 1.09 0 1 1 0 2.181 1.09 1.09 0 0 1 0-2.18z"/>
+                  <path d="M23.155 14.262c0-3.26-3.262-5.907-7.282-5.907-4.02 0-7.282 2.646-7.282 5.907 0 3.262 3.262 5.908 7.282 5.908.85 0 1.67-.118 2.432-.332a.69.69 0 0 1 .57.078l1.528.893a.264.264 0 0 0 .133.044.233.233 0 0 0 .233-.236c0-.058-.023-.114-.038-.17l-.312-1.187a.47.47 0 0 1 .171-.533c1.465-1.08 2.565-2.737 2.565-4.465zm-9.86-.984a.89.89 0 1 1 0-1.779.89.89 0 0 1 0 1.78zm5.157 0a.89.89 0 1 1 0-1.779.89.89 0 0 1 0 1.78z"/>
+                </svg>
+                <h2 class="wechat-section__title">微信 WeChat</h2>
+              </div>
+              <p class="wechat-section__desc">
+                微信是我們中文事工的主要聯繫方式。掃描下方二維碼或搜尋我們的微信號，即可與教會取得聯繫。
+              </p>
+              <div class="wechat-section__qr" aria-label="微信二維碼">
+                <!-- Placeholder for WeChat QR code — replace src with actual QR image -->
+                <div class="wechat-section__qr-placeholder">
+                  <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" aria-hidden="true" class="wechat-section__qr-icon">
+                    <path d="M3 3h7v7H3V3zm1 1v5h5V4H4zm8-1h7v7h-7V3zm1 1v5h5V4h-5zM3 12h7v7H3v-7zm1 1v5h5v-5H4zm10 0h1v1h-1v-1zm2 0h3v1h-3v-1zm-2 2h1v3h-1v-3zm4 0h1v1h-1v-1zm-2 2h1v1h-1v-1zm2 0h3v1h-3v-1zm0 2h1v1h-1v-1z"/>
+                  </svg>
+                  <span class="wechat-section__qr-text">微信二維碼</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Simplified contact form -->
+            <div class="zh-contact-form-section">
+              <h2 class="zh-contact-form-section__title">發送訊息</h2>
+              <p class="zh-contact-form-section__desc">您也可以透過以下表單與我們聯繫。</p>
+
+              <form class="zh-contact-form" action="#" novalidate>
+                <div class="zh-contact-form__field">
+                  <label class="zh-contact-form__label" for="zh-contact-name">姓名 Name</label>
+                  <input
+                    class="zh-contact-form__input"
+                    type="text"
+                    id="zh-contact-name"
+                    name="name"
+                    required
+                    minlength="2"
+                    autocomplete="name"
+                    placeholder="您的姓名"
+                  />
+                  <span class="zh-contact-form__error" data-field="name" aria-live="polite"></span>
+                </div>
+
+                <div class="zh-contact-form__field">
+                  <label class="zh-contact-form__label" for="zh-contact-email">電郵 Email</label>
+                  <input
+                    class="zh-contact-form__input"
+                    type="email"
+                    id="zh-contact-email"
+                    name="email"
+                    required
+                    autocomplete="email"
+                    placeholder="you@example.com"
+                  />
+                  <span class="zh-contact-form__error" data-field="email" aria-live="polite"></span>
+                </div>
+
+                <div class="zh-contact-form__field">
+                  <label class="zh-contact-form__label" for="zh-contact-message">訊息 Message</label>
+                  <textarea
+                    class="zh-contact-form__input zh-contact-form__textarea"
+                    id="zh-contact-message"
+                    name="message"
+                    required
+                    minlength="10"
+                    rows="5"
+                    placeholder="請輸入您的訊息"
+                  ></textarea>
+                  <span class="zh-contact-form__error" data-field="message" aria-live="polite"></span>
+                </div>
+
+                <button class="zh-contact-form__submit" type="submit">
+                  <span class="zh-contact-form__submit-text">發送</span>
+                  <span class="zh-contact-form__spinner" aria-hidden="true"></span>
+                </button>
+
+                <div class="zh-contact-form__banner" role="alert" hidden></div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Church info sidebar -->
+          <aside class="contact-info" aria-label="教會資訊">
+            <h2 class="contact-info__heading">教會資訊</h2>
+
+            <div class="contact-info__block">
+              <h3 class="contact-info__label">教會地址</h3>
+              <address class="contact-info__value">
+                伊薩卡華人基督教會<br />
+                429 Mitchell Street<br />
+                Ithaca, NY 14850
+              </address>
+            </div>
+
+            <div class="contact-info__block">
+              <h3 class="contact-info__label">主日崇拜</h3>
+              <p class="contact-info__value">
+                英文崇拜：上午 11:00<br />
+                中文崇拜：上午 11:00
+              </p>
+            </div>
+
+            <div class="contact-info__block">
+              <h3 class="contact-info__label">電子郵件</h3>
+              <p class="contact-info__value">
+                <a href="mailto:info@ficcc.org" class="contact-info__link">info@ficcc.org</a>
+              </p>
+            </div>
+
+            <div class="contact-info__block">
+              <h3 class="contact-info__label">電話</h3>
+              <p class="contact-info__value">
+                <a href="tel:+16072731223" class="contact-info__link">(607) 273-1223</a>
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+(function () {
+  var form = document.querySelector('.zh-contact-form');
+  if (!form) return;
+
+  var validators = {
+    name: function (v) { return v.trim().length >= 2 ? '' : '請輸入您的姓名（至少2個字）'; },
+    email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : '請輸入有效的電郵地址'; },
+    message: function (v) { return v.trim().length >= 10 ? '' : '請輸入訊息（至少10個字）'; }
+  };
+
+  function showError(field, msg) {
+    var el = form.querySelector('[data-field="' + field + '"]');
+    if (el) el.textContent = msg;
+    var input = form.querySelector('[name="' + field + '"]');
+    if (input) input.classList.toggle('zh-contact-form__input--error', !!msg);
+  }
+
+  function clearErrors() {
+    var errors = form.querySelectorAll('.zh-contact-form__error');
+    for (var i = 0; i < errors.length; i++) errors[i].textContent = '';
+    var inputs = form.querySelectorAll('.zh-contact-form__input');
+    for (var j = 0; j < inputs.length; j++) inputs[j].classList.remove('zh-contact-form__input--error');
+  }
+
+  function showBanner(msg, type) {
+    var banner = form.querySelector('.zh-contact-form__banner');
+    if (!banner) return;
+    banner.textContent = msg;
+    banner.className = 'zh-contact-form__banner zh-contact-form__banner--' + type;
+    banner.hidden = false;
+  }
+
+  function setLoading(loading) {
+    var btn = form.querySelector('.zh-contact-form__submit');
+    if (btn) {
+      btn.disabled = loading;
+      btn.classList.toggle('zh-contact-form__submit--loading', loading);
+    }
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearErrors();
+
+    var data = {};
+    var valid = true;
+    var fields = ['name', 'email', 'message'];
+
+    for (var i = 0; i < fields.length; i++) {
+      var input = form.querySelector('[name="' + fields[i] + '"]');
+      var val = input ? input.value : '';
+      data[fields[i]] = val;
+      var err = validators[fields[i]](val);
+      if (err) {
+        showError(fields[i], err);
+        valid = false;
+      }
+    }
+
+    if (!valid) return;
+
+    setLoading(true);
+    var banner = form.querySelector('.zh-contact-form__banner');
+    if (banner) banner.hidden = true;
+
+    /* Placeholder submission — replace with real endpoint when ready */
+    setTimeout(function () {
+      setLoading(false);
+      showBanner('感謝您的訊息！我們會盡快回覆您。', 'success');
+      form.reset();
+    }, 800);
+  });
+})();
+</script>
+
+<style>
+  .contact-section {
+    padding: var(--space-20) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .contact-section__inner {
+    max-width: var(--max-width, 72rem);
+    margin: 0 auto;
+  }
+
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 20rem;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  /* ---------- WeChat section ---------- */
+
+  .wechat-section {
+    background-color: var(--color-cream);
+    border-radius: var(--radius-md, 0.5rem);
+    padding: var(--space-8);
+    margin-bottom: var(--space-12);
+  }
+
+  .wechat-section__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .wechat-section__icon {
+    color: #07c160; /* WeChat brand green */
+    flex-shrink: 0;
+  }
+
+  .wechat-section__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-ink);
+    margin: 0;
+  }
+
+  .wechat-section__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-body);
+    line-height: var(--leading-relaxed);
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  .wechat-section__qr {
+    display: flex;
+    justify-content: center;
+  }
+
+  .wechat-section__qr-placeholder {
+    width: 12rem;
+    height: 12rem;
+    border: 2px dashed var(--color-stone);
+    border-radius: var(--radius-md, 0.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    color: var(--color-body);
+    background-color: var(--color-bg);
+  }
+
+  .wechat-section__qr-icon {
+    opacity: 0.4;
+  }
+
+  .wechat-section__qr-text {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    opacity: 0.6;
+  }
+
+  /* ---------- Contact form ---------- */
+
+  .zh-contact-form-section {
+    margin-bottom: var(--space-8);
+  }
+
+  .zh-contact-form-section__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .zh-contact-form-section__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-body);
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  .zh-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .zh-contact-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .zh-contact-form__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .zh-contact-form__input {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-stone);
+    border-radius: var(--radius-md, 0.5rem);
+    padding: var(--space-3) var(--space-4);
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .zh-contact-form__input::placeholder {
+    color: var(--color-body);
+    opacity: 0.5;
+  }
+
+  .zh-contact-form__input:focus {
+    outline: none;
+    border-color: var(--color-terracotta);
+    box-shadow: 0 0 0 3px rgba(196, 107, 72, 0.15);
+  }
+
+  .zh-contact-form__input--error {
+    border-color: var(--color-error, #dc2626);
+  }
+
+  .zh-contact-form__textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .zh-contact-form__error {
+    font-family: var(--font-body);
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--color-error, #dc2626);
+    min-height: 1.25em;
+  }
+
+  .zh-contact-form__submit {
+    align-self: flex-start;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-bg);
+    background-color: var(--color-terracotta);
+    border: none;
+    border-radius: var(--radius-md, 0.5rem);
+    padding: var(--space-3) var(--space-8);
+    cursor: pointer;
+    position: relative;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .zh-contact-form__submit:hover:not(:disabled) {
+    background-color: #b3654b;
+    transform: translateY(-1px);
+  }
+
+  .zh-contact-form__submit:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .zh-contact-form__submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .zh-contact-form__submit--loading .zh-contact-form__submit-text {
+    visibility: hidden;
+  }
+
+  .zh-contact-form__spinner {
+    display: none;
+  }
+
+  .zh-contact-form__submit--loading .zh-contact-form__spinner {
+    display: block;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--color-bg);
+    border-radius: 50%;
+    animation: zh-spin 0.6s linear infinite;
+  }
+
+  @keyframes zh-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .zh-contact-form__banner {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md, 0.5rem);
+    margin-top: var(--space-2);
+  }
+
+  .zh-contact-form__banner[hidden] {
+    display: none;
+  }
+
+  .zh-contact-form__banner--success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+
+  .zh-contact-form__banner--error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  /* ---------- Church info sidebar ---------- */
+
+  .contact-info {
+    background-color: var(--color-cream);
+    border-radius: var(--radius-md, 0.5rem);
+    padding: var(--space-8);
+  }
+
+  .contact-info__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  .contact-info__block {
+    margin-bottom: var(--space-6);
+  }
+
+  .contact-info__block:last-child {
+    margin-bottom: 0;
+  }
+
+  .contact-info__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .contact-info__value {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-body);
+    line-height: 1.6;
+    margin: 0;
+    font-style: normal;
+  }
+
+  .contact-info__link {
+    color: var(--color-terracotta);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .contact-info__link:hover {
+    text-decoration: underline;
+  }
+
+  .contact-info__link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* ---------- Responsive ---------- */
+
+  @media (max-width: 768px) {
+    .contact-layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+    }
+
+    .wechat-section__qr-placeholder {
+      width: 10rem;
+      height: 10rem;
+    }
+  }
+</style>

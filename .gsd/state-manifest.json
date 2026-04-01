@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T17:02:28.872Z",
+  "exported_at": "2026-04-01T17:04:57.430Z",
   "milestones": [
     {
       "id": "M001",
@@ -2899,19 +2899,25 @@
       "milestone_id": "M003",
       "slice_id": "S03",
       "id": "T03",
-      "title": "Create bespoke ZH Contact page with WeChat",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created bespoke Chinese contact page at /zh/contact/ with prominent WeChat section, simplified 3-field form, and Chinese church info sidebar",
+      "status": "complete",
+      "one_liner": "Created bespoke Chinese contact page at /zh/contact/ with prominent WeChat section, simplified 3-field form, and Chinese church info sidebar",
+      "narrative": "Built src/pages/zh/contact.astro as a bespoke page with four sections: Hero (聯繫我們), WeChat section with brand-green icon and QR placeholder, simplified contact form with Chinese+English labels and client-side validation, and church info sidebar with Chinese labels. All CSS uses design tokens. Grid layout matches EN contact pattern with responsive single-column at 768px.",
+      "verification_result": "Build succeeded (8.18s). Output file exists at dist/client/zh/contact/index.html. Grep confirms WeChat/微信 text, lang=\"zh\" attribute, and 聯繫 contact text all present.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T17:04:57.411Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Used inline SVG QR placeholder box instead of /images/wechat-qr-placeholder.svg — avoids external asset dependency.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/pages/zh/contact.astro"
+      ],
+      "key_decisions": [
+        "Used WeChat brand green (#07c160) for icon",
+        "Inline QR placeholder box instead of external SVG asset",
+        "Client-side validation with Chinese error messages, no Turnstile"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S03\nmilestone: M003\nkey_files:\n  - src/pages/zh/contact.astro\nkey_decisions:\n  - Used WeChat brand green (#07c160) for icon\n  - Inline QR placeholder box instead of external SVG asset\n  - Client-side validation with Chinese error messages, no Turnstile\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:04:57.412Z\nblocker_discovered: false\n---\n\n# T03: Created bespoke Chinese contact page at /zh/contact/ with prominent WeChat section, simplified 3-field form, and Chinese church info sidebar\n\n**Created bespoke Chinese contact page at /zh/contact/ with prominent WeChat section, simplified 3-field form, and Chinese church info sidebar**\n\n## What Happened\n\nBuilt src/pages/zh/contact.astro as a bespoke page with four sections: Hero (聯繫我們), WeChat section with brand-green icon and QR placeholder, simplified contact form with Chinese+English labels and client-side validation, and church info sidebar with Chinese labels. All CSS uses design tokens. Grid layout matches EN contact pattern with responsive single-column at 768px.\n\n## Verification\n\nBuild succeeded (8.18s). Output file exists at dist/client/zh/contact/index.html. Grep confirms WeChat/微信 text, lang=\"zh\" attribute, and 聯繫 contact text all present.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8700ms |\n| 2 | `test -f dist/client/zh/contact/index.html` | 0 | ✅ pass | 10ms |\n| 3 | `grep -q '微信|WeChat' dist/client/zh/contact/index.html` | 0 | ✅ pass | 10ms |\n| 4 | `grep -q 'lang=\"zh\"' dist/client/zh/contact/index.html` | 0 | ✅ pass | 10ms |\n| 5 | `grep -q '聯繫' dist/client/zh/contact/index.html` | 0 | ✅ pass | 10ms |\n\n\n## Deviations\n\nUsed inline SVG QR placeholder box instead of /images/wechat-qr-placeholder.svg — avoids external asset dependency.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/pages/zh/contact.astro`\n",
       "description": "Build src/pages/zh/contact.astro as a bespoke page — NOT a direct clone of the EN contact page (which has 4 tab forms totaling 1,450 LOC). The ZH contact page should have:\n\n1. **Hero** with Chinese text (聯繫我們)\n2. **WeChat section** as the primary contact method — prominent section with WeChat icon/branding, a placeholder for QR code image (use /images/wechat-qr-placeholder.svg or a styled placeholder box), and the text explaining to add the church WeChat for Chinese ministry communication\n3. **Simplified contact form** — a single general-purpose form with Chinese labels (姓名 Name, 電郵 Email, 訊息 Message) and a submit button (發送). No Turnstile integration needed for now, no tabs. Use a simple HTML form with action='#' (placeholder) and client-side form submission pattern consistent with the EN forms\n4. **Church info sidebar** in Chinese — same layout as EN sidebar but with Chinese labels (教會地址, 主日崇拜, 電子郵件, 電話)\n\nUse the same grid layout pattern as EN contact (form area + sidebar). All CSS must use design tokens from global.css (K003). Pass lang='zh' to BaseLayout.",
       "estimate": "40m",
       "files": [
@@ -5030,6 +5036,61 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T17:02:28.858Z"
+    },
+    {
+      "id": 173,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8700,
+      "created_at": "2026-04-01T17:04:57.411Z"
+    },
+    {
+      "id": 174,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "test -f dist/client/zh/contact/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T17:04:57.411Z"
+    },
+    {
+      "id": 175,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "grep -q '微信|WeChat' dist/client/zh/contact/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T17:04:57.411Z"
+    },
+    {
+      "id": 176,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "grep -q 'lang=\"zh\"' dist/client/zh/contact/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T17:04:57.411Z"
+    },
+    {
+      "id": 177,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "grep -q '聯繫' dist/client/zh/contact/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T17:04:57.411Z"
     }
   ]
 }

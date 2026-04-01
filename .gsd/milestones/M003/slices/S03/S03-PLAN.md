@@ -20,7 +20,7 @@ ZH Give: Translate all prose to Chinese — Why We Give section (奉獻 heading,
   - Estimate: 30m
   - Files: src/pages/zh/events.astro, src/pages/zh/give.astro
   - Verify: npm run build && test -f dist/client/zh/events/index.html && test -f dist/client/zh/give/index.html && grep -q '活動' dist/client/zh/events/index.html && grep -q '奉獻' dist/client/zh/give/index.html
-- [ ] **T03: Create bespoke ZH Contact page with WeChat** — Build src/pages/zh/contact.astro as a bespoke page — NOT a direct clone of the EN contact page (which has 4 tab forms totaling 1,450 LOC). The ZH contact page should have:
+- [x] **T03: Created bespoke Chinese contact page at /zh/contact/ with prominent WeChat section, simplified 3-field form, and Chinese church info sidebar** — Build src/pages/zh/contact.astro as a bespoke page — NOT a direct clone of the EN contact page (which has 4 tab forms totaling 1,450 LOC). The ZH contact page should have:
 
 1. **Hero** with Chinese text (聯繫我們)
 2. **WeChat section** as the primary contact method — prominent section with WeChat icon/branding, a placeholder for QR code image (use /images/wechat-qr-placeholder.svg or a styled placeholder box), and the text explaining to add the church WeChat for Chinese ministry communication
