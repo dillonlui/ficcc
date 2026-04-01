@@ -4,7 +4,7 @@ First Ithaca Chinese Christian Church — bilingual (EN/ZH) church website built
 
 ## Current State
 
-**M002: EN Content Pages — In Progress (S01–S04 complete).**
+**M002: EN Content Pages — In Progress (S01–S05 complete).**
 
 M001 (Foundation & Design System) is complete. M002 is building all English Ministry pages.
 
@@ -16,10 +16,12 @@ S03 (Sundays / Plan a Visit) delivered /visit with CMS-editable hero, Sunday sch
 
 S04 (Sermons Library) delivered /sermons listing with series-based pill filter and /sermons/[slug] detail pages with metadata grid and conditional YouTube embed. Added slug field to sermon schema, getSermonBySlug() GROQ helper, SermonCard and YouTubeEmbed reusable components. All filtering is pure inline script — no client:* directives.
 
+S05 (Community & Ministries) delivered /ministries hub with responsive card grid and /ministries/[slug] detail pages with leader info, meeting time, and portable text description. Added slug/image fields to ministry schema, MinistryDetail interface with resolved leader, getMinistryBySlug() GROQ helper, and MinistryCard component.
+
 The full project scaffold is in place:
 - Astro 5 + Sanity monorepo deployed to Vercel (ficcc.vercel.app)
 - Design token system (Gathered Warmth palette) with self-hosted fonts including async CJK loading
-- 8 shared UI components: Header, Footer, Hero, Card, ImageMosaic, Accordion, ContactForm, AudioPlayer
+- 9 shared UI components: Header, Footer, Hero, Card, ImageMosaic, Accordion, ContactForm, AudioPlayer, MinistryCard
 - Sanity Studio at /admin with 12 schema types (5 documents, 2 singletons, 5 block types)
 - Contact form API (Vercel Edge Runtime + Turnstile + Resend)
 - Sanity Visual Editing preview mode with draft-aware loadQuery

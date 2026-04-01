@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T14:00:41.970Z",
+  "exported_at": "2026-04-01T14:10:41.959Z",
   "milestones": [
     {
       "id": "M001",
@@ -520,16 +520,16 @@
       "milestone_id": "M002",
       "id": "S05",
       "title": "Community & Ministries",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S01"
       ],
       "demo": "Community hub + ministry detail pages",
       "created_at": "2026-03-31T22:33:41.124Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T14:02:08.814Z",
+      "full_summary_md": "---\nid: S05\nparent: M002\nmilestone: M002\nprovides:\n  - MinistryCard component reusable for any ministry listing\n  - getMinistryBySlug() GROQ helper with leader dereference\n  - /ministries hub and /ministries/[slug] routes\nrequires:\n  - slice: S01\n    provides: Shared components (Hero, Card), BaseLayout, design tokens, sanity.ts data layer\naffects:\n  - S06\n  - S07\nkey_files:\n  - sanity/schemas/documents/ministry.ts\n  - src/lib/sanity.ts\n  - src/components/MinistryCard.astro\n  - src/pages/ministries/index.astro\n  - src/pages/ministries/[slug].astro\nkey_decisions:\n  - MinistryDetail uses Omit<Ministry, 'leader'> to replace raw ref with resolved object type\n  - Detail page fetches in page body (not getStaticPaths props) to get resolved leader via getMinistryBySlug\n  - Redirect to /ministries when slug not found rather than 404\npatterns_established:\n  - Ministry hub+detail follows same pattern as sermons: hub with card grid, detail with getStaticPaths and GROQ slug helper\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M002/slices/S05/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M002/slices/S05/tasks/T02-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:02:08.815Z\nblocker_discovered: false\n---\n\n# S05: Community & Ministries\n\n**Community hub at /ministries with responsive card grid and /ministries/[slug] detail pages with leader info, meeting time, and portable text description**\n\n## What Happened\n\nExtended the Sanity ministry schema with slug (required, sourced from name) and image (hotspot-enabled) fields. Created MinistryDetail interface using Omit to replace the raw leader reference with a resolved object containing name, role, and photo. Added getMinistryBySlug() GROQ helper with leader dereference projection.\n\nBuilt three new files: MinistryCard.astro wraps the shared Card component with meeting time display, ministries/index.astro is a hub page with Hero and responsive 3→2→1 card grid following the established sermons pattern, and ministries/[slug].astro is a detail page using getStaticPaths with leader photo/name/role, meeting time, and portable text description rendered server-side via set:html. All styles use CSS custom properties only, no client directives — fully static.\n\n## Verification\n\nnpm run build succeeds (10 pages, 7.4s) and generates /ministries/index.html. No client: directives in any new files. getMinistryBySlug helper and slug field confirmed present. tsc --noEmit shows only pre-existing sanity config errors, no new type errors.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nDetail page fetches MinistryDetail in page body via getMinistryBySlug() rather than passing through getStaticPaths props, to get the fully resolved leader reference. Minor structural change, same end result.\n\n## Known Limitations\n\nNo ministry content seeded in Sanity yet — pages render with fallback/empty states until content is added. Ministry detail pages redirect to /ministries hub when slug not found rather than showing 404.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/documents/ministry.ts` — Added slug and image fields to ministry schema\n- `src/lib/sanity.ts` — Added MinistryDetail interface and getMinistryBySlug() GROQ helper\n- `src/components/MinistryCard.astro` — New component wrapping Card.astro with meeting time display\n- `src/pages/ministries/index.astro` — New hub page with Hero and responsive ministry card grid\n- `src/pages/ministries/[slug].astro` — New detail page with leader info, meeting time, portable text description\n",
+      "full_uat_md": "# S05: Community & Ministries — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01T14:02:08.815Z\n\n# S05: Community & Ministries — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Static site — all pages are pre-built at build time. Build success confirms route generation and template rendering. No runtime behavior to test.\n\n## Preconditions\n\n- `npm run build` succeeds\n- At least one ministry document exists in Sanity with a slug, or tester accepts empty-state rendering\n\n## Smoke Test\n\nNavigate to `/ministries` — page loads with Hero section showing \"Community & Ministries\" heading.\n\n## Test Cases\n\n### 1. Hub Page Renders\n\n1. Open `/ministries` in browser\n2. Verify Hero section displays with title\n3. Verify page uses site Header and Footer (BaseLayout)\n4. **Expected:** Full page chrome with ministry hub content area\n\n### 2. Ministry Cards Display When Content Exists\n\n1. Add a ministry in Sanity with name, slug, image, and meetingTime\n2. Rebuild the site (`npm run build`)\n3. Open `/ministries`\n4. **Expected:** Card appears with ministry name, image, and meeting time. Card links to `/ministries/{slug}`.\n\n### 3. Responsive Card Grid\n\n1. Open `/ministries` with seeded ministry content\n2. Resize browser: desktop (>900px), tablet (600-900px), mobile (<600px)\n3. **Expected:** Grid displays 3 columns → 2 columns → 1 column\n\n### 4. Detail Page Renders\n\n1. Open `/ministries/{slug}` for an existing ministry\n2. **Expected:** Hero with ministry name, back link to /ministries, leader section (photo, name, role) if leader assigned, meeting time, and description rendered as HTML\n\n### 5. Detail Page Leader Section\n\n1. Create a ministry with a linked leader (person document with name, role, photo)\n2. Rebuild and navigate to that ministry's detail page\n3. **Expected:** Leader photo, name, and role display. If no leader assigned, leader section is absent (not broken).\n\n### 6. Portable Text Description\n\n1. Add rich text (bold, italic, links) to a ministry's description in Sanity\n2. Rebuild and navigate to detail page\n3. **Expected:** Description renders as formatted HTML, not raw markup\n\n## Edge Cases\n\n### Empty State — No Ministries\n\n1. Ensure no ministry documents exist in Sanity (or none have slugs)\n2. Build and open `/ministries`\n3. **Expected:** Page renders without errors. May show empty grid or fallback message.\n\n### Invalid Slug\n\n1. Navigate to `/ministries/nonexistent-slug`\n2. **Expected:** Redirects to `/ministries` hub (not a broken page or 500 error)\n\n### Ministry Without Image\n\n1. Create a ministry with slug but no image\n2. Rebuild and open `/ministries`\n3. **Expected:** Card renders without image (no broken img tag or layout collapse)\n\n## Failure Signals\n\n- Build fails with template errors in ministries pages\n- `/ministries` returns 404\n- Cards render without links (missing slug)\n- Detail page shows raw portable text instead of formatted HTML\n- Client-side JavaScript errors on any ministries page\n\n## Not Proven By This UAT\n\n- Actual Sanity content migration (content not seeded yet)\n- Visual design polish and spacing (requires design review)\n- Chinese language variant of ministry pages (future milestone)\n\n## Notes for Tester\n\n- Without Sanity content, pages render in empty/fallback state — this is expected\n- Pre-existing type errors in sanity.config.ts and sanity/structure.ts are unrelated to this slice\n- MinistryCard reuses the shared Card.astro component, so Card styling changes will propagate\n",
       "goal": "Community hub page at /ministries listing all ministries as cards, plus individual ministry detail pages at /ministries/[slug] with leader info, meeting time, and portable text description.",
       "success_criteria": "- `npm run build` succeeds with ministry pages generating\n- Ministry hub page renders at `/ministries` with responsive card grid\n- Ministry detail pages generate at `/ministries/[slug]` for each ministry with a slug\n- No `client:*` directives in new components\n- All styles use only CSS custom properties from global.css\n- Leader reference resolves on detail page (name/role displayed)\n- Portable text description renders as HTML on detail page\n- Back link navigates to `/ministries`",
       "proof_level": "Build-time static generation — `npm run build` proves all pages render and all data flows work.",
@@ -552,11 +552,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Transactional pages for events, giving, and contact",
-      "success_criteria": "Events listing with auto-archive. Event detail with map. Give page with PayPal. Contact, prayer, ride, volunteer forms.",
-      "proof_level": "Events render. PayPal works. All 4 forms deliver email.",
-      "integration_closure": "Event documents auto-archive. Forms use shared infrastructure.",
-      "observability_impact": "Give clicks and form submissions tracked",
+      "goal": "Events listing page, Give page, and Contact page with all 4 forms (general contact, prayer request, ride request, newcomer connect) — each posting to a server-side API endpoint with Turnstile verification and Resend email delivery.",
+      "success_criteria": "## Must-Haves\n\n- Events page at `/events` renders event cards from Sanity with fallback for empty CMS\n- Give page at `/give` displays giving information with PayPal link\n- Contact page at `/contact` hosts all 4 forms organized in tab/section UI\n- PrayerRequestForm and ConnectForm components follow ContactForm/RideRequestForm pattern\n- 4 API endpoints (`/api/contact`, `/api/prayer-request`, `/api/ride-request`, `/api/connect`) with `export const prerender = false`, Turnstile server-side verification, Resend email delivery\n- EventCard component for event listing display\n- All components are pure Astro with scoped CSS using only CSS custom properties (D010)\n- CMS fetches wrapped in try-catch with hardcoded fallbacks (K008)\n- `npm run build` succeeds with all new pages generating\n\n## Threat Surface\n\n- **Abuse**: Form endpoints are publicly accessible — rate abuse via automated POST requests. Turnstile verification is the primary mitigation. No authentication or privilege escalation concerns (anonymous forms).\n- **Data exposure**: Form submissions contain PII (name, email, phone, address). Server-side only — never logged or persisted beyond email delivery. RESEND_API_KEY and TURNSTILE_SECRET_KEY are server-only env vars.\n- **Input trust**: All 4 API endpoints accept untrusted JSON POST bodies. Server-side validation mirrors client-side. Turnstile token verified against Cloudflare API before processing.\n\n## Proof Level\n\n- This slice proves: integration\n- Real runtime required: yes (API endpoints need Vercel SSR runtime with env vars for full verification)\n- Human/UAT required: no (build verification + structural checks sufficient; runtime email delivery verified post-deploy)\n\n## Verification\n\n- `npm run build` succeeds with events, give, and contact pages in output\n- `grep -q 'prerender = false' src/pages/api/contact.ts src/pages/api/prayer-request.ts src/pages/api/ride-request.ts src/pages/api/connect.ts` — all 4 API routes opt into SSR\n- `test -f src/components/EventCard.astro && test -f src/components/PrayerRequestForm.astro && test -f src/components/ConnectForm.astro` — new components exist\n- `test -f src/pages/events.astro && test -f src/pages/give.astro && test -f src/pages/contact.astro` — all 3 pages exist\n- No `client:*` directives in new page-level components (forms use inline scripts per D010)\n\n## Observability / Diagnostics\n\n- Runtime signals: API endpoints return structured JSON `{ success, error, fields }` for all outcomes (success, validation error, Turnstile failure, Resend failure)\n- Inspection surfaces: Vercel function logs for API endpoint invocations; Resend dashboard for email delivery status\n- Failure visibility: API JSON responses include specific error type (validation_error, turnstile_failed, send_failed) so client-side forms display actionable messages\n- Redaction constraints: RESEND_API_KEY and TURNSTILE_SECRET_KEY never in client bundles or logs. Form PII (email, phone) not logged server-side.\n\n## Integration Closure\n\n- Upstream surfaces consumed: `src/lib/sanity.ts` (getEvents, Event interface, urlForImage), `src/components/ContactForm.astro` and `src/components/RideRequestForm.astro` (form patterns), `src/layouts/BaseLayout.astro`, `src/components/Hero.astro`\n- New wiring introduced in this slice: 4 API endpoints (SSR routes), 3 new page routes, 2 new form components, 1 new card component, tab/section UI on contact page\n- What remains before the milestone is truly usable end-to-end: S07 (Resources & Content Migration)",
+      "proof_level": "integration — API endpoints need SSR runtime for full verification; build-time checks confirm structure",
+      "integration_closure": "Consumes getEvents/Event/urlForImage from sanity.ts, ContactForm/RideRequestForm patterns, BaseLayout, Hero. Introduces 4 SSR API routes + 3 pages + 3 components. After this, S07 remains.",
+      "observability_impact": "API endpoints return structured JSON error responses with error type classification (validation_error, turnstile_failed, send_failed). Vercel function logs capture invocations.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2345,6 +2345,147 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S06",
+      "id": "T01",
+      "title": "Built 4 server-side API endpoints (contact, prayer-request, ride-request, connect) with shared Turnstile verification, Resend email delivery, and structured JSON responses",
+      "status": "complete",
+      "one_liner": "Built 4 server-side API endpoints (contact, prayer-request, ride-request, connect) with shared Turnstile verification, Resend email delivery, and structured JSON responses",
+      "narrative": "Created src/lib/form-helpers.ts with shared utilities for Turnstile verification (POST to Cloudflare siteverify), Resend email sending, JSON response formatting, and email validation. Built all 4 API endpoints following the same pattern: parse JSON body, validate required fields with field-level errors, verify Turnstile token, send formatted HTML email via Resend, return structured JSON. Each endpoint has export const prerender = false for SSR-only execution. Fixed curly apostrophe build error in template literals.",
+      "verification_result": "1. grep confirmed all 4 API files contain prerender = false and form-helpers.ts exists. 2. npm run build completed successfully with exit code 0 — all static pages prerender, server entrypoints bundle, Vercel output generated.",
+      "duration": "",
+      "completed_at": "2026-04-01T14:10:41.936Z",
+      "blocker_discovered": false,
+      "deviations": "Added isValidEmail() export to form-helpers for DRY email validation. Used CONTACT_EMAIL env var for recipient address — not specified in plan but necessary for real delivery.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/lib/form-helpers.ts",
+        "src/pages/api/contact.ts",
+        "src/pages/api/prayer-request.ts",
+        "src/pages/api/ride-request.ts",
+        "src/pages/api/connect.ts"
+      ],
+      "key_decisions": [
+        "Used CONTACT_EMAIL env var with onboarding@resend.dev fallback as recipient for all form submissions",
+        "Shared form-helpers pattern: Turnstile + Resend + JSON response utilities extracted to src/lib/form-helpers.ts"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S06\nmilestone: M002\nkey_files:\n  - src/lib/form-helpers.ts\n  - src/pages/api/contact.ts\n  - src/pages/api/prayer-request.ts\n  - src/pages/api/ride-request.ts\n  - src/pages/api/connect.ts\nkey_decisions:\n  - Used CONTACT_EMAIL env var with onboarding@resend.dev fallback as recipient for all form submissions\n  - Shared form-helpers pattern: Turnstile + Resend + JSON response utilities extracted to src/lib/form-helpers.ts\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:10:41.937Z\nblocker_discovered: false\n---\n\n# T01: Built 4 server-side API endpoints (contact, prayer-request, ride-request, connect) with shared Turnstile verification, Resend email delivery, and structured JSON responses\n\n**Built 4 server-side API endpoints (contact, prayer-request, ride-request, connect) with shared Turnstile verification, Resend email delivery, and structured JSON responses**\n\n## What Happened\n\nCreated src/lib/form-helpers.ts with shared utilities for Turnstile verification (POST to Cloudflare siteverify), Resend email sending, JSON response formatting, and email validation. Built all 4 API endpoints following the same pattern: parse JSON body, validate required fields with field-level errors, verify Turnstile token, send formatted HTML email via Resend, return structured JSON. Each endpoint has export const prerender = false for SSR-only execution. Fixed curly apostrophe build error in template literals.\n\n## Verification\n\n1. grep confirmed all 4 API files contain prerender = false and form-helpers.ts exists. 2. npm run build completed successfully with exit code 0 — all static pages prerender, server entrypoints bundle, Vercel output generated.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `grep -q 'prerender = false' src/pages/api/contact.ts src/pages/api/prayer-request.ts src/pages/api/ride-request.ts src/pages/api/connect.ts && test -f src/lib/form-helpers.ts` | 0 | ✅ pass | 100ms |\n| 2 | `npm run build` | 0 | ✅ pass | 8600ms |\n\n\n## Deviations\n\nAdded isValidEmail() export to form-helpers for DRY email validation. Used CONTACT_EMAIL env var for recipient address — not specified in plan but necessary for real delivery.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/lib/form-helpers.ts`\n- `src/pages/api/contact.ts`\n- `src/pages/api/prayer-request.ts`\n- `src/pages/api/ride-request.ts`\n- `src/pages/api/connect.ts`\n",
+      "description": "Build the 4 server-side API routes that all contact forms POST to. Each endpoint: parses JSON body, validates required fields, verifies Turnstile token against Cloudflare API, sends email via Resend, returns structured JSON response. This is the riskiest piece of the slice since it touches SSR runtime, external APIs, and server-only secrets.\n\nCreate a shared helper (`src/lib/form-helpers.ts`) to avoid duplicating Turnstile verification and Resend send logic across 4 endpoints. Each endpoint validates its own fields but shares the verification/send plumbing.\n\n### Steps\n\n1. Create `src/lib/form-helpers.ts` with:\n   - `verifyTurnstile(token: string): Promise<boolean>` — POST to `https://challenges.cloudflare.com/turnstile/v0/siteverify` with `TURNSTILE_SECRET_KEY`\n   - `sendEmail(options: { to: string, subject: string, html: string, replyTo?: string }): Promise<boolean>` — use Resend SDK with `RESEND_API_KEY`, sender from `FROM_EMAIL` env var defaulting to `onboarding@resend.dev`\n   - `jsonError(status, error, fields?): Response` and `jsonSuccess(message): Response` helpers\n\n2. Create `src/pages/api/contact.ts`:\n   - `export const prerender = false`\n   - POST handler: validate name (min 2), email (regex), message (min 10), turnstileToken\n   - Verify Turnstile, send email with form contents, return JSON response\n\n3. Create `src/pages/api/prayer-request.ts`:\n   - Same structure. Fields: name (required), email (optional), request (required, min 10), turnstileToken\n   - Email subject: 'New Prayer Request from [name]'\n\n4. Create `src/pages/api/ride-request.ts`:\n   - Same structure. Fields: name (required), email (required), phone (optional), pickupLocation (required, min 5), preferredDate (optional), notes (optional), turnstileToken\n   - Email subject: 'New Ride Request from [name]'\n\n5. Create `src/pages/api/connect.ts`:\n   - Same structure. Fields: name (required), email (required), phone (optional), interests (optional string), message (optional), turnstileToken\n   - Email subject: 'New Connection Request from [name]'\n\n### Constraints\n- All API files need `export const prerender = false` (K005a)\n- Use `import.meta.env.TURNSTILE_SECRET_KEY` and `import.meta.env.RESEND_API_KEY` (no PUBLIC_ prefix)\n- Return proper Content-Type: application/json\n- Handle missing env vars gracefully — return 500 with descriptive error, don't crash\n- Match the error response shape ContactForm.astro expects: `{ error: string, fields?: [{field, message}] }` for errors, `{ success: true, message: string }` for success",
+      "estimate": "45m",
+      "files": [
+        "src/lib/form-helpers.ts",
+        "src/pages/api/contact.ts",
+        "src/pages/api/prayer-request.ts",
+        "src/pages/api/ride-request.ts",
+        "src/pages/api/connect.ts"
+      ],
+      "verify": "grep -q 'prerender = false' src/pages/api/contact.ts src/pages/api/prayer-request.ts src/pages/api/ride-request.ts src/pages/api/connect.ts && test -f src/lib/form-helpers.ts && npm run build",
+      "inputs": [
+        "`src/components/ContactForm.astro` — reference for expected request/response shape",
+        "`src/components/RideRequestForm.astro` — reference for ride request field names",
+        "`package.json` — resend dependency already installed"
+      ],
+      "expected_output": [
+        "`src/lib/form-helpers.ts` — shared Turnstile verification + Resend email helpers",
+        "`src/pages/api/contact.ts` — general contact form API endpoint",
+        "`src/pages/api/prayer-request.ts` — prayer request form API endpoint",
+        "`src/pages/api/ride-request.ts` — ride request form API endpoint",
+        "`src/pages/api/connect.ts` — newcomer connect form API endpoint"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S06",
+      "id": "T02",
+      "title": "Build Events listing page and Give page",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create the Events page with EventCard component and the static Give page. These are the two simpler pages with no form wiring.\n\n### Steps\n\n1. Add an `image` field to the event Sanity schema (`sanity/schemas/documents/event.ts`) — type `image` with hotspot, optional. Update the Event interface in `src/lib/sanity.ts` to include `image?: SanityImage`.\n\n2. Create `src/components/EventCard.astro`:\n   - Props: title, date (string), time (optional), location (optional), image (optional string URL), recurring (optional boolean)\n   - Display formatted date, time, location, and optional image\n   - Follow Card.astro/MinistryCard.astro pattern — pure Astro, scoped CSS, CSS custom properties only\n   - Show a recurring badge if `recurring` is true\n\n3. Create `src/pages/events.astro`:\n   - Use BaseLayout, Hero\n   - Fetch events via `getEvents('en')` wrapped in try-catch\n   - Filter to upcoming events (date >= today) for main section, with past events shown below\n   - If no events, show friendly empty state message\n   - Responsive grid of EventCard components\n   - Include hardcoded fallback events for when CMS is empty\n\n4. Create `src/pages/give.astro`:\n   - Use BaseLayout, Hero\n   - Static content: why we give, how to give (PayPal link, check, in-person)\n   - PayPal.me link or PayPal donate button (use a link — simpler than embed, CSP already allows frame-src paypal.com if needed later)\n   - Church mailing address for check donations\n   - Scripture verse about generosity\n   - All hardcoded content (no CMS dependency)\n\n### Constraints\n- Pure Astro components, scoped CSS, CSS custom properties only (D010)\n- CMS fetch in try-catch with fallback (K008)\n- Update the GROQ query in getEvents to fetch the image field: add `image` to the projection\n- No client:* directives",
+      "estimate": "40m",
+      "files": [
+        "sanity/schemas/documents/event.ts",
+        "src/lib/sanity.ts",
+        "src/components/EventCard.astro",
+        "src/pages/events.astro",
+        "src/pages/give.astro"
+      ],
+      "verify": "test -f src/pages/events.astro && test -f src/pages/give.astro && test -f src/components/EventCard.astro && npm run build",
+      "inputs": [
+        "`src/lib/sanity.ts` — existing getEvents() helper and Event interface to extend",
+        "`sanity/schemas/documents/event.ts` — event schema to add image field",
+        "`src/components/MinistryCard.astro` — card pattern reference",
+        "`src/layouts/BaseLayout.astro` — page layout",
+        "`src/components/Hero.astro` — hero component"
+      ],
+      "expected_output": [
+        "`sanity/schemas/documents/event.ts` — updated with image field",
+        "`src/lib/sanity.ts` — Event interface updated with image property, getEvents query updated",
+        "`src/components/EventCard.astro` — new event card component",
+        "`src/pages/events.astro` — events listing page",
+        "`src/pages/give.astro` — giving information page"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S06",
+      "id": "T03",
+      "title": "Build Contact page with all 4 forms in tabbed sections",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create PrayerRequestForm and ConnectForm components following the existing ContactForm pattern, then compose the Contact page with all 4 forms organized in tab/section UI. The tab approach solves the multiple-Turnstile-widgets-per-page pitfall — only one form is visible at a time.\n\n### Steps\n\n1. Create `src/components/PrayerRequestForm.astro`:\n   - Follow ContactForm.astro pattern exactly (inline script, scoped CSS, Turnstile widget)\n   - Fields: name (required, min 2), email (optional), prayer request text (required, min 10)\n   - Posts to `/api/prayer-request`\n   - Use BEM class prefix `prayer-form__`\n   - Turnstile widget with explicit render: add `data-callback` and unique container ID\n   - Success message: 'Your prayer request has been received. We will be praying for you.'\n\n2. Create `src/components/ConnectForm.astro`:\n   - Follow ContactForm.astro pattern\n   - Fields: name (required), email (required), phone (optional), interests (optional text — 'What are you interested in?'), message (optional)\n   - Posts to `/api/connect`\n   - Use BEM class prefix `connect-form__`\n   - Success message: 'Thank you for reaching out! We will be in touch soon.'\n\n3. Create `src/pages/contact.astro`:\n   - Use BaseLayout, Hero\n   - Tab/section UI with 4 tabs: General Contact, Prayer Request, Ride Request, Connect With Us\n   - Each tab shows one form component (ContactForm, PrayerRequestForm, RideRequestForm, ConnectForm)\n   - Tab switching via inline script — show/hide sections, load Turnstile per visible form\n   - Use `details/summary` or custom tab implementation with `role=\"tablist\"`, `role=\"tab\"`, `role=\"tabpanel\"` for accessibility\n   - Church contact info sidebar/section: address, phone, email, Sunday service times\n   - Only load Turnstile script once (not per-form) — use explicit render mode: `<script src=\"...api.js?render=explicit\">` and call `turnstile.render()` on tab switch\n   - Default to General Contact tab\n\n### Constraints\n- Only one Turnstile widget renders at a time — tab switching must reset/render the widget for the active form\n- Forms use inline `<script is:inline>` blocks per D010 — no client:* directives\n- Each form's inline script must scope to its own class prefix to avoid conflicts when all 4 are in the DOM\n- Accessible tab implementation with keyboard navigation (arrow keys between tabs, Enter/Space to activate)\n- Pure Astro, scoped CSS, CSS custom properties only",
+      "estimate": "50m",
+      "files": [
+        "src/components/PrayerRequestForm.astro",
+        "src/components/ConnectForm.astro",
+        "src/pages/contact.astro"
+      ],
+      "verify": "test -f src/components/PrayerRequestForm.astro && test -f src/components/ConnectForm.astro && test -f src/pages/contact.astro && npm run build",
+      "inputs": [
+        "`src/components/ContactForm.astro` — pattern to follow for new forms",
+        "`src/components/RideRequestForm.astro` — pattern reference and component to reuse",
+        "`src/pages/api/contact.ts` — API endpoint from T01",
+        "`src/pages/api/prayer-request.ts` — API endpoint from T01",
+        "`src/pages/api/ride-request.ts` — API endpoint from T01",
+        "`src/pages/api/connect.ts` — API endpoint from T01",
+        "`src/layouts/BaseLayout.astro` — page layout",
+        "`src/components/Hero.astro` — hero component"
+      ],
+      "expected_output": [
+        "`src/components/PrayerRequestForm.astro` — prayer request form component",
+        "`src/components/ConnectForm.astro` — newcomer connect form component",
+        "`src/pages/contact.astro` — contact page with 4 tabbed forms"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -4036,6 +4177,28 @@
       "verdict": "✅ pass (pre-existing errors only)",
       "duration_ms": 8000,
       "created_at": "2026-04-01T14:00:41.949Z"
+    },
+    {
+      "id": 138,
+      "task_id": "T01",
+      "slice_id": "S06",
+      "milestone_id": "M002",
+      "command": "grep -q 'prerender = false' src/pages/api/contact.ts src/pages/api/prayer-request.ts src/pages/api/ride-request.ts src/pages/api/connect.ts && test -f src/lib/form-helpers.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T14:10:41.936Z"
+    },
+    {
+      "id": 139,
+      "task_id": "T01",
+      "slice_id": "S06",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8600,
+      "created_at": "2026-04-01T14:10:41.936Z"
     }
   ]
 }
