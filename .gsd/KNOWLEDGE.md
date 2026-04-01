@@ -34,6 +34,11 @@
 **Context:** M001 validation after S06 revealed three gaps: no reusable SEO component, no 404 page, no LHCI CI pipeline. These were foundational requirements that slipped through initial planning because they cut across multiple slices.
 **Rule:** After completing all planned slices, validate the milestone's success criteria before marking complete. Expect 1-2 remediation slices for cross-cutting concerns that don't naturally belong to any single slice.
 
+## K008: Wrap CMS fetches in try-catch for static build resilience
+**Context:** During `npm run build`, Sanity GROQ queries fail if the project ID is a placeholder or the API is unreachable. This breaks the entire static build even though hardcoded fallbacks exist.
+**Rule:** Wrap all `getHomePage()` / `getSermons()` / `getEvents()` calls in try-catch (or use `Promise.allSettled`) so the build succeeds with fallback content when Sanity is unavailable. This is especially important for the homepage which aggregates data from multiple content types.
+**Files:** `src/pages/index.astro`
+
 ## K005: Sanity schema organization and query pattern
 **Context:** 12 schema types organized under `sanity/schemas/{objects,documents,singletons}/` with barrel export from `index.ts`. Every document type has a `language` field with `'en' | 'zh'`. Singletons use `{type}-{lang}` IDs (e.g. `siteSettings-en`).
 **Rule:** Use the typed GROQ helpers in `src/lib/sanity.ts` for all content fetching — each accepts a `language` parameter defaulting to `'en'`. When adding new schema types, add them to the barrel export and update the structure builder in `sanity/structure.ts`.

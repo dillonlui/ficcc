@@ -16,6 +16,7 @@ export { page } from './documents/page';
 export { siteSettings } from './singletons/siteSettings';
 export { navigation } from './singletons/navigation';
 export { homePage } from './singletons/homePage';
+export { aboutPage } from './singletons/aboutPage';
 
 import { heroBlock } from './objects/heroBlock';
 import { imageMosaicBlock } from './objects/imageMosaicBlock';
@@ -30,6 +31,7 @@ import { page } from './documents/page';
 import { siteSettings } from './singletons/siteSettings';
 import { navigation } from './singletons/navigation';
 import { homePage } from './singletons/homePage';
+import { aboutPage } from './singletons/aboutPage';
 
 /** All schema types to register with Sanity */
 export const schemaTypes = [
@@ -49,10 +51,11 @@ export const schemaTypes = [
   siteSettings,
   navigation,
   homePage,
+  aboutPage,
 ];
 
 /** Singleton type names — used by structure builder to filter from default list */
-export const singletonTypes = new Set(['siteSettings', 'navigation', 'homePage']);
+export const singletonTypes = new Set(['siteSettings', 'navigation', 'homePage', 'aboutPage']);
 
 /** Singleton document IDs per language */
 export const singletonDocIds = [
@@ -62,4 +65,6 @@ export const singletonDocIds = [
   { id: 'navigation-zh', type: 'navigation', title: 'Navigation (ZH)' },
   { id: 'homePage-en', type: 'homePage', title: 'Home Page (EN)' },
   { id: 'homePage-zh', type: 'homePage', title: 'Home Page (ZH)' },
+  { id: 'aboutPage-en', type: 'aboutPage', title: 'About Page (EN)' },
+  { id: 'aboutPage-zh', type: 'aboutPage', title: 'About Page (ZH)' },
 ];

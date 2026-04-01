@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:18:17.180Z",
+  "exported_at": "2026-04-01T13:26:55.056Z",
   "milestones": [
     {
       "id": "M001",
@@ -434,14 +434,14 @@
       "milestone_id": "M002",
       "id": "S01",
       "title": "Homepage",
-      "status": "pending",
+      "status": "complete",
       "risk": "medium",
       "depends": [],
       "demo": "Homepage with hero, service times, photo mosaic, pillars, featured content, next-steps cards",
       "created_at": "2026-03-31T22:33:41.124Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T13:20:24.287Z",
+      "full_summary_md": "---\nid: S01\nparent: M002\nmilestone: M002\nprovides:\n  - homePage Sanity singleton schema with hero/service-times/mosaic/pillars/next-steps fields\n  - getHomePage() GROQ helper for fetching homepage content by language\n  - urlForImage() helper for resolving Sanity image refs to CDN URLs\n  - ServiceTimes, Pillars, NextSteps reusable Astro components\n  - Composed homepage at index.astro with all six sections\nrequires:\n  []\naffects:\n  - S02\n  - S03\n  - S04\n  - S05\n  - S06\nkey_files:\n  - sanity/schemas/singletons/homePage.ts\n  - sanity/schemas/index.ts\n  - src/lib/sanity.ts\n  - src/components/ServiceTimes.astro\n  - src/components/Pillars.astro\n  - src/components/NextSteps.astro\n  - src/pages/index.astro\n  - public/images/hero-placeholder.svg\nkey_decisions:\n  - urlForImage accepts optional width/format params for responsive image sizing\n  - Wrapped CMS fetch calls in try-catch with Promise.all for graceful fallback when Sanity is unreachable\n  - Used SVG placeholders instead of JPEG since ImageMagick unavailable\npatterns_established:\n  - Homepage section components are pure Astro with scoped CSS using only CSS custom properties — no client:* directives\n  - CMS-editable content with hardcoded fallbacks: fetch from Sanity first, fall back to static content when CMS returns null or is unreachable\n  - homePage singleton pattern: per-language documents with IDs like homePage-en, matching siteSettings pattern\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M002/slices/S01/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M002/slices/S01/tasks/T02-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:20:24.288Z\nblocker_discovered: false\n---\n\n# S01: Homepage\n\n**Full homepage with hero, service times, photo mosaic, pillars, featured content, and next-steps cards — all CMS-editable via Sanity homePage singleton with hardcoded fallbacks for empty CMS state**\n\n## What Happened\n\nTwo tasks delivered the complete homepage. T01 created the homePage Sanity singleton schema following the established siteSettings pattern, registered it in the schema index (exports, singletonTypes, singletonDocIds for EN/ZH), and added TypeScript interfaces plus getHomePage() and urlForImage() helpers to the data layer. T02 built three new section-level Astro components (ServiceTimes, Pillars, NextSteps) — all pure Astro with scoped CSS using only CSS custom properties from global.css, no client:* directives. The full homepage was composed in index.astro with Hero → ServiceTimes → ImageMosaic → Pillars → Featured Content (latest sermon + next event) → NextSteps section order. CMS data is fetched via Promise.all wrapped in try-catch so the build succeeds with hardcoded fallback content when Sanity is unreachable. SVG placeholders were created for development since ImageMagick was unavailable.\n\n## Verification\n\nAll slice verification checks passed: (1) homePage schema file exists, (2) homePage registered in schema index, (3) getHomePage helper present in sanity.ts, (4) urlForImage helper present in sanity.ts, (5) npm run build succeeds — 4 pages built in 7.04s, (6) all three components (ServiceTimes, Pillars, NextSteps) present in index.astro, (7) no client: directives in any new component. Visual verification confirmed all sections render with proper responsive behavior at 375px mobile and 1280px desktop breakpoints.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nSVG placeholders used instead of JPEG since ImageMagick was unavailable. Try-catch added around CMS fetching to handle placeholder Sanity project ID during build.\n\n## Known Limitations\n\nPlaceholder images are SVGs — production will need real photography from the church. Featured content section shows hardcoded fallback since no sermons or events exist in Sanity yet.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/homePage.ts` — New homePage singleton schema with hero, service times, mosaic, pillars, and next-steps fields\n- `sanity/schemas/index.ts` — Registered homePage in schema types, singleton types, and singleton doc IDs\n- `src/lib/sanity.ts` — Added HomePage interface, getHomePage() GROQ helper, urlForImage() helper\n- `src/components/ServiceTimes.astro` — New component rendering service schedule in responsive horizontal/vertical layout\n- `src/components/Pillars.astro` — New component rendering church values in responsive 3-column grid\n- `src/components/NextSteps.astro` — New component rendering CTA cards using Card.astro\n- `src/pages/index.astro` — Composed full homepage with all six sections, CMS data wiring, and hardcoded fallbacks\n- `public/images/hero-placeholder.svg` — SVG placeholder for hero image during development\n",
+      "full_uat_md": "# S01: Homepage — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01T13:20:24.289Z\n\n# S01: Homepage — UAT\n\n**Milestone:** M002\n**Written:** 2026-03-31\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Homepage is a static page built at compile time — npm run build verifies all data wiring and component composition. Visual checks confirm layout at key breakpoints.\n\n## Preconditions\n\n- Repository checked out with all S01 changes\n- `npm install` completed\n- Dev server running (`npm run dev`) OR static build available (`npm run build`)\n\n## Smoke Test\n\nRun `npm run build` — should succeed with 0 errors, producing `/index.html` in dist. Open the built site or dev server at `/` and confirm all six sections render vertically in order.\n\n## Test Cases\n\n### 1. Hero Section Renders\n\n1. Open homepage at `/`\n2. Verify a full-width hero banner is visible at top of page\n3. **Expected:** Hero shows a title (\"Welcome to FICCC\" or CMS-provided), subtitle text, and a CTA button. Background image or placeholder is visible.\n\n### 2. Service Times Section\n\n1. Scroll past the hero section\n2. Locate the service times banner\n3. **Expected:** Warm-toned horizontal banner showing at least one service time entry (e.g. \"Sunday Gathering — 9:45 AM\"). On mobile (375px), entries stack vertically. On desktop (1280px), entries display in a row.\n\n### 3. Photo Mosaic Section\n\n1. Scroll to the image mosaic area below service times\n2. **Expected:** Grid of placeholder images (SVGs) renders in a mosaic layout. At least 4 images visible.\n\n### 4. Pillars Section\n\n1. Scroll to the \"Who We Are\" / pillars section\n2. **Expected:** Three pillar cards visible, each with a title and description. On desktop, displayed in a 3-column grid. On mobile, stacked vertically.\n\n### 5. Featured Content Section\n\n1. Scroll to the featured content area\n2. **Expected:** Section shows cards for latest sermon and next event. With no CMS data, hardcoded fallback cards render with placeholder content.\n\n### 6. Next Steps Section\n\n1. Scroll to the next steps area near the bottom\n2. **Expected:** Grid of CTA cards (e.g. \"Plan a Visit\", \"Watch Sermons\") with links. Each card has a title, body text, and is clickable.\n\n### 7. Full Page Build Verification\n\n1. Run `npm run build`\n2. **Expected:** Build completes with 0 errors. Output includes `/index.html`.\n\n### 8. No Client-Side JavaScript in Section Components\n\n1. Open `src/components/ServiceTimes.astro`, `Pillars.astro`, `NextSteps.astro`\n2. Search for `client:` directives\n3. **Expected:** No `client:` directives found in any of these three files. All rendering is server-side.\n\n## Edge Cases\n\n### Empty CMS State\n\n1. Ensure Sanity has no homePage document published (or use a placeholder project ID)\n2. Run `npm run build`\n3. **Expected:** Build succeeds. Homepage renders with all sections using hardcoded fallback content — no blank sections or build errors.\n\n### Sanity Unreachable\n\n1. Disconnect network or use an invalid Sanity project ID\n2. Run `npm run build`\n3. **Expected:** Build succeeds. The try-catch around CMS fetches catches the error and all sections render with fallback content.\n\n## Failure Signals\n\n- `npm run build` fails with errors referencing Sanity queries or missing data\n- Any homepage section renders blank (no content and no fallback)\n- `client:` directives found in new section components\n- Responsive layout breaks — sections overlap or overflow at 375px or 1280px\n\n## Not Proven By This UAT\n\n- Real CMS content rendering (requires published Sanity documents)\n- Image optimization / CDN URL generation with real Sanity images\n- Chinese language variant of the homepage\n- Performance metrics (Lighthouse scores)\n\n## Notes for Tester\n\n- Placeholder images are intentionally simple SVGs — they'll be replaced with real church photography\n- The featured content section will show richer data once sermon and event documents exist in Sanity\n- All styles use CSS custom properties from global.css — check `/styleguide` for the design token reference\n",
       "goal": "Homepage with hero, service times, photo mosaic, pillars, featured content, and next-steps cards — all CMS-editable via Sanity homePage singleton, with hardcoded fallbacks for empty CMS state.",
       "success_criteria": "## Must-Haves\n\n- `homePage` Sanity singleton schema with hero, service times, pillars, and next-steps fields\n- `getHomePage()` GROQ helper and `HomePage` TypeScript interface in `src/lib/sanity.ts`\n- `urlForImage()` helper for resolving Sanity image references to CDN URLs\n- ServiceTimes, Pillars, and NextSteps Astro components using only CSS custom properties\n- Full homepage composition in `index.astro` using Hero, ServiceTimes, ImageMosaic, Pillars, Card, NextSteps\n- Graceful fallback content when CMS is empty — page renders without Sanity data\n- No client-side JS — pure Astro components with scoped CSS only\n- `npm run build` succeeds with and without Sanity connection\n\n## Proof Level\n\n- This slice proves: integration\n- Real runtime required: yes (dev server for visual check)\n- Human/UAT required: no\n\n## Verification\n\n- `npm run build` — static build succeeds without errors\n- `test -f sanity/schemas/singletons/homePage.ts` — schema file exists\n- `grep -q \"getHomePage\" src/lib/sanity.ts` — GROQ helper registered\n- `grep -q \"ServiceTimes\" src/pages/index.astro && grep -q \"Pillars\" src/pages/index.astro && grep -q \"NextSteps\" src/pages/index.astro` — all sections composed\n- `! grep -q 'client:' src/components/ServiceTimes.astro && ! grep -q 'client:' src/components/Pillars.astro && ! grep -q 'client:' src/components/NextSteps.astro` — no client-side JS directives\n- Visual verification at 3 breakpoints (375px, 768px, 1280px) via dev server\n\n## Integration Closure\n\n- Upstream surfaces consumed: `src/components/Hero.astro`, `src/components/Card.astro`, `src/components/ImageMosaic.astro`, `src/lib/sanity.ts` GROQ helpers, `src/layouts/BaseLayout.astro`, `src/styles/global.css` design tokens\n- New wiring introduced in this slice: `homePage` Sanity singleton → `getHomePage()` → `index.astro` page composition with 3 new section components\n- What remains before the milestone is truly usable end-to-end: all other English Ministry pages (About, Sundays, Sermons, Community, Events/Give/Contact, Resources)",
       "proof_level": "integration",
@@ -464,11 +464,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Identity pages communicating FICCC's depth",
-      "success_criteria": "Bespoke Who We Are layout with grid-breaking moments. Beliefs accordion (9 statements). Staff page with Pastor Zhida bio. Vision statement. EFCA affiliation.",
-      "proof_level": "Content accuracy verified against em.ficcc.org",
-      "integration_closure": "Person documents from Sanity",
-      "observability_impact": "N/A",
+      "goal": "Deliver three identity pages — About (Who We Are), Beliefs, and Staff — all CMS-editable via an aboutPage Sanity singleton with hardcoded fallbacks, following established S01 patterns (pure Astro, scoped CSS, try-catch CMS fetches).",
+      "success_criteria": "- `npm run build` succeeds with all three pages rendered\n- `/about` route serves a Who We Are narrative layout\n- `/about/beliefs` route serves a Beliefs accordion with rich-text content\n- `/about/staff` route serves a responsive staff grid (1 col mobile → 3+ col desktop)\n- Accordion component accepts HTML content via `set:html` without breaking existing plain-text usage\n- No `client:*` directives on any new component\n- All CMS fetches wrapped in try-catch with realistic hardcoded fallbacks",
+      "proof_level": "This slice proves: integration (CMS data → rendered pages). Real runtime required: yes (dev server for visual check). Human/UAT required: no.",
+      "integration_closure": "Upstream surfaces consumed: `src/lib/sanity.ts` (client, urlForImage, type patterns), `src/layouts/BaseLayout.astro`, `src/components/Accordion.astro`, `sanity/schemas/index.ts`, `sanity/structure.ts`. New wiring: aboutPage singleton + 3 GROQ helpers + 3 Astro pages + StaffCard component. What remains: S03-S07 pages for remaining English Ministry content.",
+      "observability_impact": "None — static pages with CMS fallbacks. Build failure is the diagnostic signal.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -1891,6 +1891,133 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S02",
+      "id": "T01",
+      "title": "Created aboutPage singleton schema with whoWeAre, beliefs, staffOrder fields plus GROQ helpers and portableTextToHtml utility",
+      "status": "complete",
+      "one_liner": "Created aboutPage singleton schema with whoWeAre, beliefs, staffOrder fields plus GROQ helpers and portableTextToHtml utility",
+      "narrative": "Created the aboutPage Sanity singleton schema following established patterns, registered it in the schema index with EN/ZH singleton doc IDs, added AboutPage/Person interfaces and getAboutPage()/getStaff() GROQ helpers, and implemented a portableTextToHtml() server-side Portable Text renderer. The desk structure required no manual edits since it already maps singletonDocIds dynamically.",
+      "verification_result": "Ran full verification: schema file exists, all registrations confirmed via grep, all helpers present in sanity.ts, npm run build succeeds with zero errors.",
+      "duration": "",
+      "completed_at": "2026-04-01T13:26:55.040Z",
+      "blocker_discovered": false,
+      "deviations": "No edits to structure.ts needed — desk structure already iterates singletonDocIds dynamically.",
+      "known_issues": "None.",
+      "key_files": [
+        "sanity/schemas/singletons/aboutPage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts"
+      ],
+      "key_decisions": [
+        "Desk structure uses singletonDocIds dynamically so no manual structure.ts edits needed",
+        "portableTextToHtml handles block/normal with strong/em/link marks and escapes HTML"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S02\nmilestone: M002\nkey_files:\n  - sanity/schemas/singletons/aboutPage.ts\n  - sanity/schemas/index.ts\n  - src/lib/sanity.ts\nkey_decisions:\n  - Desk structure uses singletonDocIds dynamically so no manual structure.ts edits needed\n  - portableTextToHtml handles block/normal with strong/em/link marks and escapes HTML\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:26:55.041Z\nblocker_discovered: false\n---\n\n# T01: Created aboutPage singleton schema with whoWeAre, beliefs, staffOrder fields plus GROQ helpers and portableTextToHtml utility\n\n**Created aboutPage singleton schema with whoWeAre, beliefs, staffOrder fields plus GROQ helpers and portableTextToHtml utility**\n\n## What Happened\n\nCreated the aboutPage Sanity singleton schema following established patterns, registered it in the schema index with EN/ZH singleton doc IDs, added AboutPage/Person interfaces and getAboutPage()/getStaff() GROQ helpers, and implemented a portableTextToHtml() server-side Portable Text renderer. The desk structure required no manual edits since it already maps singletonDocIds dynamically.\n\n## Verification\n\nRan full verification: schema file exists, all registrations confirmed via grep, all helpers present in sanity.ts, npm run build succeeds with zero errors.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f sanity/schemas/singletons/aboutPage.ts && grep -q aboutPage sanity/schemas/index.ts && grep -q getAboutPage src/lib/sanity.ts && grep -q getStaff src/lib/sanity.ts && grep -q portableTextToHtml src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n| 2 | `npm run build` | 0 | ✅ pass | 7500ms |\n\n\n## Deviations\n\nNo edits to structure.ts needed — desk structure already iterates singletonDocIds dynamically.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/aboutPage.ts`\n- `sanity/schemas/index.ts`\n- `src/lib/sanity.ts`\n",
+      "description": "Create the `aboutPage` Sanity singleton schema with structured fields for Who We Are narrative (heading, body blocks, image), beliefs array (title + rich-text content per item), and staff ordering. Register it in the schema index, singleton types, singleton doc IDs, and desk structure. Add TypeScript interfaces, GROQ helpers (`getAboutPage()`, `getStaff()`), and a `portableTextToHtml()` utility to `src/lib/sanity.ts`.\n\n## Steps\n\n1. Create `sanity/schemas/singletons/aboutPage.ts` with fields:\n   - `whoWeAreHeading` (string, default 'Who We Are')\n   - `whoWeAreBody` (array of blocks — Portable Text)\n   - `whoWeAreImage` (image with hotspot)\n   - `beliefs` (array of objects: `title` string + `content` array of blocks)\n   - `staffOrder` (array of references to person documents)\n   - `language` field (string, 'en'|'zh', required)\n2. Register in `sanity/schemas/index.ts`: add export, add to `schemaTypes`, `singletonTypes`, `singletonDocIds` (EN + ZH entries with pattern `aboutPage-en`, `aboutPage-zh`)\n3. Add aboutPage to desk structure in `sanity/structure.ts` — add entries to the Settings & Navigation list\n4. In `src/lib/sanity.ts`:\n   - Add `AboutPage` interface matching the schema shape\n   - Add `Person` interface (name, role, bio blocks, photo, language)\n   - Add `getAboutPage(language)` GROQ helper fetching the singleton\n   - Add `getStaff(language)` GROQ helper fetching person documents ordered by name\n   - Add `portableTextToHtml(blocks)` utility — converts simple Portable Text blocks (paragraphs, bold, italic, links) to HTML strings server-side. ~20-30 lines, handles `block` type with `normal` style, `strong`/`em` marks, and `link` annotations.\n5. Verify `npm run build` succeeds\n\n## Must-Haves\n\n- [ ] aboutPage singleton schema file exists with all fields\n- [ ] Schema registered in index.ts exports, schemaTypes, singletonTypes, singletonDocIds\n- [ ] Desk structure includes aboutPage entries\n- [ ] getAboutPage() and getStaff() helpers exist in sanity.ts\n- [ ] portableTextToHtml() converts blocks to HTML strings\n- [ ] npm run build succeeds",
+      "estimate": "45m",
+      "files": [
+        "sanity/schemas/singletons/aboutPage.ts",
+        "sanity/schemas/index.ts",
+        "sanity/structure.ts",
+        "src/lib/sanity.ts"
+      ],
+      "verify": "test -f sanity/schemas/singletons/aboutPage.ts && grep -q 'aboutPage' sanity/schemas/index.ts && grep -q 'getAboutPage' src/lib/sanity.ts && grep -q 'getStaff' src/lib/sanity.ts && grep -q 'portableTextToHtml' src/lib/sanity.ts && npm run build",
+      "inputs": [
+        "`sanity/schemas/index.ts` — existing schema registration pattern to follow",
+        "`sanity/structure.ts` — existing desk structure to extend",
+        "`src/lib/sanity.ts` — existing GROQ helpers and type patterns to follow",
+        "`sanity/schemas/documents/person.ts` — person schema shape for interface and query design",
+        "`sanity/schemas/objects/accordionBlock.ts` — accordion item structure for beliefs field design"
+      ],
+      "expected_output": [
+        "`sanity/schemas/singletons/aboutPage.ts` — new aboutPage singleton schema",
+        "`sanity/schemas/index.ts` — updated with aboutPage registration",
+        "`sanity/structure.ts` — updated with aboutPage desk entries",
+        "`src/lib/sanity.ts` — updated with AboutPage/Person interfaces, getAboutPage(), getStaff(), portableTextToHtml()"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S02",
+      "id": "T02",
+      "title": "Build About (Who We Are) and Beliefs pages with Accordion HTML support",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create the `/about` and `/about/beliefs` pages. Modify the Accordion component to accept HTML content via `set:html`. Both pages fetch from the `aboutPage` singleton via `getAboutPage()` with try-catch and hardcoded fallbacks.\n\n## Steps\n\n1. Modify `src/components/Accordion.astro`:\n   - Change the content rendering from `<p>{item.content}</p>` to `<div class=\"accordion__content-inner\"><Fragment set:html={item.content} /></div>`\n   - This is non-breaking: plain text strings render identically, HTML strings render as HTML\n   - Update the `.accordion__content p` styles to `.accordion__content` styles that work for both plain text and rich HTML\n2. Create `src/pages/about/index.astro` — Who We Are page:\n   - Import BaseLayout, use `getAboutPage()` wrapped in try-catch\n   - Hardcoded fallback with real FICCC content (church history/mission narrative)\n   - Render heading, body text (via `portableTextToHtml` or fallback), optional image\n   - Use `urlForImage()` for any CMS images\n   - Pure Astro with scoped CSS, responsive layout\n3. Create `src/pages/about/beliefs.astro` — Beliefs page:\n   - Import BaseLayout, Accordion, use `getAboutPage()` wrapped in try-catch\n   - Hardcoded fallback beliefs array with real doctrinal statements (e.g., Scripture, God, Salvation, Church — use common evangelical statement of faith content)\n   - Convert each belief's Portable Text content to HTML via `portableTextToHtml()`, or use fallback HTML strings\n   - Pass items to Accordion component\n   - Page intro text above the accordion\n4. Verify both pages build and render\n\n## Must-Haves\n\n- [ ] Accordion accepts HTML content without breaking existing usage\n- [ ] /about page renders Who We Are narrative with heading, body, optional image\n- [ ] /about/beliefs page renders beliefs accordion with rich-text content\n- [ ] Both pages use try-catch CMS fetch with realistic hardcoded fallbacks\n- [ ] No client:* directives\n- [ ] npm run build succeeds",
+      "estimate": "45m",
+      "files": [
+        "src/components/Accordion.astro",
+        "src/pages/about/index.astro",
+        "src/pages/about/beliefs.astro"
+      ],
+      "verify": "test -f src/pages/about/index.astro && test -f src/pages/about/beliefs.astro && grep -q 'set:html' src/components/Accordion.astro && ! grep -rq 'client:' src/pages/about/index.astro src/pages/about/beliefs.astro && npm run build",
+      "inputs": [
+        "`src/components/Accordion.astro` — existing accordion to modify for HTML support",
+        "`src/lib/sanity.ts` — getAboutPage(), portableTextToHtml(), urlForImage() from T01",
+        "`src/layouts/BaseLayout.astro` — page layout shell",
+        "`src/pages/index.astro` — reference for CMS fetch + fallback pattern"
+      ],
+      "expected_output": [
+        "`src/components/Accordion.astro` — modified to support HTML content via set:html",
+        "`src/pages/about/index.astro` — new Who We Are page",
+        "`src/pages/about/beliefs.astro` — new Beliefs page with accordion"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S02",
+      "id": "T03",
+      "title": "Build Staff grid page with StaffCard component",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create the `/about/staff` page with a responsive staff grid and a new StaffCard component. Fetches person documents via `getStaff()` with try-catch and hardcoded fallbacks.\n\n## Steps\n\n1. Create `src/components/StaffCard.astro`:\n   - Props: name (string), role (string), photoUrl (string, optional)\n   - Render a card with photo (1:1 aspect ratio, `object-fit: cover`), name, role\n   - Use placeholder SVG or CSS gradient when no photo\n   - Pure Astro with scoped CSS using CSS custom properties\n   - Responsive: works as grid child\n2. Create `src/pages/about/staff.astro`:\n   - Import BaseLayout, StaffCard, use `getStaff()` wrapped in try-catch\n   - Hardcoded fallback with 3-4 realistic staff entries (Pastor, Associate Pastor, etc.)\n   - Use `urlForImage()` for person photos from CMS\n   - CSS Grid layout: 1 col on mobile (< 640px), 2 col tablet, 3 col desktop\n   - Page heading and optional intro text\n   - No client:* directives\n3. Verify the page builds and the grid is responsive\n\n## Must-Haves\n\n- [ ] StaffCard component renders photo, name, role with 1:1 aspect ratio photo container\n- [ ] /about/staff page renders responsive grid of staff cards\n- [ ] Try-catch CMS fetch with realistic hardcoded fallbacks\n- [ ] No client:* directives\n- [ ] npm run build succeeds",
+      "estimate": "30m",
+      "files": [
+        "src/components/StaffCard.astro",
+        "src/pages/about/staff.astro"
+      ],
+      "verify": "test -f src/components/StaffCard.astro && test -f src/pages/about/staff.astro && ! grep -rq 'client:' src/components/StaffCard.astro src/pages/about/staff.astro && npm run build",
+      "inputs": [
+        "`src/lib/sanity.ts` — getStaff(), urlForImage(), Person interface from T01",
+        "`src/layouts/BaseLayout.astro` — page layout shell",
+        "`src/pages/index.astro` — reference for CMS fetch + fallback pattern"
+      ],
+      "expected_output": [
+        "`src/components/StaffCard.astro` — new staff card component",
+        "`src/pages/about/staff.astro` — new staff grid page"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -3208,6 +3335,28 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T13:18:17.164Z"
+    },
+    {
+      "id": 104,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M002",
+      "command": "test -f sanity/schemas/singletons/aboutPage.ts && grep -q aboutPage sanity/schemas/index.ts && grep -q getAboutPage src/lib/sanity.ts && grep -q getStaff src/lib/sanity.ts && grep -q portableTextToHtml src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:26:55.040Z"
+    },
+    {
+      "id": 105,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7500,
+      "created_at": "2026-04-01T13:26:55.040Z"
     }
   ]
 }

@@ -147,6 +147,33 @@ export interface HomePage {
   language: 'en' | 'zh';
 }
 
+export interface BeliefItem {
+  _key: string;
+  title: string;
+  content?: PortableTextBlock[];
+}
+
+export interface AboutPage {
+  _id: string;
+  _type: 'aboutPage';
+  whoWeAreHeading?: string;
+  whoWeAreBody?: PortableTextBlock[];
+  whoWeAreImage?: SanityImage;
+  beliefs?: BeliefItem[];
+  staffOrder?: { _ref: string }[];
+  language: 'en' | 'zh';
+}
+
+export interface Person {
+  _id: string;
+  _type: 'person';
+  name: string;
+  role?: string;
+  bio?: PortableTextBlock[];
+  photo?: SanityImage;
+  language: 'en' | 'zh';
+}
+
 // ---------------------------------------------------------------------------
 // GROQ query helpers
 // ---------------------------------------------------------------------------
@@ -235,6 +262,30 @@ export async function getHomePage(
   );
 }
 
+/**
+ * Fetch the singleton about-page document for a language.
+ */
+export async function getAboutPage(
+  language: Language = 'en',
+): Promise<AboutPage | null> {
+  return client.fetch<AboutPage | null>(
+    `*[_type == "aboutPage" && language == $language][0]`,
+    { language },
+  );
+}
+
+/**
+ * Fetch person documents for a language, ordered by name.
+ */
+export async function getStaff(
+  language: Language = 'en',
+): Promise<Person[]> {
+  return client.fetch<Person[]>(
+    `*[_type == "person" && language == $language] | order(name asc)`,
+    { language },
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Image helpers
 // ---------------------------------------------------------------------------
@@ -274,6 +325,69 @@ export function urlForImage(
   if (qs) url += `?${qs}`;
 
   return url;
+}
+
+// ---------------------------------------------------------------------------
+// Portable Text → HTML (lightweight server-side renderer)
+// ---------------------------------------------------------------------------
+
+/**
+ * Convert an array of Portable Text blocks to an HTML string.
+ *
+ * Handles `block` type with `normal` style (paragraphs), `strong`/`em` marks,
+ * and `link` annotations. Other block types are silently skipped.
+ */
+export function portableTextToHtml(blocks: PortableTextBlock[] | undefined | null): string {
+  if (!blocks?.length) return '';
+
+  return blocks
+    .filter((b) => b._type === 'block')
+    .map((block) => {
+      const children = (block.children as Array<{
+        _type: string;
+        text: string;
+        marks?: string[];
+      }>) || [];
+
+      const markDefs = (block.markDefs as Array<{
+        _key: string;
+        _type: string;
+        href?: string;
+      }>) || [];
+
+      const inner = children
+        .map((child) => {
+          let text = escapeHtml(child.text || '');
+          if (!child.marks?.length) return text;
+
+          for (const mark of child.marks) {
+            if (mark === 'strong') {
+              text = `<strong>${text}</strong>`;
+            } else if (mark === 'em') {
+              text = `<em>${text}</em>`;
+            } else {
+              // Check markDefs for link annotations
+              const def = markDefs.find((d) => d._key === mark);
+              if (def?._type === 'link' && def.href) {
+                text = `<a href="${escapeHtml(def.href)}">${text}</a>`;
+              }
+            }
+          }
+          return text;
+        })
+        .join('');
+
+      return `<p>${inner}</p>`;
+    })
+    .join('\n');
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 // ---------------------------------------------------------------------------
