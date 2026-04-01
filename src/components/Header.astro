@@ -1,0 +1,224 @@
+---
+/**
+ * Site header with responsive nav and mobile hamburger.
+ * Uses CSS custom properties only — no hardcoded colors/sizes.
+ */
+const navLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Ministries', href: '/ministries' },
+  { label: 'Sermons', href: '/sermons' },
+  { label: 'Contact', href: '/contact' },
+];
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="FICCC — Home">
+      <span class="logo-text">FICCC</span>
+    </a>
+
+    <button
+      class="hamburger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+      aria-label="Toggle navigation menu"
+    >
+      <span class="hamburger-bar" aria-hidden="true"></span>
+      <span class="hamburger-bar" aria-hidden="true"></span>
+      <span class="hamburger-bar" aria-hidden="true"></span>
+    </button>
+
+    <nav id="nav-menu" class="nav" aria-label="Main navigation">
+      <ul class="nav-list" role="list">
+        {navLinks.map((link) => (
+          <li><a href={link.href} class="nav-link">{link.label}</a></li>
+        ))}
+      </ul>
+      <button class="lang-toggle" type="button" aria-label="Switch language">
+        EN / 中文
+      </button>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-stone);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-4) var(--space-6);
+  }
+
+  /* Logo */
+  .logo {
+    text-decoration: none;
+    color: var(--color-ink);
+  }
+  .logo-text {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  /* Desktop nav */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+  .nav-list {
+    display: flex;
+    list-style: none;
+    gap: var(--space-6);
+  }
+  .nav-link {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-body);
+    text-decoration: none;
+    padding: var(--space-1) 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color var(--transition), color var(--transition);
+  }
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    color: var(--color-terracotta);
+    border-bottom-color: var(--color-terracotta);
+  }
+  .nav-link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Language toggle */
+  .lang-toggle {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-terracotta);
+    background: none;
+    border: 1px solid var(--color-terracotta);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-3);
+    cursor: pointer;
+    transition: background-color var(--transition), color var(--transition);
+  }
+  .lang-toggle:hover,
+  .lang-toggle:focus-visible {
+    background-color: var(--color-terracotta);
+    color: var(--color-bg);
+  }
+  .lang-toggle:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Hamburger — hidden on desktop */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    z-index: 110;
+  }
+  .hamburger-bar {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-ink);
+    border-radius: 1px;
+    transition: transform var(--transition), opacity var(--transition);
+  }
+  .hamburger:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Hamburger open state */
+  .hamburger[aria-expanded='true'] .hamburger-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .hamburger[aria-expanded='true'] .hamburger-bar:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger[aria-expanded='true'] .hamburger-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Mobile: ≤767px */
+  @media (max-width: 767px) {
+    .hamburger {
+      display: flex;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(75vw, 20rem);
+      flex-direction: column;
+      align-items: flex-start;
+      padding: var(--space-16) var(--space-6) var(--space-8);
+      background-color: var(--color-bg);
+      border-left: 1px solid var(--color-stone);
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+      transform: translateX(100%);
+      transition: transform var(--transition);
+      z-index: 105;
+    }
+    .nav.is-open {
+      transform: translateX(0);
+    }
+
+    .nav-list {
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .nav-link {
+      font-size: var(--text-base);
+    }
+  }
+</style>
+
+<script>
+  const btn = document.querySelector('.hamburger') as HTMLButtonElement;
+  const nav = document.querySelector('#nav-menu') as HTMLElement;
+
+  if (btn && nav) {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      nav.classList.toggle('is-open', !expanded);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+        btn.setAttribute('aria-expanded', 'false');
+        nav.classList.remove('is-open');
+        btn.focus();
+      }
+    });
+  }
+</script>

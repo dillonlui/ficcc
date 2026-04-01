@@ -6,8 +6,6 @@
 /* --- Font imports (self-hosted via fontsource) --- */
 @import '@fontsource-variable/lora';
 @import '@fontsource-variable/inter';
-@import '@fontsource/noto-serif-sc/400.css';
-@import '@fontsource/noto-serif-sc/700.css';
 
 /* ==========================================================================
    CSS Custom Properties
@@ -61,11 +59,16 @@
   --text-zh-2xl:   2.125rem;  /* 34px */
   --text-zh-3xl:   2.625rem;  /* 42px */
 
+  /* --- Layout --- */
+  --max-width:  72rem;
+
   /* --- Misc --- */
   --radius-sm:  4px;
   --radius-md:  8px;
   --radius-lg: 16px;
   --transition: 200ms ease;
+  --color-focus: var(--color-terracotta);
+  --color-bg-dark: #1A1A2E;       /* deep ink — used for footer bg */
 }
 
 /* ==========================================================================

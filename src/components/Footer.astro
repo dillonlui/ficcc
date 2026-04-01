@@ -1,0 +1,134 @@
+---
+/**
+ * Site footer — church info, nav links, copyright.
+ * Uses CSS custom properties only.
+ */
+const currentYear = new Date().getFullYear();
+
+const footerNav = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Ministries', href: '/ministries' },
+  { label: 'Sermons', href: '/sermons' },
+  { label: 'Contact', href: '/contact' },
+];
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <!-- Church identity -->
+    <div class="footer-col footer-identity">
+      <p class="footer-name-en">First Ithaca Chinese Christian Church</p>
+      <p class="footer-name-zh" lang="zh">伊的家華人基督教會</p>
+      <address class="footer-address">
+        309 College Ave<br />
+        Ithaca, NY 14850
+      </address>
+    </div>
+
+    <!-- Service times -->
+    <div class="footer-col footer-services">
+      <h3 class="footer-heading">Service Times</h3>
+      <ul class="footer-list" role="list">
+        <li>Sunday Worship: 10:00 AM</li>
+        <li>Sunday School: 11:30 AM</li>
+        <li>Friday Fellowship: 7:30 PM</li>
+      </ul>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="footer-col footer-nav" aria-label="Footer navigation">
+      <h3 class="footer-heading">Links</h3>
+      <ul class="footer-list" role="list">
+        {footerNav.map((link) => (
+          <li><a href={link.href} class="footer-link">{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; {currentYear} First Ithaca Chinese Christian Church. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--color-bg-dark);
+    color: var(--color-bg);
+    margin-top: auto;
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-8);
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-12) var(--space-6) var(--space-8);
+  }
+
+  .footer-name-en {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-bg);
+    margin-block-end: var(--space-1);
+  }
+  .footer-name-zh {
+    font-family: var(--font-cjk);
+    font-size: var(--text-zh-base);
+    color: var(--color-stone);
+    margin-block-end: var(--space-4);
+  }
+  .footer-address {
+    font-style: normal;
+    font-size: var(--text-sm);
+    color: var(--color-stone);
+    line-height: var(--leading-relaxed);
+  }
+
+  .footer-heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-bg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-block-end: var(--space-4);
+  }
+
+  .footer-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-stone);
+  }
+
+  .footer-link {
+    color: var(--color-stone);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .footer-link:hover,
+  .footer-link:focus-visible {
+    color: var(--color-terracotta);
+  }
+  .footer-link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-6) var(--space-6);
+    font-size: var(--text-xs);
+    color: var(--color-stone);
+    text-align: center;
+  }
+</style>

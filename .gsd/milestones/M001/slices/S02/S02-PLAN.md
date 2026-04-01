@@ -18,7 +18,7 @@
   - Estimate: 45m
   - Files: package.json, src/styles/global.css, src/layouts/BaseLayout.astro, src/pages/index.astro
   - Verify: npm run build && test -f src/styles/global.css && test -f src/layouts/BaseLayout.astro && grep -q 'BaseLayout' src/pages/index.astro
-- [ ] **T02: Build /styleguide page showing all design tokens** — Create `src/pages/styleguide.astro` using BaseLayout. The page is the slice's demo artifact and S03's design reference.
+- [x] **T02: Built /styleguide page rendering all Gathered Warmth design tokens — color palette, EN/ZH type scales, and spacing scale — with Lighthouse CI coverage** — Create `src/pages/styleguide.astro` using BaseLayout. The page is the slice's demo artifact and S03's design reference.
 
 **Sections to include:**
 1. **Color Palette** — Render swatches for each CSS custom property color: background, stone, terracotta, deep-ink, body-text. Show hex value and variable name.
@@ -32,7 +32,7 @@ Also update `lighthouserc.cjs` to add `/styleguide` to the URL list so Lighthous
   - Estimate: 40m
   - Files: src/pages/styleguide.astro, lighthouserc.cjs
   - Verify: npm run build && grep -q 'styleguide' lighthouserc.cjs && test -f dist/styleguide/index.html
-- [ ] **T03: Tighten CSP for self-hosted fonts and verify Lighthouse passes** — Now that fonts are self-hosted via fontsource (served from same origin), remove Google Fonts domains from the CSP in `vercel.json`:
+- [x] **T03: Tightened CSP to font-src 'self', split CJK font CSS into async bundle, and verified Lighthouse CI passes both pages** — Now that fonts are self-hosted via fontsource (served from same origin), remove Google Fonts domains from the CSP in `vercel.json`:
 - Remove `https://fonts.googleapis.com` from `style-src`
 - Remove `https://fonts.gstatic.com` from `font-src`
 

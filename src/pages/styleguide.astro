@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/* Design-token definitions for rendering in the page */
+const colors = [
+  { name: '--color-bg',         hex: '#FAF8F5', label: 'Background' },
+  { name: '--color-stone',      hex: '#E8E0D8', label: 'Stone' },
+  { name: '--color-terracotta', hex: '#C4745A', label: 'Terracotta' },
+  { name: '--color-ink',        hex: '#1A1A2E', label: 'Deep Ink' },
+  { name: '--color-body',       hex: '#2D2D2D', label: 'Body Text' },
+];
+
+const enTypeScale = [
+  { tag: 'h1', size: 'var(--text-4xl)',  sizePx: '48px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading One' },
+  { tag: 'h2', size: 'var(--text-3xl)',  sizePx: '40px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Two' },
+  { tag: 'h3', size: 'var(--text-2xl)',  sizePx: '32px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Three' },
+  { tag: 'h4', size: 'var(--text-xl)',   sizePx: '24px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Four' },
+  { tag: 'p',  size: 'var(--text-base)', sizePx: '16px', lh: 'var(--leading-normal)', font: 'var(--font-body)',    text: 'Body text in Inter — The quick brown fox jumps over the lazy dog. Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+];
+
+const zhTypeScale = [
+  { tag: 'h1', size: 'var(--text-zh-3xl)', sizePx: '42px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
+  { tag: 'h2', size: 'var(--text-zh-2xl)', sizePx: '34px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
+  { tag: 'h3', size: 'var(--text-zh-xl)',  sizePx: '26px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
+  { tag: 'h4', size: 'var(--text-zh-lg)',  sizePx: '22px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
+  { tag: 'p',  size: 'var(--text-zh-base)', sizePx: '18px', lh: 'var(--leading-cjk)', font: 'var(--font-cjk)', text: '我們是一個以華人為主的基督教社區，位於紐約州伊薩卡市。我們歡迎來自不同背景的人，一起敬拜、學習和成長。無論你是學生、學者還是社區居民，這裡都是你的家。' },
+];
+
+const spacingTokens = [
+  { name: '--space-1',  value: '4px' },
+  { name: '--space-2',  value: '8px' },
+  { name: '--space-3',  value: '12px' },
+  { name: '--space-4',  value: '16px' },
+  { name: '--space-6',  value: '24px' },
+  { name: '--space-8',  value: '32px' },
+  { name: '--space-12', value: '48px' },
+  { name: '--space-16', value: '64px' },
+  { name: '--space-24', value: '96px' },
+  { name: '--space-32', value: '128px' },
+];
+---
+
+<BaseLayout title="Styleguide — FICCC Design Tokens">
+  <main style={`max-width: 72rem; margin-inline: auto; padding: var(--space-8) var(--space-6);`}>
+    <header style={`margin-block-end: var(--space-12);`}>
+      <h1 style={`font-size: var(--text-4xl); margin-block-end: var(--space-4);`}>Design Tokens</h1>
+      <p style={`font-size: var(--text-lg); color: var(--color-body); max-width: 48rem;`}>
+        Living reference for the Gathered Warmth design system. Every value on this page comes from CSS custom properties defined in <code>global.css</code>.
+      </p>
+    </header>
+
+    <!-- ================================================================
+         COLOR PALETTE
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Color Palette</h2>
+      <div style={`display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: var(--space-6);`}>
+        {colors.map((c) => (
+          <figure style={`display: flex; flex-direction: column; gap: var(--space-2);`}>
+            <div
+              style={`width: 100%; aspect-ratio: 1; border-radius: var(--radius-md); background-color: var(${c.name}); border: 1px solid var(--color-stone);`}
+              role="img"
+              aria-label={`${c.label} color swatch: ${c.hex}`}
+            />
+            <figcaption>
+              <strong style={`display: block; font-size: var(--text-sm);`}>{c.label}</strong>
+              <code style={`font-size: var(--text-xs); color: var(--color-body);`}>{c.name}</code>
+              <span style={`display: block; font-size: var(--text-xs); color: var(--color-body);`}>{c.hex}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- ================================================================
+         TYPOGRAPHY SCALE (EN)
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Typography Scale — English</h2>
+      <dl style={`display: flex; flex-direction: column; gap: var(--space-8);`}>
+        {enTypeScale.map((item) => (
+          <div style={`padding-block-end: var(--space-6); border-bottom: 1px solid var(--color-stone);`}>
+            <dt style={`font-size: var(--text-xs); font-family: var(--font-body); color: var(--color-terracotta); margin-block-end: var(--space-2); text-transform: uppercase; letter-spacing: 0.05em;`}>
+              &lt;{item.tag}&gt; · {item.sizePx} / {item.lh} · {item.font}
+            </dt>
+            <dd>
+              {item.tag === 'h1' && <h1 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h1>}
+              {item.tag === 'h2' && <h2 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h2>}
+              {item.tag === 'h3' && <h3 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h3>}
+              {item.tag === 'h4' && <h4 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h4>}
+              {item.tag === 'p'  && <p  style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; max-width: 48rem;`}>{item.text}</p>}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <!-- ================================================================
+         TYPOGRAPHY SCALE (ZH)
+         ================================================================ -->
+    <section lang="zh" style={`margin-block-end: var(--space-16);`}>
+      <h2 lang="en" style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Typography Scale — 中文</h2>
+      <dl style={`display: flex; flex-direction: column; gap: var(--space-8);`}>
+        {zhTypeScale.map((item) => (
+          <div style={`padding-block-end: var(--space-6); border-bottom: 1px solid var(--color-stone);`}>
+            <dt style={`font-size: var(--text-xs); font-family: var(--font-body); color: var(--color-terracotta); margin-block-end: var(--space-2); text-transform: uppercase; letter-spacing: 0.05em;`}>
+              &lt;{item.tag}&gt; · {item.sizePx} / {item.lh} · {item.font}
+            </dt>
+            <dd>
+              {item.tag === 'h1' && <h1 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h1>}
+              {item.tag === 'h2' && <h2 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h2>}
+              {item.tag === 'h3' && <h3 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h3>}
+              {item.tag === 'h4' && <h4 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h4>}
+              {item.tag === 'p'  && <p  style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; max-width: 48rem;`}>{item.text}</p>}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <!-- ================================================================
+         SPACING SCALE
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Spacing Scale</h2>
+      <div style={`display: flex; flex-direction: column; gap: var(--space-4);`}>
+        {spacingTokens.map((token) => (
+          <div style={`display: flex; align-items: center; gap: var(--space-4);`}>
+            <code style={`font-size: var(--text-xs); width: 8rem; flex-shrink: 0; text-align: right; color: var(--color-body);`}>{token.name}</code>
+            <div
+              style={`height: var(--space-6); width: var(${token.name}); background-color: var(--color-terracotta); border-radius: var(--radius-sm);`}
+              role="img"
+              aria-label={`Spacing token ${token.name}: ${token.value}`}
+            />
+            <span style={`font-size: var(--text-xs); color: var(--color-body);`}>{token.value}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ================================================================
+         HEADER COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Header</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        The site header is rendered above via <code>BaseLayout</code>. It includes a responsive nav bar with a logo wordmark, navigation links, language toggle, and a mobile hamburger menu with <code>aria-expanded</code> toggling. Resize the browser below 768px to see the mobile drawer.
+      </p>
+      <div style={`padding: var(--space-4); border: 1px dashed var(--color-stone); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-body);`}>
+        <strong>Component:</strong> <code>src/components/Header.astro</code><br />
+        <strong>Behavior:</strong> Sticky, responsive. Desktop shows inline nav; mobile shows hamburger → slide-out drawer.<br />
+        <strong>Tokens used:</strong> <code>--color-bg</code>, <code>--color-ink</code>, <code>--color-stone</code>, <code>--color-terracotta</code>, <code>--color-focus</code>, <code>--max-width</code>, <code>--font-heading</code>, <code>--font-body</code>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         FOOTER COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Footer</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        The site footer is rendered below via <code>BaseLayout</code>. It contains the church name (EN + ZH), address, service times, navigation links, and a copyright line with dynamic year. Multi-column grid on desktop, stacked on mobile.
+      </p>
+      <div style={`padding: var(--space-4); border: 1px dashed var(--color-stone); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-body);`}>
+        <strong>Component:</strong> <code>src/components/Footer.astro</code><br />
+        <strong>Behavior:</strong> Dark background (<code>--color-bg-dark</code>), responsive grid layout.<br />
+        <strong>Tokens used:</strong> <code>--color-bg-dark</code>, <code>--color-bg</code>, <code>--color-stone</code>, <code>--color-terracotta</code>, <code>--color-focus</code>, <code>--max-width</code>, <code>--font-heading</code>, <code>--font-cjk</code>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
