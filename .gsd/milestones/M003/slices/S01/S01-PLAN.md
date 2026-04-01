@@ -56,7 +56,7 @@ Header and Footer currently hardcode English nav links and labels. All ZH pages 
   - Estimate: 45m
   - Files: src/lib/navigation.ts, src/components/Header.astro, src/components/Footer.astro, src/layouts/BaseLayout.astro
   - Verify: npm run build && ! grep -q '首頁' dist/index.html && grep -q 'About' dist/index.html
-- [ ] **T02: Build ZH Homepage with Chinese fallback content** — ## Description
+- [x] **T02: Built ZH Homepage with Chinese fallback content at /zh/ rendering lang="zh" with all Chinese text and /zh/ internal links** — ## Description
 
 Create the ZH homepage at `src/pages/zh/index.astro` by cloning the EN homepage pattern. This page calls all Sanity helpers with `'zh'`, provides Chinese fallback content, passes `lang='zh'` to BaseLayout, and uses `/zh/...` paths for all internal links. This proves the end-to-end ZH page pattern works.
 

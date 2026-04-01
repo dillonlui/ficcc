@@ -1,0 +1,215 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import ServiceTimes from '../../components/ServiceTimes.astro';
+import ImageMosaic from '../../components/ImageMosaic.astro';
+import Pillars from '../../components/Pillars.astro';
+import Card from '../../components/Card.astro';
+import NextSteps from '../../components/NextSteps.astro';
+import { getHomePage, getSermons, getEvents, urlForImage } from '../../lib/sanity';
+
+const title = '伊的家華人基督教會 | First Ithaca Chinese Christian Church';
+const description =
+  '紐約伊薩卡的華人基督教會。每週日上午9:45崇拜，地址：429 Mitchell Street。歡迎大學生、家庭及社區鄰舍。';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let homePage: Awaited<ReturnType<typeof getHomePage>> = null;
+let sermons: Awaited<ReturnType<typeof getSermons>> = [];
+let events: Awaited<ReturnType<typeof getEvents>> = [];
+
+try {
+  [homePage, sermons, events] = await Promise.all([
+    getHomePage('zh'),
+    getSermons('zh'),
+    getEvents('zh'),
+  ]);
+} catch {
+  // Sanity unreachable — continue with Chinese fallbacks
+}
+
+// ---------- Fallback defaults ----------
+const fallbackServiceTimes = [
+  { label: '主日崇拜', time: '9:45 AM' },
+  { label: '主日學', time: '11:15 AM' },
+];
+
+const fallbackPillars = [
+  {
+    title: '根植聖經',
+    description:
+      '我們持守聖經為神所默示的話語，是一切生活與信仰的根基。',
+  },
+  {
+    title: '以基督為中心的群體',
+    description:
+      '我們以基督為中心聚集，歡迎來自不同背景的學生、家庭和鄰舍。',
+  },
+  {
+    title: '連結文化',
+    description:
+      '我們珍惜華人傳統，同時建立一個跨越文化與世代的教會家庭。',
+  },
+];
+
+const fallbackNextSteps = [
+  {
+    title: '計劃您的來訪',
+    body: '每週日上午9:45加入我們。了解聚會流程及如何抵達。',
+    href: '/zh/sundays',
+  },
+  {
+    title: '建立連結',
+    body: '發現小組、事工，以及與他人一同成長的方式。',
+    href: '/zh/ministries',
+  },
+  {
+    title: '觀看講道',
+    body: '回顧近期講道或探索一個教導系列。',
+    href: '/zh/sermons',
+  },
+];
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heroImage = homePage?.heroImage
+  ? urlForImage(homePage.heroImage, { width: 1600 })
+  : '/images/hero-placeholder.svg';
+const heroTitle = homePage?.heroTitle || '歡迎回家';
+const heroSubtitle =
+  homePage?.heroSubtitle ||
+  '紐約伊薩卡的華人基督教會，歡迎大學生、家庭及社區鄰舍。';
+const heroCtaText = homePage?.heroCtaText || '計劃您的來訪';
+const heroCtaHref = homePage?.heroCtaHref || '/zh/sundays';
+
+const serviceTimes =
+  homePage?.serviceTimes && homePage.serviceTimes.length > 0
+    ? homePage.serviceTimes
+    : fallbackServiceTimes;
+
+const mosaicImages =
+  homePage?.mosaicImages && homePage.mosaicImages.length > 0
+    ? homePage.mosaicImages.map((img) => ({
+        src: urlForImage(img, { width: 800 }),
+        alt: img.alt || '',
+      }))
+    : Array.from({ length: 6 }, (_, i) => ({
+        src: `/images/placeholder-${i + 1}.svg`,
+        alt: `教會生活 ${i + 1}`,
+      }));
+
+const pillars =
+  homePage?.pillars && homePage.pillars.length > 0
+    ? homePage.pillars.map((p) => ({
+        title: p.title,
+        description: p.description || '',
+      }))
+    : fallbackPillars;
+
+const nextSteps =
+  homePage?.nextSteps && homePage.nextSteps.length > 0
+    ? homePage.nextSteps.map((s) => ({
+        title: s.title,
+        body: s.body || '',
+        href: s.href || '#',
+        image: s.image ? urlForImage(s.image, { width: 600 }) : undefined,
+      }))
+    : fallbackNextSteps;
+
+// ---------- Featured content ----------
+const latestSermon = sermons[0] ?? null;
+const nextEvent = events[0] ?? null;
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main>
+    <Hero
+      title={heroTitle}
+      subtitle={heroSubtitle}
+      ctaText={heroCtaText}
+      ctaHref={heroCtaHref}
+      backgroundImage={heroImage}
+    />
+
+    <ServiceTimes times={serviceTimes} />
+
+    <section class="mosaic-section" aria-label="教會生活">
+      <div class="mosaic-section__inner">
+        <ImageMosaic images={mosaicImages} />
+      </div>
+    </section>
+
+    <Pillars pillars={pillars} />
+
+    {(latestSermon || nextEvent) && (
+      <section class="featured" aria-label="精選內容">
+        <div class="featured__inner">
+          <h2 class="featured__heading">保持連結</h2>
+          <div class="featured__grid">
+            {latestSermon && (
+              <Card
+                title={latestSermon.title}
+                body={latestSermon.speaker ? `講員：${latestSermon.speaker}` : '最新講道'}
+                href="/zh/sermons"
+              />
+            )}
+            {nextEvent && (
+              <Card
+                title={nextEvent.title}
+                body={nextEvent.date ? `日期：${nextEvent.date}` : '即將舉行的活動'}
+                href="/zh/events"
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <NextSteps steps={nextSteps} />
+  </main>
+</BaseLayout>
+
+<style>
+  .mosaic-section {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .mosaic-section__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .featured {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .featured__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .featured__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-12);
+  }
+
+  .featured__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+
+  @media (max-width: 768px) {
+    .featured__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .featured__heading {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

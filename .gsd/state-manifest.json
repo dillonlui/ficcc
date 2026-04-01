@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T16:42:14.793Z",
+  "exported_at": "2026-04-01T16:43:49.405Z",
   "milestones": [
     {
       "id": "M001",
@@ -2670,19 +2670,21 @@
       "milestone_id": "M003",
       "slice_id": "S01",
       "id": "T02",
-      "title": "Build ZH Homepage with Chinese fallback content",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Built ZH Homepage with Chinese fallback content at /zh/ rendering lang=\"zh\" with all Chinese text and /zh/ internal links",
+      "status": "complete",
+      "one_liner": "Built ZH Homepage with Chinese fallback content at /zh/ rendering lang=\"zh\" with all Chinese text and /zh/ internal links",
+      "narrative": "Created src/pages/zh/index.astro by cloning the EN homepage structure. All Sanity queries pass 'zh', fallback content uses Chinese (主日崇拜, 根植聖經, 歡迎回家, etc.), all internal links point to /zh/ paths, and BaseLayout receives lang=\"zh\". The page reuses the same components since they're language-agnostic.",
+      "verification_result": "Build succeeded. ZH page exists at dist/client/zh/index.html with lang=\"zh\" and Chinese content. EN homepage unchanged — no Chinese nav labels, English \"About\" still present.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T16:43:49.388Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
+      "deviations": "None.",
+      "known_issues": "Slice-level verification commands reference dist/index.html but the Vercel adapter outputs to dist/client/index.html.",
+      "key_files": [
+        "src/pages/zh/index.astro"
+      ],
       "key_decisions": [],
-      "full_summary_md": "",
+      "full_summary_md": "---\nid: T02\nparent: S01\nmilestone: M003\nkey_files:\n  - src/pages/zh/index.astro\nkey_decisions:\n  - (none)\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T16:43:49.389Z\nblocker_discovered: false\n---\n\n# T02: Built ZH Homepage with Chinese fallback content at /zh/ rendering lang=\"zh\" with all Chinese text and /zh/ internal links\n\n**Built ZH Homepage with Chinese fallback content at /zh/ rendering lang=\"zh\" with all Chinese text and /zh/ internal links**\n\n## What Happened\n\nCreated src/pages/zh/index.astro by cloning the EN homepage structure. All Sanity queries pass 'zh', fallback content uses Chinese (主日崇拜, 根植聖經, 歡迎回家, etc.), all internal links point to /zh/ paths, and BaseLayout receives lang=\"zh\". The page reuses the same components since they're language-agnostic.\n\n## Verification\n\nBuild succeeded. ZH page exists at dist/client/zh/index.html with lang=\"zh\" and Chinese content. EN homepage unchanged — no Chinese nav labels, English \"About\" still present.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8800ms |\n| 2 | `test -f dist/client/zh/index.html` | 0 | ✅ pass | 10ms |\n| 3 | `grep -q 'lang=\"zh\"' dist/client/zh/index.html` | 0 | ✅ pass | 10ms |\n| 4 | `grep -q '歡迎' dist/client/zh/index.html` | 0 | ✅ pass | 10ms |\n| 5 | `! grep -q '首頁' dist/client/index.html` | 0 | ✅ pass | 10ms |\n| 6 | `grep -q 'About' dist/client/index.html` | 0 | ✅ pass | 10ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nSlice-level verification commands reference dist/index.html but the Vercel adapter outputs to dist/client/index.html.\n\n## Files Created/Modified\n\n- `src/pages/zh/index.astro`\n",
       "description": "## Description\n\nCreate the ZH homepage at `src/pages/zh/index.astro` by cloning the EN homepage pattern. This page calls all Sanity helpers with `'zh'`, provides Chinese fallback content, passes `lang='zh'` to BaseLayout, and uses `/zh/...` paths for all internal links. This proves the end-to-end ZH page pattern works.\n\n## Steps\n\n1. Create `src/pages/zh/index.astro` using the EN homepage (`src/pages/index.astro`) as the structural template.\n2. Set `lang='zh'` on BaseLayout: `<BaseLayout title={title} description={description} lang=\"zh\">`.\n3. Change all Sanity query calls to pass `'zh'`: `getHomePage('zh')`, `getSermons('zh')`, `getEvents('zh')`.\n4. Replace all English fallback content with Chinese equivalents:\n   - `title`: '伊的家華人基督教會 | First Ithaca Chinese Christian Church'\n   - `description`: Chinese meta description\n   - `heroTitle`: '歡迎回家' (Welcome Home)\n   - `heroSubtitle`: Chinese subtitle about the church\n   - `heroCtaText`: '計劃您的來訪' (Plan Your Visit)\n   - `heroCtaHref`: '/zh/sundays' (note: ZH uses 'sundays' not 'visit')\n   - `fallbackServiceTimes`: Chinese labels ('主日崇拜', '主日學')\n   - `fallbackPillars`: Chinese versions of the 3 pillars\n   - `fallbackNextSteps`: Chinese versions with `/zh/...` hrefs\n5. Ensure the featured section links point to `/zh/sermons` and `/zh/events`.\n6. Keep the same component imports (Hero, ServiceTimes, ImageMosaic, Pillars, Card, NextSteps) — they accept props and are language-agnostic.\n\n## Must-Haves\n\n- [ ] `src/pages/zh/index.astro` exists and follows the EN homepage structure\n- [ ] All Sanity queries use `'zh'` language parameter\n- [ ] Chinese fallback content is complete (not placeholder 'TODO')\n- [ ] All internal links point to `/zh/...` paths\n- [ ] `lang='zh'` passed to BaseLayout\n- [ ] Build succeeds and `dist/zh/index.html` exists\n\n## Verification\n\n- `npm run build` succeeds\n- `test -f dist/zh/index.html`\n- `grep -q 'lang=\"zh\"' dist/zh/index.html`\n- `grep -q '歡迎' dist/zh/index.html` (Chinese content present)\n\n## Inputs\n\n- `src/pages/index.astro` — EN homepage as structural reference\n- `src/lib/navigation.ts` — shared nav config from T01\n- `src/layouts/BaseLayout.astro` — updated layout from T01\n\n## Expected Output\n\n- `src/pages/zh/index.astro` — ZH homepage",
       "estimate": "30m",
       "files": [
@@ -4557,6 +4559,72 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T16:42:14.776Z"
+    },
+    {
+      "id": 148,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8800,
+      "created_at": "2026-04-01T16:43:49.388Z"
+    },
+    {
+      "id": 149,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "test -f dist/client/zh/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T16:43:49.388Z"
+    },
+    {
+      "id": 150,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "grep -q 'lang=\"zh\"' dist/client/zh/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T16:43:49.388Z"
+    },
+    {
+      "id": 151,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "grep -q '歡迎' dist/client/zh/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T16:43:49.388Z"
+    },
+    {
+      "id": 152,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "! grep -q '首頁' dist/client/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T16:43:49.389Z"
+    },
+    {
+      "id": 153,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "grep -q 'About' dist/client/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T16:43:49.389Z"
     }
   ]
 }
