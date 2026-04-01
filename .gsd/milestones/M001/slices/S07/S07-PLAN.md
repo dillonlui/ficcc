@@ -56,7 +56,7 @@ Build `src/components/SEO.astro` that renders all meta/OG tags, Twitter card tag
   - Estimate: 30m
   - Files: src/components/SEO.astro, src/layouts/BaseLayout.astro
   - Verify: npm run build && grep -q 'og:title' dist/index.html && grep -q 'application/ld+json' dist/index.html && grep -q 'twitter:card' dist/index.html && grep -q 'canonical' dist/index.html
-- [ ] **T02: Create 404 page, LHCI GitHub Actions workflow, and run final verification** — ## Description
+- [x] **T02: Created custom 404 page using BaseLayout, added LHCI GitHub Actions workflow for PR-level Lighthouse CI, and verified all 3 URLs pass assertions across 9 runs** — ## Description
 
 Create the custom 404 page using BaseLayout (gets site chrome + SEO automatically from T01), add the 404 URL to lighthouserc.cjs, create the GitHub Actions LHCI workflow YAML, and run full LHCI verification.
 
