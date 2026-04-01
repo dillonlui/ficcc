@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T17:15:09.238Z",
+  "exported_at": "2026-04-01T17:22:40.313Z",
   "milestones": [
     {
       "id": "M001",
@@ -651,16 +651,16 @@
       "milestone_id": "M003",
       "id": "S04",
       "title": "Language Toggle & Bilingual Wiring",
-      "status": "pending",
+      "status": "complete",
       "risk": "medium",
       "depends": [
         "S01"
       ],
       "demo": "Language toggle switches between /about and /zh/about. URL, lang attribute, and cookie all update.",
       "created_at": "2026-03-31T22:34:23.911Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T17:16:45.270Z",
+      "full_summary_md": "---\nid: S04\nparent: M003\nmilestone: M003\nprovides:\n  - getAlternateUrl utility for bilingual URL resolution\n  - hreflang SEO tags on all bilingual pages\n  - lang-pref cookie for language preference persistence\n  - Vitest test infrastructure\nrequires:\n  - slice: S01\n    provides: ZH page structure and /zh/ route convention\naffects:\n  - S05\nkey_files:\n  - src/lib/navigation.ts\n  - src/lib/navigation.test.ts\n  - src/layouts/BaseLayout.astro\n  - src/components/Header.astro\n  - src/components/SEO.astro\n  - package.json\nkey_decisions:\n  - Asymmetric route map as simple Record — only /visit↔/zh/sundays pair exists currently\n  - NO_COUNTERPART list for EN-only pages falling back to other-language homepage\n  - Cookie stores target language (derived from toggle href) rather than current page language\npatterns_established:\n  - getAlternateUrl as single source of truth for all language-switching URL computation — used by both Header toggle and SEO hreflang tags\n  - Vitest unit testing infrastructure (first test suite in the project)\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M003/slices/S04/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M003/slices/S04/tasks/T02-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:16:45.271Z\nblocker_discovered: false\n---\n\n# S04: Language Toggle & Bilingual Wiring\n\n**Language toggle navigates to correct counterpart page with asymmetric route support, hreflang SEO tags, and lang-pref cookie — backed by 20 unit tests**\n\n## What Happened\n\nBuilt the bilingual wiring in two tasks. T01 created `getAlternateUrl` in `src/lib/navigation.ts` — a pure function that maps any pathname to its counterpart in the other language. It handles standard `/zh/` prefix swapping, an asymmetric route map (`/visit` ↔ `/zh/sundays`), trailing-slash normalization, and fallback to the other-language homepage for EN-only pages (styleguide, admin, resources, 404). Installed Vitest and wrote 20 unit tests covering all cases.\n\nT02 wired `getAlternateUrl` into the existing layout pipeline. BaseLayout computes the alternate URL from `Astro.url.pathname` and threads it to two consumers: Header (as `langToggleHref` prop replacing the previous hardcoded toggle) and SEO (as `alternateUrl` for hreflang tag emission). SEO now emits `hreflang=\"en\"`, `hreflang=\"zh\"`, and `hreflang=\"x-default\"` link tags with absolute URLs on every bilingual page. An inline script on `.lang-toggle` click sets a `lang-pref` cookie storing the target language with 1-year expiry.\n\nCookie design decision: the script stores the *target* language (derived from the toggle href) rather than the current page's language. This is semantically correct — when a user clicks the toggle, they're expressing preference for the language they're navigating *to*.\n\n## Verification\n\n- `npm run build` succeeds (8.8s)\n- `npx vitest run` — 20/20 tests pass (98ms)\n- 6 verification greps on built output all pass:\n  - EN `/about` toggle → `/zh/about` ✓\n  - ZH `/zh/about` toggle → `/about` ✓\n  - EN `/visit` toggle → `/zh/sundays` (asymmetric) ✓\n  - `hreflang=\"zh\"` present on EN about page ✓\n  - `hreflang=\"en\"` present on ZH about page ✓\n  - `lang-pref` cookie script present ✓\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nCookie script stores target language (from toggle href) instead of current page language — a deliberate improvement over the plan's `document.documentElement.lang` approach.\n\n## Known Limitations\n\nNone. All planned features delivered.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `src/lib/navigation.ts` — Added getAlternateUrl function with asymmetric route map, prefix swap, trailing-slash normalization, and no-counterpart fallback\n- `src/lib/navigation.test.ts` — New file — 20 Vitest unit tests for getAlternateUrl\n- `src/layouts/BaseLayout.astro` — Computes alternateUrl and threads to Header (langToggleHref) and SEO (alternateUrl); adds lang-pref cookie script\n- `src/components/Header.astro` — Accepts langToggleHref prop, falls back to hardcoded logic if not provided\n- `src/components/SEO.astro` — Emits hreflang en/zh/x-default link tags when alternateUrl provided\n- `package.json` — Added vitest dev dependency and test script\n",
+      "full_uat_md": "# S04: Language Toggle & Bilingual Wiring — UAT\n\n**Milestone:** M003\n**Written:** 2026-04-01T17:16:45.271Z\n\n# S04: Language Toggle & Bilingual Wiring — UAT\n\n**Milestone:** M003\n**Written:** 2026-03-31\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Language toggle behavior is fully testable via built HTML output — toggle hrefs, hreflang tags, and cookie script are all static artifacts. Unit tests cover the URL computation logic.\n\n## Preconditions\n\n- `npm run build` succeeds (produces `dist/client/`)\n- `npx vitest run` passes 20/20 tests\n\n## Smoke Test\n\nOpen `dist/client/about/index.html` and confirm it contains a link to `/zh/about` (the language toggle) and `hreflang=\"zh\"` (SEO tag).\n\n## Test Cases\n\n### 1. Standard EN→ZH toggle\n\n1. Open `dist/client/about/index.html`\n2. Find the `.lang-toggle` link in the header\n3. **Expected:** `href=\"/zh/about\"`\n\n### 2. Standard ZH→EN toggle\n\n1. Open `dist/client/zh/about/index.html`\n2. Find the `.lang-toggle` link in the header\n3. **Expected:** `href=\"/about\"`\n\n### 3. Asymmetric route: Visit→Sundays\n\n1. Open `dist/client/visit/index.html`\n2. Find the `.lang-toggle` link\n3. **Expected:** `href=\"/zh/sundays\"` (not `/zh/visit`)\n\n### 4. Asymmetric route: Sundays→Visit\n\n1. Open `dist/client/zh/sundays/index.html`\n2. Find the `.lang-toggle` link\n3. **Expected:** `href=\"/visit\"` (not `/sundays`)\n\n### 5. Hreflang tags on EN page\n\n1. Open `dist/client/about/index.html`\n2. Check `<head>` for `<link rel=\"alternate\">` tags\n3. **Expected:** Three tags present:\n   - `hreflang=\"en\"` pointing to the canonical EN URL\n   - `hreflang=\"zh\"` pointing to the ZH alternate\n   - `hreflang=\"x-default\"` pointing to the EN URL\n\n### 6. Hreflang tags on ZH page\n\n1. Open `dist/client/zh/about/index.html`\n2. Check `<head>` for `<link rel=\"alternate\">` tags\n3. **Expected:** Three tags with `hreflang=\"en\"`, `hreflang=\"zh\"`, and `hreflang=\"x-default\"`\n\n### 7. Cookie script present\n\n1. Open `dist/client/about/index.html`\n2. Search for `lang-pref` in the HTML\n3. **Expected:** Inline script that sets `lang-pref` cookie on `.lang-toggle` click with `path=/`, `max-age=31536000`, `SameSite=Lax`\n\n### 8. Homepage toggle\n\n1. Open `dist/client/index.html` — toggle should point to `/zh`\n2. Open `dist/client/zh/index.html` — toggle should point to `/`\n\n## Edge Cases\n\n### EN-only page fallback (styleguide)\n\n1. Open `dist/client/styleguide/index.html`\n2. Find the `.lang-toggle` link\n3. **Expected:** `href=\"/zh\"` (falls back to ZH homepage since styleguide has no ZH counterpart)\n\n### Nested path toggle\n\n1. Open `dist/client/about/beliefs/index.html`\n2. Find the `.lang-toggle` link\n3. **Expected:** `href=\"/zh/about/beliefs\"`\n\n## Failure Signals\n\n- Toggle link pointing to wrong URL (e.g. `/zh/visit` instead of `/zh/sundays`)\n- Missing hreflang tags in `<head>`\n- Missing `lang-pref` cookie script\n- Build failure due to import errors in navigation.ts\n- Vitest test failures\n\n## Not Proven By This UAT\n\n- Runtime cookie behavior (requires browser execution, not artifact inspection)\n- Server-side language redirect based on cookie (not implemented — static site)\n- SEO crawler behavior with hreflang tags (requires live crawl)\n\n## Notes for Tester\n\n- All checks can be done via grep on `dist/client/` files — no dev server needed\n- The cookie script sets the *target* language, not the current language. This is intentional.\n- Asymmetric routes are the trickiest part — `/visit` and `/zh/sundays` are the same page in different languages but have different URL structures\n",
       "goal": "Language toggle navigates to the correct counterpart page in the other language, and every bilingual page emits hreflang alternate tags for SEO.",
       "success_criteria": "## Must-Haves\n\n- `getAlternateUrl(pathname, lang)` utility handles standard prefix swap, asymmetric routes (`/visit` ↔ `/zh/sundays`), and fallback to other-language homepage\n- Header lang toggle href uses computed alternate URL (not hardcoded `/` or `/zh`)\n- SEO component emits `<link rel=\"alternate\" hreflang=\"en\">` and `<link rel=\"alternate\" hreflang=\"zh\">` tags with absolute URLs on every bilingual page\n- BaseLayout computes and threads `alternateUrl` to both Header and SEO\n- Cookie `lang-pref` is set on toggle click (client-side script)\n- `npm run build` succeeds with no regressions\n- Unit tests pass for route mapping logic\n\n## Proof Level\n\n- This slice proves: integration\n- Real runtime required: no (static build output verification)\n- Human/UAT required: no\n\n## Verification\n\n- `npx vitest run --reporter=verbose` — unit tests for `getAlternateUrl` pass (standard swap, asymmetric, fallback, trailing slash)\n- `npm run build` succeeds\n- `grep -q 'href=\"/zh/about\"' dist/client/about/index.html` — EN about toggle points to ZH about\n- `grep -q 'href=\"/about\"' dist/client/zh/about/index.html` — ZH about toggle points to EN about\n- `grep -q 'href=\"/zh/sundays\"' dist/client/visit/index.html` — asymmetric: EN visit toggle points to ZH sundays\n- `grep -q 'hreflang=\"zh\"' dist/client/about/index.html` — EN about has ZH hreflang\n- `grep -q 'hreflang=\"en\"' dist/client/zh/about/index.html` — ZH about has EN hreflang\n- `grep -q 'lang-pref' dist/client/about/index.html` — cookie script present\n\n## Integration Closure\n\n- Upstream surfaces consumed: `src/lib/navigation.ts` (Lang type, nav config from S01), `src/components/Header.astro` (lang toggle link from S01), `src/components/SEO.astro` (canonical URL pattern from M001), `src/layouts/BaseLayout.astro` (lang prop threading from S01)\n- New wiring introduced in this slice: `getAlternateUrl()` function in navigation.ts, `alternateUrl` prop threaded through BaseLayout → Header + SEO, client-side cookie script in BaseLayout\n- What remains before the milestone is truly usable end-to-end: S05 (CM content migration into Sanity)",
       "proof_level": "integration",
@@ -685,11 +685,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Complete content migration from cm.ficcc.org with redirect map",
-      "success_criteria": "All CM text content in Sanity. Church history timeline migrated. Fellowship descriptions migrated. Contact info accurate. Redirect map for all cm.ficcc.org URLs.",
-      "proof_level": "Every must-migrate CM item present. Redirect map covers all cm.ficcc.org URLs.",
-      "integration_closure": "All ZH content in Sanity, cm.ficcc.org can be retired",
-      "observability_impact": "N/A",
+      "goal": "All CM content from cm.ficcc.org migrated into Sanity documents and redirect map configured for old cm.ficcc.org URLs.",
+      "success_criteria": "- `vercel.json` contains valid redirects array with 301 redirects from all cm.ficcc.org paths to /zh/ paths\n- Migration script exists at `sanity/migrations/cm-content.ts` with idempotent createOrReplace for ZH singletons (homePage-zh, aboutPage-zh, siteSettings-zh, visitPage-zh)\n- Migration script document shapes match schema field definitions exactly (Portable Text for body fields, typed arrays for service times/pillars/stats/schedule)\n- `npm run build` succeeds (regression check — no page code changes)\n- Each redirect target path exists in `dist/client/zh/`",
+      "proof_level": "contract — migration script is structurally verified against schema shapes, redirects are JSON-valid; live Sanity execution requires credentials not available in CI",
+      "integration_closure": "Upstream: ZH pages from S01-S03 at dist/client/zh/ paths, Sanity schemas from sanity/schemas/singletons/, SITE-AUDIT.md content inventory. New wiring: vercel.json redirects array, sanity/migrations/cm-content.ts migration script. What remains: running the migration script against live Sanity (requires write token — operational step, not code).",
+      "observability_impact": "none — static config and offline migration script",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -3026,6 +3026,94 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S05",
+      "id": "T01",
+      "title": "Added 10 permanent redirects from cm.ficcc.org paths to /zh/ equivalents in vercel.json",
+      "status": "complete",
+      "one_liner": "Added 10 permanent redirects from cm.ficcc.org paths to /zh/ equivalents in vercel.json",
+      "narrative": "Added a redirects array to vercel.json with 10 cross-domain redirect entries using Vercel's has condition with type:host matching for cm.ficcc.org. Covers all 8 known pages from the redirect map, plus both URL-encoded and raw CJK forms for /home/教會事工/, plus a catch-all for unmapped paths. All redirects are permanent (301) and point to the corresponding /zh/ paths on ficcc.org.",
+      "verification_result": "JSON parsing passes. Redirect count is 10 (≥8 threshold). npm run build completes successfully with no regression.",
+      "duration": "",
+      "completed_at": "2026-04-01T17:22:40.290Z",
+      "blocker_discovered": false,
+      "deviations": "Added 2 extra redirects beyond the 8 specified: both encoded and unencoded CJK path forms, and a catch-all /:path* rule.",
+      "known_issues": "None.",
+      "key_files": [
+        "vercel.json"
+      ],
+      "key_decisions": [
+        "Added catch-all redirect as final rule so unmatched cm.ficcc.org paths land on ZH homepage",
+        "Included both URL-encoded and raw CJK forms for /home/教會事工/ to cover browser-dependent encoding"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S05\nmilestone: M003\nkey_files:\n  - vercel.json\nkey_decisions:\n  - Added catch-all redirect as final rule so unmatched cm.ficcc.org paths land on ZH homepage\n  - Included both URL-encoded and raw CJK forms for /home/教會事工/ to cover browser-dependent encoding\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:22:40.291Z\nblocker_discovered: false\n---\n\n# T01: Added 10 permanent redirects from cm.ficcc.org paths to /zh/ equivalents in vercel.json\n\n**Added 10 permanent redirects from cm.ficcc.org paths to /zh/ equivalents in vercel.json**\n\n## What Happened\n\nAdded a redirects array to vercel.json with 10 cross-domain redirect entries using Vercel's has condition with type:host matching for cm.ficcc.org. Covers all 8 known pages from the redirect map, plus both URL-encoded and raw CJK forms for /home/教會事工/, plus a catch-all for unmapped paths. All redirects are permanent (301) and point to the corresponding /zh/ paths on ficcc.org.\n\n## Verification\n\nJSON parsing passes. Redirect count is 10 (≥8 threshold). npm run build completes successfully with no regression.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `node -e \"JSON.parse(require('fs').readFileSync('vercel.json','utf8'))\"` | 0 | ✅ pass | 500ms |\n| 2 | `node -e \"...if(!v.redirects||v.redirects.length<8) throw...\"` | 0 | ✅ pass | 500ms |\n| 3 | `npm run build` | 0 | ✅ pass | 8700ms |\n\n\n## Deviations\n\nAdded 2 extra redirects beyond the 8 specified: both encoded and unencoded CJK path forms, and a catch-all /:path* rule.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `vercel.json`\n",
+      "description": "Add 301 redirects from all cm.ficcc.org paths to the corresponding /zh/ paths in the existing vercel.json. The redirect map comes from SITE-AUDIT.md section 5. Key details:\n\n- 8 redirects covering all cm.ficcc.org pages\n- The CJK URL `/home/教會事工/` needs URL-encoded form in the source pattern\n- `/home/fellowships/` → `/zh/ministries` (NOT /zh/community which doesn't exist)\n- All redirects are permanent (308 or 301)\n- vercel.json already has a `headers` array — add `redirects` alongside it\n- Vercel cross-domain redirects use `has` condition with `host` header matching\n\nSteps:\n1. Read current `vercel.json`\n2. Add `redirects` array with entries for each cm.ficcc.org path\n3. For cross-domain redirects, use `has: [{ type: 'host', value: 'cm.ficcc.org' }]` on each redirect entry\n4. Include both encoded and unencoded forms of the CJK URL\n5. Validate the result is parseable JSON\n6. Run `npm run build` to confirm no regression",
+      "estimate": "20m",
+      "files": [
+        "vercel.json",
+        "SITE-AUDIT.md"
+      ],
+      "verify": "node -e \"JSON.parse(require('fs').readFileSync('vercel.json','utf8'))\" && node -e \"const v=JSON.parse(require('fs').readFileSync('vercel.json','utf8')); if(!v.redirects||v.redirects.length<8) throw new Error('need 8+ redirects')\" && npm run build",
+      "inputs": [
+        "`vercel.json` — existing config with headers array",
+        "`SITE-AUDIT.md` — redirect map in section 5"
+      ],
+      "expected_output": [
+        "`vercel.json` — updated with redirects array containing cm.ficcc.org → /zh/ 301 redirects"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S05",
+      "id": "T02",
+      "title": "Write idempotent Sanity migration script for ZH singleton content",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create `sanity/migrations/cm-content.ts` — a TypeScript migration script using `@sanity/client` that populates 4 ZH singleton documents with actual Chinese Ministry content from cm.ficcc.org (sourced from SITE-AUDIT.md section 3).\n\nTarget documents and their singleton IDs (from sanity/schemas/index.ts `singletonDocIds`):\n- `homePage-zh` (type: homePage) — heroTitle: 歡迎回家, service times (中文崇拜 11:15am, 主日學 9:45am), pillars, next steps\n- `aboutPage-zh` (type: aboutPage) — whoWeAreBody with church history/stats, visionBody, churchStats array, beliefs array (11 EFCA points)\n- `siteSettings-zh` (type: siteSettings) — churchName: 以撒迦中國播道會, address, phone, email, WeChat social link\n- `visitPage-zh` (type: visitPage) — heroTitle: 主日崇拜, schedule (ZH service times), transportation (bus route info), FAQ items\n\nCritical implementation details:\n- Use `createOrReplace` for idempotency\n- Body fields (whoWeAreBody, visionBody, whatToExpect, transportation) are Portable Text: `[{_type:'block', _key:'unique', children:[{_type:'span', _key:'unique', text:'...'}], markDefs:[], style:'normal'}]`\n- `_key` values must be unique strings — use descriptive keys like 'hero-1', 'pillar-rooted' etc.\n- Service times, pillars, next steps, schedule, stats, beliefs are typed object arrays with `_type` and `_key`\n- Each document needs `_id`, `_type`, and `language: 'zh'`\n- Script should be runnable via `npx ts-node sanity/migrations/cm-content.ts` or `npx tsx sanity/migrations/cm-content.ts`\n- Reads SANITY_PROJECT_ID and SANITY_DATASET from env (with fallback to .env)\n- Needs SANITY_API_WRITE_TOKEN env var for actual execution\n- Include a dry-run mode that logs documents to console when no token is available\n\nContent sources (from SITE-AUDIT.md section 3 and ZH page fallbacks in S01-S03):\n- homePage-zh: 歡迎回家 hero, 中文崇拜/主日學 service times, 根植聖經/紮根社區/活出信仰 pillars\n- aboutPage-zh: Church history (1983 founding through 2009), ~150 members, ~20 baptisms/yr, 18 ministers, 11 EFCA belief points\n- siteSettings-zh: 以撒迦中國播道會, 429 Mitchell St, (607)280-8898, ithacachen@yahoo.com, WeChat: ithacachen\n- visitPage-zh: ZH service schedule, 7-stop bus route, summer/holiday variations\n\nSteps:\n1. Read all 4 singleton schema files to confirm exact field names and types\n2. Read ZH page fallback content from S01-S03 pages for accurate Chinese text\n3. Create `sanity/migrations/cm-content.ts` with document definitions matching schemas exactly\n4. Verify script compiles with `npx tsc --noEmit sanity/migrations/cm-content.ts` or dry-run execution\n5. Verify document field names match schema definitions",
+      "estimate": "45m",
+      "files": [
+        "sanity/migrations/cm-content.ts",
+        "sanity/schemas/singletons/homePage.ts",
+        "sanity/schemas/singletons/aboutPage.ts",
+        "sanity/schemas/singletons/siteSettings.ts",
+        "sanity/schemas/singletons/visitPage.ts",
+        "sanity/schemas/index.ts",
+        "SITE-AUDIT.md"
+      ],
+      "verify": "test -f sanity/migrations/cm-content.ts && node -e \"require('fs').readFileSync('sanity/migrations/cm-content.ts','utf8')\" && npx tsx sanity/migrations/cm-content.ts 2>&1 | head -20",
+      "inputs": [
+        "`sanity/schemas/singletons/homePage.ts` — schema fields for homePage-zh",
+        "`sanity/schemas/singletons/aboutPage.ts` — schema fields for aboutPage-zh",
+        "`sanity/schemas/singletons/siteSettings.ts` — schema fields for siteSettings-zh",
+        "`sanity/schemas/singletons/visitPage.ts` — schema fields for visitPage-zh",
+        "`sanity/schemas/index.ts` — singletonDocIds array with exact IDs",
+        "`SITE-AUDIT.md` — CM content inventory (section 3)",
+        "`src/pages/zh/index.astro` — ZH homepage fallback content for reference",
+        "`src/pages/zh/about/index.astro` — ZH about fallback content for reference",
+        "`src/pages/zh/about/beliefs.astro` — ZH beliefs fallback content for reference",
+        "`src/pages/zh/sundays.astro` — ZH sundays fallback content for reference"
+      ],
+      "expected_output": [
+        "`sanity/migrations/cm-content.ts` — idempotent migration script with 4 ZH singleton documents matching schema field shapes"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -5280,6 +5368,39 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 187,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M003",
+      "command": "node -e \"JSON.parse(require('fs').readFileSync('vercel.json','utf8'))\"",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 500,
+      "created_at": "2026-04-01T17:22:40.290Z"
+    },
+    {
+      "id": 188,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M003",
+      "command": "node -e \"...if(!v.redirects||v.redirects.length<8) throw...\"",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 500,
+      "created_at": "2026-04-01T17:22:40.290Z"
+    },
+    {
+      "id": 189,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8700,
+      "created_at": "2026-04-01T17:22:40.290Z"
     }
   ]
 }

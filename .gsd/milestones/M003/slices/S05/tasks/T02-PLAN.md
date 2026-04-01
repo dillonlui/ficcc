@@ -1,29 +1,12 @@
-# S05: CM Content Migration
+---
+estimated_steps: 27
+estimated_files: 7
+skills_used: []
+---
 
-**Goal:** All CM content from cm.ficcc.org migrated into Sanity documents and redirect map configured for old cm.ficcc.org URLs.
-**Demo:** After this: All CM content from cm.ficcc.org migrated into Sanity. Redirect map complete.
+# T02: Write idempotent Sanity migration script for ZH singleton content
 
-## Tasks
-- [x] **T01: Added 10 permanent redirects from cm.ficcc.org paths to /zh/ equivalents in vercel.json** — Add 301 redirects from all cm.ficcc.org paths to the corresponding /zh/ paths in the existing vercel.json. The redirect map comes from SITE-AUDIT.md section 5. Key details:
-
-- 8 redirects covering all cm.ficcc.org pages
-- The CJK URL `/home/教會事工/` needs URL-encoded form in the source pattern
-- `/home/fellowships/` → `/zh/ministries` (NOT /zh/community which doesn't exist)
-- All redirects are permanent (308 or 301)
-- vercel.json already has a `headers` array — add `redirects` alongside it
-- Vercel cross-domain redirects use `has` condition with `host` header matching
-
-Steps:
-1. Read current `vercel.json`
-2. Add `redirects` array with entries for each cm.ficcc.org path
-3. For cross-domain redirects, use `has: [{ type: 'host', value: 'cm.ficcc.org' }]` on each redirect entry
-4. Include both encoded and unencoded forms of the CJK URL
-5. Validate the result is parseable JSON
-6. Run `npm run build` to confirm no regression
-  - Estimate: 20m
-  - Files: vercel.json, SITE-AUDIT.md
-  - Verify: node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8'))" && node -e "const v=JSON.parse(require('fs').readFileSync('vercel.json','utf8')); if(!v.redirects||v.redirects.length<8) throw new Error('need 8+ redirects')" && npm run build
-- [ ] **T02: Write idempotent Sanity migration script for ZH singleton content** — Create `sanity/migrations/cm-content.ts` — a TypeScript migration script using `@sanity/client` that populates 4 ZH singleton documents with actual Chinese Ministry content from cm.ficcc.org (sourced from SITE-AUDIT.md section 3).
+Create `sanity/migrations/cm-content.ts` — a TypeScript migration script using `@sanity/client` that populates 4 ZH singleton documents with actual Chinese Ministry content from cm.ficcc.org (sourced from SITE-AUDIT.md section 3).
 
 Target documents and their singleton IDs (from sanity/schemas/index.ts `singletonDocIds`):
 - `homePage-zh` (type: homePage) — heroTitle: 歡迎回家, service times (中文崇拜 11:15am, 主日學 9:45am), pillars, next steps
@@ -54,6 +37,24 @@ Steps:
 3. Create `sanity/migrations/cm-content.ts` with document definitions matching schemas exactly
 4. Verify script compiles with `npx tsc --noEmit sanity/migrations/cm-content.ts` or dry-run execution
 5. Verify document field names match schema definitions
-  - Estimate: 45m
-  - Files: sanity/migrations/cm-content.ts, sanity/schemas/singletons/homePage.ts, sanity/schemas/singletons/aboutPage.ts, sanity/schemas/singletons/siteSettings.ts, sanity/schemas/singletons/visitPage.ts, sanity/schemas/index.ts, SITE-AUDIT.md
-  - Verify: test -f sanity/migrations/cm-content.ts && node -e "require('fs').readFileSync('sanity/migrations/cm-content.ts','utf8')" && npx tsx sanity/migrations/cm-content.ts 2>&1 | head -20
+
+## Inputs
+
+- ``sanity/schemas/singletons/homePage.ts` — schema fields for homePage-zh`
+- ``sanity/schemas/singletons/aboutPage.ts` — schema fields for aboutPage-zh`
+- ``sanity/schemas/singletons/siteSettings.ts` — schema fields for siteSettings-zh`
+- ``sanity/schemas/singletons/visitPage.ts` — schema fields for visitPage-zh`
+- ``sanity/schemas/index.ts` — singletonDocIds array with exact IDs`
+- ``SITE-AUDIT.md` — CM content inventory (section 3)`
+- ``src/pages/zh/index.astro` — ZH homepage fallback content for reference`
+- ``src/pages/zh/about/index.astro` — ZH about fallback content for reference`
+- ``src/pages/zh/about/beliefs.astro` — ZH beliefs fallback content for reference`
+- ``src/pages/zh/sundays.astro` — ZH sundays fallback content for reference`
+
+## Expected Output
+
+- ``sanity/migrations/cm-content.ts` — idempotent migration script with 4 ZH singleton documents matching schema field shapes`
+
+## Verification
+
+test -f sanity/migrations/cm-content.ts && node -e "require('fs').readFileSync('sanity/migrations/cm-content.ts','utf8')" && npx tsx sanity/migrations/cm-content.ts 2>&1 | head -20

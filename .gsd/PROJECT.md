@@ -4,7 +4,7 @@ First Ithaca Chinese Christian Church — bilingual (EN/ZH) church website built
 
 ## Current State
 
-**M003: ZH Content & Bilingual Toggle — In Progress (S01–S03 complete, S04–S05 remaining).**
+**M003: ZH Content & Bilingual Toggle — In Progress (S01–S04 complete, S05 remaining).**
 
 M001 (Foundation & Design System) and M002 (EN Content Pages) are complete. M003 is building all Chinese Ministry pages and bilingual wiring.
 
@@ -14,7 +14,9 @@ M003/S02 delivered ZH Community (7 fellowship groups) and Ministries (Sunday Sch
 
 M003/S03 delivered 5 ZH transactional pages: Sermons listing + detail at /zh/sermons/, Events at /zh/events/, Give at /zh/give/, and Contact at /zh/contact/. Contact page is bespoke — prominent WeChat section with QR placeholder, simplified 3-field form, and Chinese church info sidebar (not a clone of the EN 4-tab contact page).
 
-Remaining: S04 (Language Toggle & Bilingual Wiring), S05 (CM Content Migration).
+M003/S04 delivered bilingual wiring: `getAlternateUrl` utility in `src/lib/navigation.ts` computes the counterpart URL for any page, handling asymmetric routes (`/visit` ↔ `/zh/sundays`), trailing-slash normalization, and fallback to homepage for EN-only pages. BaseLayout threads the computed URL to Header (toggle href) and SEO (hreflang en/zh/x-default tags). A `lang-pref` cookie is set on toggle click. 20 Vitest unit tests cover all cases.
+
+Remaining: S05 (CM Content Migration).
 
 The full project scaffold is in place:
 - Astro 5 + Sanity monorepo deployed to Vercel (ficcc.vercel.app)

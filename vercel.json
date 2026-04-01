@@ -21,5 +21,67 @@
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/",
+      "permanent": true
+    },
+    {
+      "source": "/home/about/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/about",
+      "permanent": true
+    },
+    {
+      "source": "/home/faith/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/about/beliefs",
+      "permanent": true
+    },
+    {
+      "source": "/home/sermons/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/sermons",
+      "permanent": true
+    },
+    {
+      "source": "/home/worship/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/sundays",
+      "permanent": true
+    },
+    {
+      "source": "/home/fellowships/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/ministries",
+      "permanent": true
+    },
+    {
+      "source": "/home/%E6%95%99%E6%9C%83%E4%BA%8B%E5%B7%A5/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/ministries",
+      "permanent": true
+    },
+    {
+      "source": "/home/教會事工/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/ministries",
+      "permanent": true
+    },
+    {
+      "source": "/home/contact/",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/contact",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "cm.ficcc.org" }],
+      "destination": "https://ficcc.org/zh/",
+      "permanent": true
+    }
   ]
 }
