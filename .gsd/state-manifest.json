@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:30:42.649Z",
+  "exported_at": "2026-04-01T13:37:55.788Z",
   "milestones": [
     {
       "id": "M001",
@@ -454,16 +454,16 @@
       "milestone_id": "M002",
       "id": "S02",
       "title": "About / Beliefs / Staff",
-      "status": "pending",
+      "status": "complete",
       "risk": "medium",
       "depends": [
         "S01"
       ],
       "demo": "Bespoke Who We Are layout, Beliefs accordion, Staff grid",
       "created_at": "2026-03-31T22:33:41.124Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T13:32:21.447Z",
+      "full_summary_md": "---\nid: S02\nparent: M002\nmilestone: M002\nprovides:\n  - aboutPage singleton schema and GROQ helpers for Who We Are, Beliefs, and Staff content\n  - portableTextToHtml() utility for server-side Portable Text rendering\n  - StaffCard component reusable for any person grid\n  - Enhanced Accordion component that renders HTML content\nrequires:\n  - slice: S01\n    provides: BaseLayout, Accordion component, Card component, design tokens, CMS fetch pattern\naffects:\n  - S07\nkey_files:\n  - sanity/schemas/singletons/aboutPage.ts\n  - sanity/schemas/index.ts\n  - src/lib/sanity.ts\n  - src/components/Accordion.astro\n  - src/components/StaffCard.astro\n  - src/pages/about/index.astro\n  - src/pages/about/beliefs.astro\n  - src/pages/about/staff.astro\nkey_decisions:\n  - Accordion uses set:html on a div — non-breaking for plain-text consumers while enabling rich HTML\n  - portableTextToHtml handles block/normal with strong/em/link marks and escapes HTML server-side\n  - StaffCard placeholder uses SVG person silhouette on CSS gradient rather than blank space\n  - Desk structure uses singletonDocIds dynamically so no manual structure.ts edits needed for new singletons\npatterns_established:\n  - CMS singleton + GROQ helper + try-catch fallback pattern now proven for multi-field singletons (aboutPage joins homePage)\n  - portableTextToHtml() enables server-side Portable Text rendering without any client-side library\n  - Accordion component now accepts both plain text and HTML content strings\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M002/slices/S02/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M002/slices/S02/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M002/slices/S02/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:32:21.449Z\nblocker_discovered: false\n---\n\n# S02: About / Beliefs / Staff\n\n**Delivered three identity pages — About (Who We Are), Beliefs accordion, and Staff grid — all CMS-editable via aboutPage singleton with hardcoded fallbacks, plus a server-side portableTextToHtml utility and enhanced Accordion component.**\n\n## What Happened\n\nThree tasks built the About section end-to-end. T01 created the aboutPage Sanity singleton schema with whoWeAre, beliefs, and staffOrder fields, registered it in the schema index (EN/ZH singleton IDs), added getAboutPage()/getStaff() GROQ helpers and a portableTextToHtml() server-side Portable Text renderer to sanity.ts. The desk structure required no manual edits since it already maps singletonDocIds dynamically.\n\nT02 modified the Accordion component to render content via set:html instead of text interpolation — a non-breaking change that enables rich HTML while keeping plain-text consumers working. Created the /about page with a responsive two-column layout (narrative text + optional CMS image) and the /about/beliefs page with intro text and an 8-belief accordion using standard evangelical doctrinal statements as fallbacks. Both pages fetch from getAboutPage() with try-catch.\n\nT03 built StaffCard.astro with a 1:1 aspect-ratio photo container, name, role, and an SVG person silhouette placeholder for missing photos. The /about/staff page uses a responsive CSS Grid (1→2→3 columns) with four realistic fallback staff entries. All three pages are pure Astro with zero client:* directives.\n\n## Verification\n\nAll file existence checks pass. No client:* directives in any about page or StaffCard component. set:html confirmed in Accordion.astro. All GROQ helpers (getAboutPage, getStaff, portableTextToHtml) confirmed in sanity.ts. npm run build succeeds — all three pages generate: /about/index.html, /about/beliefs/index.html, /about/staff/index.html.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nDesk structure required no manual edits to structure.ts — it already iterates singletonDocIds dynamically, which was discovered during T01 execution.\n\n## Known Limitations\n\nStaff ordering from CMS uses staffOrder references, but without CMS content populated the fallback uses a hardcoded array. Bio text on StaffCard is not displayed — only name and role appear on the card (bio could be added in a detail view later).\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/aboutPage.ts` — New aboutPage singleton schema with whoWeAre, beliefs, staffOrder fields\n- `sanity/schemas/index.ts` — Registered aboutPage in schemaTypes, singletonTypes, singletonDocIds\n- `src/lib/sanity.ts` — Added AboutPage/Person interfaces, getAboutPage()/getStaff() helpers, portableTextToHtml() utility\n- `src/components/Accordion.astro` — Changed content rendering from text interpolation to set:html, added :global() CSS for rich HTML\n- `src/components/StaffCard.astro` — New component with 1:1 photo container, name, role, SVG placeholder\n- `src/pages/about/index.astro` — New Who We Are page with two-column layout, CMS fetch + fallback\n- `src/pages/about/beliefs.astro` — New Beliefs page with 8-belief accordion, CMS fetch + fallback\n- `src/pages/about/staff.astro` — New Staff page with responsive 1/2/3-column grid, CMS fetch + fallback\n",
+      "full_uat_md": "# S02: About / Beliefs / Staff — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01T13:32:21.449Z\n\n# S02: About / Beliefs / Staff — UAT\n\n**Milestone:** M002\n**Written:** 2026-03-31\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Static site — all pages are pre-rendered at build time. Build success confirms pages generate correctly. Visual/content verification is manual.\n\n## Preconditions\n\n- `npm run build` succeeds (confirmed during slice verification)\n- Built output exists in `dist/` directory\n\n## Smoke Test\n\nOpen `dist/about/index.html` in a browser — the Who We Are page should render with a heading, narrative text, and church identity content.\n\n## Test Cases\n\n### 1. About (Who We Are) page renders correctly\n\n1. Open `/about` in browser\n2. Verify page has a heading (\"Who We Are\" or similar)\n3. Verify narrative body text is present describing FICCC's identity/mission\n4. Verify responsive layout — text and optional image side by side on desktop, stacked on mobile\n5. **Expected:** Complete identity page with church narrative, no blank sections, no broken layout\n\n### 2. Beliefs page renders accordion with doctrinal statements\n\n1. Open `/about/beliefs`\n2. Verify intro text appears above the accordion\n3. Verify 8 belief items are listed in the accordion (Scripture, God, Jesus Christ, Holy Spirit, Salvation, The Church, Christian Living, Future Things — or similar)\n4. Click each accordion item — rich HTML content should expand (paragraphs, possibly bold/italic text)\n5. **Expected:** All 8 beliefs expand/collapse individually with formatted content\n\n### 3. Staff page renders responsive grid\n\n1. Open `/about/staff`\n2. Verify page heading and optional intro text\n3. Verify 4 staff cards are displayed (Pastor, Associate Pastor, etc.)\n4. Each card shows: 1:1 photo area (SVG placeholder if no photo), name, role\n5. Resize browser: 1 column on mobile (<640px), 2 columns on tablet, 3 columns on desktop\n6. **Expected:** Responsive grid with all staff cards visible and properly laid out\n\n### 4. Accordion HTML rendering is non-breaking\n\n1. Open `/about/beliefs`\n2. Expand a belief item\n3. Verify content renders as formatted HTML (not raw HTML tags visible as text)\n4. Open any other page that uses the Accordion component (if any)\n5. **Expected:** Accordion renders both plain text and HTML content correctly\n\n### 5. No client-side JavaScript on About pages\n\n1. Open browser DevTools on `/about`, `/about/beliefs`, `/about/staff`\n2. Check that no page-specific JS bundles load (only global site JS if any)\n3. **Expected:** Pages are pure static HTML+CSS with no hydration islands\n\n## Edge Cases\n\n### CMS unavailable during build\n\n1. Build the site with Sanity API unreachable (e.g., invalid project ID)\n2. **Expected:** Build still succeeds — all three pages render with hardcoded fallback content\n\n### Staff page with no photos\n\n1. Verify staff cards display SVG person silhouette placeholder when no photo URL is provided\n2. **Expected:** Placeholder fills the 1:1 aspect ratio container cleanly — no broken image icons\n\n## Failure Signals\n\n- Build fails with errors in about/beliefs/staff pages\n- Pages render with blank content sections\n- Raw HTML tags visible as text in beliefs accordion (set:html not working)\n- Staff grid doesn't respond to viewport changes\n- client:* directives found in any about section page\n\n## Not Proven By This UAT\n\n- CMS content editing flow (requires Sanity Studio with real data)\n- Staff ordering via CMS staffOrder field (requires populated CMS)\n- portableTextToHtml rendering of all Portable Text mark types (only block/normal with strong/em/link tested)\n- Chinese language variants of the about pages (M003 scope)\n\n## Notes for Tester\n\n- All pages use hardcoded fallback content since no CMS data is populated yet — this is expected\n- The staff photos will all show SVG placeholders — this is the designed fallback behavior\n- Beliefs content is realistic evangelical doctrinal statements used as placeholder text\n",
       "goal": "Deliver three identity pages — About (Who We Are), Beliefs, and Staff — all CMS-editable via an aboutPage Sanity singleton with hardcoded fallbacks, following established S01 patterns (pure Astro, scoped CSS, try-catch CMS fetches).",
       "success_criteria": "- `npm run build` succeeds with all three pages rendered\n- `/about` route serves a Who We Are narrative layout\n- `/about/beliefs` route serves a Beliefs accordion with rich-text content\n- `/about/staff` route serves a responsive staff grid (1 col mobile → 3+ col desktop)\n- Accordion component accepts HTML content via `set:html` without breaking existing plain-text usage\n- No `client:*` directives on any new component\n- All CMS fetches wrapped in try-catch with realistic hardcoded fallbacks",
       "proof_level": "This slice proves: integration (CMS data → rendered pages). Real runtime required: yes (dev server for visual check). Human/UAT required: no.",
@@ -486,11 +486,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Answer every first-time visitor question",
-      "success_criteria": "What to Expect section. FAQ accordion (4 items). Transportation with 4 pickups + FB Messenger. Schedule with seasonal variations. Ride request form.",
-      "proof_level": "4 FAQ items present. Pickup times accurate. Form delivers email.",
-      "integration_closure": "FAQ from Sanity. Schedule from siteSettings. Form uses shared infrastructure.",
-      "observability_impact": "Ride request submissions tracked",
+      "goal": "Plan a Visit page at /visit with FAQ accordion, transportation/directions, Sunday schedule, what-to-expect content, and ride request form — all CMS-editable via visitPage Sanity singleton with hardcoded fallbacks.",
+      "success_criteria": "- visitPage Sanity singleton schema exists and is registered in schema index\n- getVisitPage() GROQ helper present in src/lib/sanity.ts\n- /visit page renders with Hero, schedule, what-to-expect, transportation, FAQ accordion, and ride request form sections\n- FAQ section uses existing Accordion component with hardcoded fallback Q&A items\n- Ride request form has client-side validation (name, email, pickup location required)\n- `npm run build` succeeds with /visit page in output\n- No `client:*` directives on any new component except form's Turnstile widget\n- All components use pure Astro with scoped CSS using only CSS custom properties from global.css",
+      "proof_level": "contract — page builds and renders with fallback content, form validates client-side. No live CMS or API endpoint required.",
+      "integration_closure": "- Upstream surfaces consumed: `src/components/Hero.astro`, `src/components/Accordion.astro`, `src/components/ServiceTimes.astro`, `src/lib/sanity.ts` (client, interfaces, helpers pattern), `sanity/schemas/index.ts` (registration pattern)\n- New wiring: visitPage singleton schema, getVisitPage() helper, /visit page route, RideRequestForm component\n- Remaining: API endpoint for ride request form (S06), real CMS content, real photography",
+      "observability_impact": "None — static page with client-side form validation only. No runtime signals needed.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2030,6 +2030,123 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S03",
+      "id": "T01",
+      "title": "Added visitPage singleton schema with hero, schedule, whatToExpect, transportation, FAQ, and rideRequest fields, plus VisitPage interface and getVisitPage() GROQ helper",
+      "status": "complete",
+      "one_liner": "Added visitPage singleton schema with hero, schedule, whatToExpect, transportation, FAQ, and rideRequest fields, plus VisitPage interface and getVisitPage() GROQ helper",
+      "narrative": "Created visitPage Sanity singleton schema following the homePage/aboutPage pattern with all required fields (heroImage, heroTitle, heroSubtitle, whatToExpect portable text, schedule array, transportation portable text, faqItems array, rideRequestEnabled boolean, language). Registered it in the schema index (exports, imports, schemaTypes, singletonTypes, singletonDocIds with EN+ZH entries). Added ScheduleItem, FaqItem, and VisitPage TypeScript interfaces plus getVisitPage() GROQ helper to src/lib/sanity.ts.",
+      "verification_result": "All five verification checks pass: schema file exists, visitPage registered in index, getVisitPage and VisitPage present in sanity.ts, npm run build exits 0 with 7 pages generated.",
+      "duration": "",
+      "completed_at": "2026-04-01T13:37:55.769Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "sanity/schemas/singletons/visitPage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts"
+      ],
+      "key_decisions": [
+        "Used portable text for whatToExpect and transportation fields, plain strings for faqItems question/answer per task plan spec"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S03\nmilestone: M002\nkey_files:\n  - sanity/schemas/singletons/visitPage.ts\n  - sanity/schemas/index.ts\n  - src/lib/sanity.ts\nkey_decisions:\n  - Used portable text for whatToExpect and transportation fields, plain strings for faqItems question/answer per task plan spec\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:37:55.770Z\nblocker_discovered: false\n---\n\n# T01: Added visitPage singleton schema with hero, schedule, whatToExpect, transportation, FAQ, and rideRequest fields, plus VisitPage interface and getVisitPage() GROQ helper\n\n**Added visitPage singleton schema with hero, schedule, whatToExpect, transportation, FAQ, and rideRequest fields, plus VisitPage interface and getVisitPage() GROQ helper**\n\n## What Happened\n\nCreated visitPage Sanity singleton schema following the homePage/aboutPage pattern with all required fields (heroImage, heroTitle, heroSubtitle, whatToExpect portable text, schedule array, transportation portable text, faqItems array, rideRequestEnabled boolean, language). Registered it in the schema index (exports, imports, schemaTypes, singletonTypes, singletonDocIds with EN+ZH entries). Added ScheduleItem, FaqItem, and VisitPage TypeScript interfaces plus getVisitPage() GROQ helper to src/lib/sanity.ts.\n\n## Verification\n\nAll five verification checks pass: schema file exists, visitPage registered in index, getVisitPage and VisitPage present in sanity.ts, npm run build exits 0 with 7 pages generated.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f sanity/schemas/singletons/visitPage.ts` | 0 | ✅ pass | 100ms |\n| 2 | `grep -q 'visitPage' sanity/schemas/index.ts` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q 'getVisitPage' src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n| 4 | `grep -q 'VisitPage' src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n| 5 | `npm run build` | 0 | ✅ pass | 7200ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/visitPage.ts`\n- `sanity/schemas/index.ts`\n- `src/lib/sanity.ts`\n",
+      "description": "Create the visitPage singleton schema following the homePage/aboutPage pattern, register it in the schema index, and add the TypeScript interface + getVisitPage() GROQ helper to the data layer.\n\n## Steps\n\n1. Create `sanity/schemas/singletons/visitPage.ts` with fields: heroImage (image with hotspot), heroTitle (string, required), heroSubtitle (string), whatToExpect (array of block — portable text), schedule (array of objects with label/time/description), transportation (array of block — portable text), faqItems (array of objects with question/answer strings), rideRequestEnabled (boolean, default true), language (string, en/zh). Follow the exact defineType/defineField pattern from homePage.ts.\n2. In `sanity/schemas/index.ts`: add export for visitPage, import it, add to schemaTypes array, add 'visitPage' to singletonTypes Set, add visitPage-en and visitPage-zh to singletonDocIds array.\n3. In `src/lib/sanity.ts`: add VisitPage interface matching the schema fields, add ScheduleItem and FaqItem sub-interfaces. Add getVisitPage(language) async helper following the getHomePage pattern.\n4. Run `npm run build` to verify no type errors or build failures.\n\n## Must-Haves\n\n- [ ] visitPage schema has all fields: heroImage, heroTitle, heroSubtitle, whatToExpect (portable text), schedule (array of {label, time, description}), transportation (portable text), faqItems (array of {question, answer}), rideRequestEnabled (boolean), language\n- [ ] Schema registered in schemaTypes, singletonTypes, and singletonDocIds (EN + ZH)\n- [ ] VisitPage interface and getVisitPage() helper in sanity.ts\n- [ ] npm run build passes\n\n## Verification\n\n- `test -f sanity/schemas/singletons/visitPage.ts`\n- `grep -q 'visitPage' sanity/schemas/index.ts`\n- `grep -q 'getVisitPage' src/lib/sanity.ts`\n- `grep -q 'VisitPage' src/lib/sanity.ts`\n- `npm run build` exits 0",
+      "estimate": "25m",
+      "files": [
+        "sanity/schemas/singletons/visitPage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts"
+      ],
+      "verify": "test -f sanity/schemas/singletons/visitPage.ts && grep -q 'visitPage' sanity/schemas/index.ts && grep -q 'getVisitPage' src/lib/sanity.ts && npm run build",
+      "inputs": [
+        "`sanity/schemas/singletons/homePage.ts` — pattern reference for singleton schema definition",
+        "`sanity/schemas/index.ts` — registration target for new schema",
+        "`src/lib/sanity.ts` — add VisitPage interface and getVisitPage() helper following existing pattern"
+      ],
+      "expected_output": [
+        "`sanity/schemas/singletons/visitPage.ts` — new visitPage singleton schema",
+        "`sanity/schemas/index.ts` — updated with visitPage registration",
+        "`src/lib/sanity.ts` — updated with VisitPage interface and getVisitPage() helper"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S03",
+      "id": "T02",
+      "title": "Build /visit page with Hero, schedule, what-to-expect, transportation, and FAQ sections",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create the Plan a Visit page at src/pages/visit.astro with all content sections composed from existing and new components, wired to CMS data with hardcoded fallbacks.\n\n## Steps\n\n1. Create `src/pages/visit.astro`. Import BaseLayout, Hero, Accordion, and getVisitPage/urlForImage/portableTextToHtml from sanity.ts.\n2. Fetch visitPage data via getVisitPage('en') wrapped in try-catch (K008 pattern from index.astro). Define hardcoded fallbacks for all sections:\n   - Hero: title 'Plan Your Visit', subtitle 'Everything you need to know for your first Sunday with us'\n   - Schedule: [{label: 'Sunday Gathering', time: '9:45 AM', description: 'Worship service with singing, prayer, and a message from Scripture'}, {label: 'Sunday School', time: '11:15 AM', description: 'Age-specific classes for children, youth, and adults'}]\n   - What to expect: paragraphs about casual dress, welcoming atmosphere, kids welcome, etc.\n   - Transportation: address (429 Mitchell Street, Ithaca, NY 14850), parking info, Cornell campus proximity\n   - FAQ items: 5-6 common visitor questions (dress code, kids, language, parking, duration, how to connect)\n3. Build the page layout in this order: Hero → Schedule section (custom layout with time + description per entry, NOT reusing ServiceTimes since we need the description field) → What to Expect section (rendered via portableTextToHtml or fallback HTML) → Transportation/Directions section (with embedded Google Maps iframe or static address) → FAQ section using Accordion component.\n4. All sections should use pure Astro with scoped CSS and only CSS custom properties from global.css (D010). Each section gets a semantic `<section>` with aria-label.\n5. Ensure responsive layout: single column on mobile (<768px), comfortable reading width on desktop.\n6. Run `npm run build` to verify the page generates successfully.\n\n## Must-Haves\n\n- [ ] /visit page exists and builds successfully\n- [ ] Hero section with CMS data or fallback\n- [ ] Schedule section showing time + description per entry\n- [ ] What to Expect section with CMS portable text or fallback HTML\n- [ ] Transportation/directions section with church address\n- [ ] FAQ accordion using existing Accordion component with 5+ fallback questions\n- [ ] CMS fetch wrapped in try-catch with complete fallback content\n- [ ] All scoped CSS using only CSS custom properties from global.css\n- [ ] Responsive layout at mobile and desktop breakpoints\n\n## Verification\n\n- `test -f src/pages/visit.astro`\n- `grep -q 'Accordion' src/pages/visit.astro`\n- `grep -q 'getVisitPage' src/pages/visit.astro`\n- `npm run build` succeeds and output includes /visit\n- No `client:` directives in visit.astro (grep returns no matches)",
+      "estimate": "45m",
+      "files": [
+        "src/pages/visit.astro"
+      ],
+      "verify": "test -f src/pages/visit.astro && grep -q 'Accordion' src/pages/visit.astro && npm run build 2>&1 | grep -q 'visit'",
+      "inputs": [
+        "`src/lib/sanity.ts` — getVisitPage() helper and portableTextToHtml from T01",
+        "`src/components/Hero.astro` — reuse for page hero",
+        "`src/components/Accordion.astro` — reuse for FAQ section",
+        "`src/pages/index.astro` — pattern reference for CMS data fetching with try-catch fallbacks"
+      ],
+      "expected_output": [
+        "`src/pages/visit.astro` — complete Plan a Visit page with all content sections"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S03",
+      "id": "T03",
+      "title": "Build RideRequestForm component and integrate into visit page",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create the ride request form component adapted from the ContactForm pattern, with client-side validation and Turnstile spam protection, then integrate it into the visit page.\n\n## Steps\n\n1. Create `src/components/RideRequestForm.astro` following the ContactForm pattern:\n   - Fields: name (text, required, min 2 chars), email (email, required), phone (tel, optional), pickup location (text, required, min 5 chars — e.g. campus dorm or address), preferred date (date input, optional), notes (textarea, optional)\n   - Include Cloudflare Turnstile widget (same pattern as ContactForm)\n   - Client-side validation via `<script is:inline>` — validate required fields before submission\n   - Submit handler POSTs to `/api/ride-request` as JSON. Handle success (show success banner, reset form) and error (show error banner) states. Since no API endpoint exists yet, the fetch will 404 — the error banner should show a graceful message. This is consistent with ContactForm posting to `/api/contact` which also has no endpoint yet.\n   - Use same CSS patterns as ContactForm: BEM naming, scoped styles, CSS custom properties only\n   - Button text: 'Request a Ride' / 'Sending…' when loading\n2. Add the RideRequestForm to `src/pages/visit.astro` as the final section before the page closes, inside a styled section wrapper with heading 'Need a Ride?'. Conditionally render based on visitPage?.rideRequestEnabled !== false (default to showing it).\n3. Run `npm run build` to verify everything compiles.\n4. Verify no `client:*` directives on RideRequestForm (the Turnstile script loads via `<script is:inline src=...>` which is fine).\n\n## Must-Haves\n\n- [ ] RideRequestForm component exists with name, email, phone, pickup location, date, notes fields\n- [ ] Client-side validation for required fields (name, email, pickup location)\n- [ ] Turnstile widget integration matching ContactForm pattern\n- [ ] Submit handler with loading state, success banner, error banner\n- [ ] Form integrated into visit page in a 'Need a Ride?' section\n- [ ] All scoped CSS using BEM naming and CSS custom properties\n- [ ] npm run build passes\n\n## Verification\n\n- `test -f src/components/RideRequestForm.astro`\n- `grep -q 'RideRequestForm' src/pages/visit.astro`\n- `grep -q 'turnstile' src/components/RideRequestForm.astro` (case-insensitive)\n- `npm run build` exits 0\n- `! grep -q 'client:' src/components/RideRequestForm.astro` (no client directives)",
+      "estimate": "35m",
+      "files": [
+        "src/components/RideRequestForm.astro",
+        "src/pages/visit.astro"
+      ],
+      "verify": "test -f src/components/RideRequestForm.astro && grep -q 'RideRequestForm' src/pages/visit.astro && npm run build",
+      "inputs": [
+        "`src/components/ContactForm.astro` — pattern reference for form structure, validation, Turnstile, and CSS",
+        "`src/pages/visit.astro` — integration target from T02"
+      ],
+      "expected_output": [
+        "`src/components/RideRequestForm.astro` — new ride request form component",
+        "`src/pages/visit.astro` — updated with RideRequestForm integration"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -3402,6 +3519,61 @@
       "verdict": "✅ pass",
       "duration_ms": 7500,
       "created_at": "2026-04-01T13:30:42.635Z"
+    },
+    {
+      "id": 109,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "test -f sanity/schemas/singletons/visitPage.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:37:55.769Z"
+    },
+    {
+      "id": 110,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'visitPage' sanity/schemas/index.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:37:55.769Z"
+    },
+    {
+      "id": 111,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'getVisitPage' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:37:55.769Z"
+    },
+    {
+      "id": 112,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'VisitPage' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:37:55.769Z"
+    },
+    {
+      "id": 113,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7200,
+      "created_at": "2026-04-01T13:37:55.770Z"
     }
   ]
 }

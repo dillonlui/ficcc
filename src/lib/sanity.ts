@@ -164,6 +164,31 @@ export interface AboutPage {
   language: 'en' | 'zh';
 }
 
+export interface ScheduleItem {
+  label: string;
+  time: string;
+  description?: string;
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface VisitPage {
+  _id: string;
+  _type: 'visitPage';
+  heroImage?: SanityImage;
+  heroTitle: string;
+  heroSubtitle?: string;
+  whatToExpect?: PortableTextBlock[];
+  schedule?: ScheduleItem[];
+  transportation?: PortableTextBlock[];
+  faqItems?: FaqItem[];
+  rideRequestEnabled?: boolean;
+  language: 'en' | 'zh';
+}
+
 export interface Person {
   _id: string;
   _type: 'person';
@@ -270,6 +295,18 @@ export async function getAboutPage(
 ): Promise<AboutPage | null> {
   return client.fetch<AboutPage | null>(
     `*[_type == "aboutPage" && language == $language][0]`,
+    { language },
+  );
+}
+
+/**
+ * Fetch the singleton visit-page document for a language.
+ */
+export async function getVisitPage(
+  language: Language = 'en',
+): Promise<VisitPage | null> {
+  return client.fetch<VisitPage | null>(
+    `*[_type == "visitPage" && language == $language][0]`,
     { language },
   );
 }
