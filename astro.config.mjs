@@ -2,10 +2,12 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
+import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: 'https://ficcc.org',
   output: 'static',
+  adapter: vercel(),
   integrations: [
     sitemap(),
     sanity({

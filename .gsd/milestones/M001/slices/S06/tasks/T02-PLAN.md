@@ -1,45 +1,12 @@
-# S06: Preview Mode & Integration Wiring
+---
+estimated_steps: 57
+estimated_files: 5
+skills_used: []
+---
 
-**Goal:** Sanity Visual Editing preview mode wired into the Astro site so editors can see draft content, with publish-triggered redeployment configured.
-**Demo:** After this: Editor creates draft in Sanity, clicks Preview, sees draft rendered on live site. Publish triggers redeploy.
+# T02: Wire loadQuery helper, VisualEditing component, and presentationTool
 
-## Tasks
-- [x] **T01: Added @astrojs/vercel adapter with static output mode, enabling per-page SSR opt-in for future preview routes** — ## Description
-
-This is the riskiest step — changing the Astro build mode from `static` to `hybrid` and adding the Vercel adapter. If anything goes wrong, the entire build breaks. All existing pages must remain statically pre-rendered (hybrid mode defaults to `prerender = true`). The contact form API at `api/contact.ts` sits outside Astro routing and should be unaffected, but must be verified.
-
-## Steps
-
-1. Install `@astrojs/vercel` — run `npm install @astrojs/vercel`
-2. Update `astro.config.mjs`:
-   - Change `output: 'static'` to `output: 'hybrid'`
-   - Add `import vercel from '@astrojs/vercel';` at the top
-   - Add `adapter: vercel()` to the config object
-   - Keep all existing integrations (sitemap, sanity, react) unchanged
-3. Run `npm run build` and verify:
-   - Build exits 0
-   - Build output lists existing pages (/, /styleguide/, /admin/) as prerendered
-   - `dist/` output structure is correct for Vercel deployment
-4. Run `npm run lhci` to confirm Lighthouse CI thresholds still pass — no performance regression from the mode switch
-
-## Must-Haves
-
-- [ ] `@astrojs/vercel` added to package.json dependencies
-- [ ] `astro.config.mjs` uses `output: 'hybrid'` with `adapter: vercel()`
-- [ ] `npm run build` exits 0 with all existing pages prerendered
-- [ ] Lighthouse CI passes existing thresholds
-
-## Verification
-
-- `npm run build` exits 0
-- Build output contains "prerendered" for existing pages
-- `npm run lhci` passes all assertions
-- `grep -q 'hybrid' astro.config.mjs`
-- `grep -q '@astrojs/vercel' package.json`
-  - Estimate: 30m
-  - Files: astro.config.mjs, package.json
-  - Verify: npm run build && grep -q 'hybrid' astro.config.mjs && grep -q '@astrojs/vercel' package.json
-- [ ] **T02: Wire loadQuery helper, VisualEditing component, and presentationTool** — ## Description
+## Description
 
 Core preview functionality: add a draft-aware `loadQuery` helper that uses the `@sanity/astro` module's client, wire the `VisualEditing` overlay into BaseLayout, configure `presentationTool` in sanity.config.ts for Studio iframe preview, and document the deploy hook + webhook setup.
 
@@ -109,6 +76,23 @@ IMPORTANT: The existing query helpers in `src/lib/sanity.ts` (getPageBySlug, get
 - Signals added: loadQuery logs perspective mode in dev console when visual editing enabled
 - How a future agent inspects this: check PUBLIC_SANITY_VISUAL_EDITING_ENABLED value, grep for loadQuery usage
 - Failure state exposed: missing SANITY_API_READ_TOKEN throws descriptive error when preview mode is enabled
-  - Estimate: 1h
-  - Files: src/lib/sanity.ts, src/layouts/BaseLayout.astro, sanity.config.ts, .env.example, vercel.json
-  - Verify: npm run build && grep -q 'loadQuery' src/lib/sanity.ts && grep -q 'VisualEditing' src/layouts/BaseLayout.astro && grep -q 'presentationTool' sanity.config.ts && ! grep -rq 'SANITY_API_READ_TOKEN' src/components/ src/pages/
+
+## Inputs
+
+- ``astro.config.mjs` — T01's hybrid output config enabling server routes`
+- ``src/lib/sanity.ts` — existing Sanity client and GROQ helpers to extend`
+- ``src/layouts/BaseLayout.astro` — layout to add VisualEditing component`
+- ``sanity.config.ts` — Studio config to add presentationTool`
+- ``.env.example` — current env var documentation`
+- ``vercel.json` — current CSP and security headers`
+
+## Expected Output
+
+- ``src/lib/sanity.ts` — loadQuery helper added with perspective switching and token handling`
+- ``src/layouts/BaseLayout.astro` — VisualEditing component conditionally rendered`
+- ``sanity.config.ts` — presentationTool plugin added`
+- ``.env.example` — new env vars documented (SANITY_API_READ_TOKEN, PUBLIC_SANITY_VISUAL_EDITING_ENABLED, PUBLIC_SANITY_PREVIEW_URL, VERCEL_DEPLOY_HOOK_URL)`
+
+## Verification
+
+npm run build && grep -q 'loadQuery' src/lib/sanity.ts && grep -q 'VisualEditing' src/layouts/BaseLayout.astro && grep -q 'presentationTool' sanity.config.ts && ! grep -rq 'SANITY_API_READ_TOKEN' src/components/ src/pages/

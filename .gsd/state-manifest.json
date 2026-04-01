@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T01:50:14.836Z",
+  "exported_at": "2026-04-01T02:06:49.014Z",
   "milestones": [
     {
       "id": "M001",
@@ -365,16 +365,16 @@
       "milestone_id": "M001",
       "id": "S05",
       "title": "Forms, SEO & Security Infrastructure",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S01"
       ],
       "demo": "Form submission delivers email. sitemap.xml, robots.txt, security headers all verified.",
       "created_at": "2026-03-31T22:32:16.176Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T01:54:03.290Z",
+      "full_summary_md": "---\nid: S05\nparent: M001\nmilestone: M001\nprovides:\n  - Contact form API endpoint at /api/contact\n  - Turnstile CAPTCHA integration pattern\n  - robots.txt and sitemap-index.xml for SEO\n  - HSTS and complete security header set in vercel.json\nrequires:\n  []\naffects:\n  - S06\nkey_files:\n  - api/contact.ts\n  - src/components/ContactForm.astro\n  - public/robots.txt\n  - vercel.json\n  - package.json\nkey_decisions:\n  - D012: Contact form uses Vercel Edge Runtime with Turnstile CAPTCHA and Resend email delivery\n  - D013: HSTS set to 2-year max-age with includeSubDomains and preload per OWASP\npatterns_established:\n  - Vercel Edge Runtime with web-standard Request/Response for serverless API endpoints\n  - Structured JSON error responses with field-level errors array for form validation\n  - Console-based observability with [contact] prefix for serverless log filtering\nobservability_surfaces:\n  - Console logs with [contact] prefix in api/contact.ts for Vercel serverless log filtering\n  - Descriptive error messages when env vars are missing (graceful degradation)\ndrill_down_paths:\n  - .gsd/milestones/M001/slices/S05/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M001/slices/S05/tasks/T02-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:54:03.291Z\nblocker_discovered: false\n---\n\n# S05: Forms, SEO & Security Infrastructure\n\n**Contact form with Turnstile CAPTCHA and Resend email delivery, robots.txt, sitemap, and HSTS security header — infrastructure layer complete for page-building milestones.**\n\n## What Happened\n\nTwo tasks shipped the remaining infrastructure layer.\n\n**T01 — Contact form API and UI.** Created `api/contact.ts` as a Vercel Edge Runtime function handling POST requests with input validation (name, email, message — all required, email format check), server-side Turnstile token verification against Cloudflare's siteverify API, and email delivery via Resend SDK. Returns structured JSON with field-level errors array for rich client feedback. Updated `ContactForm.astro` with the Cloudflare Turnstile widget (loaded from challenges.cloudflare.com), client-side fetch submission to `/api/contact`, and three UI states: loading spinner, success confirmation, and field-level/general error display. The form does client-side validation before submission. Console-based observability with `[contact]` prefix for serverless log filtering.\n\n**T02 — SEO files and security hardening.** Created `public/robots.txt` allowing all crawlers with absolute Sitemap URL pointing to `https://ficcc.org/sitemap-index.xml`. Verified `@astrojs/sitemap` generates `dist/sitemap-index.xml` at build time. Added `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` to vercel.json global headers (2-year HSTS per OWASP best practice). Existing CSP already covers the new `/api/contact` endpoint via `connect-src 'self'`. All 6 Lighthouse CI runs pass assertion thresholds across both tested URLs.\n\n## Verification\n\nAll slice-level verification checks pass:\n- `npm run build` exits 0, producing 3 static pages and sitemap-index.xml\n- `api/contact.ts` exists with Edge Runtime config\n- `ContactForm.astro` includes Turnstile widget integration\n- `package.json` includes resend dependency\n- `public/robots.txt` exists with absolute Sitemap directive\n- `dist/sitemap-index.xml` generated with valid XML\n- `vercel.json` includes Strict-Transport-Security header\n- Lighthouse CI passes all thresholds (performance, accessibility, SEO, best-practices) for / and /styleguide/\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nT01 initially used VercelRequest/VercelResponse (Node.js runtime) but was corrected to web-standard Request/Response for Edge Runtime as specified in the plan.\n\n## Known Limitations\n\n- Contact form requires TURNSTILE_SECRET_KEY, RESEND_API_KEY, and PUBLIC_TURNSTILE_SITE_KEY environment variables configured in Vercel for production — without them the API returns descriptive error messages rather than crashing.\n- No rate limiting beyond Turnstile's built-in bot protection.\n- Form recipient email is configured via CONTACT_TO_EMAIL env var (not yet set in production).\n\n## Follow-ups\n\n- Set TURNSTILE_SECRET_KEY, RESEND_API_KEY, PUBLIC_TURNSTILE_SITE_KEY, and CONTACT_TO_EMAIL in Vercel environment variables before production launch.\n- Consider HSTS preload list submission once domain is confirmed stable on HTTPS.\n\n## Files Created/Modified\n\n- `api/contact.ts` — New Vercel Edge Runtime function — validates form input, verifies Turnstile token, sends email via Resend\n- `src/components/ContactForm.astro` — Added Turnstile widget, fetch-based submission, loading/success/error UI states\n- `public/robots.txt` — New file — allows all crawlers, absolute Sitemap URL\n- `vercel.json` — Added Strict-Transport-Security header to global headers\n- `package.json` — Added resend dependency\n",
+      "full_uat_md": "# S05: Forms, SEO & Security Infrastructure — UAT\n\n**Milestone:** M001\n**Written:** 2026-04-01T01:54:03.292Z\n\n# S05: Forms, SEO & Security Infrastructure — UAT\n\n**Milestone:** M001\n**Written:** 2026-03-31\n\n## UAT Type\n\n- UAT mode: mixed (artifact-driven for SEO/security files, live-runtime for form submission)\n- Why this mode is sufficient: SEO files and security headers are static config verified at build time. Form submission requires live Vercel deployment with env vars to fully test.\n\n## Preconditions\n\n- `npm run build` completes successfully\n- For form testing: deploy to Vercel preview with TURNSTILE_SECRET_KEY, RESEND_API_KEY, PUBLIC_TURNSTILE_SITE_KEY, and CONTACT_TO_EMAIL set\n\n## Smoke Test\n\nRun `npm run build` — should exit 0, produce `dist/sitemap-index.xml`, and show no errors.\n\n## Test Cases\n\n### 1. Contact form renders with Turnstile widget\n\n1. Open the page containing ContactForm in a browser (preview deploy or local dev)\n2. Scroll to the contact form section\n3. **Expected:** Form shows Name, Email, Message fields and a Cloudflare Turnstile challenge widget. Submit button is present.\n\n### 2. Contact form validates required fields client-side\n\n1. Leave all fields empty\n2. Click Submit\n3. **Expected:** Browser native validation prevents submission, highlights required fields\n\n### 3. Contact form submits successfully (requires live deploy)\n\n1. Fill in Name: \"Test User\", Email: \"test@example.com\", Message: \"Test message\"\n2. Complete the Turnstile challenge\n3. Click Submit\n4. **Expected:** Spinner appears during submission. On success, a green confirmation message appears. Email arrives at the configured CONTACT_TO_EMAIL address.\n\n### 4. Contact form shows server errors gracefully\n\n1. Submit form with valid data but with an invalid RESEND_API_KEY configured\n2. **Expected:** A red error banner appears with a user-friendly message (not a stack trace)\n\n### 5. robots.txt is correct\n\n1. Run `cat public/robots.txt`\n2. **Expected:** Contains `User-agent: *`, `Allow: /`, and `Sitemap: https://ficcc.org/sitemap-index.xml`\n\n### 6. Sitemap generates at build time\n\n1. Run `npm run build`\n2. Check `dist/sitemap-index.xml`\n3. **Expected:** Valid XML file exists with sitemap entries for all public pages\n\n### 7. Security headers in vercel.json\n\n1. Open `vercel.json` and inspect the headers array\n2. **Expected:** Contains Strict-Transport-Security with `max-age=63072000; includeSubDomains; preload`. Also contains existing CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy headers.\n\n### 8. Lighthouse CI passes\n\n1. Run `npm run build && npm run lhci`\n2. **Expected:** All 6 assertion runs pass. Performance ≥ 0.75 for /, ≥ 0.50 for /styleguide/. Accessibility, SEO, and best-practices thresholds met.\n\n## Edge Cases\n\n### Missing environment variables\n\n1. Remove TURNSTILE_SECRET_KEY from environment\n2. Submit the contact form\n3. **Expected:** API returns a descriptive JSON error about missing configuration, not a 500 crash\n\n### Invalid email format\n\n1. Enter \"not-an-email\" in the Email field\n2. **Expected:** Browser validation (type=email) rejects submission before it reaches the server\n\n### Empty Turnstile token\n\n1. Submit form without completing the Turnstile challenge (if possible via JS manipulation)\n2. **Expected:** Server returns 400 error indicating Turnstile verification failed\n\n## Failure Signals\n\n- `npm run build` fails or does not produce `dist/sitemap-index.xml`\n- Contact form shows no Turnstile widget (script blocked or site key wrong)\n- Form submission returns 500 or shows raw error text instead of styled error banner\n- `robots.txt` missing or has relative Sitemap URL\n- Lighthouse CI run fails thresholds\n- `vercel.json` missing Strict-Transport-Security header\n\n## Not Proven By This UAT\n\n- Actual email delivery to real recipients (requires production Resend API key)\n- HSTS preload list submission\n- Form behavior under high traffic / DDoS conditions\n- Turnstile widget rendering across all browsers and devices\n\n## Notes for Tester\n\n- Form testing on localhost will show missing env var errors — this is expected. Use a Vercel preview deploy with secrets configured for end-to-end testing.\n- The Turnstile widget may show as a simple checkbox or invisible challenge depending on Cloudflare's risk assessment.\n- HSTS preload requires the domain to be submitted to hstspreload.org separately — the header alone enables the policy but doesn't add to browser preload lists.\n",
       "goal": "Wire up contact form submission (Turnstile + Resend), add SEO static files, and harden security headers so the infrastructure layer is complete for page-building milestones.",
       "success_criteria": "- `api/contact.ts` serverless function validates inputs, verifies Turnstile token, sends email via Resend\n- ContactForm.astro includes Turnstile widget, client-side submission JS with loading/success/error states\n- `public/robots.txt` exists with correct sitemap URL\n- `npm run build` produces `dist/sitemap-index.xml`\n- Security headers in vercel.json include Strict-Transport-Security\n- `npm run build` succeeds with no errors\n- Lighthouse CI (`npm run lhci`) passes existing thresholds",
       "proof_level": "Integration — form submission exercises Turnstile + Resend integration; SEO and security are verifiable from build output and header inspection.",
@@ -398,11 +398,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Content preview and publish-to-deploy pipeline end-to-end",
-      "success_criteria": "Preview route uses previewDrafts perspective. Webhook triggers Vercel deploy on publish. Deploy completes within 2 minutes.",
-      "proof_level": "Draft visible on preview URL. Published content appears on production within 2 minutes.",
-      "integration_closure": "Editorial workflow complete: draft → preview → publish → live",
-      "observability_impact": "Deploy hooks visible in Vercel dashboard",
+      "goal": "Sanity Visual Editing preview mode wired into the Astro site so editors can see draft content, with publish-triggered redeployment configured.",
+      "success_criteria": "## Must-Haves\n\n- `output: 'hybrid'` with `@astrojs/vercel` adapter — all existing pages still statically pre-rendered\n- `loadQuery` helper in `src/lib/sanity.ts` that switches between `published` and `drafts` perspective based on `PUBLIC_SANITY_VISUAL_EDITING_ENABLED` env var\n- `VisualEditing` component from `@sanity/astro/visual-editing` conditionally rendered in `BaseLayout.astro`\n- `SANITY_API_READ_TOKEN` used server-side only — never exposed in client bundle\n- `presentationTool` configured in `sanity.config.ts` for Studio iframe preview\n- Vercel deploy hook and Sanity webhook documented in `.env.example` and project docs\n- `npm run build` exits 0 with no regressions\n- Lighthouse CI passes existing thresholds\n\n## Threat Surface\n\n- **Abuse**: Preview mode is gated by env var — no public endpoint to abuse. Presentation tool iframe requires Studio authentication.\n- **Data exposure**: `SANITY_API_READ_TOKEN` is a server-side secret that can read draft content. Must never be in a `PUBLIC_`-prefixed var or client bundle.\n- **Input trust**: No new user input surfaces. Preview is editor-initiated from authenticated Sanity Studio.\n\n## Requirement Impact\n\n- **Requirements touched**: None — no active requirements in REQUIREMENTS.md for this slice\n- **Re-verify**: Existing static pages still pre-render correctly, Lighthouse CI thresholds still met, contact form API still works\n- **Decisions revisited**: D011 — rationale was to preserve `output: 'static'`. Now switching to `hybrid`, but the manual Studio embed approach still works and doesn't need changing.\n\n## Proof Level\n\n- This slice proves: integration\n- Real runtime required: yes (build verification confirms hybrid mode works)\n- Human/UAT required: yes (full preview flow requires Sanity Studio with draft content and valid credentials)\n\n## Verification\n\n- `npm run build` exits 0 and build output shows existing pages as \"prerendered\"\n- `grep -q \"output.*hybrid\" astro.config.mjs` — confirms hybrid mode\n- `grep -q \"@astrojs/vercel\" package.json` — adapter installed\n- `grep -q \"loadQuery\" src/lib/sanity.ts` — draft-aware query helper exists\n- `grep -q \"VisualEditing\" src/layouts/BaseLayout.astro` — visual editing component wired\n- `grep -q \"SANITY_API_READ_TOKEN\" .env.example` — read token documented\n- `grep -q \"presentationTool\" sanity.config.ts` — presentation tool configured\n- `! grep -rq \"SANITY_API_READ_TOKEN\" src/components/ src/pages/` — token not in client code\n- Lighthouse CI passes: `npm run lhci`\n\n## Observability / Diagnostics\n\n- Runtime signals: `loadQuery` logs perspective mode (`published` vs `drafts`) in dev when visual editing is enabled\n- Inspection surfaces: `PUBLIC_SANITY_VISUAL_EDITING_ENABLED` env var controls preview mode — set to `true` to enable, absent/false to disable\n- Failure visibility: Missing `SANITY_API_READ_TOKEN` when preview is enabled produces a clear error message rather than silent failure\n- Redaction constraints: `SANITY_API_READ_TOKEN` is server-only — must never appear in client-side code or `PUBLIC_` prefixed vars\n\n## Integration Closure\n\n- Upstream surfaces consumed: `src/lib/sanity.ts` (S04 query helpers), `src/layouts/BaseLayout.astro` (S02 layout), `sanity.config.ts` (S04 Studio config), `vercel.json` (S05 security headers)\n- New wiring introduced in this slice: Vercel adapter for hybrid SSR, `loadQuery` helper for draft-aware fetching, `VisualEditing` overlay component, `presentationTool` for Studio iframe preview\n- What remains before the milestone is truly usable end-to-end: nothing — this is the final slice in M001",
+      "proof_level": "integration — build verification confirms hybrid mode works, but full preview flow requires Sanity Studio with draft content",
+      "integration_closure": "Upstream: src/lib/sanity.ts, BaseLayout.astro, sanity.config.ts, vercel.json. New wiring: Vercel adapter, loadQuery helper, VisualEditing component, presentationTool. This is the final M001 slice.",
+      "observability_impact": "loadQuery logs perspective mode in dev. Missing SANITY_API_READ_TOKEN produces clear error. PUBLIC_SANITY_VISUAL_EDITING_ENABLED controls preview toggle.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -1577,6 +1577,93 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S06",
+      "id": "T01",
+      "title": "Added @astrojs/vercel adapter with static output mode, enabling per-page SSR opt-in for future preview routes",
+      "status": "complete",
+      "one_liner": "Added @astrojs/vercel adapter with static output mode, enabling per-page SSR opt-in for future preview routes",
+      "narrative": "Installed @astrojs/vercel@9 (v10 requires Astro 6). Discovered Astro 5 removed `output: 'hybrid'` — static mode with adapter provides identical per-page SSR opt-in. All 3 existing pages remain statically prerendered. Build and LHCI pass cleanly.",
+      "verification_result": "npm run build exits 0 with all pages prerendered. npm run lhci passes all assertions. @astrojs/vercel present in package.json. Adapter configured in astro.config.mjs.",
+      "duration": "",
+      "completed_at": "2026-04-01T02:06:48.993Z",
+      "blocker_discovered": false,
+      "deviations": "Used output:'static' instead of 'hybrid' because Astro 5 removed hybrid mode. Used @astrojs/vercel@9 instead of latest v10 due to Astro 5 peer dependency.",
+      "known_issues": "None.",
+      "key_files": [
+        "astro.config.mjs",
+        "package.json"
+      ],
+      "key_decisions": [
+        "Used @astrojs/vercel@9 for Astro 5 compatibility",
+        "Kept output:'static' — Astro 5 equivalent of hybrid mode with adapter"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S06\nmilestone: M001\nkey_files:\n  - astro.config.mjs\n  - package.json\nkey_decisions:\n  - Used @astrojs/vercel@9 for Astro 5 compatibility\n  - Kept output:'static' — Astro 5 equivalent of hybrid mode with adapter\nduration: \"\"\nverification_result: mixed\ncompleted_at: 2026-04-01T02:06:48.994Z\nblocker_discovered: false\n---\n\n# T01: Added @astrojs/vercel adapter with static output mode, enabling per-page SSR opt-in for future preview routes\n\n**Added @astrojs/vercel adapter with static output mode, enabling per-page SSR opt-in for future preview routes**\n\n## What Happened\n\nInstalled @astrojs/vercel@9 (v10 requires Astro 6). Discovered Astro 5 removed `output: 'hybrid'` — static mode with adapter provides identical per-page SSR opt-in. All 3 existing pages remain statically prerendered. Build and LHCI pass cleanly.\n\n## Verification\n\nnpm run build exits 0 with all pages prerendered. npm run lhci passes all assertions. @astrojs/vercel present in package.json. Adapter configured in astro.config.mjs.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 7300ms |\n| 2 | `npm run lhci` | 0 | ✅ pass | 75500ms |\n| 3 | `grep -q '@astrojs/vercel' package.json` | 0 | ✅ pass | 50ms |\n| 4 | `grep -q 'hybrid' astro.config.mjs` | 1 | ❌ expected fail — Astro 5 removed hybrid mode | 50ms |\n\n\n## Deviations\n\nUsed output:'static' instead of 'hybrid' because Astro 5 removed hybrid mode. Used @astrojs/vercel@9 instead of latest v10 due to Astro 5 peer dependency.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `astro.config.mjs`\n- `package.json`\n",
+      "description": "## Description\n\nThis is the riskiest step — changing the Astro build mode from `static` to `hybrid` and adding the Vercel adapter. If anything goes wrong, the entire build breaks. All existing pages must remain statically pre-rendered (hybrid mode defaults to `prerender = true`). The contact form API at `api/contact.ts` sits outside Astro routing and should be unaffected, but must be verified.\n\n## Steps\n\n1. Install `@astrojs/vercel` — run `npm install @astrojs/vercel`\n2. Update `astro.config.mjs`:\n   - Change `output: 'static'` to `output: 'hybrid'`\n   - Add `import vercel from '@astrojs/vercel';` at the top\n   - Add `adapter: vercel()` to the config object\n   - Keep all existing integrations (sitemap, sanity, react) unchanged\n3. Run `npm run build` and verify:\n   - Build exits 0\n   - Build output lists existing pages (/, /styleguide/, /admin/) as prerendered\n   - `dist/` output structure is correct for Vercel deployment\n4. Run `npm run lhci` to confirm Lighthouse CI thresholds still pass — no performance regression from the mode switch\n\n## Must-Haves\n\n- [ ] `@astrojs/vercel` added to package.json dependencies\n- [ ] `astro.config.mjs` uses `output: 'hybrid'` with `adapter: vercel()`\n- [ ] `npm run build` exits 0 with all existing pages prerendered\n- [ ] Lighthouse CI passes existing thresholds\n\n## Verification\n\n- `npm run build` exits 0\n- Build output contains \"prerendered\" for existing pages\n- `npm run lhci` passes all assertions\n- `grep -q 'hybrid' astro.config.mjs`\n- `grep -q '@astrojs/vercel' package.json`",
+      "estimate": "30m",
+      "files": [
+        "astro.config.mjs",
+        "package.json"
+      ],
+      "verify": "npm run build && grep -q 'hybrid' astro.config.mjs && grep -q '@astrojs/vercel' package.json",
+      "inputs": [
+        "`astro.config.mjs` — current static config to modify",
+        "`package.json` — current dependencies"
+      ],
+      "expected_output": [
+        "`astro.config.mjs` — updated with hybrid output and Vercel adapter",
+        "`package.json` — @astrojs/vercel added to dependencies"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S06",
+      "id": "T02",
+      "title": "Wire loadQuery helper, VisualEditing component, and presentationTool",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "## Description\n\nCore preview functionality: add a draft-aware `loadQuery` helper that uses the `@sanity/astro` module's client, wire the `VisualEditing` overlay into BaseLayout, configure `presentationTool` in sanity.config.ts for Studio iframe preview, and document the deploy hook + webhook setup.\n\nThe `loadQuery` helper must use `SANITY_API_READ_TOKEN` (server-only, no PUBLIC_ prefix) to fetch drafts. The `VisualEditing` component from `@sanity/astro/visual-editing` renders as a React island via `client:only=\"react\"`. Both are gated by `PUBLIC_SANITY_VISUAL_EDITING_ENABLED`.\n\nIMPORTANT: The existing query helpers in `src/lib/sanity.ts` (getPageBySlug, getSermons, etc.) must remain unchanged — they're used for static build-time fetching. `loadQuery` is a parallel helper for server-rendered preview contexts.\n\n## Steps\n\n1. Add `loadQuery` function to `src/lib/sanity.ts`:\n   - Import the client from `sanity:client` (provided by @sanity/astro integration) for visual editing support\n   - Check `import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true'`\n   - When enabled: use `perspective: 'drafts'`, `stega: true`, pass `SANITY_API_READ_TOKEN` as token, set `resultSourceMap: true`\n   - When disabled: use `perspective: 'published'`, no token, no stega\n   - Add a guard: if preview enabled but `SANITY_API_READ_TOKEN` is missing, throw a clear error\n   - Keep all existing query helpers (getPageBySlug, getSermons, etc.) untouched\n2. Add `VisualEditing` component to `src/layouts/BaseLayout.astro`:\n   - Import `{ VisualEditing }` from `@sanity/astro/visual-editing`\n   - Add `<VisualEditing />` before `</body>`, rendered only when `PUBLIC_SANITY_VISUAL_EDITING_ENABLED` is `'true'`\n   - The component should use `client:only=\"react\"` directive\n3. Update `sanity.config.ts`:\n   - Import `presentationTool` from `sanity/presentation`\n   - Add `presentationTool({ previewUrl: import.meta.env.PUBLIC_SANITY_PREVIEW_URL || 'http://localhost:4321' })` to plugins array\n   - This enables the \"Preview\" button in Sanity Studio\n4. Update `.env.example`:\n   - Add `SANITY_API_READ_TOKEN=` with comment explaining it's server-only for draft fetching\n   - Add `PUBLIC_SANITY_VISUAL_EDITING_ENABLED=` with comment explaining it enables preview mode\n   - Add `PUBLIC_SANITY_PREVIEW_URL=` with comment explaining it's the preview site URL for Studio iframe\n   - Add `VERCEL_DEPLOY_HOOK_URL=` with comment explaining it's created in Vercel dashboard, used as Sanity webhook target\n5. Update CSP in `vercel.json` if needed:\n   - Visual Editing communicates with Sanity API — current `connect-src 'self' https://*.sanity.io` should cover it\n   - If `presentationTool` needs `frame-ancestors`, that's handled by Studio (hosted separately), not the site\n   - Verify no CSP changes needed; if they are, update the Content-Security-Policy header\n6. Run `npm run build` to confirm no regressions\n7. Run `npm run lhci` to confirm Lighthouse CI passes\n\n## Must-Haves\n\n- [ ] `loadQuery` function exists in `src/lib/sanity.ts` with perspective switching\n- [ ] `SANITY_API_READ_TOKEN` used only server-side — never in PUBLIC_ var or client component\n- [ ] `VisualEditing` component in BaseLayout, gated by env var\n- [ ] `presentationTool` configured in `sanity.config.ts`\n- [ ] `.env.example` documents all new env vars\n- [ ] Build passes, Lighthouse CI passes\n- [ ] Existing GROQ query helpers unchanged\n\n## Failure Modes\n\n| Dependency | On error | On timeout | On malformed response |\n|------------|----------|-----------|----------------------|\n| Sanity API (draft fetch) | loadQuery throws with context — missing token or API error message | Sanity client has default timeout — error surfaces naturally | GROQ returns null for missing docs — handled by existing null checks |\n| @sanity/astro visual-editing | Component fails to render — page still usable without overlay | N/A (client-side component) | N/A |\n\n## Verification\n\n- `npm run build` exits 0\n- `grep -q 'loadQuery' src/lib/sanity.ts`\n- `grep -q 'VisualEditing' src/layouts/BaseLayout.astro`\n- `grep -q 'presentationTool' sanity.config.ts`\n- `grep -q 'SANITY_API_READ_TOKEN' .env.example`\n- `grep -q 'PUBLIC_SANITY_VISUAL_EDITING_ENABLED' .env.example`\n- `! grep -rq 'SANITY_API_READ_TOKEN' src/components/ src/pages/` — token not leaked to client\n- `npm run lhci` passes\n\n## Observability Impact\n\n- Signals added: loadQuery logs perspective mode in dev console when visual editing enabled\n- How a future agent inspects this: check PUBLIC_SANITY_VISUAL_EDITING_ENABLED value, grep for loadQuery usage\n- Failure state exposed: missing SANITY_API_READ_TOKEN throws descriptive error when preview mode is enabled",
+      "estimate": "1h",
+      "files": [
+        "src/lib/sanity.ts",
+        "src/layouts/BaseLayout.astro",
+        "sanity.config.ts",
+        ".env.example",
+        "vercel.json"
+      ],
+      "verify": "npm run build && grep -q 'loadQuery' src/lib/sanity.ts && grep -q 'VisualEditing' src/layouts/BaseLayout.astro && grep -q 'presentationTool' sanity.config.ts && ! grep -rq 'SANITY_API_READ_TOKEN' src/components/ src/pages/",
+      "inputs": [
+        "`astro.config.mjs` — T01's hybrid output config enabling server routes",
+        "`src/lib/sanity.ts` — existing Sanity client and GROQ helpers to extend",
+        "`src/layouts/BaseLayout.astro` — layout to add VisualEditing component",
+        "`sanity.config.ts` — Studio config to add presentationTool",
+        "`.env.example` — current env var documentation",
+        "`vercel.json` — current CSP and security headers"
+      ],
+      "expected_output": [
+        "`src/lib/sanity.ts` — loadQuery helper added with perspective switching and token handling",
+        "`src/layouts/BaseLayout.astro` — VisualEditing component conditionally rendered",
+        "`sanity.config.ts` — presentationTool plugin added",
+        "`.env.example` — new env vars documented (SANITY_API_READ_TOKEN, PUBLIC_SANITY_VISUAL_EDITING_ENABLED, PUBLIC_SANITY_PREVIEW_URL, VERCEL_DEPLOY_HOOK_URL)"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -1709,6 +1796,30 @@
       "choice": "Manual client:only=\"react\" component at /admin instead of @sanity/astro studioBasePath",
       "rationale": "@sanity/astro's studioBasePath injects a server-rendered route requiring output:'server' or 'hybrid' with an adapter. Manual embed via Studio.tsx + client:only keeps the site fully static.",
       "revisable": "Yes",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 14,
+      "id": "D012",
+      "when_context": "M001/S05/T02",
+      "scope": "security",
+      "decision": "HSTS policy for production deployment",
+      "choice": "Strict-Transport-Security: max-age=63072000; includeSubDomains; preload",
+      "rationale": "2-year max-age with includeSubDomains and preload per OWASP best practice. Applied via vercel.json global headers alongside existing CSP, X-Frame-Options, and other security headers.",
+      "revisable": "Yes",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 15,
+      "id": "D013",
+      "when_context": "M001/S06",
+      "scope": "architecture",
+      "decision": "Output mode for Astro site",
+      "choice": "Switch from `output: 'static'` to `output: 'hybrid'` with `@astrojs/vercel` adapter",
+      "rationale": "Sanity Visual Editing requires server-rendered routes to fetch drafts at request time. Hybrid mode keeps all existing pages statically pre-rendered by default (zero behavior change) while enabling opt-in SSR. This supersedes the K004/D011 rationale for staying fully static — the manual Studio embed at /admin still works fine under hybrid mode.",
+      "revisable": "No — preview mode fundamentally requires server capability",
       "made_by": "agent",
       "superseded_by": null
     }
@@ -2329,6 +2440,50 @@
       "verdict": "✅ pass",
       "duration_ms": 75700,
       "created_at": "2026-04-01T01:50:14.817Z"
+    },
+    {
+      "id": 57,
+      "task_id": "T01",
+      "slice_id": "S06",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7300,
+      "created_at": "2026-04-01T02:06:48.993Z"
+    },
+    {
+      "id": 58,
+      "task_id": "T01",
+      "slice_id": "S06",
+      "milestone_id": "M001",
+      "command": "npm run lhci",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 75500,
+      "created_at": "2026-04-01T02:06:48.993Z"
+    },
+    {
+      "id": 59,
+      "task_id": "T01",
+      "slice_id": "S06",
+      "milestone_id": "M001",
+      "command": "grep -q '@astrojs/vercel' package.json",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T02:06:48.993Z"
+    },
+    {
+      "id": 60,
+      "task_id": "T01",
+      "slice_id": "S06",
+      "milestone_id": "M001",
+      "command": "grep -q 'hybrid' astro.config.mjs",
+      "exit_code": 1,
+      "verdict": "❌ expected fail — Astro 5 removed hybrid mode",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T02:06:48.993Z"
     }
   ]
 }
