@@ -3,6 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Card from '../components/Card.astro';
 import ImageMosaic from '../components/ImageMosaic.astro';
+import Accordion from '../components/Accordion.astro';
+import ContactForm from '../components/ContactForm.astro';
+import AudioPlayer from '../components/AudioPlayer.astro';
 
 /* Design-token definitions for rendering in the page */
 const colors = [
@@ -232,6 +235,54 @@ const spacingTokens = [
         { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23b3654b' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E5%3C/text%3E%3C/svg%3E", alt: "Placeholder 5" },
         { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23FAF8F5' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%231A1A2E' font-size='20'%3E6%3C/text%3E%3C/svg%3E", alt: "Placeholder 6" },
       ]} />
+    </section>
+
+    <!-- ================================================================
+         ACCORDION COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Accordion</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        FAQ-style accordion using native <code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code> elements — zero JavaScript, accessible by default. Custom chevron rotates on open.
+      </p>
+      <Accordion items={[
+        { title: "What time are Sunday services?", content: "We gather every Sunday at 10:00 AM for bilingual worship in English and Chinese. The service typically lasts about 90 minutes, followed by fellowship and refreshments." },
+        { title: "Where is the church located?", content: "FICCC meets at our gathering space in Ithaca, NY. Please visit our Contact page for the full address and a map with directions." },
+        { title: "Is childcare available during services?", content: "Yes! We offer supervised childcare and a children's program during the main worship service for kids ages 2–10." },
+        { title: "How can I get involved?", content: "We'd love to have you join us! You can participate in Sunday worship, midweek Bible study groups, community outreach events, or our music ministry. Reach out through our contact form to learn more." },
+      ]} />
+    </section>
+
+    <!-- ================================================================
+         CONTACT FORM COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Contact Form</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        Styled HTML form with validation attributes (<code>required</code>, <code>type="email"</code>, <code>minlength</code>). Labels properly associated via <code>for</code>/<code>id</code>. Submission handling is wired in a later slice.
+      </p>
+      <ContactForm />
+    </section>
+
+    <!-- ================================================================
+         AUDIO PLAYER COMPONENT
+         ================================================================ -->
+    <section style={`margin-block-end: var(--space-16);`}>
+      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Audio Player</h2>
+      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
+        Styled wrapper around the native <code>&lt;audio controls&gt;</code> element. Displays title and optional speaker metadata. Placeholder source shown below (no audio loaded).
+      </p>
+      <div style={`display: flex; flex-direction: column; gap: var(--space-4); max-width: 36rem;`}>
+        <AudioPlayer
+          src=""
+          title="Sunday Sermon: The Good Shepherd"
+          speaker="Pastor David Chen"
+        />
+        <AudioPlayer
+          src=""
+          title="Hymn: Amazing Grace (Traditional)"
+        />
+      </div>
     </section>
   </main>
 </BaseLayout>

@@ -1,0 +1,55 @@
+---
+interface Props {
+  src: string;
+  title: string;
+  speaker?: string;
+}
+
+const { src, title, speaker } = Astro.props;
+---
+
+<div class="audio-player">
+  <div class="audio-player__meta">
+    <h3 class="audio-player__title">{title}</h3>
+    {speaker && <p class="audio-player__speaker">{speaker}</p>}
+  </div>
+  <audio class="audio-player__audio" controls preload="metadata">
+    {src && <source src={src} />}
+    Your browser does not support the audio element.
+  </audio>
+</div>
+
+<style>
+  .audio-player {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    border: 1px solid var(--color-stone);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .audio-player__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .audio-player__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    line-height: var(--leading-tight);
+    color: var(--color-ink);
+  }
+
+  .audio-player__speaker {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-body);
+  }
+
+  .audio-player__audio {
+    width: 100%;
+  }
+</style>

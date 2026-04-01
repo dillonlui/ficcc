@@ -1,0 +1,119 @@
+---
+/* ContactForm — styled HTML form with validation attributes.
+   No action attribute — form submission handling is S05's job. */
+---
+
+<form class="contact-form" novalidate>
+  <div class="contact-form__field">
+    <label class="contact-form__label" for="contact-name">Name</label>
+    <input
+      class="contact-form__input"
+      type="text"
+      id="contact-name"
+      name="name"
+      required
+      minlength="2"
+      autocomplete="name"
+      placeholder="Your name"
+    />
+  </div>
+
+  <div class="contact-form__field">
+    <label class="contact-form__label" for="contact-email">Email</label>
+    <input
+      class="contact-form__input"
+      type="email"
+      id="contact-email"
+      name="email"
+      required
+      autocomplete="email"
+      placeholder="you@example.com"
+    />
+  </div>
+
+  <div class="contact-form__field">
+    <label class="contact-form__label" for="contact-message">Message</label>
+    <textarea
+      class="contact-form__input contact-form__textarea"
+      id="contact-message"
+      name="message"
+      required
+      minlength="10"
+      rows="5"
+      placeholder="How can we help?"
+    ></textarea>
+  </div>
+
+  <button class="contact-form__submit" type="submit">Send Message</button>
+</form>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: 36rem;
+  }
+
+  .contact-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .contact-form__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .contact-form__input {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-body);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-stone);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-4);
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .contact-form__input::placeholder {
+    color: var(--color-stone);
+  }
+
+  .contact-form__input:focus {
+    outline: none;
+    border-color: var(--color-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 25%, transparent);
+  }
+
+  .contact-form__textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .contact-form__submit {
+    align-self: flex-start;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-bg);
+    background-color: var(--color-terracotta);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-8);
+    cursor: pointer;
+    transition: background-color var(--transition), box-shadow var(--transition);
+  }
+
+  .contact-form__submit:hover {
+    background-color: color-mix(in srgb, var(--color-terracotta) 85%, black);
+  }
+
+  .contact-form__submit:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+</style>

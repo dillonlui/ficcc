@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T00:59:23.023Z",
+  "exported_at": "2026-04-01T01:09:06.959Z",
   "milestones": [
     {
       "id": "M001",
@@ -1246,19 +1246,30 @@
       "milestone_id": "M001",
       "slice_id": "S03",
       "id": "T03",
-      "title": "Build Accordion, ContactForm, and AudioPlayer components, run final verification",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Built Accordion, ContactForm, and AudioPlayer components, fixed a11y issues in Header/Footer, passed Lighthouse CI",
+      "status": "complete",
+      "one_liner": "Built Accordion, ContactForm, and AudioPlayer components, fixed a11y issues in Header/Footer, passed Lighthouse CI",
+      "narrative": "Created three interactive/media components (Accordion with native details/summary, ContactForm with validated HTML inputs, AudioPlayer with native audio controls) and added all three to the /styleguide page. Fixed three pre-existing a11y issues in Header (color contrast, label mismatch) and Footer (heading order) that caused Lighthouse CI to fail at 0.94 vs 0.95 threshold. After fixes, all Lighthouse CI assertions pass on both homepage and styleguide.",
+      "verification_result": "npm run build succeeds (0 errors, 2 pages). All file existence and grep checks pass. npx @lhci/cli autorun passes all assertions (a11y ≥ 0.95 on both pages).",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T01:09:06.942Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Fixed three pre-existing a11y issues in Header.astro and Footer.astro (color contrast on lang-toggle, heading order in footer, label-content-name-mismatch on lang-toggle) that were introduced in T01 but surfaced during T03's Lighthouse CI verification.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/Accordion.astro",
+        "src/components/ContactForm.astro",
+        "src/components/AudioPlayer.astro",
+        "src/pages/styleguide.astro",
+        "src/components/Header.astro",
+        "src/components/Footer.astro"
+      ],
+      "key_decisions": [
+        "Lang toggle uses --color-ink for default text to pass WCAG AA color contrast",
+        "Footer headings changed from h3 to h2 for proper heading order",
+        "Header aria-label updated to include visible text for label-content-name-mismatch fix"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S03\nmilestone: M001\nkey_files:\n  - src/components/Accordion.astro\n  - src/components/ContactForm.astro\n  - src/components/AudioPlayer.astro\n  - src/pages/styleguide.astro\n  - src/components/Header.astro\n  - src/components/Footer.astro\nkey_decisions:\n  - Lang toggle uses --color-ink for default text to pass WCAG AA color contrast\n  - Footer headings changed from h3 to h2 for proper heading order\n  - Header aria-label updated to include visible text for label-content-name-mismatch fix\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:09:06.943Z\nblocker_discovered: false\n---\n\n# T03: Built Accordion, ContactForm, and AudioPlayer components, fixed a11y issues in Header/Footer, passed Lighthouse CI\n\n**Built Accordion, ContactForm, and AudioPlayer components, fixed a11y issues in Header/Footer, passed Lighthouse CI**\n\n## What Happened\n\nCreated three interactive/media components (Accordion with native details/summary, ContactForm with validated HTML inputs, AudioPlayer with native audio controls) and added all three to the /styleguide page. Fixed three pre-existing a11y issues in Header (color contrast, label mismatch) and Footer (heading order) that caused Lighthouse CI to fail at 0.94 vs 0.95 threshold. After fixes, all Lighthouse CI assertions pass on both homepage and styleguide.\n\n## Verification\n\nnpm run build succeeds (0 errors, 2 pages). All file existence and grep checks pass. npx @lhci/cli autorun passes all assertions (a11y ≥ 0.95 on both pages).\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 400ms |\n| 2 | `test -f src/components/Accordion.astro && test -f src/components/ContactForm.astro && test -f src/components/AudioPlayer.astro` | 0 | ✅ pass | 50ms |\n| 3 | `grep -q 'details' src/components/Accordion.astro` | 0 | ✅ pass | 50ms |\n| 4 | `grep -q '<label' src/components/ContactForm.astro` | 0 | ✅ pass | 50ms |\n| 5 | `grep -q '<audio' src/components/AudioPlayer.astro` | 0 | ✅ pass | 50ms |\n| 6 | `npx @lhci/cli autorun` | 0 | ✅ pass | 69000ms |\n\n\n## Deviations\n\nFixed three pre-existing a11y issues in Header.astro and Footer.astro (color contrast on lang-toggle, heading order in footer, label-content-name-mismatch on lang-toggle) that were introduced in T01 but surfaced during T03's Lighthouse CI verification.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/Accordion.astro`\n- `src/components/ContactForm.astro`\n- `src/components/AudioPlayer.astro`\n- `src/pages/styleguide.astro`\n- `src/components/Header.astro`\n- `src/components/Footer.astro`\n",
       "description": "Create the three interactive/media components — Accordion (details/summary), ContactForm (HTML form with styled inputs), AudioPlayer (styled native audio wrapper) — add all three to the styleguide page, and run final build + Lighthouse CI verification for the complete slice.\n\n## Steps\n\n1. Create `src/components/Accordion.astro`:\n   - Props: `items` (array of `{ title: string, content: string }`)\n   - Use native `<details>` / `<summary>` elements — zero JS, accessible by default\n   - Style `summary::marker` or use `list-style: none` + custom chevron icon for cross-browser consistency\n   - Spacing between items using tokens, border-bottom separators\n   - Summary text in body font at `--text-lg`, content in body font at `--text-base`\n2. Create `src/components/ContactForm.astro`:\n   - HTML `<form>` with fields: name (text, required), email (email, required), message (textarea, required)\n   - Submit button styled with terracotta background, bg/white text\n   - Styled inputs: border using `--color-stone`, focus ring using `--color-focus` or `--color-terracotta`, border-radius `--radius-sm`\n   - HTML validation attributes: `required`, `type=\"email\"`, `minlength`\n   - No `action` attribute — form submission is S05's job. Add a comment noting this.\n   - Labels associated with inputs via `for`/`id` attributes\n3. Create `src/components/AudioPlayer.astro`:\n   - Props: `src` (string), `title` (string), `speaker` (string, optional)\n   - Styled wrapper `<div>` with title and speaker metadata displayed above native `<audio controls>`\n   - Don't try to fully restyle native audio controls — just wrap them in a styled container\n   - Title in heading font, speaker in body font at `--text-sm`\n   - Border, padding, border-radius using tokens\n4. Add all three components to `src/pages/styleguide.astro` with sample data:\n   - Accordion with 3-4 FAQ items\n   - ContactForm as-is (no action needed)\n   - AudioPlayer with a placeholder src (empty string or `#` — the element renders without a valid source)\n5. Run `npm run build` to verify all pages compile.\n6. Run Lighthouse CI: `npx @lhci/cli autorun` to verify a11y ≥ 0.95 and perf within thresholds.\n\n## Must-Haves\n\n- [ ] Accordion uses native `<details>`/`<summary>` — no JS\n- [ ] ContactForm has proper `<label>` + `for`/`id` associations for all fields\n- [ ] ContactForm uses HTML validation attributes (required, type=email)\n- [ ] AudioPlayer uses native `<audio controls>` element\n- [ ] All styles use only CSS custom properties\n- [ ] All three render on /styleguide with sample data\n- [ ] `npm run build` succeeds\n- [ ] Lighthouse CI passes (a11y ≥ 0.95)\n\n## Verification\n\n- `npm run build` succeeds with 0 errors\n- `test -f src/components/Accordion.astro && test -f src/components/ContactForm.astro && test -f src/components/AudioPlayer.astro` passes\n- `npx @lhci/cli autorun` passes all assertions\n- `grep -q 'details' src/components/Accordion.astro` confirms native element usage\n- `grep -q '<label' src/components/ContactForm.astro` confirms proper label associations\n- `grep -q '<audio' src/components/AudioPlayer.astro` confirms native audio element",
       "estimate": "1h",
       "files": [
@@ -1673,6 +1684,72 @@
       "verdict": "✅ pass",
       "duration_ms": 10,
       "created_at": "2026-04-01T00:59:23.007Z"
+    },
+    {
+      "id": 26,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 400,
+      "created_at": "2026-04-01T01:09:06.942Z"
+    },
+    {
+      "id": 27,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "test -f src/components/Accordion.astro && test -f src/components/ContactForm.astro && test -f src/components/AudioPlayer.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:09:06.942Z"
+    },
+    {
+      "id": 28,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "grep -q 'details' src/components/Accordion.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:09:06.942Z"
+    },
+    {
+      "id": 29,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "grep -q '<label' src/components/ContactForm.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:09:06.942Z"
+    },
+    {
+      "id": 30,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "grep -q '<audio' src/components/AudioPlayer.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:09:06.942Z"
+    },
+    {
+      "id": 31,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M001",
+      "command": "npx @lhci/cli autorun",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 69000,
+      "created_at": "2026-04-01T01:09:06.942Z"
     }
   ]
 }

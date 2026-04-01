@@ -94,7 +94,7 @@
   - Estimate: 1h
   - Files: src/components/Hero.astro, src/components/Card.astro, src/components/ImageMosaic.astro, src/pages/styleguide.astro
   - Verify: npm run build && test -f src/components/Hero.astro && test -f src/components/Card.astro && test -f src/components/ImageMosaic.astro
-- [ ] **T03: Build Accordion, ContactForm, and AudioPlayer components, run final verification** — Create the three interactive/media components — Accordion (details/summary), ContactForm (HTML form with styled inputs), AudioPlayer (styled native audio wrapper) — add all three to the styleguide page, and run final build + Lighthouse CI verification for the complete slice.
+- [x] **T03: Built Accordion, ContactForm, and AudioPlayer components, fixed a11y issues in Header/Footer, passed Lighthouse CI** — Create the three interactive/media components — Accordion (details/summary), ContactForm (HTML form with styled inputs), AudioPlayer (styled native audio wrapper) — add all three to the styleguide page, and run final build + Lighthouse CI verification for the complete slice.
 
 ## Steps
 
