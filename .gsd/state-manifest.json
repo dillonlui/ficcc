@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T01:09:06.959Z",
+  "exported_at": "2026-04-01T01:24:18.249Z",
   "milestones": [
     {
       "id": "M001",
@@ -321,16 +321,16 @@
       "milestone_id": "M001",
       "id": "S03",
       "title": "Base Components",
-      "status": "pending",
+      "status": "complete",
       "risk": "medium",
       "depends": [
         "S02"
       ],
       "demo": "All components on /styleguide — Header, Footer, Hero, Cards, Accordion, Forms, ImageMosaic, AudioPlayer",
       "created_at": "2026-03-31T22:32:16.176Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T01:12:13.377Z",
+      "full_summary_md": "---\nid: S03\nparent: M001\nmilestone: M001\nprovides:\n  - Header component (responsive nav, mobile hamburger, language toggle)\n  - Footer component (church info, service times, nav, dynamic copyright)\n  - Hero component (full-width background image with overlay and CTA)\n  - Card component (versatile content card with optional image/link)\n  - ImageMosaic component (responsive CSS Grid image gallery)\n  - Accordion component (native details/summary FAQ)\n  - ContactForm component (validated HTML form, no submission handler)\n  - AudioPlayer component (native audio controls in styled wrapper)\n  - BaseLayout with Header/Footer site chrome on all pages\n  - /styleguide page showcasing all 8 components\nrequires:\n  - slice: S02\n    provides: Design tokens (CSS custom properties) in global.css — colors, typography scale, spacing, radii\naffects:\n  - S04\n  - S05\n  - S06\nkey_files:\n  - src/components/Header.astro\n  - src/components/Footer.astro\n  - src/components/Hero.astro\n  - src/components/Card.astro\n  - src/components/ImageMosaic.astro\n  - src/components/Accordion.astro\n  - src/components/ContactForm.astro\n  - src/components/AudioPlayer.astro\n  - src/layouts/BaseLayout.astro\n  - src/styles/global.css\n  - src/pages/styleguide.astro\nkey_decisions:\n  - D010: Pure Astro components with scoped CSS, no JS framework — native HTML for interactivity\n  - Mobile nav uses JS-toggled slide-out drawer with aria-expanded\n  - Hero uses CSS background-image prop so gradients and URLs both work\n  - Card renders as <a> when href provided, <div> otherwise\n  - ImageMosaic uses modulo-based class assignment for varied grid spans\n  - Footer headings changed from h3 to h2 for proper heading order\n  - Lang toggle uses --color-ink for WCAG AA contrast\npatterns_established:\n  - All components use only CSS custom properties from global.css — no hardcoded values\n  - Interactive behavior via native HTML elements (details/summary, audio controls) with inline scripts only where unavoidable (hamburger)\n  - Components accept props for content, render semantic HTML, and are showcased on /styleguide with sample data\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M001/slices/S03/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M001/slices/S03/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M001/slices/S03/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:12:13.378Z\nblocker_discovered: false\n---\n\n# S03: Base Components\n\n**Built all 8 shared UI components (Header, Footer, Hero, Card, ImageMosaic, Accordion, ContactForm, AudioPlayer) as pure Astro components using design tokens, wired Header/Footer into BaseLayout, and showcased everything on /styleguide with Lighthouse CI passing a11y ≥ 0.95.**\n\n## What Happened\n\nThree tasks built the full component library in dependency order.\n\nT01 created the site frame — Header with responsive nav, mobile hamburger (JS-toggled with aria-expanded), language toggle, and sticky positioning; Footer with three-column grid (church identity EN+ZH, service times, nav links) and dynamic copyright year. Both wired into BaseLayout so all pages get the site chrome. Added --color-focus, --max-width, and --color-bg-dark tokens to global.css.\n\nT02 built the visual content components — Hero (full-width with CSS background-image prop, dark overlay, heading/subtitle/CTA), Card (optional image with aspect-ratio 3/2, renders as link or div based on href prop), and ImageMosaic (CSS Grid with modulo-based cell spanning, responsive 3/2/1-column breakpoints). All showcased on /styleguide with gradient backgrounds and SVG placeholders.\n\nT03 completed the interactive/media components — Accordion (native details/summary, zero JS), ContactForm (HTML form with label/for associations, HTML validation, no action attribute — deferred to S05), and AudioPlayer (native audio controls in styled wrapper). T03 also fixed three a11y issues in Header and Footer that surfaced during Lighthouse CI: color contrast on language toggle, heading order in footer (h3→h2), and label-content-name-mismatch on the toggle button. After fixes, Lighthouse CI passes on both pages with a11y ≥ 0.95.\n\n## Verification\n\nAll verification checks pass across the three tasks: npm run build succeeds (2 pages, 384ms, 0 errors). All 8 component files exist. BaseLayout imports Header and Footer. Header contains aria-expanded for accessible hamburger. Accordion uses native details element. ContactForm has proper label elements. AudioPlayer uses native audio element. Lighthouse CI (npx @lhci/cli autorun) passes all assertions including a11y ≥ 0.95 on both homepage and styleguide.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nT03 fixed three a11y issues in Header.astro and Footer.astro (color contrast on lang-toggle, heading order h3→h2 in footer, label-content-name-mismatch on lang-toggle) that were introduced in T01 but only surfaced during T03's Lighthouse CI run.\n\n## Known Limitations\n\nContactForm has no action attribute — form submission is deferred to S05. AudioPlayer renders with placeholder src — no real audio content until Sanity integration. Language toggle is static (visual only) — routing logic deferred to bilingual content work.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/Header.astro` — Responsive header with nav, mobile hamburger (aria-expanded), language toggle, sticky positioning\n- `src/components/Footer.astro` — Three-column footer with church identity EN+ZH, service times, nav links, dynamic copyright\n- `src/components/Hero.astro` — Full-width hero with CSS background-image, dark overlay, heading/subtitle/CTA\n- `src/components/Card.astro` — Content card with optional image (aspect-ratio 3/2) and optional link wrapping\n- `src/components/ImageMosaic.astro` — CSS Grid image gallery with modulo-based spanning, responsive breakpoints\n- `src/components/Accordion.astro` — FAQ accordion using native details/summary, zero JS\n- `src/components/ContactForm.astro` — HTML form with label associations, HTML validation, no submission handler\n- `src/components/AudioPlayer.astro` — Native audio controls in styled wrapper with title/speaker metadata\n- `src/layouts/BaseLayout.astro` — Added Header and Footer imports wrapping the slot\n- `src/styles/global.css` — Added --color-focus, --max-width, --color-bg-dark tokens\n- `src/pages/styleguide.astro` — Added showcase sections for all 8 components with sample data\n",
+      "full_uat_md": "# S03: Base Components — UAT\n\n**Milestone:** M001\n**Written:** 2026-04-01T01:12:13.379Z\n\n# S03: Base Components — UAT\n\n**Milestone:** M001\n**Written:** 2026-03-31\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: All components are static Astro components rendered at build time. No runtime behavior to test — visual inspection of /styleguide confirms rendering, and Lighthouse CI confirms a11y.\n\n## Preconditions\n\n- `npm run build` succeeds (confirms all components compile)\n- Dev server running via `npm run dev` for visual inspection\n\n## Smoke Test\n\nOpen `http://localhost:4321/styleguide` — page loads with Header at top, Footer at bottom, and showcase sections for all 8 components between them.\n\n## Test Cases\n\n### 1. Header renders with full navigation\n\n1. Open `http://localhost:4321/styleguide`\n2. Observe the sticky header at page top\n3. Verify navigation links visible: Home, About, Ministries, Sermons, Contact\n4. Verify language toggle button (EN/中文) is visible\n5. **Expected:** All nav links render in a horizontal row on desktop. Language toggle button is visible with readable text.\n\n### 2. Mobile hamburger menu\n\n1. Resize browser to < 768px width\n2. Observe hamburger button appears, nav links are hidden\n3. Click hamburger button\n4. **Expected:** Nav menu slides out / becomes visible. Button shows aria-expanded=\"true\". Click again to close — menu hides, aria-expanded=\"false\".\n\n### 3. Footer renders with church information\n\n1. Scroll to bottom of any page\n2. Verify three sections: church identity (EN + ZH name), service times, and nav links\n3. Verify copyright year is current (2026)\n4. **Expected:** Footer has dark background (--color-bg-dark), three-column layout on desktop, stacked on mobile.\n\n### 4. Hero component renders with overlay and CTA\n\n1. On /styleguide, scroll to Hero section\n2. Verify hero has gradient background, dark overlay, title text, subtitle, and CTA button\n3. **Expected:** Text is readable over the overlay. CTA renders as a styled button/link.\n\n### 5. Card component handles variants\n\n1. On /styleguide, scroll to Cards section\n2. Verify 3 cards render: one with image + link, one with image only, one text-only\n3. **Expected:** Cards with href are clickable (wrapped in `<a>`). Cards without href are static divs. Images maintain 3:2 aspect ratio.\n\n### 6. ImageMosaic responsive grid\n\n1. On /styleguide, scroll to ImageMosaic section\n2. Verify 6 image cells render in a grid with varied spans\n3. Resize browser: 3 columns on desktop, 2 on tablet, 1 on mobile\n4. **Expected:** Images fill their cells with object-fit: cover. No layout shifts.\n\n### 7. Accordion expands and collapses\n\n1. On /styleguide, scroll to Accordion section\n2. Click a summary row\n3. **Expected:** Content expands below the summary. No JavaScript required — native details/summary behavior. Click again to collapse.\n\n### 8. ContactForm with validation\n\n1. On /styleguide, scroll to ContactForm section\n2. Verify fields: Name, Email, Message with associated labels\n3. Click Submit without filling fields\n4. **Expected:** Browser-native validation messages appear (required fields). Email field rejects non-email input. No form submission occurs (no action attribute).\n\n### 9. AudioPlayer renders controls\n\n1. On /styleguide, scroll to AudioPlayer section\n2. Verify title and speaker text display above native audio controls\n3. **Expected:** Native browser audio controls render. No audio plays (placeholder src).\n\n## Edge Cases\n\n### Header/Footer on homepage\n\n1. Open `http://localhost:4321/`\n2. **Expected:** Header and Footer render on the homepage via BaseLayout, framing the page content.\n\n### Styleguide with all sections\n\n1. Open `http://localhost:4321/styleguide`\n2. Scroll through entire page\n3. **Expected:** All 8 component showcase sections render without errors. Page scrolls smoothly. No broken layouts.\n\n## Failure Signals\n\n- Any component section missing from /styleguide\n- `npm run build` fails\n- Lighthouse a11y score drops below 0.95\n- Missing labels on form fields\n- Hamburger menu not toggling on mobile\n- Hardcoded colors or sizes visible (not using CSS custom properties)\n\n## Not Proven By This UAT\n\n- Form submission (deferred to S05)\n- Real audio playback (no real audio source)\n- Language toggle routing (static button only)\n- CMS-driven content in any component (deferred to S04/S06)\n- Cross-browser testing beyond Lighthouse's Chromium\n\n## Notes for Tester\n\n- The Hero background uses a CSS gradient, not a real image — this is intentional for the styleguide demo.\n- ImageMosaic uses inline SVG placeholders, not real photos.\n- ContactForm intentionally has no action — submitting shows validation but doesn't send data.\n- AudioPlayer has an empty/placeholder src — the controls render but nothing plays.\n",
       "goal": "Build all shared UI components (Header, Footer, Hero, Card, Accordion, ContactForm, ImageMosaic, AudioPlayer) as pure Astro components using design tokens from global.css, and showcase them on the /styleguide page.",
       "success_criteria": "- All 8 components exist in `src/components/` as `.astro` files using only CSS custom properties from `global.css`\n- Header and Footer are wired into `BaseLayout.astro` so all pages get the site frame\n- Header nav collapses to hamburger on mobile viewports\n- All components render with sample data on `/styleguide`\n- `npm run build` succeeds with no errors\n- Lighthouse CI passes (a11y ≥ 0.95, perf within existing per-URL thresholds)\n- All components use semantic HTML (nav, header, footer, figure, details/summary, form elements)",
       "proof_level": "contract — components render with static sample data, proving the component API and visual design. No CMS data, no form submission handlers.",
@@ -353,11 +353,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Complete CMS schema with all document types, singletons, and modular content blocks",
-      "success_criteria": "10 document types created. Singletons configured. Modular blocks defined. Sample content queryable via GROQ.",
-      "proof_level": "GROQ queries return expected data for all document types",
-      "integration_closure": "Astro data layer fetches all content types from Sanity",
-      "observability_impact": "Sanity Studio accessible at studio subdomain",
+      "goal": "Sanity Studio with all document types embedded in Astro at /admin, with schema definitions for all content models (pages, sermons, events, ministries, people, singletons) and reusable Portable Text blocks.",
+      "success_criteria": "- `npm run build` succeeds with `@sanity/astro` and `@astrojs/react` integrations\n- All document types defined: page, sermon, event, ministry, person, siteSettings (singleton), navigation (singleton)\n- All Portable Text block types defined: heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock\n- Every document type has a `language` field (`'en' | 'zh'`) per D003\n- Singleton types use custom structure builder for single-document editing\n- Root `sanity.config.ts` imports all schema types and configures structure\n- Old standalone `studio/` directory removed\n- Lighthouse CI still passes (`npm run lhci` or `npm run build` as proxy)\n- CSP in `vercel.json` updated if needed for Studio script loading",
+      "proof_level": "- This slice proves: integration (Sanity Studio embedded in Astro build pipeline)\n- Real runtime required: yes (build must succeed; full Studio requires SANITY_PROJECT_ID)\n- Human/UAT required: no (Studio UI tested visually in S06)",
+      "integration_closure": "- Upstream surfaces consumed: `astro.config.mjs` (S01), `package.json` (S01), `vercel.json` (S01 CSP headers), `src/lib/sanity.ts` (S01)\n- New wiring introduced: `@sanity/astro` integration in Astro config, root `sanity.config.ts`, `sanity/` schema directory, `/admin` Studio route\n- What remains: S06 wires preview mode and Visual Editing; S05 handles forms/SEO. Content seeding requires live SANITY_PROJECT_ID.",
+      "observability_impact": "- Inspection surfaces: `npm run build` output shows Sanity integration loading; schema count visible in barrel export\n- Failure visibility: Build fails with clear error if schema types are malformed or integration misconfigured\n- Redaction constraints: SANITY_PROJECT_ID is not a secret but should use env vars, not hardcoded",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -1297,6 +1297,168 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S04",
+      "id": "T01",
+      "title": "Installed Sanity v5, React 19, @sanity/astro, @astrojs/react and wired Studio at /admin as a client-only React component in static Astro build",
+      "status": "complete",
+      "one_liner": "Installed Sanity v5, React 19, @sanity/astro, @astrojs/react and wired Studio at /admin as a client-only React component in static Astro build",
+      "narrative": "Installed sanity, @sanity/astro, @astrojs/react, react, react-dom, and @sanity/vision. Adjusted from React 18 to React 19 per Sanity v5 peer requirement. Dropped studioBasePath from @sanity/astro config since it requires server rendering — instead created a manual Studio embed via client:only=\"react\" component at /admin. Created sanity.config.ts with structureTool, visionTool, and empty schema types. Created sanity/structure.ts skeleton. Used PUBLIC_ prefixed env vars for client-side Studio config.",
+      "verification_result": "All 4 verification checks pass: npm run build exits 0 (3 pages built including /admin), grep confirms sanity in astro.config.mjs, sanity.config.ts exists, sanity/structure.ts exists.",
+      "duration": "",
+      "completed_at": "2026-04-01T01:24:18.229Z",
+      "blocker_discovered": false,
+      "deviations": "React 19 instead of React 18 (Sanity v5 peer dep). Dropped studioBasePath, created manual Studio embed via client:only component. Added PUBLIC_ prefixed env vars for client-side Studio.",
+      "known_issues": "None.",
+      "key_files": [
+        "package.json",
+        "astro.config.mjs",
+        "sanity.config.ts",
+        "sanity/structure.ts",
+        "src/components/Studio.tsx",
+        "src/pages/admin/index.astro",
+        "src/lib/sanity.ts",
+        ".env.example"
+      ],
+      "key_decisions": [
+        "Used React 19 instead of React 18 — Sanity v5 requires it",
+        "Dropped studioBasePath from @sanity/astro to keep output:static — embedded Studio via client:only React component at /admin",
+        "Used PUBLIC_ prefixed env vars for client-side Studio config"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S04\nmilestone: M001\nkey_files:\n  - package.json\n  - astro.config.mjs\n  - sanity.config.ts\n  - sanity/structure.ts\n  - src/components/Studio.tsx\n  - src/pages/admin/index.astro\n  - src/lib/sanity.ts\n  - .env.example\nkey_decisions:\n  - Used React 19 instead of React 18 — Sanity v5 requires it\n  - Dropped studioBasePath from @sanity/astro to keep output:static — embedded Studio via client:only React component at /admin\n  - Used PUBLIC_ prefixed env vars for client-side Studio config\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:24:18.230Z\nblocker_discovered: false\n---\n\n# T01: Installed Sanity v5, React 19, @sanity/astro, @astrojs/react and wired Studio at /admin as a client-only React component in static Astro build\n\n**Installed Sanity v5, React 19, @sanity/astro, @astrojs/react and wired Studio at /admin as a client-only React component in static Astro build**\n\n## What Happened\n\nInstalled sanity, @sanity/astro, @astrojs/react, react, react-dom, and @sanity/vision. Adjusted from React 18 to React 19 per Sanity v5 peer requirement. Dropped studioBasePath from @sanity/astro config since it requires server rendering — instead created a manual Studio embed via client:only=\"react\" component at /admin. Created sanity.config.ts with structureTool, visionTool, and empty schema types. Created sanity/structure.ts skeleton. Used PUBLIC_ prefixed env vars for client-side Studio config.\n\n## Verification\n\nAll 4 verification checks pass: npm run build exits 0 (3 pages built including /admin), grep confirms sanity in astro.config.mjs, sanity.config.ts exists, sanity/structure.ts exists.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 6700ms |\n| 2 | `grep -q 'sanity' astro.config.mjs` | 0 | ✅ pass | 50ms |\n| 3 | `test -f sanity.config.ts` | 0 | ✅ pass | 10ms |\n| 4 | `test -f sanity/structure.ts` | 0 | ✅ pass | 10ms |\n\n\n## Deviations\n\nReact 19 instead of React 18 (Sanity v5 peer dep). Dropped studioBasePath, created manual Studio embed via client:only component. Added PUBLIC_ prefixed env vars for client-side Studio.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `package.json`\n- `astro.config.mjs`\n- `sanity.config.ts`\n- `sanity/structure.ts`\n- `src/components/Studio.tsx`\n- `src/pages/admin/index.astro`\n- `src/lib/sanity.ts`\n- `.env.example`\n",
+      "description": "Install `@sanity/astro`, `@astrojs/react`, `sanity`, `react`, `react-dom` and wire the integrations into `astro.config.mjs`. Create root `sanity.config.ts` with empty schema types (will be populated in T02). Update `src/lib/sanity.ts` to use the `sanity:client` module from `@sanity/astro` or keep as thin wrapper. Create `sanity/structure.ts` skeleton for custom desk structure. Verify build succeeds with the new integrations.\n\n## Steps\n\n1. Run `npm install sanity @sanity/astro @astrojs/react react@18 react-dom@18 @sanity/vision`\n2. Update `astro.config.mjs`: add `sanity()` integration with `projectId` from env, `dataset` from env, `studioBasePath: '/admin'`; add `react()` integration. Import both at top.\n3. Create `sanity.config.ts` at project root with `defineConfig` — name: 'ficcc', title, projectId/dataset from env, plugins: `[structureTool(), visionTool()]`, schema: `{ types: [] }` (empty for now).\n4. Create `sanity/structure.ts` exporting a structure builder function skeleton (will be populated in T02 when singleton types exist).\n5. Update `src/lib/sanity.ts` to export the client — keep `@sanity/client` direct import since `sanity:client` from `@sanity/astro` may not be available in static mode.\n6. Update `.env.example` to document all Sanity env vars needed by `@sanity/astro`.\n7. Run `npm run build` to verify the integration doesn't break the static build.\n\n## Must-Haves\n\n- [ ] `@sanity/astro` and `@astrojs/react` listed in package.json dependencies\n- [ ] `astro.config.mjs` imports and configures both integrations\n- [ ] Root `sanity.config.ts` exists with valid Sanity config\n- [ ] Build succeeds (`npm run build` exit 0)\n\n## Verification\n\n- `npm run build` exits 0\n- `grep -q 'sanity' astro.config.mjs` confirms integration added\n- `test -f sanity.config.ts` confirms root config exists\n- `test -f sanity/structure.ts` confirms structure file exists",
+      "estimate": "30m",
+      "files": [
+        "package.json",
+        "astro.config.mjs",
+        "sanity.config.ts",
+        "sanity/structure.ts",
+        "src/lib/sanity.ts",
+        ".env.example"
+      ],
+      "verify": "npm run build && grep -q 'sanity' astro.config.mjs && test -f sanity.config.ts && test -f sanity/structure.ts",
+      "inputs": [
+        "`astro.config.mjs` — current Astro config to add integrations to",
+        "`package.json` — current dependencies",
+        "`src/lib/sanity.ts` — existing Sanity client helper",
+        "`.env.example` — env var documentation"
+      ],
+      "expected_output": [
+        "`package.json` — updated with sanity, @sanity/astro, @astrojs/react, react, react-dom deps",
+        "`astro.config.mjs` — updated with sanity() and react() integrations",
+        "`sanity.config.ts` — new root Sanity Studio configuration",
+        "`sanity/structure.ts` — new structure builder skeleton",
+        "`src/lib/sanity.ts` — updated Sanity client",
+        "`.env.example` — updated env var docs"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S04",
+      "id": "T02",
+      "title": "Define all Sanity schema types — documents, singletons, and Portable Text blocks",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create all schema type definitions under `sanity/schemas/`. This includes 5 document types (page, sermon, event, ministry, person), 2 singletons (siteSettings, navigation), 5 object/block types (heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock), and a barrel export. Every document type gets a `language` field with `'en' | 'zh'` options per D003. Wire all schema types into `sanity.config.ts` and complete the structure builder with singleton handling.\n\n## Key Design Decisions\n\n- **D003**: Separate documents per language, not field-level i18n. Every doc type has `language: defineField({ type: 'string', options: { list: ['en', 'zh'] }, initialValue: 'en' })`\n- **D005**: Sermon stores YouTube `videoId` (string), not full URL. Title, speaker, date, series, scripture reference, language.\n- Singletons use document IDs like `siteSettings-en`, `siteSettings-zh`. Structure builder shows them as single-doc editors, not lists.\n- Page `body` field uses an array of block references: heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock, plus standard Portable Text blocks.\n- Person type has name, role, bio (Portable Text), photo (image with hotspot).\n- Ministry references person type for leader field.\n\n## Steps\n\n1. Create `sanity/schemas/objects/heroBlock.ts` — heading (string), subheading (string), backgroundImage (image), ctaText (string), ctaLink (string)\n2. Create `sanity/schemas/objects/imageMosaicBlock.ts` — array of images with caption\n3. Create `sanity/schemas/objects/accordionBlock.ts` — array of {title, content (Portable Text)}\n4. Create `sanity/schemas/objects/cardGridBlock.ts` — array of inline cards (title, description, image, link)\n5. Create `sanity/schemas/objects/youtubeEmbedBlock.ts` — videoId (string), caption (string)\n6. Create `sanity/schemas/documents/person.ts` — name, role, bio, photo, language\n7. Create `sanity/schemas/documents/sermon.ts` — title, speaker, date, series, scripture, videoId, language\n8. Create `sanity/schemas/documents/event.ts` — title, date, endDate, time, location, description, recurring, language\n9. Create `sanity/schemas/documents/ministry.ts` — name, description, leader (ref to person), meetingTime, language\n10. Create `sanity/schemas/documents/page.ts` — title, slug, body (array of block types), language\n11. Create `sanity/schemas/singletons/siteSettings.ts` — churchName, address, phone, email, socialLinks array, language\n12. Create `sanity/schemas/singletons/navigation.ts` — navItems array (label, href, children), language\n13. Create `sanity/schemas/index.ts` — barrel export aggregating all types\n14. Update `sanity.config.ts` to import schema types from barrel export\n15. Update `sanity/structure.ts` with full structure builder: singletons at top (one per language), document types below filtered by language\n16. Run `npm run build` to verify all schemas are valid\n\n## Must-Haves\n\n- [ ] All 5 document types defined with language field\n- [ ] Both singletons defined with language field\n- [ ] All 5 Portable Text block types defined\n- [ ] Barrel export in `sanity/schemas/index.ts` exports all types\n- [ ] `sanity.config.ts` imports and registers all schema types\n- [ ] Structure builder handles singletons as single-doc editors\n- [ ] Build succeeds\n\n## Verification\n\n- `npm run build` exits 0\n- `node -e \"import('./sanity/schemas/index.ts')\"` — won't work directly but `grep -c 'defineType' sanity/schemas/**/*.ts` counts schema files\n- All 13 schema files exist under `sanity/schemas/`\n- `sanity.config.ts` imports from `./sanity/schemas`",
+      "estimate": "1h",
+      "files": [
+        "sanity/schemas/objects/heroBlock.ts",
+        "sanity/schemas/objects/imageMosaicBlock.ts",
+        "sanity/schemas/objects/accordionBlock.ts",
+        "sanity/schemas/objects/cardGridBlock.ts",
+        "sanity/schemas/objects/youtubeEmbedBlock.ts",
+        "sanity/schemas/documents/person.ts",
+        "sanity/schemas/documents/sermon.ts",
+        "sanity/schemas/documents/event.ts",
+        "sanity/schemas/documents/ministry.ts",
+        "sanity/schemas/documents/page.ts",
+        "sanity/schemas/singletons/siteSettings.ts",
+        "sanity/schemas/singletons/navigation.ts",
+        "sanity/schemas/index.ts",
+        "sanity.config.ts",
+        "sanity/structure.ts"
+      ],
+      "verify": "npm run build && find sanity/schemas -name '*.ts' | wc -l | grep -q '1[0-9]' && grep -q 'schemas' sanity.config.ts",
+      "inputs": [
+        "`sanity.config.ts` — root config from T01 to wire schemas into",
+        "`sanity/structure.ts` — structure builder skeleton from T01"
+      ],
+      "expected_output": [
+        "`sanity/schemas/objects/heroBlock.ts` — hero block object type",
+        "`sanity/schemas/objects/imageMosaicBlock.ts` — image mosaic block type",
+        "`sanity/schemas/objects/accordionBlock.ts` — accordion block type",
+        "`sanity/schemas/objects/cardGridBlock.ts` — card grid block type",
+        "`sanity/schemas/objects/youtubeEmbedBlock.ts` — YouTube embed block type",
+        "`sanity/schemas/documents/person.ts` — person document type",
+        "`sanity/schemas/documents/sermon.ts` — sermon document type",
+        "`sanity/schemas/documents/event.ts` — event document type",
+        "`sanity/schemas/documents/ministry.ts` — ministry document type",
+        "`sanity/schemas/documents/page.ts` — page document type with modular body",
+        "`sanity/schemas/singletons/siteSettings.ts` — site settings singleton",
+        "`sanity/schemas/singletons/navigation.ts` — navigation singleton",
+        "`sanity/schemas/index.ts` — barrel export of all schema types",
+        "`sanity.config.ts` — updated with real schema imports",
+        "`sanity/structure.ts` — completed structure builder with singleton handling"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S04",
+      "id": "T03",
+      "title": "Add GROQ query helpers, update CSP, remove old studio/, verify Lighthouse",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create reusable GROQ query helper functions in `src/lib/sanity.ts` that downstream slices will use to fetch content. Update CSP in `vercel.json` if Studio needs script-src for `cdn.sanity.io`. Remove the old standalone `studio/` directory. Run Lighthouse CI to confirm no performance regression from adding React + Sanity deps.\n\n## Steps\n\n1. Update `src/lib/sanity.ts` with typed GROQ query helpers: `getPageBySlug(slug, language)`, `getSermons(language)`, `getEvents(language)`, `getMinistries(language)`, `getSiteSettings(language)`, `getNavigation(language)`. Each returns a typed result using the Sanity client.\n2. Check if `vercel.json` CSP `script-src` needs `https://cdn.sanity.io` for Studio. The Studio at `/admin` is a static HTML page that loads React client-side — its scripts come from the Astro build bundle, not from CDN. But verify by checking `@sanity/astro` output.\n3. Remove `studio/sanity.config.ts` — replaced by root `sanity.config.ts`.\n4. Remove `studio/` directory entirely if empty after config removal.\n5. Run `npm run build` to verify everything still builds.\n6. Run Lighthouse CI (`npm run lhci`) to verify perf score hasn't regressed below thresholds. The addition of React as a dependency should not affect production page bundles since `/admin` is a separate route.\n7. Update `lighthouserc.cjs` if needed to handle the new `/admin` route (exclude it from assertions since it's a Studio page, not a content page).\n\n## Must-Haves\n\n- [ ] GROQ query helpers exported from `src/lib/sanity.ts`\n- [ ] Old `studio/` directory removed\n- [ ] Build succeeds\n- [ ] Lighthouse CI passes or thresholds adjusted for new route\n\n## Verification\n\n- `npm run build` exits 0\n- `! test -d studio` confirms old directory removed\n- `grep -c 'export.*function\\|export.*const.*=' src/lib/sanity.ts` shows multiple exports\n- `npm run lhci` passes (or `npm run build` as minimum if lhci has env issues)",
+      "estimate": "30m",
+      "files": [
+        "src/lib/sanity.ts",
+        "vercel.json",
+        "lighthouserc.cjs",
+        "studio/sanity.config.ts"
+      ],
+      "verify": "npm run build && ! test -d studio && grep -q 'getPageBySlug\\|getSermons' src/lib/sanity.ts",
+      "inputs": [
+        "`src/lib/sanity.ts` — Sanity client from T01",
+        "`vercel.json` — CSP headers from S01",
+        "`lighthouserc.cjs` — Lighthouse config from S01",
+        "`sanity/schemas/index.ts` — schema types from T02 (for type awareness)"
+      ],
+      "expected_output": [
+        "`src/lib/sanity.ts` — updated with GROQ query helpers",
+        "`vercel.json` — CSP updated if needed",
+        "`lighthouserc.cjs` — updated if /admin route needs exclusion"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -1404,6 +1566,18 @@
       "decision": "Lighthouse CI performance thresholds per page type",
       "choice": "Per-URL assertMatrix: production pages ≥ 0.75, dev-only pages (styleguide) ≥ 0.50 (warn only)",
       "rationale": "CJK font subsetting generates 240KB CSS causing Lighthouse perf scores of 0.59 on the styleguide (which renders heavy CJK text) and 0.76-0.77 on the home page under simulated 4G throttling. A single global threshold either flakes on real pages or suppresses meaningful regressions. Per-URL thresholds match actual page characteristics. Styleguide is a dev reference, not user-facing — warn is sufficient.",
+      "revisable": "Yes",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 10,
+      "id": "D010",
+      "when_context": "",
+      "scope": "architecture",
+      "decision": "Component architecture for shared UI components",
+      "choice": "Pure Astro components with scoped CSS using only CSS custom properties from global.css. No client-side JS framework. Interactive behavior via native HTML (details/summary) or minimal inline scripts (hamburger toggle).",
+      "rationale": "All 8 base components (Header, Footer, Hero, Card, ImageMosaic, Accordion, ContactForm, AudioPlayer) built without React/Vue/Svelte. Native HTML elements handle interactivity (details/summary for accordion, audio controls for player). Only the mobile hamburger needs a small inline script. This keeps bundle size near zero and Lighthouse scores high.",
       "revisable": "Yes",
       "made_by": "agent",
       "superseded_by": null
@@ -1750,6 +1924,50 @@
       "verdict": "✅ pass",
       "duration_ms": 69000,
       "created_at": "2026-04-01T01:09:06.942Z"
+    },
+    {
+      "id": 32,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 6700,
+      "created_at": "2026-04-01T01:24:18.229Z"
+    },
+    {
+      "id": 33,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "grep -q 'sanity' astro.config.mjs",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:24:18.229Z"
+    },
+    {
+      "id": 34,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "test -f sanity.config.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T01:24:18.229Z"
+    },
+    {
+      "id": 35,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "test -f sanity/structure.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T01:24:18.229Z"
     }
   ]
 }

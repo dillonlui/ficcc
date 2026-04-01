@@ -12,12 +12,18 @@
     "lhci": "npm run build && lhci autorun"
   },
   "dependencies": {
+    "@astrojs/react": "^5.0.2",
     "@astrojs/sitemap": "^3.2.1",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/lora": "^5.2.8",
     "@fontsource/noto-serif-sc": "^5.2.9",
+    "@sanity/astro": "^3.3.1",
     "@sanity/client": "^7.3.0",
-    "astro": "^5.5.5"
+    "@sanity/vision": "^5.18.0",
+    "astro": "^5.5.5",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "sanity": "^5.18.0"
   },
   "devDependencies": {
     "@lhci/cli": "^0.15.1"
