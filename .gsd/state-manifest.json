@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T01:24:18.249Z",
+  "exported_at": "2026-04-01T01:33:17.446Z",
   "milestones": [
     {
       "id": "M001",
@@ -1361,19 +1361,39 @@
       "milestone_id": "M001",
       "slice_id": "S04",
       "id": "T02",
-      "title": "Define all Sanity schema types — documents, singletons, and Portable Text blocks",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Defined all 12 Sanity schema types (5 documents, 2 singletons, 5 block types) with language fields, barrel export, and singleton-aware structure builder",
+      "status": "complete",
+      "one_liner": "Defined all 12 Sanity schema types (5 documents, 2 singletons, 5 block types) with language fields, barrel export, and singleton-aware structure builder",
+      "narrative": "Created 13 schema files under sanity/schemas/ organized into objects/, documents/, and singletons/ directories. Each document type and singleton includes a language field with 'en' | 'zh' options per D003. Page body accepts standard Portable Text plus all 5 custom block types. Sermon stores videoId (string) per D005. Ministry references person for leader. Singletons use IDs like siteSettings-en/zh. Barrel export provides schemaTypes array, singletonTypes set, and singletonDocIds. Updated sanity.config.ts to import schemaTypes. Updated sanity/structure.ts with full structure builder showing singletons as single-doc editors under Settings & Navigation group.",
+      "verification_result": "npm run build exits 0 (3 pages built). 13 schema files found under sanity/schemas/. grep confirms schemas import in sanity.config.ts. All slice-level checks pass.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T01:33:17.430Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "sanity/schemas/index.ts",
+        "sanity/schemas/documents/page.ts",
+        "sanity/schemas/documents/sermon.ts",
+        "sanity/schemas/documents/event.ts",
+        "sanity/schemas/documents/ministry.ts",
+        "sanity/schemas/documents/person.ts",
+        "sanity/schemas/singletons/siteSettings.ts",
+        "sanity/schemas/singletons/navigation.ts",
+        "sanity/schemas/objects/heroBlock.ts",
+        "sanity/schemas/objects/imageMosaicBlock.ts",
+        "sanity/schemas/objects/accordionBlock.ts",
+        "sanity/schemas/objects/cardGridBlock.ts",
+        "sanity/schemas/objects/youtubeEmbedBlock.ts",
+        "sanity.config.ts",
+        "sanity/structure.ts"
+      ],
+      "key_decisions": [
+        "Singleton IDs follow pattern {type}-{lang} for per-language singleton docs",
+        "Page body field accepts standard Portable Text blocks plus all 5 custom block types as an array",
+        "Structure builder groups singletons under Settings & Navigation, filters them from default document list"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S04\nmilestone: M001\nkey_files:\n  - sanity/schemas/index.ts\n  - sanity/schemas/documents/page.ts\n  - sanity/schemas/documents/sermon.ts\n  - sanity/schemas/documents/event.ts\n  - sanity/schemas/documents/ministry.ts\n  - sanity/schemas/documents/person.ts\n  - sanity/schemas/singletons/siteSettings.ts\n  - sanity/schemas/singletons/navigation.ts\n  - sanity/schemas/objects/heroBlock.ts\n  - sanity/schemas/objects/imageMosaicBlock.ts\n  - sanity/schemas/objects/accordionBlock.ts\n  - sanity/schemas/objects/cardGridBlock.ts\n  - sanity/schemas/objects/youtubeEmbedBlock.ts\n  - sanity.config.ts\n  - sanity/structure.ts\nkey_decisions:\n  - Singleton IDs follow pattern {type}-{lang} for per-language singleton docs\n  - Page body field accepts standard Portable Text blocks plus all 5 custom block types as an array\n  - Structure builder groups singletons under Settings & Navigation, filters them from default document list\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:33:17.431Z\nblocker_discovered: false\n---\n\n# T02: Defined all 12 Sanity schema types (5 documents, 2 singletons, 5 block types) with language fields, barrel export, and singleton-aware structure builder\n\n**Defined all 12 Sanity schema types (5 documents, 2 singletons, 5 block types) with language fields, barrel export, and singleton-aware structure builder**\n\n## What Happened\n\nCreated 13 schema files under sanity/schemas/ organized into objects/, documents/, and singletons/ directories. Each document type and singleton includes a language field with 'en' | 'zh' options per D003. Page body accepts standard Portable Text plus all 5 custom block types. Sermon stores videoId (string) per D005. Ministry references person for leader. Singletons use IDs like siteSettings-en/zh. Barrel export provides schemaTypes array, singletonTypes set, and singletonDocIds. Updated sanity.config.ts to import schemaTypes. Updated sanity/structure.ts with full structure builder showing singletons as single-doc editors under Settings & Navigation group.\n\n## Verification\n\nnpm run build exits 0 (3 pages built). 13 schema files found under sanity/schemas/. grep confirms schemas import in sanity.config.ts. All slice-level checks pass.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 7300ms |\n| 2 | `find sanity/schemas -name '*.ts' | wc -l` | 0 | ✅ pass | 50ms |\n| 3 | `grep -q 'schemas' sanity.config.ts` | 0 | ✅ pass | 10ms |\n| 4 | `grep -q 'sanity' astro.config.mjs` | 0 | ✅ pass | 10ms |\n| 5 | `test -f sanity.config.ts` | 0 | ✅ pass | 10ms |\n| 6 | `test -f sanity/structure.ts` | 0 | ✅ pass | 10ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/index.ts`\n- `sanity/schemas/documents/page.ts`\n- `sanity/schemas/documents/sermon.ts`\n- `sanity/schemas/documents/event.ts`\n- `sanity/schemas/documents/ministry.ts`\n- `sanity/schemas/documents/person.ts`\n- `sanity/schemas/singletons/siteSettings.ts`\n- `sanity/schemas/singletons/navigation.ts`\n- `sanity/schemas/objects/heroBlock.ts`\n- `sanity/schemas/objects/imageMosaicBlock.ts`\n- `sanity/schemas/objects/accordionBlock.ts`\n- `sanity/schemas/objects/cardGridBlock.ts`\n- `sanity/schemas/objects/youtubeEmbedBlock.ts`\n- `sanity.config.ts`\n- `sanity/structure.ts`\n",
       "description": "Create all schema type definitions under `sanity/schemas/`. This includes 5 document types (page, sermon, event, ministry, person), 2 singletons (siteSettings, navigation), 5 object/block types (heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock), and a barrel export. Every document type gets a `language` field with `'en' | 'zh'` options per D003. Wire all schema types into `sanity.config.ts` and complete the structure builder with singleton handling.\n\n## Key Design Decisions\n\n- **D003**: Separate documents per language, not field-level i18n. Every doc type has `language: defineField({ type: 'string', options: { list: ['en', 'zh'] }, initialValue: 'en' })`\n- **D005**: Sermon stores YouTube `videoId` (string), not full URL. Title, speaker, date, series, scripture reference, language.\n- Singletons use document IDs like `siteSettings-en`, `siteSettings-zh`. Structure builder shows them as single-doc editors, not lists.\n- Page `body` field uses an array of block references: heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock, plus standard Portable Text blocks.\n- Person type has name, role, bio (Portable Text), photo (image with hotspot).\n- Ministry references person type for leader field.\n\n## Steps\n\n1. Create `sanity/schemas/objects/heroBlock.ts` — heading (string), subheading (string), backgroundImage (image), ctaText (string), ctaLink (string)\n2. Create `sanity/schemas/objects/imageMosaicBlock.ts` — array of images with caption\n3. Create `sanity/schemas/objects/accordionBlock.ts` — array of {title, content (Portable Text)}\n4. Create `sanity/schemas/objects/cardGridBlock.ts` — array of inline cards (title, description, image, link)\n5. Create `sanity/schemas/objects/youtubeEmbedBlock.ts` — videoId (string), caption (string)\n6. Create `sanity/schemas/documents/person.ts` — name, role, bio, photo, language\n7. Create `sanity/schemas/documents/sermon.ts` — title, speaker, date, series, scripture, videoId, language\n8. Create `sanity/schemas/documents/event.ts` — title, date, endDate, time, location, description, recurring, language\n9. Create `sanity/schemas/documents/ministry.ts` — name, description, leader (ref to person), meetingTime, language\n10. Create `sanity/schemas/documents/page.ts` — title, slug, body (array of block types), language\n11. Create `sanity/schemas/singletons/siteSettings.ts` — churchName, address, phone, email, socialLinks array, language\n12. Create `sanity/schemas/singletons/navigation.ts` — navItems array (label, href, children), language\n13. Create `sanity/schemas/index.ts` — barrel export aggregating all types\n14. Update `sanity.config.ts` to import schema types from barrel export\n15. Update `sanity/structure.ts` with full structure builder: singletons at top (one per language), document types below filtered by language\n16. Run `npm run build` to verify all schemas are valid\n\n## Must-Haves\n\n- [ ] All 5 document types defined with language field\n- [ ] Both singletons defined with language field\n- [ ] All 5 Portable Text block types defined\n- [ ] Barrel export in `sanity/schemas/index.ts` exports all types\n- [ ] `sanity.config.ts` imports and registers all schema types\n- [ ] Structure builder handles singletons as single-doc editors\n- [ ] Build succeeds\n\n## Verification\n\n- `npm run build` exits 0\n- `node -e \"import('./sanity/schemas/index.ts')\"` — won't work directly but `grep -c 'defineType' sanity/schemas/**/*.ts` counts schema files\n- All 13 schema files exist under `sanity/schemas/`\n- `sanity.config.ts` imports from `./sanity/schemas`",
       "estimate": "1h",
       "files": [
@@ -1578,6 +1598,18 @@
       "decision": "Component architecture for shared UI components",
       "choice": "Pure Astro components with scoped CSS using only CSS custom properties from global.css. No client-side JS framework. Interactive behavior via native HTML (details/summary) or minimal inline scripts (hamburger toggle).",
       "rationale": "All 8 base components (Header, Footer, Hero, Card, ImageMosaic, Accordion, ContactForm, AudioPlayer) built without React/Vue/Svelte. Native HTML elements handle interactivity (details/summary for accordion, audio controls for player). Only the mobile hamburger needs a small inline script. This keeps bundle size near zero and Lighthouse scores high.",
+      "revisable": "Yes",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 12,
+      "id": "D011",
+      "when_context": "M001/S04/T01",
+      "scope": "architecture",
+      "decision": "Sanity Studio embedding strategy for static Astro site",
+      "choice": "Manual client:only=\"react\" component at /admin instead of @sanity/astro studioBasePath",
+      "rationale": "@sanity/astro's studioBasePath injects a server-rendered route requiring output:'server' or 'hybrid' with an adapter. Manual embed via Studio.tsx + client:only keeps the site fully static.",
       "revisable": "Yes",
       "made_by": "agent",
       "superseded_by": null
@@ -1968,6 +2000,72 @@
       "verdict": "✅ pass",
       "duration_ms": 10,
       "created_at": "2026-04-01T01:24:18.229Z"
+    },
+    {
+      "id": 36,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7300,
+      "created_at": "2026-04-01T01:33:17.430Z"
+    },
+    {
+      "id": 37,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "find sanity/schemas -name '*.ts' | wc -l",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:33:17.430Z"
+    },
+    {
+      "id": 38,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "grep -q 'schemas' sanity.config.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T01:33:17.430Z"
+    },
+    {
+      "id": 39,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "grep -q 'sanity' astro.config.mjs",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T01:33:17.430Z"
+    },
+    {
+      "id": 40,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "test -f sanity.config.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T01:33:17.430Z"
+    },
+    {
+      "id": 41,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "test -f sanity/structure.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-01T01:33:17.430Z"
     }
   ]
 }

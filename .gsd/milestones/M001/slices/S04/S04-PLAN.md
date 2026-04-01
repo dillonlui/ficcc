@@ -32,7 +32,7 @@
   - Estimate: 30m
   - Files: package.json, astro.config.mjs, sanity.config.ts, sanity/structure.ts, src/lib/sanity.ts, .env.example
   - Verify: npm run build && grep -q 'sanity' astro.config.mjs && test -f sanity.config.ts && test -f sanity/structure.ts
-- [ ] **T02: Define all Sanity schema types — documents, singletons, and Portable Text blocks** — Create all schema type definitions under `sanity/schemas/`. This includes 5 document types (page, sermon, event, ministry, person), 2 singletons (siteSettings, navigation), 5 object/block types (heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock), and a barrel export. Every document type gets a `language` field with `'en' | 'zh'` options per D003. Wire all schema types into `sanity.config.ts` and complete the structure builder with singleton handling.
+- [x] **T02: Defined all 12 Sanity schema types (5 documents, 2 singletons, 5 block types) with language fields, barrel export, and singleton-aware structure builder** — Create all schema type definitions under `sanity/schemas/`. This includes 5 document types (page, sermon, event, ministry, person), 2 singletons (siteSettings, navigation), 5 object/block types (heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock), and a barrel export. Every document type gets a `language` field with `'en' | 'zh'` options per D003. Wire all schema types into `sanity.config.ts` and complete the structure builder with singleton handling.
 
 ## Key Design Decisions
 

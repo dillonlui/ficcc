@@ -2,6 +2,7 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { structure } from './sanity/structure';
+import { schemaTypes } from './sanity/schemas';
 
 // Use PUBLIC_ prefixed env vars so they're available in client-side bundles.
 // In Astro, import.meta.env.PUBLIC_* are inlined at build time.
@@ -18,6 +19,6 @@ export default defineConfig({
     visionTool(),
   ],
   schema: {
-    types: [],
+    types: schemaTypes,
   },
 });
