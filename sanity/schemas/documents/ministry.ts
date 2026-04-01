@@ -12,6 +12,19 @@ export const ministry = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: { source: 'name' },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: { hotspot: true },
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'array',
@@ -39,10 +52,10 @@ export const ministry = defineType({
     }),
   ],
   preview: {
-    select: { title: 'name', language: 'language' },
-    prepare: ({ title, language }) => ({
+    select: { title: 'name', language: 'language', slug: 'slug.current' },
+    prepare: ({ title, language, slug }) => ({
       title: title || 'Unnamed Ministry',
-      subtitle: language?.toUpperCase(),
+      subtitle: slug ? `/${slug} · ${language?.toUpperCase()}` : language?.toUpperCase(),
     }),
   },
 });

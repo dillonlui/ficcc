@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:52:29.081Z",
+  "exported_at": "2026-04-01T13:58:39.220Z",
   "milestones": [
     {
       "id": "M001",
@@ -498,16 +498,16 @@
       "milestone_id": "M002",
       "id": "S04",
       "title": "Sermons Library",
-      "status": "pending",
+      "status": "complete",
       "risk": "medium",
       "depends": [
         "S01"
       ],
       "demo": "Sermon library with series filter, detail page with YouTube embed",
       "created_at": "2026-03-31T22:33:41.124Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T13:54:00.473Z",
+      "full_summary_md": "---\nid: S04\nparent: M002\nmilestone: M002\nprovides:\n  - SermonCard.astro component\n  - YouTubeEmbed.astro component\n  - getSermonBySlug() GROQ helper\n  - Sermon slug field in schema\n  - /sermons listing page\n  - /sermons/[slug] detail pages\nrequires:\n  - slice: S01\n    provides: BaseLayout, Hero, shared CSS custom properties\naffects:\n  - S07\nkey_files:\n  - sanity/schemas/documents/sermon.ts\n  - src/lib/sanity.ts\n  - src/components/SermonCard.astro\n  - src/components/YouTubeEmbed.astro\n  - src/pages/sermons/index.astro\n  - src/pages/sermons/[slug].astro\nkey_decisions:\n  - Used color-mix() for series badge background tint\n  - Wrapped sermon cards in grid-item divs with data-series for filter toggling rather than applying hidden directly to SermonCard\n  - Used getSermons() in getStaticPaths passing full sermon as props to avoid double-fetch\npatterns_established:\n  - Series pill filter pattern: inline script toggling hidden on wrapper divs via data-* attributes — reusable for any client-side filter without framework JS\n  - Slug-based detail page pattern: getStaticPaths fetches all items, passes full object as props\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M002/slices/S04/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M002/slices/S04/tasks/T02-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:54:00.474Z\nblocker_discovered: false\n---\n\n# S04: Sermons Library\n\n**Sermon listing with series pill filter at /sermons and detail pages at /sermons/[slug] with metadata grid and conditional YouTube embed**\n\n## What Happened\n\nExtended the Sanity sermon schema with a required slug field (source: title), updated the Sermon TypeScript interface, modified getSermons() to include slug in its GROQ projection, and added a getSermonBySlug() helper for single-sermon fetches by slug + language.\n\nBuilt two reusable components: SermonCard.astro (series badge using color-mix() tint, formatted date, speaker, scripture, data-series attribute for filter targeting) and YouTubeEmbed.astro (responsive 16:9 iframe wrapper, youtube-nocookie.com, lazy loading). Both are pure Astro with scoped CSS and no client:* directives.\n\nCreated the /sermons listing page with Hero, centered pill-style series filter bar (All + per-series buttons), and a responsive 3/2/1 column card grid. Filtering uses an inline script that toggles hidden attributes on grid-item wrapper divs based on data-series match — zero framework JS. Empty CMS state renders a fallback message.\n\nCreated the /sermons/[slug] detail page using getStaticPaths() with full sermon data passed as props (avoiding double-fetch). Shows a metadata grid (speaker, date, scripture, series), conditionally renders YouTubeEmbed when videoId exists, and includes a back link to /sermons. Both pages use BaseLayout and the established try-catch CMS fetch pattern.\n\n## Verification\n\nAll slice-level checks passed:\n- T01 verification: slug in schema with source:'title', getSermonBySlug in sanity.ts, both component files exist, youtube-nocookie.com in embed, no client: directives, data-series attribute present, loading=lazy on iframe.\n- T02 verification: npm run build succeeds (9 pages, 7.4s), both page files exist, no client: directives in either page.\n- Slice-level: re-ran all checks independently — all pass. Build clean.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nNone.\n\n## Known Limitations\n\nSeries filter is client-side only — with many series the pill bar could overflow horizontally on mobile. No pagination for large sermon libraries.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/documents/sermon.ts` — Added required slug field with source: title\n- `src/lib/sanity.ts` — Added slug to Sermon interface, updated getSermons() projection, added getSermonBySlug() helper\n- `src/components/SermonCard.astro` — New component — sermon card with series badge, date, speaker, scripture, data-series attribute\n- `src/components/YouTubeEmbed.astro` — New component — responsive 16:9 YouTube iframe with privacy-enhanced mode and lazy loading\n- `src/pages/sermons/index.astro` — New page — sermon listing with Hero, series pill filter, responsive card grid\n- `src/pages/sermons/[slug].astro` — New page — sermon detail with metadata grid, conditional YouTube embed, back link\n",
+      "full_uat_md": "# S04: Sermons Library — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01T13:54:00.474Z\n\n# S04: Sermons Library — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Static site — pages are built at build time. Build success with zero CMS sermons proves empty-state handling. Component structure and filter behavior are verifiable via source inspection and build output.\n\n## Preconditions\n\n- `npm run build` succeeds (confirms pages generate without runtime errors)\n- Sanity Studio accessible at /admin for content entry (optional — pages work with zero sermons)\n\n## Smoke Test\n\nRun `npm run build` — should complete with no errors, producing /sermons/index.html in dist/.\n\n## Test Cases\n\n### 1. Sermons listing page renders correctly\n\n1. Run `npm run dev` and navigate to http://localhost:4321/sermons\n2. Verify Hero section displays with \"Sermons\" title\n3. Verify filter bar shows \"All\" button\n4. With zero sermons in CMS, verify fallback \"No sermons available\" message appears\n5. **Expected:** Page loads without errors, shows hero and empty-state message\n\n### 2. Series filter works with sermon data\n\n1. In Sanity Studio, create 2+ sermons with different series values (e.g. \"Genesis\", \"Psalms\")\n2. Rebuild and navigate to /sermons\n3. Verify filter bar shows \"All\" + one pill per distinct series\n4. Click a series pill — only sermons matching that series remain visible\n5. Click \"All\" — all sermons reappear\n6. **Expected:** Filter toggles visibility correctly, active pill has visual distinction\n\n### 3. Sermon card displays all metadata\n\n1. Create a sermon in Sanity with title, speaker, date, scripture, series, and slug\n2. Navigate to /sermons\n3. Verify card shows: title as link, series badge, formatted date, speaker name, scripture reference\n4. **Expected:** All metadata fields render; card links to /sermons/{slug}\n\n### 4. Sermon detail page renders with metadata\n\n1. Click a sermon card link from the listing\n2. Verify URL is /sermons/{slug}\n3. Verify page shows: sermon title in Hero, metadata grid (speaker, date, scripture, series), back link to /sermons\n4. **Expected:** All metadata present, back link works\n\n### 5. YouTube embed renders conditionally\n\n1. Create a sermon with a videoId field populated\n2. Navigate to /sermons/{slug} for that sermon\n3. Verify YouTube embed appears with 16:9 aspect ratio\n4. Verify iframe src uses youtube-nocookie.com\n5. Create a sermon without videoId — verify no embed section renders\n6. **Expected:** Embed present only when videoId exists, uses privacy-enhanced domain\n\n## Edge Cases\n\n### Empty CMS state\n\n1. Remove all sermon documents from Sanity (or use placeholder project ID)\n2. Run `npm run build`\n3. **Expected:** Build succeeds. /sermons shows fallback message. No [slug] pages generated.\n\n### Sermon without optional fields\n\n1. Create a sermon with only title and slug (no speaker, scripture, series, videoId)\n2. Navigate to /sermons and then to the detail page\n3. **Expected:** Page renders without errors. Missing fields simply don't display.\n\n## Failure Signals\n\n- `npm run build` fails with Sanity fetch errors (try-catch should prevent this)\n- Filter buttons don't toggle card visibility (inline script broken)\n- Detail page 404s (slug field not in GROQ projection or getStaticPaths misconfigured)\n- YouTube embed renders when videoId is missing (conditional logic broken)\n\n## Not Proven By This UAT\n\n- Sermon search/pagination for large libraries\n- Series filter overflow behavior on mobile with many series\n- CMS content editing workflow (creating/publishing sermons in Sanity Studio)\n\n## Notes for Tester\n\n- The filter is pure inline JS — no framework hydration. Check that it works with JS enabled and gracefully shows all sermons with JS disabled.\n- SermonCard uses color-mix() for series badge tinting — verify in browsers that support it (all modern browsers do).\n",
       "goal": "Sermon library with series-based filtering at /sermons and individual sermon detail pages at /sermons/[slug] with YouTube video embed",
       "success_criteria": "- `/sermons` listing page renders with Hero, sermon card grid, and series filter\n- `/sermons/[slug]` detail pages render with sermon metadata and responsive YouTube embed\n- Series filter toggles sermon card visibility via inline script (no client:* directives)\n- YouTube embed uses `youtube-nocookie.com` and `loading=\"lazy\"`\n- `npm run build` succeeds with both new routes in output\n- Build succeeds with empty CMS (no sermons in Sanity) — fallback content shown on listing page, empty getStaticPaths returns zero detail pages\n- No `client:*` directives on any new Astro component",
       "proof_level": "integration — pages compose data layer, components, and layout into navigable routes",
@@ -530,11 +530,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Show the full life of the church beyond Sunday",
-      "success_criteria": "Community page with Discipleship Groups, Midweek Bible Study, Youth Group, Prayer Meeting. Ministries hub. Ministry detail pages.",
-      "proof_level": "All EN groups/ministries present",
-      "integration_closure": "Ministry documents from Sanity with person references",
-      "observability_impact": "N/A",
+      "goal": "Community hub page at /ministries listing all ministries as cards, plus individual ministry detail pages at /ministries/[slug] with leader info, meeting time, and portable text description.",
+      "success_criteria": "- `npm run build` succeeds with ministry pages generating\n- Ministry hub page renders at `/ministries` with responsive card grid\n- Ministry detail pages generate at `/ministries/[slug]` for each ministry with a slug\n- No `client:*` directives in new components\n- All styles use only CSS custom properties from global.css\n- Leader reference resolves on detail page (name/role displayed)\n- Portable text description renders as HTML on detail page\n- Back link navigates to `/ministries`",
+      "proof_level": "Build-time static generation — `npm run build` proves all pages render and all data flows work.",
+      "integration_closure": "- Upstream consumed: `src/lib/sanity.ts` (client, interfaces, portableTextToHtml, urlForImage), `src/components/Card.astro`, `src/components/Hero.astro`, `src/layouts/BaseLayout.astro`\n- New wiring: `/ministries` and `/ministries/[slug]` routes, MinistryCard component, `getMinistryBySlug()` GROQ helper\n- Remaining for milestone: S06 (Events, Give, Contact), S07 (Resources & Content Migration)",
+      "observability_impact": "None — pure static pages with CMS-with-fallback pattern (try-catch on Sanity fetches). Build failure is the diagnostic signal.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2255,6 +2255,89 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S05",
+      "id": "T01",
+      "title": "Added slug and image fields to ministry schema, MinistryDetail interface, and getMinistryBySlug() GROQ helper with leader dereference",
+      "status": "complete",
+      "one_liner": "Added slug and image fields to ministry schema, MinistryDetail interface, and getMinistryBySlug() GROQ helper with leader dereference",
+      "narrative": "Extended the Sanity ministry schema with slug (required, sourced from name) and image (hotspot enabled) fields. Updated the Ministry interface in the data layer with slug and image properties. Created MinistryDetail interface using Omit to replace the raw leader reference with a resolved object type. Added getMinistryBySlug() that fetches by slug with GROQ leader->{name, role, photo} projection.",
+      "verification_result": "npx tsc --noEmit shows no errors in modified files. grep confirms getMinistryBySlug exists in sanity.ts and slug field exists in ministry schema.",
+      "duration": "",
+      "completed_at": "2026-04-01T13:58:39.202Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "Pre-existing type errors in sanity.config.ts and sanity/structure.ts are unrelated.",
+      "key_files": [
+        "sanity/schemas/documents/ministry.ts",
+        "src/lib/sanity.ts"
+      ],
+      "key_decisions": [
+        "MinistryDetail uses Omit<Ministry, 'leader'> to replace raw ref with resolved object type"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S05\nmilestone: M002\nkey_files:\n  - sanity/schemas/documents/ministry.ts\n  - src/lib/sanity.ts\nkey_decisions:\n  - MinistryDetail uses Omit<Ministry, 'leader'> to replace raw ref with resolved object type\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:58:39.202Z\nblocker_discovered: false\n---\n\n# T01: Added slug and image fields to ministry schema, MinistryDetail interface, and getMinistryBySlug() GROQ helper with leader dereference\n\n**Added slug and image fields to ministry schema, MinistryDetail interface, and getMinistryBySlug() GROQ helper with leader dereference**\n\n## What Happened\n\nExtended the Sanity ministry schema with slug (required, sourced from name) and image (hotspot enabled) fields. Updated the Ministry interface in the data layer with slug and image properties. Created MinistryDetail interface using Omit to replace the raw leader reference with a resolved object type. Added getMinistryBySlug() that fetches by slug with GROQ leader->{name, role, photo} projection.\n\n## Verification\n\nnpx tsc --noEmit shows no errors in modified files. grep confirms getMinistryBySlug exists in sanity.ts and slug field exists in ministry schema.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npx tsc --noEmit (filtered to modified files)` | 0 | ✅ pass | 2900ms |\n| 2 | `grep -q 'getMinistryBySlug' src/lib/sanity.ts` | 0 | ✅ pass | 50ms |\n| 3 | `grep -q 'slug' sanity/schemas/documents/ministry.ts` | 0 | ✅ pass | 50ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nPre-existing type errors in sanity.config.ts and sanity/structure.ts are unrelated.\n\n## Files Created/Modified\n\n- `sanity/schemas/documents/ministry.ts`\n- `src/lib/sanity.ts`\n",
+      "description": "Add slug and image fields to the Sanity ministry schema, update the TypeScript Ministry interface in sanity.ts to include slug and image (plus a resolved leader type for the detail query), and add a getMinistryBySlug() GROQ helper that dereferences the leader reference to inline name/role/photo.\n\nSteps:\n1. Add `slug` field (type: 'slug', options: { source: 'name' }, validation: required) and `image` field (type: 'image', options: { hotspot: true }) to `sanity/schemas/documents/ministry.ts`. Add slug to the preview select.\n2. Update the `Ministry` interface in `src/lib/sanity.ts`: add `slug?: { current: string }` and `image?: SanityImage`. Add a `MinistryDetail` interface that extends Ministry with `leader` resolved as `{ name: string; role?: string; photo?: SanityImage } | null` instead of a raw ref.\n3. Update the existing `getMinistries()` query to also return slug and image fields (they're already captured by `*[_type == 'ministry']` but the interface needs them).\n4. Add `getMinistryBySlug(slug: string, language?: Language)` that fetches a single ministry by slug with GROQ projection `leader->{name, role, photo}` to resolve the person reference.\n5. Verify: `npx tsc --noEmit` passes with no type errors on the updated interfaces.",
+      "estimate": "30m",
+      "files": [
+        "sanity/schemas/documents/ministry.ts",
+        "src/lib/sanity.ts"
+      ],
+      "verify": "npx tsc --noEmit && grep -q 'getMinistryBySlug' src/lib/sanity.ts && grep -q 'slug' sanity/schemas/documents/ministry.ts",
+      "inputs": [
+        "`sanity/schemas/documents/ministry.ts` — existing ministry schema to extend",
+        "`src/lib/sanity.ts` — existing data layer with Ministry interface and getMinistries()"
+      ],
+      "expected_output": [
+        "`sanity/schemas/documents/ministry.ts` — ministry schema with slug and image fields added",
+        "`src/lib/sanity.ts` — updated Ministry interface, new MinistryDetail interface, new getMinistryBySlug() helper"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S05",
+      "id": "T02",
+      "title": "Build ministries hub page, MinistryCard component, and detail page",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create the /ministries hub page with a Hero and responsive card grid, a MinistryCard component that wraps Card.astro with meeting time display, and the /ministries/[slug] detail page with getStaticPaths, leader info, meeting time, and portable text description.\n\nSteps:\n1. Create `src/components/MinistryCard.astro` — accepts ministry data (name, image, meetingTime, slug), renders Card.astro with href='/ministries/{slug}' and adds meeting time below the card title. Pure Astro, scoped CSS, CSS custom properties only.\n2. Create `src/pages/ministries/index.astro` — hub page following sermons/index.astro pattern. Import getMinistries from sanity.ts. Fetch ministries in try-catch (K008 pattern). Hero with title 'Community & Ministries'. Responsive card grid using MinistryCard for each ministry that has a slug. Fallback messaging when no ministries exist.\n3. Create `src/pages/ministries/[slug].astro` — detail page following sermons/[slug].astro getStaticPaths pattern. Import getMinistries and getMinistryBySlug. getStaticPaths fetches all ministries, filters to those with slugs, returns params/props. Page renders: Hero with ministry name, back link to /ministries, leader info section (photo via urlForImage, name, role) when leader is resolved, meeting time, and description via portableTextToHtml rendered with set:html.\n4. Verify: `npm run build` succeeds and generates /ministries/index.html. Verify no client: directives in new files. Verify all styles use CSS custom properties only.",
+      "estimate": "45m",
+      "files": [
+        "src/components/MinistryCard.astro",
+        "src/pages/ministries/index.astro",
+        "src/pages/ministries/[slug].astro"
+      ],
+      "verify": "npm run build && test -f dist/ministries/index.html && ! grep -r 'client:' src/components/MinistryCard.astro src/pages/ministries/",
+      "inputs": [
+        "`src/lib/sanity.ts` — Ministry interface, getMinistries(), getMinistryBySlug(), urlForImage(), portableTextToHtml()",
+        "`src/components/Card.astro` — existing card component to wrap in MinistryCard",
+        "`src/components/Hero.astro` — reused for both pages",
+        "`src/layouts/BaseLayout.astro` — page layout wrapper",
+        "`src/pages/sermons/index.astro` — pattern reference for hub page",
+        "`src/pages/sermons/[slug].astro` — pattern reference for getStaticPaths detail page"
+      ],
+      "expected_output": [
+        "`src/components/MinistryCard.astro` — new component rendering ministry as a card with meeting time",
+        "`src/pages/ministries/index.astro` — hub page with hero and responsive ministry card grid",
+        "`src/pages/ministries/[slug].astro` — detail page with leader info, meeting time, and portable text description"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -3869,6 +3952,39 @@
       "verdict": "✅ pass",
       "duration_ms": 7300,
       "created_at": "2026-04-01T13:52:29.069Z"
+    },
+    {
+      "id": 131,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M002",
+      "command": "npx tsc --noEmit (filtered to modified files)",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 2900,
+      "created_at": "2026-04-01T13:58:39.202Z"
+    },
+    {
+      "id": 132,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M002",
+      "command": "grep -q 'getMinistryBySlug' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T13:58:39.202Z"
+    },
+    {
+      "id": 133,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M002",
+      "command": "grep -q 'slug' sanity/schemas/documents/ministry.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T13:58:39.202Z"
     }
   ]
 }
