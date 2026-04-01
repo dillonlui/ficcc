@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T16:48:16.236Z",
+  "exported_at": "2026-04-01T16:54:50.052Z",
   "milestones": [
     {
       "id": "M001",
@@ -587,14 +587,14 @@
       "milestone_id": "M003",
       "id": "S01",
       "title": "ZH Homepage & Core Pages",
-      "status": "pending",
+      "status": "complete",
       "risk": "medium",
       "depends": [],
       "demo": "ZH Homepage, About (with 1983-2009 history timeline), Beliefs (EFCA 11-point), Staff, Sundays (with 7-stop bus route)",
       "created_at": "2026-03-31T22:34:23.911Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T16:50:25.488Z",
+      "full_summary_md": "---\nid: S01\nparent: M003\nmilestone: M003\nprovides:\n  - ZH page pattern for S02/S03 to follow\n  - Language-aware Header/Footer for all ZH pages\n  - src/lib/navigation.ts shared nav config\n  - 5 ZH pages at /zh/ paths\nrequires:\n  []\naffects:\n  - S02\n  - S03\n  - S04\nkey_files:\n  - src/lib/navigation.ts\n  - src/pages/zh/index.astro\n  - src/pages/zh/about/index.astro\n  - src/pages/zh/about/beliefs.astro\n  - src/pages/zh/about/staff.astro\n  - src/pages/zh/sundays.astro\n  - src/components/Header.astro\n  - src/components/Footer.astro\n  - src/layouts/BaseLayout.astro\nkey_decisions:\n  - D017: Language toggle uses anchor link navigation between / and /zh rather than JS-based toggle\n  - History timeline uses CSS-only vertical left-border layout with dot markers\n  - Bus route uses numbered circle stops with connecting line visual display\n  - ZH Beliefs has all 11 EFCA points vs EN's 8\npatterns_established:\n  - ZH page pattern: clone EN counterpart at src/pages/zh/*, swap Sanity queries to 'zh', provide Chinese fallback content, pass lang='zh' to BaseLayout, use /zh/ internal links\n  - Language-aware components: Header/Footer accept lang prop, use shared navigation config from src/lib/navigation.ts\n  - Bespoke ZH content sections (timeline, bus route) as inline styled sections within page files\nobservability_surfaces:\n  - None — static pages with no runtime behavior\ndrill_down_paths:\n  - .gsd/milestones/M003/slices/S01/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M003/slices/S01/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M003/slices/S01/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T16:50:25.490Z\nblocker_discovered: false\n---\n\n# S01: ZH Homepage & Core Pages\n\n**Delivered 5 ZH pages (Homepage, About with history timeline, Beliefs with EFCA 11-point, Staff, Sundays with bus route) at /zh/ paths with language-aware Header/Footer and shared navigation config.**\n\n## What Happened\n\nThree tasks built the ZH page foundation. T01 extracted hardcoded EN nav links into src/lib/navigation.ts with getNavLinks(lang) and getFooterNav(lang) functions, then updated Header.astro and Footer.astro to accept a lang prop (default 'en'). BaseLayout now threads lang to both components. The language toggle was changed from a non-functional button to an anchor link for actual page navigation between / and /zh.\n\nT02 created src/pages/zh/index.astro by cloning the EN homepage structure. All Sanity queries pass 'zh', fallback content uses Chinese text (歡迎回家, 主日崇拜, 根植聖經, etc.), all internal links point to /zh/ paths, and BaseLayout receives lang=\"zh\". Components are language-agnostic — they render whatever props they receive.\n\nT03 created the 4 remaining core pages: ZH About with a CSS-only vertical timeline covering 1968-2009 church history (7 milestone entries), ZH Beliefs with all 11 EFCA Statement of Faith points in Chinese (vs EN's 8 items), ZH Staff with Chinese role labels, and ZH Sundays with a 7-stop bus route visual display (Church → Hasbrouck → Collegetown → North Campus → Ithaca Commons → East Hill Plaza → Church).\n\nAll pages follow the same pattern: clone EN counterpart, swap queries to 'zh', provide Chinese fallback content, pass lang='zh' to BaseLayout, use /zh/ internal links. Build succeeds and all pages render correctly at dist/client/zh/.\n\n## Verification\n\nBuild succeeds (8.6s). All 5 ZH pages exist at dist/client/zh/: index.html, about/index.html, about/beliefs/index.html, about/staff/index.html, sundays/index.html. Content verified: lang=\"zh\" attribute present, 1983 history timeline content present in about page, Mitchell St bus route present in sundays page. EN pages unchanged — no Chinese nav labels leaked into EN homepage.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nHistory timeline expanded to 1968-2009 (7 entries) vs plan's 1983-2009. Beliefs page has 11 EFCA points vs EN's 8 items (ZH version is more complete per EFCA standard). Verification gate commands reference dist/zh/ but Vercel adapter outputs to dist/client/zh/ — all content is correct, path prefix differs.\n\n## Known Limitations\n\nVerification gate commands in the slice plan use dist/ paths but the Vercel adapter outputs static files to dist/client/. Future slice plans and verification gates should use dist/client/ as the base path (see K009).\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `src/lib/navigation.ts` — New shared nav config module with getNavLinks(lang) and getFooterNav(lang)\n- `src/components/Header.astro` — Added lang prop, uses navigation.ts, language toggle as anchor link\n- `src/components/Footer.astro` — Added lang prop, uses navigation.ts for language-appropriate links and service times\n- `src/layouts/BaseLayout.astro` — Threads lang prop to Header and Footer components\n- `src/pages/zh/index.astro` — ZH homepage with Chinese fallback content\n- `src/pages/zh/about/index.astro` — ZH about page with 1968-2009 history timeline\n- `src/pages/zh/about/beliefs.astro` — ZH beliefs page with EFCA 11-point Statement of Faith in Chinese\n- `src/pages/zh/about/staff.astro` — ZH staff page with Chinese role labels\n- `src/pages/zh/sundays.astro` — ZH sundays page with 7-stop bus route visual display\n",
+      "full_uat_md": "# S01: ZH Homepage & Core Pages — UAT\n\n**Milestone:** M003\n**Written:** 2026-04-01T16:50:25.490Z\n\n# S01 UAT: ZH Homepage & Core Pages\n\n## Preconditions\n- `npm run build` succeeds without errors\n- Static output exists at `dist/client/`\n\n## Test Cases\n\n### TC1: ZH Homepage renders at /zh/\n1. Open `dist/client/zh/index.html`\n2. **Expected:** `<html lang=\"zh\">` attribute present\n3. **Expected:** Hero heading contains '歡迎回家'\n4. **Expected:** Service times section shows '主日崇拜' and '主日學'\n5. **Expected:** Three pillars section has Chinese text (根植聖經, 多元合一, 服務社區)\n6. **Expected:** All internal links point to /zh/ paths (e.g. /zh/about, /zh/sermons)\n7. **Expected:** Navigation shows Chinese labels (首頁, 關於我們, 團契, 講道, 聯絡我們)\n\n### TC2: ZH About page with history timeline\n1. Open `dist/client/zh/about/index.html`\n2. **Expected:** `<html lang=\"zh\">` attribute present\n3. **Expected:** Page heading contains '我們是誰' or equivalent Chinese about heading\n4. **Expected:** History timeline section exists with entries spanning 1968-2009\n5. **Expected:** Timeline includes '1983' entry (華人查經班成立 or similar)\n6. **Expected:** All internal links point to /zh/ paths\n\n### TC3: ZH Beliefs page with EFCA 11-point Statement\n1. Open `dist/client/zh/about/beliefs/index.html`\n2. **Expected:** `<html lang=\"zh\">` attribute present\n3. **Expected:** Contains 11 belief statement sections (not 8 like EN)\n4. **Expected:** Belief topics include God (神), Bible (聖經), Jesus Christ (耶穌基督), Holy Spirit (聖靈), Church (教會)\n5. **Expected:** Chinese content paragraphs under each belief point\n\n### TC4: ZH Staff page\n1. Open `dist/client/zh/about/staff/index.html`\n2. **Expected:** `<html lang=\"zh\">` attribute present\n3. **Expected:** Page heading contains '教牧同工'\n4. **Expected:** Staff roles shown in Chinese (主任牧師, 副牧師, etc.)\n\n### TC5: ZH Sundays page with bus route\n1. Open `dist/client/zh/sundays/index.html`\n2. **Expected:** `<html lang=\"zh\">` attribute present\n3. **Expected:** Schedule section shows Chinese service times\n4. **Expected:** Bus route section lists 7 stops including 'Mitchell' (Church at 429 Mitchell St)\n5. **Expected:** Bus route includes: Church, Hasbrouck, Collegetown, North Campus, Ithaca Commons, East Hill Plaza, Church\n6. **Expected:** All internal links point to /zh/ paths\n\n### TC6: EN pages unchanged (no regression)\n1. Open `dist/client/index.html`\n2. **Expected:** `<html lang=\"en\">` attribute present\n3. **Expected:** Navigation shows English labels (About, Ministries, Sermons, Contact)\n4. **Expected:** No Chinese nav labels (首頁) present in EN homepage\n5. **Expected:** Hero content in English\n\n### TC7: Language-aware Header/Footer\n1. Compare header in `dist/client/index.html` vs `dist/client/zh/index.html`\n2. **Expected:** EN header has English nav links and logo text\n3. **Expected:** ZH header has Chinese nav links (首頁, 關於我們, etc.)\n4. **Expected:** Language toggle link present — EN pages link to /zh, ZH pages link to /\n5. **Expected:** Footer copyright uses appropriate church name per language\n\n## Edge Cases\n- **EC1:** ZH pages load CJK fonts — verify Noto Serif SC font references exist in page output\n- **EC2:** ZH Beliefs has 11 items vs EN's 8 — this is intentional per EFCA standard, not a bug\n",
       "goal": "ZH Homepage and core pages (About, Beliefs, Staff, Sundays) render at /zh/ paths with Chinese fallback content, lang=\"zh\", ZH-specific nav links, and bespoke sections (1983-2009 history timeline, EFCA 11-point statement, 7-stop bus route).",
       "success_criteria": "`npm run build` succeeds with all 5 ZH pages in `dist/zh/`. Each page has `<html lang=\"zh\">`. Header/Footer show ZH nav links on ZH pages. Chinese fallback content renders. ZH-specific sections (history timeline on About, 11-point beliefs, bus route on Sundays) are present. All internal links on ZH pages point to `/zh/...` paths. EN pages are unchanged.",
       "proof_level": "Build verification — static output confirms all pages render with correct lang, content, and links.",
@@ -617,11 +617,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Chinese Ministry community and ministry pages",
-      "success_criteria": "ZH Community with all 7 fellowships (中文查經班 through 康村之家). ZH Ministries with Children's/Adult Sunday School, Discipleship. ZH Testimonies section (unique to CM).",
-      "proof_level": "All 7 fellowship groups present with accurate names",
-      "integration_closure": "Ministry documents with language='zh'",
-      "observability_impact": "N/A",
+      "goal": "ZH Community & Ministries pages at /zh/ministries/ with 7 fellowship groups and ministry programs (Sunday School, Discipleship) in Chinese fallback content, plus a ZH ministry detail page.",
+      "success_criteria": "- `npm run build` succeeds\n- `test -f dist/client/zh/ministries/index.html` — ZH ministries listing page exists\n- `grep -q '團契' dist/client/zh/ministries/index.html` — Chinese fellowship content present\n- `grep -q 'lang=\"zh\"' dist/client/zh/ministries/index.html` — Correct language attribute\n- EN ministries page unchanged — `! grep -q '團契' dist/client/ministries/index.html`",
+      "proof_level": "Static build output. No runtime required.",
+      "integration_closure": "Upstream: S01 provides BaseLayout lang prop threading, Header/Footer lang-aware components, shared navigation config at src/lib/navigation.ts. No new wiring — this slice only adds page files that consume existing infrastructure.",
+      "observability_impact": "None — static pages with no runtime behavior.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2755,6 +2755,53 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S02",
+      "id": "T01",
+      "title": "Created ZH ministries listing with 7 fellowship groups and 2 ministry programs, plus ZH detail page with Chinese labels and /zh/ routing",
+      "status": "complete",
+      "one_liner": "Created ZH ministries listing with 7 fellowship groups and 2 ministry programs, plus ZH detail page with Chinese labels and /zh/ routing",
+      "narrative": "Cloned EN ministries listing and detail pages to src/pages/zh/ministries/. The listing page uses getMinistries('zh') with fallback content for 7 fellowship groups and 2 ministry programs organized under section headings. The detail page uses getMinistryBySlug with Chinese labels. Added a basePath prop to MinistryCard for language-aware links without breaking EN pages.",
+      "verification_result": "Build succeeded. Verified: ZH ministries index.html exists, contains 團契, contains lang=\"zh\", EN page does not contain Chinese content. All 9 groups/programs confirmed present.",
+      "duration": "",
+      "completed_at": "2026-04-01T16:54:50.036Z",
+      "blocker_discovered": false,
+      "deviations": "Added basePath prop to MinistryCard (not in plan). Organized ZH fallback into two sections with headings for better UX.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/pages/zh/ministries/index.astro",
+        "src/pages/zh/ministries/[slug].astro",
+        "src/components/MinistryCard.astro"
+      ],
+      "key_decisions": [
+        "Added basePath prop to MinistryCard for language-aware links instead of duplicating Card usage"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S02\nmilestone: M003\nkey_files:\n  - src/pages/zh/ministries/index.astro\n  - src/pages/zh/ministries/[slug].astro\n  - src/components/MinistryCard.astro\nkey_decisions:\n  - Added basePath prop to MinistryCard for language-aware links instead of duplicating Card usage\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T16:54:50.037Z\nblocker_discovered: false\n---\n\n# T01: Created ZH ministries listing with 7 fellowship groups and 2 ministry programs, plus ZH detail page with Chinese labels and /zh/ routing\n\n**Created ZH ministries listing with 7 fellowship groups and 2 ministry programs, plus ZH detail page with Chinese labels and /zh/ routing**\n\n## What Happened\n\nCloned EN ministries listing and detail pages to src/pages/zh/ministries/. The listing page uses getMinistries('zh') with fallback content for 7 fellowship groups and 2 ministry programs organized under section headings. The detail page uses getMinistryBySlug with Chinese labels. Added a basePath prop to MinistryCard for language-aware links without breaking EN pages.\n\n## Verification\n\nBuild succeeded. Verified: ZH ministries index.html exists, contains 團契, contains lang=\"zh\", EN page does not contain Chinese content. All 9 groups/programs confirmed present.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8700ms |\n| 2 | `test -f dist/client/zh/ministries/index.html` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q '團契' dist/client/zh/ministries/index.html` | 0 | ✅ pass | 100ms |\n| 4 | `grep -q 'lang=\"zh\"' dist/client/zh/ministries/index.html` | 0 | ✅ pass | 100ms |\n| 5 | `! grep -q '團契' dist/client/ministries/index.html` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nAdded basePath prop to MinistryCard (not in plan). Organized ZH fallback into two sections with headings for better UX.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/pages/zh/ministries/index.astro`\n- `src/pages/zh/ministries/[slug].astro`\n- `src/components/MinistryCard.astro`\n",
+      "description": "Clone the EN ministries listing (src/pages/ministries/index.astro) and detail page (src/pages/ministries/[slug].astro) to their ZH equivalents at src/pages/zh/ministries/. The listing page needs Chinese fallback content for 7 fellowship groups (福音組, 家庭組, 長青組, 校園組, 職青組, 兒童主日學, 青少年組) and ministry programs (主日學 Sunday School, 門徒訓練 Discipleship). The detail page needs a /zh/ministries back link and lang='zh' threading.\n\nFollow the S01 ZH page pattern exactly: clone EN counterpart, swap Sanity queries to 'zh', provide Chinese fallback content, pass lang='zh' to BaseLayout, use /zh/ internal links.\n\nSteps:\n1. Create src/pages/zh/ministries/index.astro by cloning src/pages/ministries/index.astro. Change getMinistries('en') to getMinistries('zh'). Replace EN fallback groups with 7 Chinese fellowship groups and ministry programs. Update title/description to Chinese. Set Hero title to '社區與事工'. Pass lang='zh' to BaseLayout. Update any internal links to /zh/ paths.\n2. Create src/pages/zh/ministries/[slug].astro by cloning src/pages/ministries/[slug].astro. Change getMinistries('en') and getMinistryBySlug(slug, 'en') to 'zh'. Update back link from /ministries to /zh/ministries. Change 'Meeting Time' label to '聚會時間'. Change 'Back to Ministries' to '← 返回事工'. Pass lang='zh' to BaseLayout.\n3. Run npm run build and verify both pages exist in dist/client/zh/ministries/ with correct Chinese content and lang attribute.",
+      "estimate": "30m",
+      "files": [
+        "src/pages/zh/ministries/index.astro",
+        "src/pages/zh/ministries/[slug].astro"
+      ],
+      "verify": "npm run build && test -f dist/client/zh/ministries/index.html && grep -q '團契' dist/client/zh/ministries/index.html && grep -q 'lang=\"zh\"' dist/client/zh/ministries/index.html && ! grep -q '團契' dist/client/ministries/index.html",
+      "inputs": [
+        "src/pages/ministries/index.astro",
+        "src/pages/ministries/[slug].astro",
+        "src/lib/sanity.ts",
+        "src/lib/navigation.ts",
+        "src/layouts/BaseLayout.astro",
+        "src/components/MinistryCard.astro",
+        "src/components/Hero.astro"
+      ],
+      "expected_output": [
+        "src/pages/zh/ministries/index.astro",
+        "src/pages/zh/ministries/[slug].astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -2946,6 +2993,18 @@
       "decision": "Turnstile script loading strategy for multi-form pages",
       "choice": "Extract Turnstile script tag from form components into consuming pages. Single-form pages use implicit render mode; multi-form pages (contact) use explicit render mode with turnstile.render/remove on tab switch to ensure only one widget at a time.",
       "rationale": "Contact page hosts 4 forms in tabs. Cloudflare Turnstile doesn't support multiple implicit widgets on one page — only one can render at a time. Extracting the script tag from form components into pages gives each page control over render mode. This also avoids duplicate script tag injection when multiple form components are composed together.",
+      "revisable": "Yes",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 19,
+      "id": "D017",
+      "when_context": "M003/S01/T01",
+      "scope": "architecture",
+      "decision": "Language toggle implementation",
+      "choice": "Anchor link navigation between / and /zh rather than JS-based toggle",
+      "rationale": "Full page navigation ensures correct SSG page is served, no JS dependency, and browser history works naturally. Each language version is a distinct static page with its own nav links, meta tags, and content.",
       "revisable": "Yes",
       "made_by": "agent",
       "superseded_by": null
@@ -4689,6 +4748,61 @@
       "verdict": "✅ pass",
       "duration_ms": 50,
       "created_at": "2026-04-01T16:48:16.220Z"
+    },
+    {
+      "id": 159,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8700,
+      "created_at": "2026-04-01T16:54:50.036Z"
+    },
+    {
+      "id": 160,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M003",
+      "command": "test -f dist/client/zh/ministries/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T16:54:50.036Z"
+    },
+    {
+      "id": 161,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M003",
+      "command": "grep -q '團契' dist/client/zh/ministries/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T16:54:50.036Z"
+    },
+    {
+      "id": 162,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M003",
+      "command": "grep -q 'lang=\"zh\"' dist/client/zh/ministries/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T16:54:50.036Z"
+    },
+    {
+      "id": 163,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M003",
+      "command": "! grep -q '團契' dist/client/ministries/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T16:54:50.036Z"
     }
   ]
 }

@@ -4,9 +4,9 @@ First Ithaca Chinese Christian Church — bilingual (EN/ZH) church website built
 
 ## Current State
 
-**M002: EN Content Pages — In Progress (S01–S06 complete).**
+**M003: ZH Content & Bilingual Toggle — In Progress (S01 complete).**
 
-M001 (Foundation & Design System) is complete. M002 is building all English Ministry pages.
+M001 (Foundation & Design System) and M002 (EN Content Pages) are complete. M003 is building all Chinese Ministry pages and bilingual wiring.
 
 S01 (Homepage) delivered the full homepage with hero, service times, photo mosaic, pillars, featured content, and next-steps sections — all CMS-editable via a homePage Sanity singleton with hardcoded fallbacks.
 
@@ -31,6 +31,8 @@ The full project scaffold is in place:
 - Security headers: CSP, HSTS, X-Frame-Options, etc.
 - Lighthouse CI pipeline: local + GitHub Actions on PRs
 - Custom 404 page with site chrome
+
+M003/S01 (ZH Homepage & Core Pages) delivered 5 Chinese pages at /zh/ paths: Homepage, About (with 1968-2009 history timeline), Beliefs (EFCA 11-point Statement of Faith), Staff, and Sundays (with 7-stop bus route). Established the ZH page pattern: clone EN structure, pass lang='zh' to BaseLayout, Chinese fallback content, /zh/ internal links. Header/Footer are language-aware via shared navigation config in src/lib/navigation.ts.
 
 ## Queued Milestones
 

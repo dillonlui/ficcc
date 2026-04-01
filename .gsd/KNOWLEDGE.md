@@ -43,3 +43,8 @@
 **Context:** 12 schema types organized under `sanity/schemas/{objects,documents,singletons}/` with barrel export from `index.ts`. Every document type has a `language` field with `'en' | 'zh'`. Singletons use `{type}-{lang}` IDs (e.g. `siteSettings-en`).
 **Rule:** Use the typed GROQ helpers in `src/lib/sanity.ts` for all content fetching — each accepts a `language` parameter defaulting to `'en'`. When adding new schema types, add them to the barrel export and update the structure builder in `sanity/structure.ts`.
 **Files:** `sanity/schemas/index.ts`, `src/lib/sanity.ts`, `sanity/structure.ts`
+
+## K009: Vercel adapter outputs static files to dist/client/ not dist/
+**Context:** With `@astrojs/vercel` adapter, `npm run build` outputs static HTML to `dist/client/` not `dist/`. Verification commands and gate checks that reference `dist/index.html` or `dist/zh/about/index.html` fail even though the pages built correctly.
+**Rule:** When writing verification commands for Astro + Vercel adapter builds, always use `dist/client/` as the base path for static file checks. E.g. `test -f dist/client/zh/about/index.html` not `test -f dist/zh/about/index.html`.
+**Files:** `dist/client/`

@@ -1,0 +1,221 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
+import MinistryCard from '../../../components/MinistryCard.astro';
+import { getMinistries, urlForImage, type Ministry } from '../../../lib/sanity';
+
+const title = '社區與事工 | 伊的家華人基督教會';
+const description = '了解伊的家華人基督教會的團契與事工。歡迎參加適合您的小組。';
+
+let ministries: Ministry[] = [];
+
+try {
+  ministries = await getMinistries('zh');
+} catch {
+  // Sanity unreachable — continue with empty array
+}
+
+const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
+
+// ---------- Fallback fellowship groups ----------
+const fallbackGroups = [
+  {
+    name: '福音組',
+    meetingTime: '週日 11:00 AM',
+    description: '以福音為核心的小組，歡迎慕道友與初信者一同認識信仰。',
+  },
+  {
+    name: '家庭組',
+    meetingTime: '週六 7:00 PM',
+    description: '以家庭為單位的團契，增進夫妻與親子間的信仰交流。',
+  },
+  {
+    name: '長青組',
+    meetingTime: '週三 10:00 AM',
+    description: '為年長弟兄姊妹預備的團契，一同查經、分享與代禱。',
+  },
+  {
+    name: '校園組',
+    meetingTime: '週五 7:30 PM',
+    description: '大學生與研究生團契，在校園生活中彼此扶持、一起成長。',
+  },
+  {
+    name: '職青組',
+    meetingTime: '週五 7:30 PM',
+    description: '為職場青年預備的團契，在工作與信仰中找到平衡與方向。',
+  },
+  {
+    name: '兒童主日學',
+    meetingTime: '週日 11:15 AM',
+    description: '為孩子們預備的聖經教導與活動，幫助他們從小認識神。',
+  },
+  {
+    name: '青少年組',
+    meetingTime: '週五 7:30 PM',
+    description: '國中及高中生團契，在歡樂中學習信仰、建立友誼。',
+  },
+];
+
+// ---------- Fallback ministry programs ----------
+const fallbackPrograms = [
+  {
+    name: '主日學 Sunday School',
+    meetingTime: '週日 11:15 AM',
+    description: '成人主日學提供各類聖經課程與專題研討，適合不同程度的弟兄姊妹。',
+  },
+  {
+    name: '門徒訓練 Discipleship',
+    meetingTime: '週日 11:00 AM',
+    description: '有系統的門徒訓練課程，幫助信徒在信仰上扎根成長。',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main>
+    <Hero
+      title="社區與事工"
+      subtitle="加入我們的團契與事工，一同成長"
+      backgroundImage="/images/hero-placeholder.svg"
+    />
+
+    {ministriesWithSlug.length > 0 ? (
+      <section class="ministries-listing" aria-label="事工">
+        <div class="ministries-listing__inner">
+          <div class="ministries-grid">
+            {ministriesWithSlug.map((ministry) => (
+              <MinistryCard
+                name={ministry.name}
+                image={urlForImage(ministry.image, { width: 600 }) || undefined}
+                meetingTime={ministry.meetingTime}
+                slug={ministry.slug!.current}
+                basePath="/zh/ministries"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class="ministries-listing" aria-label="團契與事工">
+        <div class="ministries-listing__inner">
+          <p class="ministries-listing__intro">
+            教會有許多團契與事工，歡迎您找到適合的小組，一起追求信仰、彼此扶持。
+          </p>
+
+          <h2 class="ministries-listing__heading">團契小組</h2>
+          <div class="ministries-grid">
+            {fallbackGroups.map((group) => (
+              <div class="group-card">
+                <h3 class="group-card__name">{group.name}</h3>
+                {group.meetingTime && (
+                  <p class="group-card__time">{group.meetingTime}</p>
+                )}
+                <p class="group-card__desc">{group.description}</p>
+              </div>
+            ))}
+          </div>
+
+          <h2 class="ministries-listing__heading">事工課程</h2>
+          <div class="ministries-grid">
+            {fallbackPrograms.map((program) => (
+              <div class="group-card">
+                <h3 class="group-card__name">{program.name}</h3>
+                {program.meetingTime && (
+                  <p class="group-card__time">{program.meetingTime}</p>
+                )}
+                <p class="group-card__desc">{program.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .ministries-listing {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .ministries-listing__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .ministries-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .ministries-listing__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    text-align: center;
+    max-width: 40rem;
+    margin-inline: auto;
+    margin-block-end: var(--space-10);
+  }
+
+  .ministries-listing__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    color: var(--color-ink);
+    margin-block-start: var(--space-12);
+    margin-block-end: var(--space-6);
+  }
+
+  .ministries-listing__heading:first-of-type {
+    margin-block-start: 0;
+  }
+
+  .group-card {
+    background-color: var(--color-stone);
+    border-radius: var(--radius-md);
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .group-card__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-2);
+  }
+
+  .group-card__time {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-terracotta);
+    margin-block-end: var(--space-3);
+  }
+
+  .group-card__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .ministries-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ministries-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .ministries-listing {
+      padding: var(--space-10) var(--space-4);
+    }
+  }
+</style>

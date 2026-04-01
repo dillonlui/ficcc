@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M003/S01/T03",
+  "timestamp": 1775062099712,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 8445,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f dist/zh/about/index.html",
+      "exitCode": 1,
+      "durationMs": 18,
+      "verdict": "fail"
+    },
+    {
+      "command": "test -f dist/zh/about/beliefs/index.html",
+      "exitCode": 1,
+      "durationMs": 13,
+      "verdict": "fail"
+    },
+    {
+      "command": "test -f dist/zh/about/staff/index.html",
+      "exitCode": 1,
+      "durationMs": 11,
+      "verdict": "fail"
+    },
+    {
+      "command": "test -f dist/zh/sundays/index.html",
+      "exitCode": 1,
+      "durationMs": 8,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q 'lang=\"zh\"' dist/zh/about/index.html",
+      "exitCode": 2,
+      "durationMs": 14,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q '1983' dist/zh/about/index.html",
+      "exitCode": 2,
+      "durationMs": 14,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q 'Mitchell' dist/zh/sundays/index.html",
+      "exitCode": 2,
+      "durationMs": 11,
+      "verdict": "fail"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}
