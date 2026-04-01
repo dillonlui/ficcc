@@ -48,3 +48,13 @@
 **Context:** With `@astrojs/vercel` adapter, `npm run build` outputs static HTML to `dist/client/` not `dist/`. Verification commands and gate checks that reference `dist/index.html` or `dist/zh/about/index.html` fail even though the pages built correctly.
 **Rule:** When writing verification commands for Astro + Vercel adapter builds, always use `dist/client/` as the base path for static file checks. E.g. `test -f dist/client/zh/about/index.html` not `test -f dist/zh/about/index.html`.
 **Files:** `dist/client/`
+
+## K010: Bilingual URL resolution — getAlternateUrl as single source of truth
+**Context:** Language toggle href, hreflang SEO tags, and any future bilingual URL needs all require the same EN↔ZH path mapping logic. Duplicating this logic across Header, SEO, and other consumers leads to drift.
+**Rule:** Use `getAlternateUrl(pathname)` from `src/lib/navigation.ts` for all EN↔ZH URL computation. It handles standard /zh/ prefix swap, asymmetric routes (e.g. /visit ↔ /zh/sundays), trailing-slash normalization, and fallback to other-language homepage for pages with no counterpart. 20 Vitest tests cover all cases.
+**Files:** `src/lib/navigation.ts`, `src/lib/navigation.test.ts`
+
+## K011: Bespoke ZH pages when content needs differ from EN
+**Context:** ZH contact page uses WeChat-first design with QR code and simplified 3-field form, vs EN's 4-tab form layout with Turnstile. Force-cloning EN structure would create a poor ZH experience.
+**Rule:** When ZH content or UX needs differ significantly from EN, build a bespoke page rather than cloning. Follow the same BaseLayout/lang='zh' pattern, but design the page layout for the ZH audience. Current bespoke pages: /zh/contact (WeChat-first), /zh/about (extended 1968-2009 timeline), /zh/about/beliefs (11 EFCA points vs EN's 8).
+**Files:** `src/pages/zh/contact.astro`, `src/pages/zh/about/index.astro`, `src/pages/zh/about/beliefs.astro`

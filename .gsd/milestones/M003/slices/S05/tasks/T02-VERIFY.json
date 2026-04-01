@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M003/S05/T02",
+  "timestamp": 1775064366620,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "test -f sanity/migrations/cm-content.ts",
+      "exitCode": 0,
+      "durationMs": 16,
+      "verdict": "pass"
+    },
+    {
+      "command": "node -e \"require('fs').readFileSync('sanity/migrations/cm-content.ts','utf8')\"",
+      "exitCode": 0,
+      "durationMs": 36,
+      "verdict": "pass"
+    }
+  ]
+}
