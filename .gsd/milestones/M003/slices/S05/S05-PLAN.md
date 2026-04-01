@@ -23,7 +23,7 @@ Steps:
   - Estimate: 20m
   - Files: vercel.json, SITE-AUDIT.md
   - Verify: node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8'))" && node -e "const v=JSON.parse(require('fs').readFileSync('vercel.json','utf8')); if(!v.redirects||v.redirects.length<8) throw new Error('need 8+ redirects')" && npm run build
-- [ ] **T02: Write idempotent Sanity migration script for ZH singleton content** — Create `sanity/migrations/cm-content.ts` — a TypeScript migration script using `@sanity/client` that populates 4 ZH singleton documents with actual Chinese Ministry content from cm.ficcc.org (sourced from SITE-AUDIT.md section 3).
+- [x] **T02: Created idempotent Sanity migration script with 4 ZH singleton documents (homePage, aboutPage, siteSettings, visitPage) using createOrReplace** — Create `sanity/migrations/cm-content.ts` — a TypeScript migration script using `@sanity/client` that populates 4 ZH singleton documents with actual Chinese Ministry content from cm.ficcc.org (sourced from SITE-AUDIT.md section 3).
 
 Target documents and their singleton IDs (from sanity/schemas/index.ts `singletonDocIds`):
 - `homePage-zh` (type: homePage) — heroTitle: 歡迎回家, service times (中文崇拜 11:15am, 主日學 9:45am), pillars, next steps

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T17:22:40.313Z",
+  "exported_at": "2026-04-01T17:26:03.463Z",
   "milestones": [
     {
       "id": "M001",
@@ -3071,19 +3071,24 @@
       "milestone_id": "M003",
       "slice_id": "S05",
       "id": "T02",
-      "title": "Write idempotent Sanity migration script for ZH singleton content",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created idempotent Sanity migration script with 4 ZH singleton documents (homePage, aboutPage, siteSettings, visitPage) using createOrReplace",
+      "status": "complete",
+      "one_liner": "Created idempotent Sanity migration script with 4 ZH singleton documents (homePage, aboutPage, siteSettings, visitPage) using createOrReplace",
+      "narrative": "Read all 4 singleton schemas to confirm exact field names and types. Cross-referenced with ZH page fallback content for accurate Chinese text. Created sanity/migrations/cm-content.ts with homePage-zh (hero, service times, pillars, next steps), aboutPage-zh (church history, vision, stats, 11 EFCA beliefs), siteSettings-zh (church name, contact info, WeChat), and visitPage-zh (schedule, what to expect, transportation, FAQ). All array items use correct _type and _key values matching schema definitions. Portable Text fields use proper block/span structure. Script supports dry-run mode (no token) and live mode with per-document success/failure logging.",
+      "verification_result": "File exists check passed. Script compiles and executes via npx tsx without errors. Dry-run mode correctly outputs all 4 documents and reports '4 documents would be created/replaced'. All field names verified against schema definitions.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T17:26:03.446Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "sanity/migrations/cm-content.ts"
+      ],
+      "key_decisions": [
+        "Used descriptive _key values for stability and readability",
+        "Dry-run mode when SANITY_API_WRITE_TOKEN absent"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S05\nmilestone: M003\nkey_files:\n  - sanity/migrations/cm-content.ts\nkey_decisions:\n  - Used descriptive _key values for stability and readability\n  - Dry-run mode when SANITY_API_WRITE_TOKEN absent\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:26:03.446Z\nblocker_discovered: false\n---\n\n# T02: Created idempotent Sanity migration script with 4 ZH singleton documents (homePage, aboutPage, siteSettings, visitPage) using createOrReplace\n\n**Created idempotent Sanity migration script with 4 ZH singleton documents (homePage, aboutPage, siteSettings, visitPage) using createOrReplace**\n\n## What Happened\n\nRead all 4 singleton schemas to confirm exact field names and types. Cross-referenced with ZH page fallback content for accurate Chinese text. Created sanity/migrations/cm-content.ts with homePage-zh (hero, service times, pillars, next steps), aboutPage-zh (church history, vision, stats, 11 EFCA beliefs), siteSettings-zh (church name, contact info, WeChat), and visitPage-zh (schedule, what to expect, transportation, FAQ). All array items use correct _type and _key values matching schema definitions. Portable Text fields use proper block/span structure. Script supports dry-run mode (no token) and live mode with per-document success/failure logging.\n\n## Verification\n\nFile exists check passed. Script compiles and executes via npx tsx without errors. Dry-run mode correctly outputs all 4 documents and reports '4 documents would be created/replaced'. All field names verified against schema definitions.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f sanity/migrations/cm-content.ts` | 0 | ✅ pass | 100ms |\n| 2 | `node -e \"require('fs').readFileSync('sanity/migrations/cm-content.ts','utf8')\"` | 0 | ✅ pass | 200ms |\n| 3 | `SANITY_PROJECT_ID=test123 npx tsx sanity/migrations/cm-content.ts` | 0 | ✅ pass | 3000ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/migrations/cm-content.ts`\n",
       "description": "Create `sanity/migrations/cm-content.ts` — a TypeScript migration script using `@sanity/client` that populates 4 ZH singleton documents with actual Chinese Ministry content from cm.ficcc.org (sourced from SITE-AUDIT.md section 3).\n\nTarget documents and their singleton IDs (from sanity/schemas/index.ts `singletonDocIds`):\n- `homePage-zh` (type: homePage) — heroTitle: 歡迎回家, service times (中文崇拜 11:15am, 主日學 9:45am), pillars, next steps\n- `aboutPage-zh` (type: aboutPage) — whoWeAreBody with church history/stats, visionBody, churchStats array, beliefs array (11 EFCA points)\n- `siteSettings-zh` (type: siteSettings) — churchName: 以撒迦中國播道會, address, phone, email, WeChat social link\n- `visitPage-zh` (type: visitPage) — heroTitle: 主日崇拜, schedule (ZH service times), transportation (bus route info), FAQ items\n\nCritical implementation details:\n- Use `createOrReplace` for idempotency\n- Body fields (whoWeAreBody, visionBody, whatToExpect, transportation) are Portable Text: `[{_type:'block', _key:'unique', children:[{_type:'span', _key:'unique', text:'...'}], markDefs:[], style:'normal'}]`\n- `_key` values must be unique strings — use descriptive keys like 'hero-1', 'pillar-rooted' etc.\n- Service times, pillars, next steps, schedule, stats, beliefs are typed object arrays with `_type` and `_key`\n- Each document needs `_id`, `_type`, and `language: 'zh'`\n- Script should be runnable via `npx ts-node sanity/migrations/cm-content.ts` or `npx tsx sanity/migrations/cm-content.ts`\n- Reads SANITY_PROJECT_ID and SANITY_DATASET from env (with fallback to .env)\n- Needs SANITY_API_WRITE_TOKEN env var for actual execution\n- Include a dry-run mode that logs documents to console when no token is available\n\nContent sources (from SITE-AUDIT.md section 3 and ZH page fallbacks in S01-S03):\n- homePage-zh: 歡迎回家 hero, 中文崇拜/主日學 service times, 根植聖經/紮根社區/活出信仰 pillars\n- aboutPage-zh: Church history (1983 founding through 2009), ~150 members, ~20 baptisms/yr, 18 ministers, 11 EFCA belief points\n- siteSettings-zh: 以撒迦中國播道會, 429 Mitchell St, (607)280-8898, ithacachen@yahoo.com, WeChat: ithacachen\n- visitPage-zh: ZH service schedule, 7-stop bus route, summer/holiday variations\n\nSteps:\n1. Read all 4 singleton schema files to confirm exact field names and types\n2. Read ZH page fallback content from S01-S03 pages for accurate Chinese text\n3. Create `sanity/migrations/cm-content.ts` with document definitions matching schemas exactly\n4. Verify script compiles with `npx tsc --noEmit sanity/migrations/cm-content.ts` or dry-run execution\n5. Verify document field names match schema definitions",
       "estimate": "45m",
       "files": [
@@ -5401,6 +5406,39 @@
       "verdict": "✅ pass",
       "duration_ms": 8700,
       "created_at": "2026-04-01T17:22:40.290Z"
+    },
+    {
+      "id": 190,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M003",
+      "command": "test -f sanity/migrations/cm-content.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:26:03.446Z"
+    },
+    {
+      "id": 191,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M003",
+      "command": "node -e \"require('fs').readFileSync('sanity/migrations/cm-content.ts','utf8')\"",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 200,
+      "created_at": "2026-04-01T17:26:03.446Z"
+    },
+    {
+      "id": 192,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M003",
+      "command": "SANITY_PROJECT_ID=test123 npx tsx sanity/migrations/cm-content.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 3000,
+      "created_at": "2026-04-01T17:26:03.446Z"
     }
   ]
 }
