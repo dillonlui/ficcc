@@ -4,16 +4,25 @@ interface Props {
   subtitle?: string;
   ctaText?: string;
   ctaHref?: string;
-  backgroundImage: string;
+  backgroundImage?: string;
 }
 
 const { title, subtitle, ctaText, ctaHref, backgroundImage } = Astro.props;
 ---
 
-<section
-  class="hero"
-  style={`background-image: url('${backgroundImage}');`}
->
+<section class="hero">
+  {backgroundImage ? (
+    <img
+      class="hero__img"
+      src={backgroundImage}
+      alt=""
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+    />
+  ) : (
+    <div class="hero__fallback" />
+  )}
   <div class="hero__overlay">
     <div class="hero__content">
       <h1 class="hero__title">{title}</h1>
@@ -29,13 +38,26 @@ const { title, subtitle, ctaText, ctaHref, backgroundImage } = Astro.props;
   .hero {
     width: 100%;
     min-height: 28rem;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    background-color: var(--color-navy, #1a1a2e);
+  }
+
+  .hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__fallback {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-navy, #1a1a2e);
   }
 
   .hero__overlay {

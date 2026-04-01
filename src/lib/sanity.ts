@@ -441,7 +441,7 @@ export function urlForImage(
 
   const params = new URLSearchParams();
   if (options?.width) params.set('w', String(options.width));
-  if (options?.format) params.set('fm', options.format);
+  params.set('fm', options?.format ?? 'webp');
   const qs = params.toString();
   if (qs) url += `?${qs}`;
 

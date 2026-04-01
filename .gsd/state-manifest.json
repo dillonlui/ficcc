@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T17:31:17.638Z",
+  "exported_at": "2026-04-01T17:38:00.230Z",
   "milestones": [
     {
       "id": "M001",
@@ -705,11 +705,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Meet all performance and accessibility targets from PRD",
-      "success_criteria": "Lighthouse >= 90 perf, >= 95 a11y, >= 95 SEO on homepage, sermons, about, sundays (both EN and ZH). LCP < 2.5s. CLS < 0.1. Page weight < 500KB. axe-core zero violations. Keyboard navigation works. Color contrast WCAG AA. skip-to-content link.",
-      "proof_level": "Lighthouse reports for every page type. axe-core clean. Keyboard test documented.",
-      "integration_closure": "Lighthouse CI thresholds enforced in CI pipeline going forward",
-      "observability_impact": "Performance budgets enforced in CI",
+      "goal": "Achieve ≥0.90 Lighthouse performance and ≥0.95 accessibility scores on all production page types, with zero axe-core violations and keyboard-navigable UI.",
+      "success_criteria": "- `npm run build` succeeds without regressions\n- `npm run lhci` passes with ≥0.90 perf and ≥0.95 a11y on all production page archetypes\n- `npx @axe-core/cli` reports zero violations on representative pages\n- Skip-to-content link present and functional on all pages\n- Hero component uses `<img>` with `fetchpriority=\"high\"` instead of CSS `background-image`\n- All Sanity images request WebP format by default\n- Preconnect hints added for `cdn.sanity.io`",
+      "proof_level": "operational — requires real build + Lighthouse CI run to prove scores",
+      "integration_closure": "- Upstream surfaces consumed: `src/lib/sanity.ts` (urlForImage), `src/layouts/BaseLayout.astro` (head/body layout), `src/components/Hero.astro` (LCP element), `lighthouserc.cjs` (CI thresholds)\n- New wiring: preconnect hints in BaseLayout head, skip-to-content link in body, axe-core dev dependency\n- What remains: S02 (SEO/analytics), S03 (E2E tests), S04 (search), S05 (docs), S06 (DNS cutover)",
+      "observability_impact": "- Inspection surfaces: `npm run lhci` produces Lighthouse HTML reports with per-category scores and audit details. `npx @axe-core/cli <url>` produces JSON/table output of a11y violations.\n- Failure visibility: LHCI assertion failures name the category, score, and threshold. axe-core violations include element selector, rule ID, and impact level.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -3119,6 +3119,161 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M004",
+      "slice_id": "S01",
+      "id": "T01",
+      "title": "Converted Hero from CSS background-image to <img> with fetchpriority=\"high\", added cdn.sanity.io preconnect, and defaulted Sanity image URLs to WebP",
+      "status": "complete",
+      "one_liner": "Converted Hero from CSS background-image to <img> with fetchpriority=\"high\", added cdn.sanity.io preconnect, and defaulted Sanity image URLs to WebP",
+      "narrative": "Restructured Hero.astro from CSS background-image to a proper <img> element with fetchpriority=\"high\", loading=\"eager\", and decoding=\"async\" for LCP optimization. Added a solid-color fallback when no image is provided. Added preconnect hint for cdn.sanity.io in BaseLayout head. Modified urlForImage() to always append fm=webp unless caller overrides.",
+      "verification_result": "npm run build exited 0. grep confirmed fetchpriority in Hero.astro, preconnect in BaseLayout.astro, and webp default in sanity.ts.",
+      "duration": "",
+      "completed_at": "2026-04-01T17:38:00.211Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/Hero.astro",
+        "src/layouts/BaseLayout.astro",
+        "src/lib/sanity.ts"
+      ],
+      "key_decisions": [
+        "Hero uses alt=\"\" since image is decorative (text overlay provides content)",
+        "Solid color fallback via background-color on .hero container when no backgroundImage provided"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S01\nmilestone: M004\nkey_files:\n  - src/components/Hero.astro\n  - src/layouts/BaseLayout.astro\n  - src/lib/sanity.ts\nkey_decisions:\n  - Hero uses alt=\"\" since image is decorative (text overlay provides content)\n  - Solid color fallback via background-color on .hero container when no backgroundImage provided\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:38:00.212Z\nblocker_discovered: false\n---\n\n# T01: Converted Hero from CSS background-image to <img> with fetchpriority=\"high\", added cdn.sanity.io preconnect, and defaulted Sanity image URLs to WebP\n\n**Converted Hero from CSS background-image to <img> with fetchpriority=\"high\", added cdn.sanity.io preconnect, and defaulted Sanity image URLs to WebP**\n\n## What Happened\n\nRestructured Hero.astro from CSS background-image to a proper <img> element with fetchpriority=\"high\", loading=\"eager\", and decoding=\"async\" for LCP optimization. Added a solid-color fallback when no image is provided. Added preconnect hint for cdn.sanity.io in BaseLayout head. Modified urlForImage() to always append fm=webp unless caller overrides.\n\n## Verification\n\nnpm run build exited 0. grep confirmed fetchpriority in Hero.astro, preconnect in BaseLayout.astro, and webp default in sanity.ts.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8800ms |\n| 2 | `grep -q 'fetchpriority' src/components/Hero.astro` | 0 | ✅ pass | 50ms |\n| 3 | `grep -q 'preconnect' src/layouts/BaseLayout.astro` | 0 | ✅ pass | 50ms |\n| 4 | `grep -q \"format.*webp|fm.*webp|'webp'\" src/lib/sanity.ts` | 0 | ✅ pass | 50ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/Hero.astro`\n- `src/layouts/BaseLayout.astro`\n- `src/lib/sanity.ts`\n",
+      "description": "The Hero component uses CSS `background-image` which is invisible to the browser preload scanner — this is the LCP element on most pages. Convert it to a proper `<img>` element, add preconnect hints, and default all Sanity images to WebP format.\n\n## Steps\n\n1. **Convert Hero from CSS background-image to `<img>`:** Restructure `src/components/Hero.astro` to use an `<img>` element with `fetchpriority=\"high\"`, `loading=\"eager\"`, `decoding=\"async\"`, and `object-fit: cover` inside a relative-positioned container. The overlay gradient div sits on top via absolute positioning. Keep `alt=\"\"` since the image is decorative (text overlay provides content). Handle the case where `backgroundImage` is empty or missing — render a solid color fallback.\n\n2. **Add preconnect hint for cdn.sanity.io:** In `src/layouts/BaseLayout.astro`, add `<link rel=\"preconnect\" href=\"https://cdn.sanity.io\" crossorigin />` in the `<head>` before the CJK font link. This allows early connection setup for Sanity CDN images.\n\n3. **Default urlForImage to WebP format:** In `src/lib/sanity.ts`, modify `urlForImage()` to always append `fm=webp` unless the caller explicitly passes a different format. This is a single-line change: default `options.format` to `'webp'`.\n\n4. **Verify build and visual output:** Run `npm run build` to confirm no regressions. The Hero should render identically — full-width image with gradient overlay and centered text.\n\n## Must-Haves\n\n- [ ] Hero uses `<img>` with `fetchpriority=\"high\"` instead of CSS `background-image`\n- [ ] Hero handles empty/missing `backgroundImage` prop gracefully (solid color fallback)\n- [ ] Preconnect hint for `cdn.sanity.io` in BaseLayout head\n- [ ] `urlForImage()` defaults to WebP format\n- [ ] Existing Hero visual appearance preserved (full-width, gradient overlay, centered text)\n- [ ] `npm run build` succeeds\n\n## Verification\n\n- `npm run build` exits 0\n- `grep -q 'fetchpriority' src/components/Hero.astro` confirms img element\n- `grep -q 'preconnect' src/layouts/BaseLayout.astro` confirms preconnect hint\n- `grep -q \"format.*webp\\|fm.*webp\\|'webp'\" src/lib/sanity.ts` confirms WebP default",
+      "estimate": "45m",
+      "files": [
+        "src/components/Hero.astro",
+        "src/layouts/BaseLayout.astro",
+        "src/lib/sanity.ts"
+      ],
+      "verify": "npm run build && grep -q 'fetchpriority' src/components/Hero.astro && grep -q 'preconnect' src/layouts/BaseLayout.astro",
+      "inputs": [
+        "src/components/Hero.astro",
+        "src/layouts/BaseLayout.astro",
+        "src/lib/sanity.ts"
+      ],
+      "expected_output": [
+        "src/components/Hero.astro",
+        "src/layouts/BaseLayout.astro",
+        "src/lib/sanity.ts"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M004",
+      "slice_id": "S01",
+      "id": "T02",
+      "title": "Add skip-to-content link, main landmark IDs, and audit image alt text",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Accessibility gaps: no skip-to-content link, no `id` on `<main>` for skip targets, and two `<img>` elements with empty `alt` that need contextual audit.\n\n## Steps\n\n1. **Add skip-to-content link in BaseLayout:** Add a visually-hidden skip link as the first child of `<body>` in `src/layouts/BaseLayout.astro`: `<a href=\"#main-content\" class=\"skip-to-content\">Skip to main content</a>`. Add scoped styles that visually hide it until focused (position off-screen, show on `:focus-visible` with high z-index and visible styling).\n\n2. **Add `id=\"main-content\"` to all `<main>` elements:** Search all pages in `src/pages/` for `<main` tags and add `id=\"main-content\"` to each. There are ~15 pages with `<main>` elements. This is the skip-link target.\n\n3. **Audit Card and EventCard alt text:** `src/components/Card.astro` and `src/components/EventCard.astro` both use `alt=\"\"`. These cards have titles displayed as text content, so the images are decorative — `alt=\"\"` is correct per WCAG. However, add a comment explaining the intentional decision: `<!-- Decorative: card title provides text alternative -->`. Also check if any `<img>` elements across the site are missing `alt` entirely.\n\n4. **Verify:** Run `npm run build`. Confirm skip-to-content link exists. Confirm all `<main>` elements have `id=\"main-content\"`.\n\n## Must-Haves\n\n- [ ] Skip-to-content link as first focusable element on every page\n- [ ] Skip link targets `#main-content` and is visually hidden until focused\n- [ ] All `<main>` elements have `id=\"main-content\"`\n- [ ] Card/EventCard alt text audited and documented\n- [ ] `npm run build` succeeds\n\n## Verification\n\n- `npm run build` exits 0\n- `grep -q 'skip-to-content' src/layouts/BaseLayout.astro` confirms skip link\n- `grep -c 'id=\"main-content\"' src/pages/*.astro src/pages/**/*.astro` shows all pages have it",
+      "estimate": "30m",
+      "files": [
+        "src/layouts/BaseLayout.astro",
+        "src/components/Card.astro",
+        "src/components/EventCard.astro",
+        "src/pages/index.astro",
+        "src/pages/contact.astro",
+        "src/pages/sermons/index.astro",
+        "src/pages/about/index.astro"
+      ],
+      "verify": "npm run build && grep -q 'skip-to-content' src/layouts/BaseLayout.astro && grep -rq 'id=\"main-content\"' src/pages/",
+      "inputs": [
+        "src/layouts/BaseLayout.astro",
+        "src/components/Card.astro",
+        "src/components/EventCard.astro"
+      ],
+      "expected_output": [
+        "src/layouts/BaseLayout.astro",
+        "src/components/Card.astro",
+        "src/components/EventCard.astro",
+        "src/pages/index.astro",
+        "src/pages/contact.astro",
+        "src/pages/sermons/index.astro",
+        "src/pages/sermons/[slug].astro",
+        "src/pages/about/index.astro",
+        "src/pages/about/beliefs.astro",
+        "src/pages/about/staff.astro",
+        "src/pages/events.astro",
+        "src/pages/give.astro",
+        "src/pages/visit.astro",
+        "src/pages/ministries/index.astro",
+        "src/pages/ministries/[slug].astro",
+        "src/pages/404.astro",
+        "src/pages/styleguide.astro",
+        "src/pages/resources.astro",
+        "src/pages/zh/index.astro",
+        "src/pages/zh/contact.astro",
+        "src/pages/zh/events.astro",
+        "src/pages/zh/give.astro",
+        "src/pages/zh/sundays.astro",
+        "src/pages/zh/about/index.astro",
+        "src/pages/zh/about/beliefs.astro",
+        "src/pages/zh/about/staff.astro",
+        "src/pages/zh/sermons/index.astro",
+        "src/pages/zh/sermons/[slug].astro",
+        "src/pages/zh/ministries/index.astro",
+        "src/pages/zh/ministries/[slug].astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M004",
+      "slice_id": "S01",
+      "id": "T03",
+      "title": "Expand LHCI coverage, add axe-core, raise thresholds, and run full audit",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Expand Lighthouse CI to cover all page archetypes, add axe-core for automated a11y testing, raise performance thresholds to 0.90, and run the full audit to validate T01/T02 fixes.\n\n## Steps\n\n1. **Install axe-core CLI:** Run `npm install -D @axe-core/cli`. This provides `npx @axe-core/cli <url>` for automated WCAG 2.1 violation scanning.\n\n2. **Expand LHCI URL list in `lighthouserc.cjs`:** Add representative URLs for each page archetype. The current list only covers `/`, `/styleguide/`, and `/404.html`. Add: `/about/`, `/sermons/`, `/contact/`, `/events/`, `/visit/`, `/give/`, `/zh/`. Keep the list to one per template type — dynamic routes (`/sermons/[slug]`, `/ministries/[slug]`) can't be tested without known slugs, so skip those for now.\n\n3. **Update LHCI assertMatrix thresholds:** Raise the production page performance threshold from 0.75 to 0.90. Add new URL patterns for the added pages. Keep styleguide at warn/0.50 and 404 at current levels. Add a catch-all pattern for any new production pages at ≥0.90 perf, ≥0.95 a11y.\n\n4. **Add npm script for axe-core:** Add `\"test:a11y\": \"npx @axe-core/cli http://localhost:4321/ http://localhost:4321/about/ http://localhost:4321/contact/ http://localhost:4321/zh/ --exit\"` to `package.json` scripts.\n\n5. **Run build + LHCI:** Execute `npm run build` then `npm run lhci` and verify all assertions pass at the new thresholds. If any page scores below 0.90 perf, investigate and fix or adjust threshold with rationale (e.g. YouTube embed pages may need 0.85).\n\n6. **Run axe-core:** Start preview server, run `npx @axe-core/cli` against representative pages, verify zero violations.\n\n## Must-Haves\n\n- [ ] `@axe-core/cli` installed as dev dependency\n- [ ] LHCI URL list covers all page archetypes (home, about, sermons, contact, events, visit, give, zh home)\n- [ ] Performance threshold raised to ≥0.90 for production pages\n- [ ] `test:a11y` npm script added\n- [ ] `npm run lhci` passes at new thresholds\n- [ ] axe-core reports zero violations on representative pages\n\n## Verification\n\n- `npm run build` exits 0\n- `npm run lhci` passes (all assertions green)\n- `grep -q 'axe-core' package.json` confirms dependency installed\n- `grep -q 'test:a11y' package.json` confirms script added",
+      "estimate": "1h",
+      "files": [
+        "lighthouserc.cjs",
+        "package.json"
+      ],
+      "verify": "npm run build && npm run lhci",
+      "inputs": [
+        "lighthouserc.cjs",
+        "package.json",
+        "src/components/Hero.astro",
+        "src/layouts/BaseLayout.astro",
+        "src/lib/sanity.ts"
+      ],
+      "expected_output": [
+        "lighthouserc.cjs",
+        "package.json"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -5439,6 +5594,50 @@
       "verdict": "✅ pass",
       "duration_ms": 3000,
       "created_at": "2026-04-01T17:26:03.446Z"
+    },
+    {
+      "id": 193,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M004",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8800,
+      "created_at": "2026-04-01T17:38:00.211Z"
+    },
+    {
+      "id": 194,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M004",
+      "command": "grep -q 'fetchpriority' src/components/Hero.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T17:38:00.211Z"
+    },
+    {
+      "id": 195,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M004",
+      "command": "grep -q 'preconnect' src/layouts/BaseLayout.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T17:38:00.211Z"
+    },
+    {
+      "id": 196,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M004",
+      "command": "grep -q \"format.*webp|fm.*webp|'webp'\" src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T17:38:00.211Z"
     }
   ]
 }

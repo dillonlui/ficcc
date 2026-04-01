@@ -19,6 +19,22 @@
       "doneMilestones": 1,
       "totalMilestones": 4,
       "phase": "planning"
+    },
+    {
+      "filename": "M003-2026-04-01T17-31-55.html",
+      "generatedAt": "2026-04-01T17:31:55.558Z",
+      "milestoneId": "M003",
+      "milestoneTitle": "M003: ZH Content & Bilingual Toggle",
+      "label": "M003: M003: ZH Content & Bilingual Toggle",
+      "kind": "milestone",
+      "totalCost": 75.83694025000001,
+      "totalTokens": 93440008,
+      "totalDuration": 25421983,
+      "doneSlices": 19,
+      "totalSlices": 25,
+      "doneMilestones": 3,
+      "totalMilestones": 4,
+      "phase": "planning"
     }
   ]
 }
