@@ -34,7 +34,7 @@
   - Estimate: 45m
   - Files: src/components/Hero.astro, src/layouts/BaseLayout.astro, src/lib/sanity.ts
   - Verify: npm run build && grep -q 'fetchpriority' src/components/Hero.astro && grep -q 'preconnect' src/layouts/BaseLayout.astro
-- [ ] **T02: Add skip-to-content link, main landmark IDs, and audit image alt text** — Accessibility gaps: no skip-to-content link, no `id` on `<main>` for skip targets, and two `<img>` elements with empty `alt` that need contextual audit.
+- [x] **T02: Added skip-to-content link, id="main-content" on all 27 pages, and audited all img alt attributes site-wide** — Accessibility gaps: no skip-to-content link, no `id` on `<main>` for skip targets, and two `<img>` elements with empty `alt` that need contextual audit.
 
 ## Steps
 

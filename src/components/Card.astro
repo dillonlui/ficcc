@@ -13,6 +13,7 @@ const Tag = href ? 'a' : 'div';
 <Tag class="card" {...(href ? { href } : {})}>
   {image && (
     <div class="card__image-wrap">
+      {/* Decorative: card title provides text alternative */}
       <img class="card__image" src={image} alt="" loading="lazy" />
     </div>
   )}
