@@ -186,3 +186,56 @@ export async function getNavigation(
     { language },
   );
 }
+
+// ---------------------------------------------------------------------------
+// Visual Editing — draft-aware query helper for server-rendered preview
+// ---------------------------------------------------------------------------
+
+const isVisualEditingEnabled =
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
+
+/**
+ * Draft-aware query helper for preview/visual-editing contexts.
+ *
+ * When `PUBLIC_SANITY_VISUAL_EDITING_ENABLED` is `'true'`:
+ *   - Uses `perspective: 'previewDrafts'` so editors see unpublished changes
+ *   - Injects `SANITY_API_READ_TOKEN` (server-only) for authenticated draft access
+ *   - Enables stega encoding and result source maps for click-to-edit overlays
+ *
+ * When disabled, falls back to published perspective with no token or stega.
+ *
+ * This is a *parallel* helper — existing getPageBySlug / getSermons / etc.
+ * remain unchanged for static build-time fetching.
+ */
+export async function loadQuery<T = unknown>(
+  query: string,
+  params: Record<string, unknown> = {},
+): Promise<{ data: T }> {
+  if (isVisualEditingEnabled) {
+    const token = import.meta.env.SANITY_API_READ_TOKEN;
+    if (!token) {
+      throw new Error(
+        '[sanity/loadQuery] PUBLIC_SANITY_VISUAL_EDITING_ENABLED is true but ' +
+          'SANITY_API_READ_TOKEN is not set. Add the token to your environment ' +
+          '(server-only, no PUBLIC_ prefix).',
+      );
+    }
+
+    if (import.meta.env.DEV) {
+      console.debug('[sanity/loadQuery] perspective: previewDrafts (visual editing enabled)');
+    }
+
+    const data = await client.fetch<T>(query, params, {
+      perspective: 'previewDrafts',
+      stega: true,
+      token,
+      resultSourceMap: true,
+    });
+    return { data };
+  }
+
+  const data = await client.fetch<T>(query, params, {
+    perspective: 'published',
+  });
+  return { data };
+}

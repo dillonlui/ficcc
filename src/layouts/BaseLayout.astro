@@ -3,6 +3,8 @@ import '../styles/global.css';
 import cjkFontsHref from '../styles/cjk-fonts.css?url';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
+import { VisualEditing } from '@sanity/astro/visual-editing';
 
 interface Props {
   title: string;
@@ -15,6 +17,9 @@ const {
   description = 'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY.',
   lang = 'en',
 } = Astro.props;
+
+const isVisualEditingEnabled =
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
 ---
 
 <!doctype html>
@@ -22,8 +27,7 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <SEO title={title} description={description} lang={lang} />
     <link rel="stylesheet" href={cjkFontsHref} media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href={cjkFontsHref} /></noscript>
   </head>
@@ -31,5 +35,6 @@ const {
     <Header />
     <slot />
     <Footer />
+    {isVisualEditingEnabled && <VisualEditing enabled={true} />}
   </body>
 </html>

@@ -39,7 +39,7 @@ This is the riskiest step — changing the Astro build mode from `static` to `hy
   - Estimate: 30m
   - Files: astro.config.mjs, package.json
   - Verify: npm run build && grep -q 'hybrid' astro.config.mjs && grep -q '@astrojs/vercel' package.json
-- [ ] **T02: Wire loadQuery helper, VisualEditing component, and presentationTool** — ## Description
+- [x] **T02: Wire loadQuery helper, VisualEditing component, and presentationTool for Sanity preview mode** — ## Description
 
 Core preview functionality: add a draft-aware `loadQuery` helper that uses the `@sanity/astro` module's client, wire the `VisualEditing` overlay into BaseLayout, configure `presentationTool` in sanity.config.ts for Studio iframe preview, and document the deploy hook + webhook setup.
 

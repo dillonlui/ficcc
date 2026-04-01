@@ -1,0 +1,62 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: string;
+  lang?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description = 'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY.',
+  canonicalUrl,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  lang = 'en',
+  jsonLd,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL('https://ficcc.org');
+const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
+const absoluteOgImage = new URL(ogImage, siteUrl).href;
+
+const localeMap: Record<string, string> = {
+  en: 'en_US',
+  zh: 'zh_CN',
+};
+const ogLocale = localeMap[lang] ?? 'en_US';
+
+const defaultJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Church',
+  name: 'FICCC — Fellowship of Ithaca Chinese Christians Church',
+  description,
+  url: canonical,
+};
+
+const structuredData = jsonLd ?? defaultJsonLd;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={absoluteOgImage} />
+<meta property="og:type" content={ogType} />
+<meta property="og:locale" content={ogLocale} />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={absoluteOgImage} />
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
