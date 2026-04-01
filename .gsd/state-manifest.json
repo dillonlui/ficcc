@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T14:18:12.914Z",
+  "exported_at": "2026-04-01T14:31:28.021Z",
   "milestones": [
     {
       "id": "M001",
@@ -542,16 +542,16 @@
       "milestone_id": "M002",
       "id": "S06",
       "title": "Events, Give & Contact",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S01"
       ],
       "demo": "Events, Give page, all 4 contact forms",
       "created_at": "2026-03-31T22:33:41.124Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T14:20:42.427Z",
+      "full_summary_md": "---\nid: S06\nparent: M002\nmilestone: M002\nprovides:\n  - 4 server-side API endpoints for form submissions\n  - Events page with CMS-backed event data\n  - Give page with donation methods\n  - Contact page with 4 tabbed forms\n  - Form-helpers shared module for Turnstile + Resend\nrequires:\n  - slice: S01\n    provides: BaseLayout, Hero, CSS custom properties, Header/Footer components\naffects:\n  - S07\nkey_files:\n  - src/lib/form-helpers.ts\n  - src/pages/api/contact.ts\n  - src/pages/api/prayer-request.ts\n  - src/pages/api/ride-request.ts\n  - src/pages/api/connect.ts\n  - src/pages/events.astro\n  - src/pages/give.astro\n  - src/pages/contact.astro\n  - src/components/EventCard.astro\n  - src/components/PrayerRequestForm.astro\n  - src/components/ConnectForm.astro\nkey_decisions:\n  - Shared form-helpers.ts module for Turnstile + Resend + JSON response utilities (D010 pattern)\n  - Turnstile script loading extracted from form components into consuming pages for implicit/explicit mode separation (D016)\n  - Recurring events always shown in upcoming section regardless of date\n  - CONTACT_EMAIL env var with onboarding@resend.dev fallback for form submission recipient\npatterns_established:\n  - Form component pattern: each form component owns its fields, validation, and submit handler but not the Turnstile script tag — consuming pages control Turnstile loading mode\n  - Multi-form page pattern: accessible tablist with turnstile.render/remove on tab switch for single-widget-at-a-time constraint\nobservability_surfaces:\n  - API endpoints return structured JSON errors with field-level validation details\n  - Missing env vars (TURNSTILE_SECRET_KEY, RESEND_API_KEY) return 500 with descriptive error rather than crashing\ndrill_down_paths:\n  - .gsd/milestones/M002/slices/S06/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M002/slices/S06/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M002/slices/S06/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:20:42.428Z\nblocker_discovered: false\n---\n\n# S06: Events, Give & Contact\n\n**Events listing with upcoming/past split, static Give page with 3 donation methods, Contact page with 4 tabbed forms backed by server-side API endpoints with Turnstile verification and Resend email delivery**\n\n## What Happened\n\nThree tasks delivered the full Events, Give & Contact surface.\n\nT01 built the server-side plumbing: a shared `src/lib/form-helpers.ts` module extracts Turnstile verification (POST to Cloudflare siteverify), Resend email sending, JSON response formatting, and email validation into reusable functions. Four API endpoints (`/api/contact`, `/api/prayer-request`, `/api/ride-request`, `/api/connect`) each parse JSON, validate fields with field-level error responses, verify Turnstile, send formatted HTML email via Resend, and return structured JSON. All use `export const prerender = false` for SSR-only execution. A `CONTACT_EMAIL` env var controls the recipient address with a fallback to `onboarding@resend.dev`.\n\nT02 added the image field to the event Sanity schema and GROQ query, built the EventCard component with date formatting and recurring badge, created `/events` with CMS fetch (try-catch + fallback events) splitting events into upcoming and past sections, and created `/give` as a fully static page with PayPal link, check mailing address, and in-person giving instructions plus a scripture verse.\n\nT03 created PrayerRequestForm and ConnectForm components following the established form pattern, then composed the Contact page with accessible tablist/tab/tabpanel UI. The key challenge was multi-form Turnstile management — only one widget can render at a time. Solution: extract the Turnstile script tag from form components into consuming pages. The contact page uses explicit render mode, calling `turnstile.render()` on tab switch and `turnstile.remove()` on the previous widget. This required refactoring ContactForm and RideRequestForm to remove their embedded Turnstile scripts, with corresponding updates to `/visit` and `/styleguide` pages that use those forms. Church info sidebar shows address, phone, email, and service times.\n\n## Verification\n\nAll task-level verifications passed: file existence checks for all 12 created/modified files, `prerender = false` grep across all 4 API files, and `npm run build` succeeds with /contact/index.html, /events/index.html, and /give/index.html all pre-rendered cleanly alongside all existing pages.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nTurnstile script loading was refactored out of form components into consuming pages (D016). This was unplanned but necessary — the contact page's 4-form tab UI required explicit Turnstile render mode, which conflicts with implicit mode scripts embedded in individual form components. Existing pages using those forms (visit, styleguide) were updated to load the Turnstile script themselves.\n\n## Known Limitations\n\nPayPal donate link uses placeholder URL (hosted_button_id=PLACEHOLDER) — church needs to supply their actual PayPal donate link.\n\n## Follow-ups\n\nReplace PayPal placeholder URL with church's actual PayPal donate link before launch.\n\n## Files Created/Modified\n\n- `src/lib/form-helpers.ts` — Shared utilities for Turnstile verification, Resend email sending, JSON response helpers, email validation\n- `src/pages/api/contact.ts` — POST endpoint for general contact form — validates name/email/message, Turnstile, Resend\n- `src/pages/api/prayer-request.ts` — POST endpoint for prayer requests — name/request required, email optional\n- `src/pages/api/ride-request.ts` — POST endpoint for ride requests — name/email/pickupLocation required\n- `src/pages/api/connect.ts` — POST endpoint for newcomer connect form — name/email required\n- `src/pages/events.astro` — Events listing page with CMS fetch, fallback events, upcoming/past split\n- `src/pages/give.astro` — Static Give page with PayPal, check, and in-person donation methods\n- `src/pages/contact.astro` — Contact page with 4 tabbed forms, accessible tablist, centralized Turnstile management, church info sidebar\n- `src/components/EventCard.astro` — Event display card with date formatting, recurring badge, optional image\n- `src/components/PrayerRequestForm.astro` — Prayer request form component — name/email/request fields\n- `src/components/ConnectForm.astro` — Newcomer connect form — name/email/phone/interests/message\n- `src/components/ContactForm.astro` — Refactored to remove embedded Turnstile script tag — consuming page now controls loading\n- `src/components/RideRequestForm.astro` — Refactored to remove embedded Turnstile script tag\n- `src/pages/visit.astro` — Updated to load Turnstile script directly (after form component refactor)\n- `src/pages/styleguide.astro` — Updated to load Turnstile script directly\n- `sanity/schemas/documents/event.ts` — Added image field with hotspot to event schema\n- `src/lib/sanity.ts` — Updated Event interface and GROQ query to include image field\n",
+      "full_uat_md": "# S06: Events, Give & Contact — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01T14:20:42.428Z\n\n# S06 UAT: Events, Give & Contact\n\n## Preconditions\n- Site built and running (`npm run build` succeeds, `npm run preview` or Vercel deploy available)\n- Sanity Studio accessible at /admin (for event content)\n- TURNSTILE_SECRET_KEY, RESEND_API_KEY, and CONTACT_EMAIL env vars set for form testing (or use Turnstile test keys)\n\n---\n\n## TC-01: Events Page — Upcoming/Past Split\n1. Navigate to `/events`\n2. Verify Hero section renders with page title\n3. Verify upcoming events section shows events with dates ≥ today\n4. Verify past events section shows events with dates < today (or \"no past events\" message)\n5. Verify each EventCard shows: title, formatted date, and location (if present)\n6. **Expected:** Events are sorted by date, upcoming first\n\n## TC-02: Events Page — Recurring Events\n1. If a recurring event exists (in CMS or fallback), verify it appears in the upcoming section regardless of its original date\n2. Verify recurring badge is visible on recurring event cards\n3. **Expected:** Recurring events always appear in upcoming, not past\n\n## TC-03: Events Page — Empty CMS Fallback\n1. If Sanity is unreachable or has no events, verify the page still renders with fallback event data\n2. Verify no build errors when CMS is unavailable\n3. **Expected:** Page renders gracefully with hardcoded fallback events\n\n## TC-04: Events Page — Event Card with Image\n1. Add an event with an image in Sanity CMS\n2. Rebuild and navigate to `/events`\n3. Verify the EventCard displays the image\n4. **Expected:** Image renders within the card layout\n\n## TC-05: Give Page — Static Content\n1. Navigate to `/give`\n2. Verify Hero section renders\n3. Verify three giving methods are displayed: PayPal, check by mail, in-person\n4. Verify PayPal section contains a link/button (placeholder URL is acceptable pre-launch)\n5. Verify mailing address is displayed for check donations\n6. Verify a scripture verse about generosity is shown\n7. **Expected:** All three methods visible, page is fully static (no CMS dependency)\n\n## TC-06: Contact Page — Tab Navigation\n1. Navigate to `/contact`\n2. Verify 4 tabs are visible: General Contact, Prayer Request, Ride Request, Connect With Us\n3. Click each tab — verify the corresponding form panel appears and others are hidden\n4. Verify only General Contact tab is active by default\n5. **Expected:** Tab switching works, only one form visible at a time\n\n## TC-07: Contact Page — Keyboard Tab Navigation\n1. Focus the tab bar with Tab key\n2. Use Arrow Right/Left to move between tabs\n3. Press Enter or Space to activate a tab\n4. **Expected:** Full keyboard navigation per WAI-ARIA tabs pattern\n\n## TC-08: Contact Page — General Contact Form\n1. Select General Contact tab\n2. Verify fields: name, email, message, Turnstile widget\n3. Submit with empty fields — verify field-level validation errors appear\n4. Submit with name < 2 chars — verify name validation error\n5. Submit with invalid email — verify email validation error\n6. Submit with message < 10 chars — verify message validation error\n7. Fill all fields correctly and submit\n8. **Expected:** Success message \"Your message has been sent. We'll be in touch soon.\" (requires working Turnstile + Resend)\n\n## TC-09: Contact Page — Prayer Request Form\n1. Select Prayer Request tab\n2. Verify fields: name (required), email (optional), prayer request (required), Turnstile widget\n3. Submit with empty name — verify validation error\n4. Submit with request < 10 chars — verify validation error\n5. Fill required fields and submit\n6. **Expected:** Success message about prayer request received\n\n## TC-10: Contact Page — Ride Request Form\n1. Select Ride Request tab\n2. Verify fields: name (required), email (required), phone (optional), pickup location (required), preferred date (optional), notes (optional), Turnstile widget\n3. Submit with empty required fields — verify validation errors\n4. Submit with pickup location < 5 chars — verify validation error\n5. Fill required fields and submit\n6. **Expected:** Success message about ride request received\n\n## TC-11: Contact Page — Connect Form\n1. Select Connect With Us tab\n2. Verify fields: name (required), email (required), phone (optional), interests (optional), message (optional), Turnstile widget\n3. Submit with empty required fields — verify validation errors\n4. Fill required fields and submit\n5. **Expected:** Success message about connection request received\n\n## TC-12: Contact Page — Turnstile Widget Management\n1. Navigate to `/contact`\n2. Verify Turnstile widget renders on General Contact tab\n3. Switch to Prayer Request tab — verify the previous widget is removed and a new one renders\n4. Switch through all 4 tabs — verify only one Turnstile widget is present at any time\n5. **Expected:** No duplicate widgets, no Turnstile errors in console\n\n## TC-13: Contact Page — Church Info Sidebar\n1. Navigate to `/contact`\n2. Verify church address, phone number, email, and service times are displayed\n3. **Expected:** Contact information visible alongside forms\n\n## TC-14: API Error Handling — Missing Env Vars\n1. Deploy without TURNSTILE_SECRET_KEY or RESEND_API_KEY\n2. Submit any form\n3. **Expected:** API returns 500 with descriptive JSON error, does not crash\n\n## TC-15: Visit Page — Turnstile Still Works\n1. Navigate to `/visit`\n2. Fill and submit the Ride Request form\n3. **Expected:** Turnstile widget renders and form submits correctly (regression check after Turnstile refactor)\n\n## TC-16: Cross-Page Navigation\n1. From homepage, navigate to `/events`, `/give`, and `/contact` via site navigation\n2. Verify each page loads with consistent header/footer chrome\n3. **Expected:** All three pages accessible and styled consistently\n",
       "goal": "Events listing page, Give page, and Contact page with all 4 forms (general contact, prayer request, ride request, newcomer connect) — each posting to a server-side API endpoint with Turnstile verification and Resend email delivery.",
       "success_criteria": "## Must-Haves\n\n- Events page at `/events` renders event cards from Sanity with fallback for empty CMS\n- Give page at `/give` displays giving information with PayPal link\n- Contact page at `/contact` hosts all 4 forms organized in tab/section UI\n- PrayerRequestForm and ConnectForm components follow ContactForm/RideRequestForm pattern\n- 4 API endpoints (`/api/contact`, `/api/prayer-request`, `/api/ride-request`, `/api/connect`) with `export const prerender = false`, Turnstile server-side verification, Resend email delivery\n- EventCard component for event listing display\n- All components are pure Astro with scoped CSS using only CSS custom properties (D010)\n- CMS fetches wrapped in try-catch with hardcoded fallbacks (K008)\n- `npm run build` succeeds with all new pages generating\n\n## Threat Surface\n\n- **Abuse**: Form endpoints are publicly accessible — rate abuse via automated POST requests. Turnstile verification is the primary mitigation. No authentication or privilege escalation concerns (anonymous forms).\n- **Data exposure**: Form submissions contain PII (name, email, phone, address). Server-side only — never logged or persisted beyond email delivery. RESEND_API_KEY and TURNSTILE_SECRET_KEY are server-only env vars.\n- **Input trust**: All 4 API endpoints accept untrusted JSON POST bodies. Server-side validation mirrors client-side. Turnstile token verified against Cloudflare API before processing.\n\n## Proof Level\n\n- This slice proves: integration\n- Real runtime required: yes (API endpoints need Vercel SSR runtime with env vars for full verification)\n- Human/UAT required: no (build verification + structural checks sufficient; runtime email delivery verified post-deploy)\n\n## Verification\n\n- `npm run build` succeeds with events, give, and contact pages in output\n- `grep -q 'prerender = false' src/pages/api/contact.ts src/pages/api/prayer-request.ts src/pages/api/ride-request.ts src/pages/api/connect.ts` — all 4 API routes opt into SSR\n- `test -f src/components/EventCard.astro && test -f src/components/PrayerRequestForm.astro && test -f src/components/ConnectForm.astro` — new components exist\n- `test -f src/pages/events.astro && test -f src/pages/give.astro && test -f src/pages/contact.astro` — all 3 pages exist\n- No `client:*` directives in new page-level components (forms use inline scripts per D010)\n\n## Observability / Diagnostics\n\n- Runtime signals: API endpoints return structured JSON `{ success, error, fields }` for all outcomes (success, validation error, Turnstile failure, Resend failure)\n- Inspection surfaces: Vercel function logs for API endpoint invocations; Resend dashboard for email delivery status\n- Failure visibility: API JSON responses include specific error type (validation_error, turnstile_failed, send_failed) so client-side forms display actionable messages\n- Redaction constraints: RESEND_API_KEY and TURNSTILE_SECRET_KEY never in client bundles or logs. Form PII (email, phone) not logged server-side.\n\n## Integration Closure\n\n- Upstream surfaces consumed: `src/lib/sanity.ts` (getEvents, Event interface, urlForImage), `src/components/ContactForm.astro` and `src/components/RideRequestForm.astro` (form patterns), `src/layouts/BaseLayout.astro`, `src/components/Hero.astro`\n- New wiring introduced in this slice: 4 API endpoints (SSR routes), 3 new page routes, 2 new form components, 1 new card component, tab/section UI on contact page\n- What remains before the milestone is truly usable end-to-end: S07 (Resources & Content Migration)",
       "proof_level": "integration — API endpoints need SSR runtime for full verification; build-time checks confirm structure",
@@ -575,11 +575,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Spiritual Resources page + complete EM content migration",
-      "success_criteria": "Resources with campus ministries, Readathon, articles, PDFs. Photos in Sanity CDN. All text migrated. Redirect map for em.ficcc.org.",
-      "proof_level": "Every must-migrate item from site audit present",
-      "integration_closure": "All EN content in Sanity",
-      "observability_impact": "N/A",
+      "goal": "Resources page live at /resources with categorized links, downloadable PDFs, and campus ministry list. All em.ficcc.org content from SITE-AUDIT.md accounted for in Sanity schemas and Astro page fallbacks.",
+      "success_criteria": "- `npm run build` succeeds with `/resources` in the output\n- `resourcesPage` singleton registered in schema index with EN/ZH doc IDs\n- `getResourcesPage()` GROQ helper exists in `src/lib/sanity.ts`\n- Resources page has zero `client:*` directives (fully static)\n- Fallback content includes spiritual growth resources, campus ministries, and PDF links\n- Content migration audit confirms every \"Must Migrate\" and \"Should Migrate\" item from SITE-AUDIT.md has a Sanity schema field and fallback data in an Astro page",
+      "proof_level": "contract — static build proves page renders with fallback content; no runtime CMS required",
+      "integration_closure": "- Upstream: `BaseLayout`, `Hero` from S01; existing singleton schema pattern from S02; CMS fetch + try-catch pattern from K008\n- New wiring: `resourcesPage` singleton → `getResourcesPage()` → `/resources` page\n- Remaining after this slice: nothing for English Ministry — M002 is complete",
+      "observability_impact": "none — static page with established CMS fallback pattern",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2506,6 +2506,108 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S07",
+      "id": "T01",
+      "title": "Built /resources page with resourcesPage Sanity schema, GROQ helper, and full hardcoded fallback content migrated from em.ficcc.org",
+      "status": "complete",
+      "one_liner": "Built /resources page with resourcesPage Sanity schema, GROQ helper, and full hardcoded fallback content migrated from em.ficcc.org",
+      "narrative": "Created the resourcesPage singleton schema with hero fields and nested resourceCategories array. Registered it in the schema index with EN/ZH singleton doc IDs. Added ResourcesPage interface and getResourcesPage() GROQ helper to sanity.ts. Built the Astro page at /resources with CMS-fetch-with-fallback pattern covering all four categories from em.ficcc.org: Spiritual Growth articles, Bible Readathon PDF, Newcomer Recommendations PDF, and Cornell Campus Ministries list (7 organizations). Created placeholder PDFs in public/. Page is fully static with no client directives.",
+      "verification_result": "npm run build succeeds with /resources/index.html rendered. T01 verification command passes all four checks: build includes resources, schema registered, GROQ helper present, no client: directives.",
+      "duration": "",
+      "completed_at": "2026-04-01T14:31:27.999Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "Placeholder PDFs are text files — actual PDF assets need sourcing from em.ficcc.org. Spiritual Growth article URLs not linked since article pages don't exist yet.",
+      "key_files": [
+        "sanity/schemas/singletons/resourcesPage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts",
+        "src/pages/resources.astro",
+        "public/newcomer-recommendations.pdf",
+        "public/readathon4.pdf"
+      ],
+      "key_decisions": [
+        "Resource categories modeled as nested array-of-objects matching em.ficcc.org structure",
+        "Resource items typed as article/pdf/link with conditional link behavior"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S07\nmilestone: M002\nkey_files:\n  - sanity/schemas/singletons/resourcesPage.ts\n  - sanity/schemas/index.ts\n  - src/lib/sanity.ts\n  - src/pages/resources.astro\n  - public/newcomer-recommendations.pdf\n  - public/readathon4.pdf\nkey_decisions:\n  - Resource categories modeled as nested array-of-objects matching em.ficcc.org structure\n  - Resource items typed as article/pdf/link with conditional link behavior\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:31:28.000Z\nblocker_discovered: false\n---\n\n# T01: Built /resources page with resourcesPage Sanity schema, GROQ helper, and full hardcoded fallback content migrated from em.ficcc.org\n\n**Built /resources page with resourcesPage Sanity schema, GROQ helper, and full hardcoded fallback content migrated from em.ficcc.org**\n\n## What Happened\n\nCreated the resourcesPage singleton schema with hero fields and nested resourceCategories array. Registered it in the schema index with EN/ZH singleton doc IDs. Added ResourcesPage interface and getResourcesPage() GROQ helper to sanity.ts. Built the Astro page at /resources with CMS-fetch-with-fallback pattern covering all four categories from em.ficcc.org: Spiritual Growth articles, Bible Readathon PDF, Newcomer Recommendations PDF, and Cornell Campus Ministries list (7 organizations). Created placeholder PDFs in public/. Page is fully static with no client directives.\n\n## Verification\n\nnpm run build succeeds with /resources/index.html rendered. T01 verification command passes all four checks: build includes resources, schema registered, GROQ helper present, no client: directives.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build + grep checks (T01 verification)` | 0 | ✅ pass | 10000ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nPlaceholder PDFs are text files — actual PDF assets need sourcing from em.ficcc.org. Spiritual Growth article URLs not linked since article pages don't exist yet.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/resourcesPage.ts`\n- `sanity/schemas/index.ts`\n- `src/lib/sanity.ts`\n- `src/pages/resources.astro`\n- `public/newcomer-recommendations.pdf`\n- `public/readathon4.pdf`\n",
+      "description": "Create the resourcesPage Sanity singleton schema, register it in the schema index (EN/ZH), add getResourcesPage() GROQ helper and ResourcesPage interface to sanity.ts, place PDF assets in public/, and build the /resources Astro page with Hero, categorized resource sections (spiritual growth articles, campus ministries list, downloadable PDFs), using try-catch CMS fetch with comprehensive hardcoded fallback content from the legacy em.ficcc.org site.\n\nFollow the exact patterns from visitPage.ts (schema), sanity.ts (GROQ helper + interface), and visit.astro (CMS fetch with fallback). The resource categories are: (1) Spiritual Growth — articles on baptism, membership, keeping faith in college, building community; (2) Bible Readathon — reading plan PDF; (3) Newcomer Recommendations — PDF download; (4) Cornell Campus Ministries — list of 7 organizations with links.\n\nPDFs go in public/ as static assets with absolute paths (/newcomer-recommendations.pdf, /readathon4.pdf). Since the actual PDFs are not available locally, create placeholder files and link to them — the paths and structure are what matter.\n\nSteps:\n1. Create `sanity/schemas/singletons/resourcesPage.ts` with fields: heroTitle, heroSubtitle, heroImage, resourceCategories (array of objects with title, description, resources array of {title, url, description, type})\n2. Register in `sanity/schemas/index.ts`: add to imports, schemaTypes array, singletonTypes Set, and singletonDocIds (EN + ZH entries)\n3. Add ResourcesPage interface and getResourcesPage() helper to `src/lib/sanity.ts`\n4. Create placeholder PDFs in `public/` (or empty .txt files as placeholders)\n5. Build `src/pages/resources.astro` with Hero, CMS fetch + try-catch, and hardcoded fallback content organized into categorized sections with styled resource cards/links",
+      "estimate": "45m",
+      "files": [
+        "sanity/schemas/singletons/resourcesPage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts",
+        "src/pages/resources.astro",
+        "public/newcomer-recommendations.pdf",
+        "public/readathon4.pdf"
+      ],
+      "verify": "npm run build 2>&1 | grep -q 'resources' && grep -q 'resourcesPage' sanity/schemas/index.ts && grep -q 'getResourcesPage' src/lib/sanity.ts && ! grep -q 'client:' src/pages/resources.astro && echo 'T01 PASS' || echo 'T01 FAIL'",
+      "inputs": [
+        "sanity/schemas/singletons/visitPage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts",
+        "src/pages/visit.astro",
+        "SITE-AUDIT.md"
+      ],
+      "expected_output": [
+        "sanity/schemas/singletons/resourcesPage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts",
+        "src/pages/resources.astro",
+        "public/newcomer-recommendations.pdf",
+        "public/readathon4.pdf"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S07",
+      "id": "T02",
+      "title": "Audit em.ficcc.org content migration and fill any gaps",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Systematically verify that every 'Must Migrate' and 'Should Migrate' item from SITE-AUDIT.md Section 4 has a corresponding Sanity schema field and hardcoded fallback in an Astro page. Document findings. Fix any gaps found.\n\nMust Migrate checklist (verify each):\n- Service times (EN and ZH, summer/holiday) → visitPage schema + visit.astro fallback\n- Address + map → multiple pages (visit, contact)\n- Pastor bios and contact info → aboutPage schema + staff page\n- Transportation/bus routes → visitPage schema + visit.astro\n- Beliefs/Statement of Faith → aboutPage schema + beliefs page\n- Vision Statement → aboutPage schema + about page\n- FAQ content → homePage or visitPage\n- All 7 photos from em.ficcc.org → public/images/\n- Fellowship group names → ministry schemas + community page\n- Contact info (emails, phone) → contact page\n- Giving link (PayPal) → give page\n\nShould Migrate checklist:\n- Church history timeline → aboutPage or separate content\n- Spiritual Resources page copy → resourcesPage (built in T01)\n- Campus ministries list → resourcesPage (built in T01)\n- Bible Readathon + PDF → resourcesPage (built in T01)\n- Newcomer recommendations PDF → resourcesPage (built in T01)\n- Church stats → about page\n- CM ministry descriptions → community/ministries pages\n\nSteps:\n1. Read SITE-AUDIT.md Section 4 line by line\n2. For each item, grep/read the corresponding schema and page file to confirm coverage\n3. Document any gaps found\n4. Fix gaps by adding missing fallback content or schema fields\n5. Run `npm run build` to confirm nothing broke\n6. Write a brief migration audit summary as a comment at the end (or create a short audit document)",
+      "estimate": "30m",
+      "files": [
+        "SITE-AUDIT.md",
+        "src/pages/resources.astro",
+        "src/pages/about/index.astro",
+        "src/pages/visit.astro",
+        "src/pages/give.astro",
+        "src/pages/contact.astro",
+        "src/pages/ministries/index.astro"
+      ],
+      "verify": "npm run build && echo 'T02 PASS: build succeeds after audit fixes'",
+      "inputs": [
+        "SITE-AUDIT.md",
+        "src/pages/resources.astro",
+        "sanity/schemas/singletons/aboutPage.ts",
+        "sanity/schemas/singletons/visitPage.ts",
+        "sanity/schemas/singletons/homePage.ts",
+        "src/lib/sanity.ts"
+      ],
+      "expected_output": [
+        "src/pages/resources.astro",
+        "src/pages/about/index.astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -2685,6 +2787,18 @@
       "decision": "LHCI SEO threshold for 404 page",
       "choice": "Set 404 page SEO assertion to warn at 0.8 instead of error at 0.95",
       "rationale": "404 pages inherently score lower on SEO (no meaningful content, noindex intent) so a strict 0.95 threshold would cause false failures in CI.",
+      "revisable": "Yes",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 18,
+      "id": "D016",
+      "when_context": "M002/S06/T03",
+      "scope": "architecture",
+      "decision": "Turnstile script loading strategy for multi-form pages",
+      "choice": "Extract Turnstile script tag from form components into consuming pages. Single-form pages use implicit render mode; multi-form pages (contact) use explicit render mode with turnstile.render/remove on tab switch to ensure only one widget at a time.",
+      "rationale": "Contact page hosts 4 forms in tabs. Cloudflare Turnstile doesn't support multiple implicit widgets on one page — only one can render at a time. Extracting the script tag from form components into pages gives each page control over render mode. This also avoids duplicate script tag injection when multiple form components are composed together.",
       "revisable": "Yes",
       "made_by": "agent",
       "superseded_by": null
@@ -4252,6 +4366,17 @@
       "verdict": "✅ pass",
       "duration_ms": 8500,
       "created_at": "2026-04-01T14:18:12.890Z"
+    },
+    {
+      "id": 143,
+      "task_id": "T01",
+      "slice_id": "S07",
+      "milestone_id": "M002",
+      "command": "npm run build + grep checks (T01 verification)",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10000,
+      "created_at": "2026-04-01T14:31:27.999Z"
     }
   ]
 }

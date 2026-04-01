@@ -202,6 +202,29 @@ export interface VisitPage {
   language: 'en' | 'zh';
 }
 
+export interface ResourceItem {
+  title: string;
+  url?: string;
+  description?: string;
+  type?: 'article' | 'pdf' | 'link';
+}
+
+export interface ResourceCategory {
+  title: string;
+  description?: string;
+  resources?: ResourceItem[];
+}
+
+export interface ResourcesPage {
+  _id: string;
+  _type: 'resourcesPage';
+  heroImage?: SanityImage;
+  heroTitle: string;
+  heroSubtitle?: string;
+  resourceCategories?: ResourceCategory[];
+  language: 'en' | 'zh';
+}
+
 export interface Person {
   _id: string;
   _type: 'person';
@@ -353,6 +376,18 @@ export async function getVisitPage(
 ): Promise<VisitPage | null> {
   return client.fetch<VisitPage | null>(
     `*[_type == "visitPage" && language == $language][0]`,
+    { language },
+  );
+}
+
+/**
+ * Fetch the singleton resources-page document for a language.
+ */
+export async function getResourcesPage(
+  language: Language = 'en',
+): Promise<ResourcesPage | null> {
+  return client.fetch<ResourcesPage | null>(
+    `*[_type == "resourcesPage" && language == $language][0]`,
     { language },
   );
 }

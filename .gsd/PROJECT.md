@@ -4,7 +4,7 @@ First Ithaca Chinese Christian Church — bilingual (EN/ZH) church website built
 
 ## Current State
 
-**M002: EN Content Pages — In Progress (S01–S05 complete).**
+**M002: EN Content Pages — In Progress (S01–S06 complete).**
 
 M001 (Foundation & Design System) is complete. M002 is building all English Ministry pages.
 
@@ -18,10 +18,12 @@ S04 (Sermons Library) delivered /sermons listing with series-based pill filter a
 
 S05 (Community & Ministries) delivered /ministries hub with responsive card grid and /ministries/[slug] detail pages with leader info, meeting time, and portable text description. Added slug/image fields to ministry schema, MinistryDetail interface with resolved leader, getMinistryBySlug() GROQ helper, and MinistryCard component.
 
+S06 (Events, Give & Contact) delivered /events with upcoming/past split and CMS-backed EventCard, /give as a static page with PayPal/check/in-person methods, and /contact with 4 tabbed forms (General Contact, Prayer Request, Ride Request, Connect). Built 4 server-side API endpoints with shared Turnstile verification and Resend email delivery. Contact page uses accessible tablist with keyboard navigation and centralized Turnstile widget management (one widget at a time via explicit render mode).
+
 The full project scaffold is in place:
 - Astro 5 + Sanity monorepo deployed to Vercel (ficcc.vercel.app)
 - Design token system (Gathered Warmth palette) with self-hosted fonts including async CJK loading
-- 9 shared UI components: Header, Footer, Hero, Card, ImageMosaic, Accordion, ContactForm, AudioPlayer, MinistryCard
+- 12 shared UI components: Header, Footer, Hero, Card, ImageMosaic, Accordion, ContactForm, PrayerRequestForm, ConnectForm, RideRequestForm, AudioPlayer, MinistryCard, EventCard
 - Sanity Studio at /admin with 12 schema types (5 documents, 2 singletons, 5 block types)
 - Contact form API (Vercel Edge Runtime + Turnstile + Resend)
 - Sanity Visual Editing preview mode with draft-aware loadQuery
