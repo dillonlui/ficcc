@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:41:17.401Z",
+  "exported_at": "2026-04-01T13:43:35.260Z",
   "milestones": [
     {
       "id": "M001",
@@ -2122,19 +2122,25 @@
       "milestone_id": "M002",
       "slice_id": "S03",
       "id": "T03",
-      "title": "Build RideRequestForm component and integrate into visit page",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created RideRequestForm component with 6 fields, client-side validation, Turnstile captcha, and fetch submission, integrated into visit page as conditional \"Need a Ride?\" section",
+      "status": "complete",
+      "one_liner": "Created RideRequestForm component with 6 fields, client-side validation, Turnstile captcha, and fetch submission, integrated into visit page as conditional \"Need a Ride?\" section",
+      "narrative": "Built RideRequestForm.astro following ContactForm pattern with BEM CSS, Turnstile widget, client-side validation for name/email/pickup, and fetch-based submission to /api/ride-request. Integrated into visit page as final section with conditional rendering based on rideRequestEnabled CMS field.",
+      "verification_result": "All 9 verification checks pass: component exists, integrated in visit page, turnstile present, no client: directives, build succeeds, and all slice-level schema/query checks pass.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T13:43:35.244Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/RideRequestForm.astro",
+        "src/pages/visit.astro"
+      ],
+      "key_decisions": [
+        "Used two-column row layout for name/email and phone/date pairs to keep form compact",
+        "User-friendly error message on fetch failure rather than exposing 404 details"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S03\nmilestone: M002\nkey_files:\n  - src/components/RideRequestForm.astro\n  - src/pages/visit.astro\nkey_decisions:\n  - Used two-column row layout for name/email and phone/date pairs to keep form compact\n  - User-friendly error message on fetch failure rather than exposing 404 details\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:43:35.245Z\nblocker_discovered: false\n---\n\n# T03: Created RideRequestForm component with 6 fields, client-side validation, Turnstile captcha, and fetch submission, integrated into visit page as conditional \"Need a Ride?\" section\n\n**Created RideRequestForm component with 6 fields, client-side validation, Turnstile captcha, and fetch submission, integrated into visit page as conditional \"Need a Ride?\" section**\n\n## What Happened\n\nBuilt RideRequestForm.astro following ContactForm pattern with BEM CSS, Turnstile widget, client-side validation for name/email/pickup, and fetch-based submission to /api/ride-request. Integrated into visit page as final section with conditional rendering based on rideRequestEnabled CMS field.\n\n## Verification\n\nAll 9 verification checks pass: component exists, integrated in visit page, turnstile present, no client: directives, build succeeds, and all slice-level schema/query checks pass.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f src/components/RideRequestForm.astro` | 0 | ✅ pass | 100ms |\n| 2 | `grep -q 'RideRequestForm' src/pages/visit.astro` | 0 | ✅ pass | 100ms |\n| 3 | `grep -qi 'turnstile' src/components/RideRequestForm.astro` | 0 | ✅ pass | 100ms |\n| 4 | `! grep -q 'client:' src/components/RideRequestForm.astro` | 0 | ✅ pass | 100ms |\n| 5 | `npm run build` | 0 | ✅ pass | 7300ms |\n| 6 | `test -f sanity/schemas/singletons/visitPage.ts` | 0 | ✅ pass | 100ms |\n| 7 | `grep -q 'visitPage' sanity/schemas/index.ts` | 0 | ✅ pass | 100ms |\n| 8 | `grep -q 'getVisitPage' src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n| 9 | `grep -q 'VisitPage' src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/RideRequestForm.astro`\n- `src/pages/visit.astro`\n",
       "description": "Create the ride request form component adapted from the ContactForm pattern, with client-side validation and Turnstile spam protection, then integrate it into the visit page.\n\n## Steps\n\n1. Create `src/components/RideRequestForm.astro` following the ContactForm pattern:\n   - Fields: name (text, required, min 2 chars), email (email, required), phone (tel, optional), pickup location (text, required, min 5 chars — e.g. campus dorm or address), preferred date (date input, optional), notes (textarea, optional)\n   - Include Cloudflare Turnstile widget (same pattern as ContactForm)\n   - Client-side validation via `<script is:inline>` — validate required fields before submission\n   - Submit handler POSTs to `/api/ride-request` as JSON. Handle success (show success banner, reset form) and error (show error banner) states. Since no API endpoint exists yet, the fetch will 404 — the error banner should show a graceful message. This is consistent with ContactForm posting to `/api/contact` which also has no endpoint yet.\n   - Use same CSS patterns as ContactForm: BEM naming, scoped styles, CSS custom properties only\n   - Button text: 'Request a Ride' / 'Sending…' when loading\n2. Add the RideRequestForm to `src/pages/visit.astro` as the final section before the page closes, inside a styled section wrapper with heading 'Need a Ride?'. Conditionally render based on visitPage?.rideRequestEnabled !== false (default to showing it).\n3. Run `npm run build` to verify everything compiles.\n4. Verify no `client:*` directives on RideRequestForm (the Turnstile script loads via `<script is:inline src=...>` which is fine).\n\n## Must-Haves\n\n- [ ] RideRequestForm component exists with name, email, phone, pickup location, date, notes fields\n- [ ] Client-side validation for required fields (name, email, pickup location)\n- [ ] Turnstile widget integration matching ContactForm pattern\n- [ ] Submit handler with loading state, success banner, error banner\n- [ ] Form integrated into visit page in a 'Need a Ride?' section\n- [ ] All scoped CSS using BEM naming and CSS custom properties\n- [ ] npm run build passes\n\n## Verification\n\n- `test -f src/components/RideRequestForm.astro`\n- `grep -q 'RideRequestForm' src/pages/visit.astro`\n- `grep -q 'turnstile' src/components/RideRequestForm.astro` (case-insensitive)\n- `npm run build` exits 0\n- `! grep -q 'client:' src/components/RideRequestForm.astro` (no client directives)",
       "estimate": "35m",
       "files": [
@@ -3646,6 +3652,105 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T13:41:17.382Z"
+    },
+    {
+      "id": 120,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "test -f src/components/RideRequestForm.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 121,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'RideRequestForm' src/pages/visit.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 122,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -qi 'turnstile' src/components/RideRequestForm.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 123,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "! grep -q 'client:' src/components/RideRequestForm.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 124,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7300,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 125,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "test -f sanity/schemas/singletons/visitPage.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 126,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'visitPage' sanity/schemas/index.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 127,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'getVisitPage' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 128,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'VisitPage' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:43:35.244Z"
     }
   ]
 }

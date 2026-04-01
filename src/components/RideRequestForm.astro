@@ -1,0 +1,403 @@
+---
+/* RideRequestForm — ride request form with Cloudflare Turnstile spam
+   protection and client-side fetch submission to /api/ride-request.
+   Adapted from ContactForm pattern. */
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+---
+
+<form class="ride-form" novalidate>
+  <div class="ride-form__row">
+    <div class="ride-form__field">
+      <label class="ride-form__label" for="ride-name">Name <span aria-hidden="true">*</span></label>
+      <input
+        class="ride-form__input"
+        type="text"
+        id="ride-name"
+        name="name"
+        required
+        minlength="2"
+        autocomplete="name"
+        placeholder="Your name"
+      />
+      <span class="ride-form__error" data-field="name"></span>
+    </div>
+
+    <div class="ride-form__field">
+      <label class="ride-form__label" for="ride-email">Email <span aria-hidden="true">*</span></label>
+      <input
+        class="ride-form__input"
+        type="email"
+        id="ride-email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder="you@example.com"
+      />
+      <span class="ride-form__error" data-field="email"></span>
+    </div>
+  </div>
+
+  <div class="ride-form__row">
+    <div class="ride-form__field">
+      <label class="ride-form__label" for="ride-phone">Phone</label>
+      <input
+        class="ride-form__input"
+        type="tel"
+        id="ride-phone"
+        name="phone"
+        autocomplete="tel"
+        placeholder="(optional)"
+      />
+      <span class="ride-form__error" data-field="phone"></span>
+    </div>
+
+    <div class="ride-form__field">
+      <label class="ride-form__label" for="ride-date">Preferred Date</label>
+      <input
+        class="ride-form__input"
+        type="date"
+        id="ride-date"
+        name="preferredDate"
+      />
+      <span class="ride-form__error" data-field="preferredDate"></span>
+    </div>
+  </div>
+
+  <div class="ride-form__field">
+    <label class="ride-form__label" for="ride-pickup">Pickup Location <span aria-hidden="true">*</span></label>
+    <input
+      class="ride-form__input"
+      type="text"
+      id="ride-pickup"
+      name="pickupLocation"
+      required
+      minlength="5"
+      placeholder="e.g. campus dorm name or street address"
+    />
+    <span class="ride-form__error" data-field="pickupLocation"></span>
+  </div>
+
+  <div class="ride-form__field">
+    <label class="ride-form__label" for="ride-notes">Notes</label>
+    <textarea
+      class="ride-form__input ride-form__textarea"
+      id="ride-notes"
+      name="notes"
+      rows="3"
+      placeholder="Anything else we should know? (optional)"
+    ></textarea>
+    <span class="ride-form__error" data-field="notes"></span>
+  </div>
+
+  <!-- Cloudflare Turnstile widget -->
+  <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+  <span class="ride-form__error" data-field="turnstileToken"></span>
+
+  <button class="ride-form__submit" type="submit">
+    <span class="ride-form__submit-text">Request a Ride</span>
+    <span class="ride-form__spinner" aria-hidden="true"></span>
+  </button>
+
+  <!-- General error banner -->
+  <div class="ride-form__banner ride-form__banner--error" role="alert" hidden></div>
+
+  <!-- Success message -->
+  <div class="ride-form__banner ride-form__banner--success" role="status" hidden></div>
+</form>
+
+<!-- Turnstile script — loaded async to avoid blocking -->
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script is:inline>
+(function () {
+  const form = document.querySelector('.ride-form');
+  if (!form) return;
+
+  const submitBtn = form.querySelector('.ride-form__submit');
+  const submitText = form.querySelector('.ride-form__submit-text');
+  const spinner = form.querySelector('.ride-form__spinner');
+  const errorBanner = form.querySelector('.ride-form__banner--error');
+  const successBanner = form.querySelector('.ride-form__banner--success');
+
+  /* ---- Helpers ---- */
+
+  function showFieldError(field, msg) {
+    var el = form.querySelector('[data-field="' + field + '"]');
+    if (el) {
+      el.textContent = msg;
+      el.hidden = false;
+    }
+    var input = form.querySelector('[name="' + field + '"]');
+    if (input) input.classList.add('ride-form__input--error');
+  }
+
+  function clearErrors() {
+    form.querySelectorAll('.ride-form__error').forEach(function (el) {
+      el.textContent = '';
+      el.hidden = true;
+    });
+    form.querySelectorAll('.ride-form__input--error').forEach(function (el) {
+      el.classList.remove('ride-form__input--error');
+    });
+    errorBanner.hidden = true;
+    errorBanner.textContent = '';
+  }
+
+  function setLoading(loading) {
+    submitBtn.disabled = loading;
+    submitText.textContent = loading ? 'Sending\u2026' : 'Request a Ride';
+    spinner.hidden = !loading;
+  }
+
+  /* ---- Client-side validation ---- */
+
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validate() {
+    var errors = [];
+    var name = form.querySelector('[name="name"]').value.trim();
+    var email = form.querySelector('[name="email"]').value.trim();
+    var pickup = form.querySelector('[name="pickupLocation"]').value.trim();
+
+    if (name.length < 2) {
+      errors.push({ field: 'name', message: 'Name is required (min 2 characters)' });
+    }
+    if (!EMAIL_RE.test(email)) {
+      errors.push({ field: 'email', message: 'A valid email address is required' });
+    }
+    if (pickup.length < 5) {
+      errors.push({ field: 'pickupLocation', message: 'Pickup location is required (min 5 characters)' });
+    }
+    return errors;
+  }
+
+  /* ---- Submission ---- */
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    clearErrors();
+    successBanner.hidden = true;
+
+    /* Client-side validation */
+    var clientErrors = validate();
+    if (clientErrors.length > 0) {
+      clientErrors.forEach(function (err) { showFieldError(err.field, err.message); });
+      return;
+    }
+
+    /* Get Turnstile token */
+    var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
+    var turnstileToken = turnstileInput ? turnstileInput.value : '';
+    if (!turnstileToken) {
+      showFieldError('turnstileToken', 'Please complete the captcha verification');
+      return;
+    }
+
+    setLoading(true);
+
+    var payload = {
+      name: form.querySelector('[name="name"]').value.trim(),
+      email: form.querySelector('[name="email"]').value.trim(),
+      phone: form.querySelector('[name="phone"]').value.trim(),
+      pickupLocation: form.querySelector('[name="pickupLocation"]').value.trim(),
+      preferredDate: form.querySelector('[name="preferredDate"]').value,
+      notes: form.querySelector('[name="notes"]').value.trim(),
+      turnstileToken: turnstileToken,
+    };
+
+    try {
+      var res = await fetch('/api/ride-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      var data = await res.json();
+
+      if (!res.ok) {
+        /* Field-level errors from server */
+        if (data.fields && Array.isArray(data.fields)) {
+          data.fields.forEach(function (err) { showFieldError(err.field, err.message); });
+        }
+        /* General error */
+        errorBanner.textContent = data.error || 'Something went wrong. Please try again.';
+        errorBanner.hidden = false;
+
+        /* Reset Turnstile on failure so user can retry */
+        if (typeof turnstile !== 'undefined') {
+          turnstile.reset();
+        }
+        return;
+      }
+
+      /* Success */
+      successBanner.textContent = data.message || 'Your ride request has been submitted! We\u2019ll be in touch soon.';
+      successBanner.hidden = false;
+      form.reset();
+      if (typeof turnstile !== 'undefined') {
+        turnstile.reset();
+      }
+    } catch (err) {
+      errorBanner.textContent = 'Unable to submit your request right now. Please try again later or contact us directly.';
+      errorBanner.hidden = false;
+    } finally {
+      setLoading(false);
+    }
+  });
+})();
+</script>
+
+<style>
+  .ride-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: 36rem;
+  }
+
+  .ride-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+
+  .ride-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .ride-form__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .ride-form__label span {
+    color: var(--color-terracotta, #c0392b);
+  }
+
+  .ride-form__input {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-body);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-stone);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-4);
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .ride-form__input::placeholder {
+    color: var(--color-stone);
+  }
+
+  .ride-form__input:focus {
+    outline: none;
+    border-color: var(--color-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 25%, transparent);
+  }
+
+  .ride-form__input--error {
+    border-color: var(--color-terracotta, #c0392b);
+  }
+
+  .ride-form__textarea {
+    resize: vertical;
+    min-height: 5rem;
+  }
+
+  .ride-form__error {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-terracotta, #c0392b);
+    min-height: 0;
+  }
+
+  .ride-form__error:empty,
+  .ride-form__error[hidden] {
+    display: none;
+  }
+
+  .ride-form__submit {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-bg);
+    background-color: var(--color-terracotta);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-8);
+    cursor: pointer;
+    transition: background-color var(--transition), box-shadow var(--transition), opacity var(--transition);
+  }
+
+  .ride-form__submit:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--color-terracotta) 85%, black);
+  }
+
+  .ride-form__submit:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .ride-form__submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  /* Spinner */
+  .ride-form__spinner {
+    display: none;
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: ride-spin 0.6s linear infinite;
+  }
+
+  .ride-form__submit:disabled .ride-form__spinner {
+    display: inline-block;
+  }
+
+  @keyframes ride-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Banners */
+  .ride-form__banner {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
+  }
+
+  .ride-form__banner[hidden] {
+    display: none;
+  }
+
+  .ride-form__banner--error {
+    color: #991b1b;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .ride-form__banner--success {
+    color: #166534;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 768px) {
+    .ride-form__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

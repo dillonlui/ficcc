@@ -68,7 +68,7 @@
   - Estimate: 45m
   - Files: src/pages/visit.astro
   - Verify: test -f src/pages/visit.astro && grep -q 'Accordion' src/pages/visit.astro && npm run build 2>&1 | grep -q 'visit'
-- [ ] **T03: Build RideRequestForm component and integrate into visit page** — Create the ride request form component adapted from the ContactForm pattern, with client-side validation and Turnstile spam protection, then integrate it into the visit page.
+- [x] **T03: Created RideRequestForm component with 6 fields, client-side validation, Turnstile captcha, and fetch submission, integrated into visit page as conditional "Need a Ride?" section** — Create the ride request form component adapted from the ContactForm pattern, with client-side validation and Turnstile spam protection, then integrate it into the visit page.
 
 ## Steps
 

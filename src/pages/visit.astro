@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Accordion from '../components/Accordion.astro';
+import RideRequestForm from '../components/RideRequestForm.astro';
 import { getVisitPage, urlForImage, portableTextToHtml } from '../lib/sanity';
 
 const title = 'Plan Your Visit | First Ithaca Chinese Christian Church';
@@ -115,6 +116,8 @@ const accordionItems = faqItems.map((item) => ({
   title: item.question,
   content: item.answer,
 }));
+
+const showRideRequest = visitPage?.rideRequestEnabled !== false;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -180,6 +183,19 @@ const accordionItems = faqItems.map((item) => ({
         <Accordion items={accordionItems} />
       </div>
     </section>
+
+    <!-- Ride Request -->
+    {showRideRequest && (
+      <section class="ride-request" aria-label="Request a Ride">
+        <div class="ride-request__inner">
+          <h2 class="section-heading">Need a Ride?</h2>
+          <p class="ride-request__intro">
+            Don't have a car? No problem — we'd love to pick you up! Fill out the form below and someone from our team will reach out to arrange a ride.
+          </p>
+          <RideRequestForm />
+        </div>
+      </section>
+    )}
   </main>
 </BaseLayout>
 
@@ -332,6 +348,28 @@ const accordionItems = faqItems.map((item) => ({
   .faq__inner {
     max-width: var(--max-width);
     margin-inline: auto;
+  }
+
+  /* ---------- Ride Request ---------- */
+  .ride-request {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .ride-request__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .ride-request__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    text-align: center;
+    max-width: 36rem;
+    margin-inline: auto;
+    margin-block-end: var(--space-10);
   }
 
   /* ---------- Responsive ---------- */
