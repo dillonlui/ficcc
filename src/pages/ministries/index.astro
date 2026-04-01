@@ -16,6 +16,40 @@ try {
 }
 
 const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
+
+// ---------- Fallback fellowship groups (from em.ficcc.org + cm.ficcc.org) ----------
+const fallbackGroups = [
+  {
+    name: 'Discipleship Groups',
+    meetingTime: 'Sundays 11:00 AM',
+    description: 'Small groups for deeper Bible study and mutual encouragement after the Sunday gathering.',
+  },
+  {
+    name: 'Midweek Bible Study',
+    meetingTime: 'Thursdays 7:00 PM',
+    description: 'A weekly evening study open to everyone — come dig into Scripture with us.',
+  },
+  {
+    name: 'Youth Group',
+    meetingTime: 'Fridays 7:30 PM',
+    description: 'Fellowship and fun for middle and high school students.',
+  },
+  {
+    name: 'Monthly Prayer Meeting',
+    meetingTime: '1st Wednesday 7:30 PM',
+    description: 'A monthly gathering to pray together for our church, community, and world.',
+  },
+  {
+    name: 'Children\'s Sunday School',
+    meetingTime: 'Sundays 11:15 AM',
+    description: 'Age-appropriate Bible teaching and activities for kids during the Sunday School hour.',
+  },
+  {
+    name: 'Adult Sunday School',
+    meetingTime: 'Sundays 11:15 AM',
+    description: 'Topical and book-by-book studies for adults of all backgrounds.',
+  },
+];
 ---
 
 <BaseLayout title={title} description={description}>
@@ -42,11 +76,22 @@ const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
         </div>
       </section>
     ) : (
-      <section class="ministries-empty" aria-label="No ministries">
-        <div class="ministries-empty__inner">
-          <p class="ministries-empty__message">
-            No ministries available at this time. Check back soon.
+      <section class="ministries-listing" aria-label="Ministries and Groups">
+        <div class="ministries-listing__inner">
+          <p class="ministries-listing__intro">
+            There are many ways to get connected at FICCC. Here are some of our regular gatherings and groups.
           </p>
+          <div class="ministries-grid">
+            {fallbackGroups.map((group) => (
+              <div class="group-card">
+                <h3 class="group-card__name">{group.name}</h3>
+                {group.meetingTime && (
+                  <p class="group-card__time">{group.meetingTime}</p>
+                )}
+                <p class="group-card__desc">{group.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     )}
@@ -70,22 +115,44 @@ const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
     gap: var(--space-8);
   }
 
-  .ministries-empty {
-    padding: var(--space-20) var(--space-6);
-    background-color: var(--color-bg);
-  }
-
-  .ministries-empty__inner {
-    max-width: var(--max-width);
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .ministries-empty__message {
+  .ministries-listing__intro {
     font-family: var(--font-body);
     font-size: var(--text-lg);
-    color: var(--color-body);
     line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    text-align: center;
+    max-width: 40rem;
+    margin-inline: auto;
+    margin-block-end: var(--space-10);
+  }
+
+  .group-card {
+    background-color: var(--color-stone);
+    border-radius: var(--radius-md);
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .group-card__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-2);
+  }
+
+  .group-card__time {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-terracotta);
+    margin-block-end: var(--space-3);
+  }
+
+  .group-card__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    margin: 0;
   }
 
   @media (max-width: 1024px) {

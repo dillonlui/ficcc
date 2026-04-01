@@ -172,6 +172,9 @@ export interface AboutPage {
   whoWeAreHeading?: string;
   whoWeAreBody?: PortableTextBlock[];
   whoWeAreImage?: SanityImage;
+  visionHeading?: string;
+  visionBody?: PortableTextBlock[];
+  churchStats?: { value: string; label: string }[];
   beliefs?: BeliefItem[];
   staffOrder?: { _ref: string }[];
   language: 'en' | 'zh';

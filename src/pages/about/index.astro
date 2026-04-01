@@ -24,6 +24,20 @@ const fallbackBody = `
 <p>Whether you are a longtime resident of Ithaca, a visiting scholar, or a student far from home, there is a place for you at FICCC. We invite you to come as you are and experience the warmth of Christ's love in community.</p>
 `.trim();
 
+const fallbackVisionHeading = 'Our Vision';
+const fallbackVisionHtml = `
+<p><strong>Develop Humble Servants Who Love the Lord, Love the Lost, Love the Local Church — For the Rest of Their Lives.</strong></p>
+<p>Most of the students and scholars who walk through our doors will only be in Ithaca for a few years. But we believe that what happens during those years — the habits of worship, the depth of community, the encounters with Scripture — can shape the trajectory of an entire life.</p>
+<p>Our vision is to nurture Christ-followers who don't just "do church" while they're here, but who carry the marks of discipleship wherever they go: into careers, families, churches, and communities around the world.</p>
+`.trim();
+
+const fallbackStats = [
+  { value: '~150', label: 'Congregation Members' },
+  { value: '~20', label: 'Baptisms Per Year' },
+  { value: '18', label: 'Full-Time Ministers Sent' },
+  { value: '40+', label: 'Years in Ithaca' },
+];
+
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heading = aboutPage?.whoWeAreHeading || fallbackHeading;
 const bodyHtml = aboutPage?.whoWeAreBody?.length
@@ -32,6 +46,16 @@ const bodyHtml = aboutPage?.whoWeAreBody?.length
 const imageUrl = aboutPage?.whoWeAreImage
   ? urlForImage(aboutPage.whoWeAreImage, { width: 800 })
   : '';
+
+const visionHeading = aboutPage?.visionHeading || fallbackVisionHeading;
+const visionHtml = aboutPage?.visionBody?.length
+  ? portableTextToHtml(aboutPage.visionBody)
+  : fallbackVisionHtml;
+
+const stats =
+  aboutPage?.churchStats && aboutPage.churchStats.length > 0
+    ? aboutPage.churchStats
+    : fallbackStats;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -53,6 +77,29 @@ const imageUrl = aboutPage?.whoWeAreImage
               />
             </div>
           )}
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision Statement -->
+    <section class="vision" aria-label="Our Vision">
+      <div class="vision__inner">
+        <h2 class="vision__heading">{visionHeading}</h2>
+        <div class="vision__body" set:html={visionHtml} />
+      </div>
+    </section>
+
+    <!-- Church Stats -->
+    <section class="stats" aria-label="Church by the Numbers">
+      <div class="stats__inner">
+        <h2 class="stats__heading">By the Numbers</h2>
+        <div class="stats__grid">
+          {stats.map((stat) => (
+            <div class="stats__item">
+              <span class="stats__value">{stat.value}</span>
+              <span class="stats__label">{stat.label}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -116,6 +163,91 @@ const imageUrl = aboutPage?.whoWeAreImage
     object-fit: cover;
   }
 
+  /* ---------- Vision ---------- */
+  .vision {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .vision__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .vision__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-8);
+  }
+
+  .vision__body {
+    max-width: 48rem;
+    margin-inline: auto;
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .vision__body :global(p) {
+    margin-block-end: var(--space-4);
+  }
+
+  .vision__body :global(p:last-child) {
+    margin-block-end: 0;
+  }
+
+  .vision__body :global(strong) {
+    color: var(--color-ink);
+  }
+
+  /* ---------- Stats ---------- */
+  .stats {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .stats__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .stats__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-10);
+  }
+
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-8);
+    text-align: center;
+  }
+
+  .stats__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .stats__value {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--color-terracotta);
+  }
+
+  .stats__label {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-body);
+  }
+
   @media (min-width: 768px) {
     .about__content {
       grid-template-columns: 3fr 2fr;
@@ -130,6 +262,18 @@ const imageUrl = aboutPage?.whoWeAreImage
 
     .about__body {
       font-size: var(--text-base);
+    }
+
+    .vision__heading {
+      font-size: var(--text-2xl);
+    }
+
+    .stats__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats__value {
+      font-size: var(--text-3xl);
     }
   }
 </style>

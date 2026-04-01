@@ -25,6 +25,51 @@ export const aboutPage = defineType({
       options: { hotspot: true },
     }),
 
+    // ── Vision Statement ──────────────────────────────────────────
+    defineField({
+      name: 'visionHeading',
+      title: 'Vision Heading',
+      type: 'string',
+      initialValue: 'Our Vision',
+    }),
+    defineField({
+      name: 'visionBody',
+      title: 'Vision Body',
+      type: 'array',
+      of: [{ type: 'block' }],
+    }),
+
+    // ── Church Stats ──────────────────────────────────────────────
+    defineField({
+      name: 'churchStats',
+      title: 'Church Stats',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          name: 'statItem',
+          title: 'Stat',
+          fields: [
+            defineField({
+              name: 'value',
+              title: 'Value',
+              type: 'string',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'label',
+              title: 'Label',
+              type: 'string',
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: 'value', subtitle: 'label' },
+          },
+        },
+      ],
+    }),
+
     // ── Beliefs ────────────────────────────────────────────────────
     defineField({
       name: 'beliefs',

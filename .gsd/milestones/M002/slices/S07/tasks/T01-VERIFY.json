@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M002/S07/T01",
+  "timestamp": 1775053892121,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "grep -q 'resourcesPage' sanity/schemas/index.ts",
+      "exitCode": 0,
+      "durationMs": 18,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'getResourcesPage' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 14,
+      "verdict": "pass"
+    },
+    {
+      "command": "! grep -q 'client:' src/pages/resources.astro",
+      "exitCode": 0,
+      "durationMs": 15,
+      "verdict": "pass"
+    }
+  ]
+}

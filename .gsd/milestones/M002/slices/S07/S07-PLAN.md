@@ -19,7 +19,7 @@ Steps:
   - Estimate: 45m
   - Files: sanity/schemas/singletons/resourcesPage.ts, sanity/schemas/index.ts, src/lib/sanity.ts, src/pages/resources.astro, public/newcomer-recommendations.pdf, public/readathon4.pdf
   - Verify: npm run build 2>&1 | grep -q 'resources' && grep -q 'resourcesPage' sanity/schemas/index.ts && grep -q 'getResourcesPage' src/lib/sanity.ts && ! grep -q 'client:' src/pages/resources.astro && echo 'T01 PASS' || echo 'T01 FAIL'
-- [ ] **T02: Audit em.ficcc.org content migration and fill any gaps** — Systematically verify that every 'Must Migrate' and 'Should Migrate' item from SITE-AUDIT.md Section 4 has a corresponding Sanity schema field and hardcoded fallback in an Astro page. Document findings. Fix any gaps found.
+- [x] **T02: Audited all em.ficcc.org migration items, fixed contact address, added vision statement and church stats to about page, added fallback ministry groups** — Systematically verify that every 'Must Migrate' and 'Should Migrate' item from SITE-AUDIT.md Section 4 has a corresponding Sanity schema field and hardcoded fallback in an Astro page. Document findings. Fix any gaps found.
 
 Must Migrate checklist (verify each):
 - Service times (EN and ZH, summer/holiday) → visitPage schema + visit.astro fallback
