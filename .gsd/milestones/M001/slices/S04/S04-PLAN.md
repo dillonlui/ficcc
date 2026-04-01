@@ -81,7 +81,7 @@
   - Estimate: 1h
   - Files: sanity/schemas/objects/heroBlock.ts, sanity/schemas/objects/imageMosaicBlock.ts, sanity/schemas/objects/accordionBlock.ts, sanity/schemas/objects/cardGridBlock.ts, sanity/schemas/objects/youtubeEmbedBlock.ts, sanity/schemas/documents/person.ts, sanity/schemas/documents/sermon.ts, sanity/schemas/documents/event.ts, sanity/schemas/documents/ministry.ts, sanity/schemas/documents/page.ts, sanity/schemas/singletons/siteSettings.ts, sanity/schemas/singletons/navigation.ts, sanity/schemas/index.ts, sanity.config.ts, sanity/structure.ts
   - Verify: npm run build && find sanity/schemas -name '*.ts' | wc -l | grep -q '1[0-9]' && grep -q 'schemas' sanity.config.ts
-- [ ] **T03: Add GROQ query helpers, update CSP, remove old studio/, verify Lighthouse** — Create reusable GROQ query helper functions in `src/lib/sanity.ts` that downstream slices will use to fetch content. Update CSP in `vercel.json` if Studio needs script-src for `cdn.sanity.io`. Remove the old standalone `studio/` directory. Run Lighthouse CI to confirm no performance regression from adding React + Sanity deps.
+- [x] **T03: Added 6 typed GROQ query helpers to src/lib/sanity.ts, removed old studio/ directory, confirmed build and Lighthouse CI pass with no regressions** — Create reusable GROQ query helper functions in `src/lib/sanity.ts` that downstream slices will use to fetch content. Update CSP in `vercel.json` if Studio needs script-src for `cdn.sanity.io`. Remove the old standalone `studio/` directory. Run Lighthouse CI to confirm no performance regression from adding React + Sanity deps.
 
 ## Steps
 

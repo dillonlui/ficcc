@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T01:33:17.446Z",
+  "exported_at": "2026-04-01T01:36:21.906Z",
   "milestones": [
     {
       "id": "M001",
@@ -1443,19 +1443,24 @@
       "milestone_id": "M001",
       "slice_id": "S04",
       "id": "T03",
-      "title": "Add GROQ query helpers, update CSP, remove old studio/, verify Lighthouse",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Added 6 typed GROQ query helpers to src/lib/sanity.ts, removed old studio/ directory, confirmed build and Lighthouse CI pass with no regressions",
+      "status": "complete",
+      "one_liner": "Added 6 typed GROQ query helpers to src/lib/sanity.ts, removed old studio/ directory, confirmed build and Lighthouse CI pass with no regressions",
+      "narrative": "Expanded src/lib/sanity.ts with TypeScript interfaces for all 6 content types and exported query functions (getPageBySlug, getSermons, getEvents, getMinistries, getSiteSettings, getNavigation). Each accepts a language parameter defaulting to 'en'. Reviewed CSP — no changes needed since Studio scripts are self-hosted. Removed old standalone studio/ directory. Ran full LHCI — all assertions passed with no regressions.",
+      "verification_result": "npm run build exits 0 (7.1s), ! test -d studio confirms removal, grep confirms GROQ helpers present (7 exports), npx lhci autorun passes all assertions (68.3s), slice-level checks (sanity in astro.config, sanity.config.ts exists, sanity/structure.ts exists) all pass.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T01:36:21.888Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/lib/sanity.ts"
+      ],
+      "key_decisions": [
+        "No CSP changes needed — Studio scripts self-hosted from Astro build",
+        "Lighthouse config unchanged — /admin not in tested URLs"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S04\nmilestone: M001\nkey_files:\n  - src/lib/sanity.ts\nkey_decisions:\n  - No CSP changes needed — Studio scripts self-hosted from Astro build\n  - Lighthouse config unchanged — /admin not in tested URLs\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:36:21.889Z\nblocker_discovered: false\n---\n\n# T03: Added 6 typed GROQ query helpers to src/lib/sanity.ts, removed old studio/ directory, confirmed build and Lighthouse CI pass with no regressions\n\n**Added 6 typed GROQ query helpers to src/lib/sanity.ts, removed old studio/ directory, confirmed build and Lighthouse CI pass with no regressions**\n\n## What Happened\n\nExpanded src/lib/sanity.ts with TypeScript interfaces for all 6 content types and exported query functions (getPageBySlug, getSermons, getEvents, getMinistries, getSiteSettings, getNavigation). Each accepts a language parameter defaulting to 'en'. Reviewed CSP — no changes needed since Studio scripts are self-hosted. Removed old standalone studio/ directory. Ran full LHCI — all assertions passed with no regressions.\n\n## Verification\n\nnpm run build exits 0 (7.1s), ! test -d studio confirms removal, grep confirms GROQ helpers present (7 exports), npx lhci autorun passes all assertions (68.3s), slice-level checks (sanity in astro.config, sanity.config.ts exists, sanity/structure.ts exists) all pass.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 7100ms |\n| 2 | `! test -d studio` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q 'getPageBySlug|getSermons' src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n| 4 | `npx lhci autorun` | 0 | ✅ pass | 68300ms |\n| 5 | `grep -q 'sanity' astro.config.mjs` | 0 | ✅ pass | 100ms |\n| 6 | `test -f sanity.config.ts` | 0 | ✅ pass | 100ms |\n| 7 | `test -f sanity/structure.ts` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/lib/sanity.ts`\n",
       "description": "Create reusable GROQ query helper functions in `src/lib/sanity.ts` that downstream slices will use to fetch content. Update CSP in `vercel.json` if Studio needs script-src for `cdn.sanity.io`. Remove the old standalone `studio/` directory. Run Lighthouse CI to confirm no performance regression from adding React + Sanity deps.\n\n## Steps\n\n1. Update `src/lib/sanity.ts` with typed GROQ query helpers: `getPageBySlug(slug, language)`, `getSermons(language)`, `getEvents(language)`, `getMinistries(language)`, `getSiteSettings(language)`, `getNavigation(language)`. Each returns a typed result using the Sanity client.\n2. Check if `vercel.json` CSP `script-src` needs `https://cdn.sanity.io` for Studio. The Studio at `/admin` is a static HTML page that loads React client-side — its scripts come from the Astro build bundle, not from CDN. But verify by checking `@sanity/astro` output.\n3. Remove `studio/sanity.config.ts` — replaced by root `sanity.config.ts`.\n4. Remove `studio/` directory entirely if empty after config removal.\n5. Run `npm run build` to verify everything still builds.\n6. Run Lighthouse CI (`npm run lhci`) to verify perf score hasn't regressed below thresholds. The addition of React as a dependency should not affect production page bundles since `/admin` is a separate route.\n7. Update `lighthouserc.cjs` if needed to handle the new `/admin` route (exclude it from assertions since it's a Studio page, not a content page).\n\n## Must-Haves\n\n- [ ] GROQ query helpers exported from `src/lib/sanity.ts`\n- [ ] Old `studio/` directory removed\n- [ ] Build succeeds\n- [ ] Lighthouse CI passes or thresholds adjusted for new route\n\n## Verification\n\n- `npm run build` exits 0\n- `! test -d studio` confirms old directory removed\n- `grep -c 'export.*function\\|export.*const.*=' src/lib/sanity.ts` shows multiple exports\n- `npm run lhci` passes (or `npm run build` as minimum if lhci has env issues)",
       "estimate": "30m",
       "files": [
@@ -2066,6 +2071,83 @@
       "verdict": "✅ pass",
       "duration_ms": 10,
       "created_at": "2026-04-01T01:33:17.430Z"
+    },
+    {
+      "id": 42,
+      "task_id": "T03",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7100,
+      "created_at": "2026-04-01T01:36:21.888Z"
+    },
+    {
+      "id": 43,
+      "task_id": "T03",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "! test -d studio",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T01:36:21.888Z"
+    },
+    {
+      "id": 44,
+      "task_id": "T03",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "grep -q 'getPageBySlug|getSermons' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T01:36:21.888Z"
+    },
+    {
+      "id": 45,
+      "task_id": "T03",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "npx lhci autorun",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 68300,
+      "created_at": "2026-04-01T01:36:21.888Z"
+    },
+    {
+      "id": 46,
+      "task_id": "T03",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "grep -q 'sanity' astro.config.mjs",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T01:36:21.888Z"
+    },
+    {
+      "id": 47,
+      "task_id": "T03",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "test -f sanity.config.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T01:36:21.888Z"
+    },
+    {
+      "id": 48,
+      "task_id": "T03",
+      "slice_id": "S04",
+      "milestone_id": "M001",
+      "command": "test -f sanity/structure.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T01:36:21.888Z"
     }
   ]
 }
