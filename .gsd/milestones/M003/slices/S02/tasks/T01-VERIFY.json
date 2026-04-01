@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M003/S02/T01",
+  "timestamp": 1775062492798,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 8685,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f dist/client/zh/ministries/index.html",
+      "exitCode": 0,
+      "durationMs": 9,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q '團契' dist/client/zh/ministries/index.html",
+      "exitCode": 0,
+      "durationMs": 10,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'lang=\"zh\"' dist/client/zh/ministries/index.html",
+      "exitCode": 0,
+      "durationMs": 9,
+      "verdict": "pass"
+    },
+    {
+      "command": "! grep -q '團契' dist/client/ministries/index.html",
+      "exitCode": 0,
+      "durationMs": 10,
+      "verdict": "pass"
+    }
+  ]
+}

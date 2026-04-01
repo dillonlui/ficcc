@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
+import SermonCard from '../../../components/SermonCard.astro';
+import { getSermons } from '../../../lib/sanity';
+
+const title = '證道 | FICCC';
+const description = '浏览以萨卡华人基督教会的证道信息。按系列筛选，在线观看讲道。';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let sermons: Awaited<ReturnType<typeof getSermons>> = [];
+
+try {
+  sermons = await getSermons('zh');
+} catch {
+  // Sanity unreachable — continue with empty array
+}
+
+// ---------- Extract distinct series for filter ----------
+const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as string[];
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main>
+    <Hero
+      title="證道"
+      subtitle="聆听我们主日聚会的讲道信息"
+      backgroundImage="/images/hero-placeholder.svg"
+    />
+
+    {sermons.length > 0 ? (
+      <section class="sermons-listing" aria-label="讲道列表">
+        <div class="sermons-listing__inner">
+          {allSeries.length > 0 && (
+            <nav class="filter-bar" aria-label="按系列筛选">
+              <button class="filter-btn filter-btn--active" data-filter="all" type="button">
+                全部
+              </button>
+              {allSeries.map((series) => (
+                <button class="filter-btn" data-filter={series} type="button">
+                  {series}
+                </button>
+              ))}
+            </nav>
+          )}
+
+          <div class="sermons-grid">
+            {sermons.map((sermon) => (
+              <div class="sermons-grid__item" data-series={sermon.series ?? ''}>
+                <SermonCard
+                  title={sermon.title}
+                  speaker={sermon.speaker}
+                  date={sermon.date}
+                  series={sermon.series}
+                  scripture={sermon.scripture}
+                  href={sermon.slug?.current ? `/zh/sermons/${sermon.slug.current}` : '#'}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class="sermons-empty" aria-label="暂无讲道">
+        <div class="sermons-empty__inner">
+          <p class="sermons-empty__message">目前暂无讲道信息，请稍后再来查看。</p>
+        </div>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<script>
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('.sermons-grid__item');
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+
+      // Toggle active class
+      filterBtns.forEach((b) => b.classList.remove('filter-btn--active'));
+      btn.classList.add('filter-btn--active');
+
+      // Show/hide cards
+      items.forEach((item) => {
+        if (filter === 'all' || item.dataset.series === filter) {
+          item.removeAttribute('hidden');
+        } else {
+          item.setAttribute('hidden', '');
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .sermons-listing {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .sermons-listing__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-block-end: var(--space-10);
+    justify-content: center;
+  }
+
+  .filter-btn {
+    appearance: none;
+    border: 1px solid var(--color-stone);
+    background-color: var(--color-bg);
+    color: var(--color-body);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    padding: var(--space-2) var(--space-5);
+    border-radius: 100vw;
+    cursor: pointer;
+    transition: background-color var(--transition), color var(--transition),
+      border-color var(--transition);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-terracotta);
+    color: var(--color-terracotta);
+  }
+
+  .filter-btn:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .filter-btn--active {
+    background-color: var(--color-terracotta);
+    border-color: var(--color-terracotta);
+    color: var(--color-bg);
+  }
+
+  .filter-btn--active:hover {
+    color: var(--color-bg);
+  }
+
+  /* ---------- Sermon grid ---------- */
+  .sermons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .sermons-grid__item[hidden] {
+    display: none;
+  }
+
+  /* ---------- Empty state ---------- */
+  .sermons-empty {
+    padding: var(--space-20) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .sermons-empty__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .sermons-empty__message {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    color: var(--color-body);
+    line-height: var(--leading-relaxed);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1024px) {
+    .sermons-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .sermons-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .sermons-listing {
+      padding: var(--space-10) var(--space-4);
+    }
+  }
+</style>

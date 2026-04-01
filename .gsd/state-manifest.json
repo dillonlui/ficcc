@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T16:54:50.052Z",
+  "exported_at": "2026-04-01T17:00:39.220Z",
   "milestones": [
     {
       "id": "M001",
@@ -607,16 +607,16 @@
       "milestone_id": "M003",
       "id": "S02",
       "title": "ZH Community & Ministries",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S01"
       ],
       "demo": "ZH Community with all 7 fellowship groups. ZH Ministries with Sunday School and Discipleship.",
       "created_at": "2026-03-31T22:34:23.911Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T16:56:11.331Z",
+      "full_summary_md": "---\nid: S02\nparent: M003\nmilestone: M003\nprovides:\n  - ZH ministries listing page at /zh/ministries/\n  - ZH ministry detail page at /zh/ministries/[slug]\n  - MinistryCard basePath prop for language-aware links\nrequires:\n  - slice: S01\n    provides: ZH page pattern (clone EN, swap to zh, Chinese fallback, lang='zh' threading)\naffects:\n  - S05\nkey_files:\n  - src/pages/zh/ministries/index.astro\n  - src/pages/zh/ministries/[slug].astro\n  - src/components/MinistryCard.astro\nkey_decisions:\n  - Added basePath prop to MinistryCard for language-aware links instead of duplicating component\npatterns_established:\n  - ZH ministry pages follow same clone-and-swap pattern as S01 ZH pages: clone EN counterpart, swap Sanity query to 'zh', provide Chinese fallback content, pass lang='zh' to BaseLayout\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M003/slices/S02/tasks/T01-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T16:56:11.333Z\nblocker_discovered: false\n---\n\n# S02: ZH Community & Ministries\n\n**ZH ministries listing at /zh/ministries/ with 7 fellowship groups, 2 ministry programs, and a Chinese-labeled detail page — all with lang='zh' and /zh/ routing.**\n\n## What Happened\n\nCloned the EN ministries listing and detail pages to src/pages/zh/ministries/. The listing page calls getMinistries('zh') with Chinese fallback content for 7 fellowship groups (福音組, 家庭組, 長青組, 校園組, 職青組, 兒童主日學, 青少年組) and 2 ministry programs (主日學 Sunday School, 門徒訓練 Discipleship), organized under section headings for better UX. The detail page uses getMinistryBySlug with Chinese labels ('聚會時間', '← 返回事工') and /zh/ministries back link. Added a basePath prop to MinistryCard for language-aware links without duplicating the component or breaking EN pages. Build succeeds with all 9 groups/programs present, lang=\"zh\" set, and EN pages unaffected.\n\n## Verification\n\nBuild passed. Verified: (1) dist/client/zh/ministries/index.html exists, (2) contains 團契 (fellowship), (3) contains lang=\"zh\", (4) EN ministries page does not contain Chinese content, (5) all 9 groups/programs confirmed present in output HTML, (6) detail page template has Chinese back link.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nAdded basePath prop to MinistryCard component (not in plan) for language-aware links. Organized ZH fallback content into two sections with headings for better UX.\n\n## Known Limitations\n\nNone.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `src/pages/zh/ministries/index.astro` — New ZH ministries listing with 7 fellowship groups and 2 ministry programs\n- `src/pages/zh/ministries/[slug].astro` — New ZH ministry detail page with Chinese labels and /zh/ routing\n- `src/components/MinistryCard.astro` — Added basePath prop for language-aware ministry links\n",
+      "full_uat_md": "# S02: ZH Community & Ministries — UAT\n\n**Milestone:** M003\n**Written:** 2026-04-01T16:56:11.333Z\n\n# S02: ZH Community & Ministries — UAT\n\n**Milestone:** M003\n**Written:** 2026-04-01\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Static site — all output is build-time HTML. No runtime behavior to test.\n\n## Preconditions\n\n- `npm run build` completes successfully\n- Build output exists in `dist/client/`\n\n## Smoke Test\n\nOpen `dist/client/zh/ministries/index.html` in a browser. Page should display Chinese ministry content with `lang=\"zh\"` on the html element.\n\n## Test Cases\n\n### 1. ZH ministries listing contains all 7 fellowship groups\n\n1. Open `dist/client/zh/ministries/index.html`\n2. Verify the following groups are listed: 福音組, 家庭組, 長青組, 校園組, 職青組, 兒童主日學, 青少年組\n3. **Expected:** All 7 fellowship groups visible with Chinese names and descriptions\n\n### 2. ZH ministries listing contains 2 ministry programs\n\n1. Open `dist/client/zh/ministries/index.html`\n2. Verify 主日學 (Sunday School) and 門徒訓練 (Discipleship) are listed\n3. **Expected:** Both ministry programs visible under a separate section heading\n\n### 3. ZH ministries page has correct lang attribute\n\n1. View source of `dist/client/zh/ministries/index.html`\n2. Check the `<html>` tag\n3. **Expected:** `lang=\"zh\"` attribute present\n\n### 4. EN ministries page is not contaminated with Chinese content\n\n1. Open `dist/client/ministries/index.html`\n2. Search for Chinese characters (團契, 福音組, etc.)\n3. **Expected:** No Chinese characters found in the EN page\n\n### 5. ZH ministry detail page has Chinese labels\n\n1. Open `src/pages/zh/ministries/[slug].astro`\n2. Check back link text and meeting time label\n3. **Expected:** Back link reads '← 返回事工', meeting time label reads '聚會時間', links to /zh/ministries\n\n### 6. MinistryCard basePath works for both languages\n\n1. Check `dist/client/zh/ministries/index.html` for ministry card links\n2. Check `dist/client/ministries/index.html` for ministry card links\n3. **Expected:** ZH cards link to `/zh/ministries/[slug]`, EN cards link to `/ministries/[slug]`\n\n## Edge Cases\n\n### No Sanity data available (fallback content)\n\n1. Build with no Sanity API connection (placeholder project ID)\n2. Open `dist/client/zh/ministries/index.html`\n3. **Expected:** Page renders with hardcoded Chinese fallback content for all 9 groups/programs\n\n## Failure Signals\n\n- Build fails with errors in zh/ministries pages\n- Chinese characters appear on EN ministries page\n- Missing fellowship groups or ministry programs on ZH page\n- lang attribute missing or set to 'en' on ZH page\n- Ministry card links point to wrong language path\n\n## Not Proven By This UAT\n\n- Live Sanity CMS content rendering (tested with fallbacks only)\n- Language toggle between EN and ZH ministries (covered by S04)\n- Content migration from cm.ficcc.org (covered by S05)\n\n## Notes for Tester\n\nThe detail page ([slug].astro) doesn't generate static pages without Sanity data — only the listing page can be fully verified from build output. The detail template was verified by source inspection.\n",
       "goal": "ZH Community & Ministries pages at /zh/ministries/ with 7 fellowship groups and ministry programs (Sunday School, Discipleship) in Chinese fallback content, plus a ZH ministry detail page.",
       "success_criteria": "- `npm run build` succeeds\n- `test -f dist/client/zh/ministries/index.html` — ZH ministries listing page exists\n- `grep -q '團契' dist/client/zh/ministries/index.html` — Chinese fellowship content present\n- `grep -q 'lang=\"zh\"' dist/client/zh/ministries/index.html` — Correct language attribute\n- EN ministries page unchanged — `! grep -q '團契' dist/client/ministries/index.html`",
       "proof_level": "Static build output. No runtime required.",
@@ -639,11 +639,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "ZH transactional pages including WeChat contact",
-      "success_criteria": "ZH Sermons (may launch sparse — architecture ready). ZH Events. ZH Give with PayPal. ZH Contact with WeChat (ithacachen), phone, CM email.",
-      "proof_level": "WeChat ID present. Forms deliver to CM contacts. Give page works.",
-      "integration_closure": "ZH forms route to CM email contacts",
-      "observability_impact": "ZH form submissions tracked",
+      "goal": "Create ZH Sermons (listing + detail), Events, Give, and Contact pages at /zh/ paths, completing all Chinese ministry transactional pages.",
+      "success_criteria": "## Must-Haves\n\n- ZH Sermons listing at `/zh/sermons/` with Chinese labels, series filter, and links to `/zh/sermons/[slug]`\n- ZH Sermon detail at `/zh/sermons/[slug]` with Chinese meta labels (講員, 日期, 經文, 系列)\n- ZH Events at `/zh/events` with Chinese section headings and fallback events in Chinese\n- ZH Give at `/zh/give` with Chinese prose, verse in Chinese, and `/zh/contact` link\n- ZH Contact at `/zh/contact` with WeChat section as primary CTA, Chinese church info sidebar, and simplified Chinese contact form\n- All pages pass `lang=\"zh\"` to BaseLayout\n- All internal links use `/zh/` paths\n- CMS fetches wrapped in try-catch for build resilience (K008)\n- EN pages unchanged — no Chinese content leaked\n\n## Verification\n\n```bash\nnpm run build && \\\ntest -f dist/client/zh/sermons/index.html && \\\ntest -f dist/client/zh/events/index.html && \\\ntest -f dist/client/zh/give/index.html && \\\ntest -f dist/client/zh/contact/index.html && \\\ngrep -q 'lang=\"zh\"' dist/client/zh/sermons/index.html && \\\ngrep -q '講' dist/client/zh/sermons/index.html && \\\ngrep -q '活動' dist/client/zh/events/index.html && \\\ngrep -q '奉獻' dist/client/zh/give/index.html && \\\ngrep -q '微信\\|WeChat' dist/client/zh/contact/index.html && \\\n! grep -q '證道\\|講道\\|奉獻\\|微信' dist/client/sermons/index.html && \\\necho \"S03 verification passed\"\n```",
+      "proof_level": "Build-time static output verification. No runtime required.",
+      "integration_closure": "Upstream: BaseLayout (lang prop), Header/Footer (lang-aware nav from S01), src/lib/sanity.ts (getSermons/getEvents with lang param). New wiring: 4 new ZH page files at src/pages/zh/. Remaining before milestone usable: S04 (language toggle), S05 (content migration).",
+      "observability_impact": "None — static pages with no runtime behavior.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2802,6 +2802,128 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S03",
+      "id": "T01",
+      "title": "Created Chinese sermons listing and detail pages at /zh/sermons/ with translated UI text, zh-CN date formatting, and CMS-driven series filters",
+      "status": "complete",
+      "one_liner": "Created Chinese sermons listing and detail pages at /zh/sermons/ with translated UI text, zh-CN date formatting, and CMS-driven series filters",
+      "narrative": "Cloned EN sermons listing and detail pages to src/pages/zh/sermons/. Listing page uses getSermons('zh'), Chinese title/description/hero text, translated filter button labels, /zh/sermons/ links, and Chinese empty state. Detail page uses zh-CN locale for dates, Chinese meta labels (講員/日期/經文/系列), and Chinese back link text. Both pass lang='zh' to BaseLayout.",
+      "verification_result": "npm run build succeeded. Verified dist/client/zh/sermons/index.html exists, contains lang=\"zh\" attribute, and contains Chinese character 講.",
+      "duration": "",
+      "completed_at": "2026-04-01T17:00:39.201Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/pages/zh/sermons/index.astro",
+        "src/pages/zh/sermons/[slug].astro"
+      ],
+      "key_decisions": [
+        "Used 證道 as primary Chinese term for sermons page title"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S03\nmilestone: M003\nkey_files:\n  - src/pages/zh/sermons/index.astro\n  - src/pages/zh/sermons/[slug].astro\nkey_decisions:\n  - Used 證道 as primary Chinese term for sermons page title\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:00:39.202Z\nblocker_discovered: false\n---\n\n# T01: Created Chinese sermons listing and detail pages at /zh/sermons/ with translated UI text, zh-CN date formatting, and CMS-driven series filters\n\n**Created Chinese sermons listing and detail pages at /zh/sermons/ with translated UI text, zh-CN date formatting, and CMS-driven series filters**\n\n## What Happened\n\nCloned EN sermons listing and detail pages to src/pages/zh/sermons/. Listing page uses getSermons('zh'), Chinese title/description/hero text, translated filter button labels, /zh/sermons/ links, and Chinese empty state. Detail page uses zh-CN locale for dates, Chinese meta labels (講員/日期/經文/系列), and Chinese back link text. Both pass lang='zh' to BaseLayout.\n\n## Verification\n\nnpm run build succeeded. Verified dist/client/zh/sermons/index.html exists, contains lang=\"zh\" attribute, and contains Chinese character 講.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8800ms |\n| 2 | `test -f dist/client/zh/sermons/index.html` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q 'lang=\"zh\"' dist/client/zh/sermons/index.html` | 0 | ✅ pass | 100ms |\n| 4 | `grep -q '講' dist/client/zh/sermons/index.html` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/pages/zh/sermons/index.astro`\n- `src/pages/zh/sermons/[slug].astro`\n",
+      "description": "Clone EN sermons listing (src/pages/sermons/index.astro) to src/pages/zh/sermons/index.astro and EN sermon detail (src/pages/sermons/[slug].astro) to src/pages/zh/sermons/[slug].astro. Swap getSermons('en') to getSermons('zh'), translate all user-facing text to Chinese, change internal links to /zh/sermons/ paths, pass lang='zh' to BaseLayout.\n\nThe listing page needs: Chinese title/description meta, Hero with Chinese text (證道/講道), series filter bar (labels stay dynamic from CMS), sermon grid with /zh/sermons/[slug] links, Chinese empty state text.\n\nThe detail page needs: getStaticPaths calling getSermons('zh'), Chinese meta labels (講員 for Speaker, 日期 for Date, 經文 for Scripture, 系列 for Series), date formatted with zh-CN locale, back link pointing to /zh/sermons with Chinese text, lang='zh' to BaseLayout.",
+      "estimate": "30m",
+      "files": [
+        "src/pages/zh/sermons/index.astro",
+        "src/pages/zh/sermons/[slug].astro"
+      ],
+      "verify": "npm run build && test -f dist/client/zh/sermons/index.html && grep -q 'lang=\"zh\"' dist/client/zh/sermons/index.html && grep -q '講' dist/client/zh/sermons/index.html",
+      "inputs": [
+        "src/pages/sermons/index.astro",
+        "src/pages/sermons/[slug].astro",
+        "src/lib/sanity.ts",
+        "src/components/SermonCard.astro",
+        "src/components/Hero.astro",
+        "src/components/YouTubeEmbed.astro",
+        "src/layouts/BaseLayout.astro"
+      ],
+      "expected_output": [
+        "src/pages/zh/sermons/index.astro",
+        "src/pages/zh/sermons/[slug].astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S03",
+      "id": "T02",
+      "title": "Create ZH Events and Give pages",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Clone EN events (src/pages/events.astro) to src/pages/zh/events.astro and EN give (src/pages/give.astro) to src/pages/zh/give.astro. Both are single-file clone-and-swap.\n\nZH Events: Swap getEvents('en') to getEvents('zh'). Translate Hero text, section headings (即將舉行的活動, 過往活動), empty state text, fallback events to Chinese (主日崇拜, 主日學, 週五團契 with Chinese descriptions). Pass lang='zh' to BaseLayout.\n\nZH Give: Translate all prose to Chinese — Why We Give section (奉獻 heading, Chinese explanation of giving), verse in Chinese (哥林多後書 9:7), giving methods with Chinese labels (網上奉獻/PayPal, 支票奉獻, 現場奉獻). Change /contact link to /zh/contact. PayPal link and church address stay the same. Pass lang='zh' to BaseLayout.",
+      "estimate": "30m",
+      "files": [
+        "src/pages/zh/events.astro",
+        "src/pages/zh/give.astro"
+      ],
+      "verify": "npm run build && test -f dist/client/zh/events/index.html && test -f dist/client/zh/give/index.html && grep -q '活動' dist/client/zh/events/index.html && grep -q '奉獻' dist/client/zh/give/index.html",
+      "inputs": [
+        "src/pages/events.astro",
+        "src/pages/give.astro",
+        "src/lib/sanity.ts",
+        "src/components/EventCard.astro",
+        "src/components/Hero.astro",
+        "src/layouts/BaseLayout.astro"
+      ],
+      "expected_output": [
+        "src/pages/zh/events.astro",
+        "src/pages/zh/give.astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S03",
+      "id": "T03",
+      "title": "Create bespoke ZH Contact page with WeChat",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Build src/pages/zh/contact.astro as a bespoke page — NOT a direct clone of the EN contact page (which has 4 tab forms totaling 1,450 LOC). The ZH contact page should have:\n\n1. **Hero** with Chinese text (聯繫我們)\n2. **WeChat section** as the primary contact method — prominent section with WeChat icon/branding, a placeholder for QR code image (use /images/wechat-qr-placeholder.svg or a styled placeholder box), and the text explaining to add the church WeChat for Chinese ministry communication\n3. **Simplified contact form** — a single general-purpose form with Chinese labels (姓名 Name, 電郵 Email, 訊息 Message) and a submit button (發送). No Turnstile integration needed for now, no tabs. Use a simple HTML form with action='#' (placeholder) and client-side form submission pattern consistent with the EN forms\n4. **Church info sidebar** in Chinese — same layout as EN sidebar but with Chinese labels (教會地址, 主日崇拜, 電子郵件, 電話)\n\nUse the same grid layout pattern as EN contact (form area + sidebar). All CSS must use design tokens from global.css (K003). Pass lang='zh' to BaseLayout.",
+      "estimate": "40m",
+      "files": [
+        "src/pages/zh/contact.astro"
+      ],
+      "verify": "npm run build && test -f dist/client/zh/contact/index.html && grep -q '微信\\|WeChat' dist/client/zh/contact/index.html && grep -q 'lang=\"zh\"' dist/client/zh/contact/index.html && grep -q '聯繫' dist/client/zh/contact/index.html",
+      "inputs": [
+        "src/pages/contact.astro",
+        "src/components/Hero.astro",
+        "src/layouts/BaseLayout.astro",
+        "src/styles/global.css"
+      ],
+      "expected_output": [
+        "src/pages/zh/contact.astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -4803,6 +4925,50 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T16:54:50.036Z"
+    },
+    {
+      "id": 164,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8800,
+      "created_at": "2026-04-01T17:00:39.201Z"
+    },
+    {
+      "id": 165,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "test -f dist/client/zh/sermons/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:00:39.201Z"
+    },
+    {
+      "id": 166,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "grep -q 'lang=\"zh\"' dist/client/zh/sermons/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:00:39.201Z"
+    },
+    {
+      "id": 167,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M003",
+      "command": "grep -q '講' dist/client/zh/sermons/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:00:39.201Z"
     }
   ]
 }

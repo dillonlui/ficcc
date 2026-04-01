@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
+import YouTubeEmbed from '../../../components/YouTubeEmbed.astro';
+import { getSermons, type Sermon } from '../../../lib/sanity';
+
+export async function getStaticPaths() {
+  let sermons: Sermon[] = [];
+
+  try {
+    sermons = await getSermons('zh');
+  } catch {
+    // Sanity unreachable — return empty paths so build succeeds
+  }
+
+  return sermons
+    .filter((s) => s.slug?.current)
+    .map((sermon) => ({
+      params: { slug: sermon.slug!.current },
+      props: { sermon },
+    }));
+}
+
+interface Props {
+  sermon: Sermon;
+}
+
+const { sermon } = Astro.props;
+
+const formattedDate = sermon.date
+  ? new Date(sermon.date).toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : undefined;
+
+const title = `${sermon.title} | 證道 | FICCC`;
+---
+
+<BaseLayout title={title} lang="zh">
+  <main>
+    <Hero
+      title={sermon.title}
+      subtitle={sermon.series ?? undefined}
+      backgroundImage="/images/hero-placeholder.svg"
+    />
+
+    <article class="sermon-detail">
+      <div class="sermon-detail__inner">
+        <a class="sermon-detail__back" href="/zh/sermons">← 返回讲道列表</a>
+
+        <div class="sermon-detail__meta">
+          {sermon.speaker && (
+            <div class="sermon-detail__meta-item">
+              <span class="sermon-detail__label">講員</span>
+              <span class="sermon-detail__value">{sermon.speaker}</span>
+            </div>
+          )}
+          {formattedDate && (
+            <div class="sermon-detail__meta-item">
+              <span class="sermon-detail__label">日期</span>
+              <span class="sermon-detail__value">{formattedDate}</span>
+            </div>
+          )}
+          {sermon.scripture && (
+            <div class="sermon-detail__meta-item">
+              <span class="sermon-detail__label">經文</span>
+              <span class="sermon-detail__value">{sermon.scripture}</span>
+            </div>
+          )}
+          {sermon.series && (
+            <div class="sermon-detail__meta-item">
+              <span class="sermon-detail__label">系列</span>
+              <span class="sermon-detail__value">{sermon.series}</span>
+            </div>
+          )}
+        </div>
+
+        {sermon.videoId && (
+          <div class="sermon-detail__video">
+            <YouTubeEmbed videoId={sermon.videoId} />
+          </div>
+        )}
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .sermon-detail {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .sermon-detail__inner {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  /* ---------- Back link ---------- */
+  .sermon-detail__back {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-terracotta);
+    text-decoration: none;
+    margin-block-end: var(--space-8);
+    transition: color var(--transition);
+  }
+
+  .sermon-detail__back:hover {
+    color: #b3654b;
+  }
+
+  .sermon-detail__back:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Metadata ---------- */
+  .sermon-detail__meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+    margin-block-end: var(--space-10);
+    padding: var(--space-8);
+    background-color: var(--color-stone);
+    border-radius: var(--radius-md);
+  }
+
+  .sermon-detail__meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .sermon-detail__label {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-body);
+  }
+
+  .sermon-detail__value {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+  }
+
+  /* ---------- Video ---------- */
+  .sermon-detail__video {
+    max-width: 100%;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 640px) {
+    .sermon-detail {
+      padding: var(--space-10) var(--space-4);
+    }
+
+    .sermon-detail__meta {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      padding: var(--space-6);
+    }
+  }
+</style>
