@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:29:05.422Z",
+  "exported_at": "2026-04-01T13:30:42.649Z",
   "milestones": [
     {
       "id": "M001",
@@ -1993,19 +1993,24 @@
       "milestone_id": "M002",
       "slice_id": "S02",
       "id": "T03",
-      "title": "Build Staff grid page with StaffCard component",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created StaffCard component and /about/staff page with responsive 1/2/3-column grid, CMS fetch via getStaff(), and four realistic fallback entries",
+      "status": "complete",
+      "one_liner": "Created StaffCard component and /about/staff page with responsive 1/2/3-column grid, CMS fetch via getStaff(), and four realistic fallback entries",
+      "narrative": "Built StaffCard.astro with 1:1 aspect-ratio photo container, name, role, and SVG placeholder for missing photos. Built /about/staff page following the established CMS fetch + try-catch + fallback pattern with a responsive CSS Grid (1→2→3 columns). No client:* directives. Build succeeds with the new page generating at /about/staff/index.html.",
+      "verification_result": "Ran combined verification: file existence checks passed, no client: directives found, npm run build succeeded with /about/staff/index.html in output.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T13:30:42.635Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/StaffCard.astro",
+        "src/pages/about/staff.astro"
+      ],
+      "key_decisions": [
+        "StaffCard placeholder uses SVG person silhouette on CSS gradient rather than blank space or generic icon"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S02\nmilestone: M002\nkey_files:\n  - src/components/StaffCard.astro\n  - src/pages/about/staff.astro\nkey_decisions:\n  - StaffCard placeholder uses SVG person silhouette on CSS gradient rather than blank space or generic icon\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:30:42.636Z\nblocker_discovered: false\n---\n\n# T03: Created StaffCard component and /about/staff page with responsive 1/2/3-column grid, CMS fetch via getStaff(), and four realistic fallback entries\n\n**Created StaffCard component and /about/staff page with responsive 1/2/3-column grid, CMS fetch via getStaff(), and four realistic fallback entries**\n\n## What Happened\n\nBuilt StaffCard.astro with 1:1 aspect-ratio photo container, name, role, and SVG placeholder for missing photos. Built /about/staff page following the established CMS fetch + try-catch + fallback pattern with a responsive CSS Grid (1→2→3 columns). No client:* directives. Build succeeds with the new page generating at /about/staff/index.html.\n\n## Verification\n\nRan combined verification: file existence checks passed, no client: directives found, npm run build succeeded with /about/staff/index.html in output.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f src/components/StaffCard.astro && test -f src/pages/about/staff.astro && ! grep -rq 'client:' src/components/StaffCard.astro src/pages/about/staff.astro && npm run build` | 0 | ✅ pass | 7500ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/StaffCard.astro`\n- `src/pages/about/staff.astro`\n",
       "description": "Create the `/about/staff` page with a responsive staff grid and a new StaffCard component. Fetches person documents via `getStaff()` with try-catch and hardcoded fallbacks.\n\n## Steps\n\n1. Create `src/components/StaffCard.astro`:\n   - Props: name (string), role (string), photoUrl (string, optional)\n   - Render a card with photo (1:1 aspect ratio, `object-fit: cover`), name, role\n   - Use placeholder SVG or CSS gradient when no photo\n   - Pure Astro with scoped CSS using CSS custom properties\n   - Responsive: works as grid child\n2. Create `src/pages/about/staff.astro`:\n   - Import BaseLayout, StaffCard, use `getStaff()` wrapped in try-catch\n   - Hardcoded fallback with 3-4 realistic staff entries (Pastor, Associate Pastor, etc.)\n   - Use `urlForImage()` for person photos from CMS\n   - CSS Grid layout: 1 col on mobile (< 640px), 2 col tablet, 3 col desktop\n   - Page heading and optional intro text\n   - No client:* directives\n3. Verify the page builds and the grid is responsive\n\n## Must-Haves\n\n- [ ] StaffCard component renders photo, name, role with 1:1 aspect ratio photo container\n- [ ] /about/staff page renders responsive grid of staff cards\n- [ ] Try-catch CMS fetch with realistic hardcoded fallbacks\n- [ ] No client:* directives\n- [ ] npm run build succeeds",
       "estimate": "30m",
       "files": [
@@ -3386,6 +3391,17 @@
       "verdict": "✅ pass",
       "duration_ms": 7500,
       "created_at": "2026-04-01T13:29:05.407Z"
+    },
+    {
+      "id": 108,
+      "task_id": "T03",
+      "slice_id": "S02",
+      "milestone_id": "M002",
+      "command": "test -f src/components/StaffCard.astro && test -f src/pages/about/staff.astro && ! grep -rq 'client:' src/components/StaffCard.astro src/pages/about/staff.astro && npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7500,
+      "created_at": "2026-04-01T13:30:42.635Z"
     }
   ]
 }

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M002/S02/T02",
+  "timestamp": 1775050152453,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "test -f src/pages/about/index.astro",
+      "exitCode": 0,
+      "durationMs": 15,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f src/pages/about/beliefs.astro",
+      "exitCode": 0,
+      "durationMs": 11,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'set:html' src/components/Accordion.astro",
+      "exitCode": 0,
+      "durationMs": 12,
+      "verdict": "pass"
+    },
+    {
+      "command": "! grep -rq 'client:' src/pages/about/index.astro src/pages/about/beliefs.astro",
+      "exitCode": 0,
+      "durationMs": 16,
+      "verdict": "pass"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 7461,
+      "verdict": "pass"
+    }
+  ]
+}

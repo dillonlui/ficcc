@@ -69,7 +69,7 @@
   - Estimate: 45m
   - Files: src/components/Accordion.astro, src/pages/about/index.astro, src/pages/about/beliefs.astro
   - Verify: test -f src/pages/about/index.astro && test -f src/pages/about/beliefs.astro && grep -q 'set:html' src/components/Accordion.astro && ! grep -rq 'client:' src/pages/about/index.astro src/pages/about/beliefs.astro && npm run build
-- [ ] **T03: Build Staff grid page with StaffCard component** — Create the `/about/staff` page with a responsive staff grid and a new StaffCard component. Fetches person documents via `getStaff()` with try-catch and hardcoded fallbacks.
+- [x] **T03: Created StaffCard component and /about/staff page with responsive 1/2/3-column grid, CMS fetch via getStaff(), and four realistic fallback entries** — Create the `/about/staff` page with a responsive staff grid and a new StaffCard component. Fetches person documents via `getStaff()` with try-catch and hardcoded fallbacks.
 
 ## Steps
 
