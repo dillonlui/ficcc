@@ -30,6 +30,10 @@
 **Rule:** Never modify the existing GROQ helpers when adding preview support. `loadQuery` uses `sanity:client` (from @sanity/astro integration) with `previewDrafts` perspective and `SANITY_API_READ_TOKEN`. The token must never appear in `PUBLIC_` vars or client components.
 **Files:** `src/lib/sanity.ts`, `src/layouts/BaseLayout.astro`
 
+## K007: Remediation slices are normal — plan for validation gaps
+**Context:** M001 validation after S06 revealed three gaps: no reusable SEO component, no 404 page, no LHCI CI pipeline. These were foundational requirements that slipped through initial planning because they cut across multiple slices.
+**Rule:** After completing all planned slices, validate the milestone's success criteria before marking complete. Expect 1-2 remediation slices for cross-cutting concerns that don't naturally belong to any single slice.
+
 ## K005: Sanity schema organization and query pattern
 **Context:** 12 schema types organized under `sanity/schemas/{objects,documents,singletons}/` with barrel export from `index.ts`. Every document type has a `language` field with `'en' | 'zh'`. Singletons use `{type}-{lang}` IDs (e.g. `siteSettings-en`).
 **Rule:** Use the typed GROQ helpers in `src/lib/sanity.ts` for all content fetching — each accepts a `language` parameter defaulting to `'en'`. When adding new schema types, add them to the barrel export and update the structure builder in `sanity/structure.ts`.

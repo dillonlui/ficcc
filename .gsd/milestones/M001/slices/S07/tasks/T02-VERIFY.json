@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M001/S07/T02",
+  "timestamp": 1775015186083,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 7349,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f dist/404.html",
+      "exitCode": 0,
+      "durationMs": 20,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'og:title' dist/404.html",
+      "exitCode": 0,
+      "durationMs": 20,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f .github/workflows/lighthouse.yml",
+      "exitCode": 0,
+      "durationMs": 15,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx @lhci/cli autorun",
+      "exitCode": 0,
+      "durationMs": 98493,
+      "verdict": "pass"
+    }
+  ]
+}

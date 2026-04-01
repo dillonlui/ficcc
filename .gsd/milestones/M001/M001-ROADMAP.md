@@ -12,4 +12,4 @@ Establish the full project scaffold, design system, CMS schema, and shared infra
 | S04 | Sanity Schema & Studio | medium | S01 | ✅ | Sanity Studio with all document types. Sample content created and queryable. |
 | S05 | Forms, SEO & Security Infrastructure | low | S01 | ✅ | Form submission delivers email. sitemap.xml, robots.txt, security headers all verified. |
 | S06 | Preview Mode & Integration Wiring | low | S04, S05 | ✅ | Editor creates draft in Sanity, clicks Preview, sees draft rendered on live site. Publish triggers redeploy. |
-| S07 | Remediation: SEO Components, 404 Page & LHCI CI Pipeline | low | S02, S03, S05 | ⬜ | 404 page renders with site chrome. Meta/OG tags visible in page source. JSON-LD structured data in page head. GitHub Actions runs LHCI on PRs. |
+| S07 | Remediation: SEO Components, 404 Page & LHCI CI Pipeline | low | S02, S03, S05 | ✅ | 404 page renders with site chrome. Meta/OG tags visible in page source. JSON-LD structured data in page head. GitHub Actions runs LHCI on PRs. |

@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T03:46:23.129Z",
+  "exported_at": "2026-04-01T03:52:19.736Z",
   "milestones": [
     {
       "id": "M001",
       "title": "Foundation & Design System",
-      "status": "active",
+      "status": "complete",
       "depends_on": [],
       "created_at": "2026-03-31T22:32:16.176Z",
-      "completed_at": null,
+      "completed_at": "2026-04-01T03:52:19.717Z",
       "vision": "Establish the full project scaffold, design system, CMS schema, and shared infrastructure so that all subsequent page-building milestones can move fast without re-solving foundational problems.",
       "success_criteria": [
         "Astro + Sanity monorepo deploys to Vercel with preview URLs on every PR",
@@ -410,7 +410,7 @@
       "milestone_id": "M001",
       "id": "S07",
       "title": "Remediation: SEO Components, 404 Page & LHCI CI Pipeline",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S02",
@@ -419,9 +419,9 @@
       ],
       "demo": "404 page renders with site chrome. Meta/OG tags visible in page source. JSON-LD structured data in page head. GitHub Actions runs LHCI on PRs.",
       "created_at": "2026-04-01T03:38:45.302Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T03:49:38.860Z",
+      "full_summary_md": "---\nid: S07\nparent: M001\nmilestone: M001\nprovides:\n  - SEO.astro component for meta/OG/Twitter/JSON-LD on all pages\n  - Custom 404 page with site chrome\n  - LHCI GitHub Actions workflow for PR-level Lighthouse CI\nrequires:\n  - slice: S02\n    provides: Design tokens used in 404 page styling\n  - slice: S03\n    provides: Header/Footer components rendered via BaseLayout\n  - slice: S05\n    provides: sitemap.xml and robots.txt infrastructure\naffects:\n  []\nkey_files:\n  - src/components/SEO.astro\n  - src/layouts/BaseLayout.astro\n  - src/pages/404.astro\n  - lighthouserc.cjs\n  - .github/workflows/lighthouse.yml\nkey_decisions:\n  - SEO.astro uses Astro.site for absolute canonical/OG URLs\n  - Default JSON-LD uses @type Church with name/description/url\n  - SEO component accepts jsonLd override prop for page-specific structured data\n  - 404 SEO threshold set to warn at 0.8 instead of error at 0.95\npatterns_established:\n  - Reusable SEO.astro component in BaseLayout head — all pages get meta/OG/Twitter/JSON-LD automatically\n  - Per-URL LHCI assertMatrix pattern for pages with different performance/SEO characteristics\nobservability_surfaces:\n  - LHCI autorun in GitHub Actions on PRs — catches Lighthouse regressions before merge\ndrill_down_paths:\n  - .gsd/milestones/M001/slices/S07/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M001/slices/S07/tasks/T02-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T03:49:38.861Z\nblocker_discovered: false\n---\n\n# S07: Remediation: SEO Components, 404 Page & LHCI CI Pipeline\n\n**Reusable SEO.astro component delivers meta/OG/Twitter/JSON-LD on every page, custom 404 renders with full site chrome, and LHCI GitHub Actions workflow gates PRs on Lighthouse scores.**\n\n## What Happened\n\nT01 built src/components/SEO.astro with a typed Props interface (title, description, canonicalUrl, ogImage, ogType, lang, jsonLd). The component renders title, meta description, canonical link, full Open Graph tags, Twitter card tags, and a JSON-LD script block defaulting to Church schema. All URLs are absolute via new URL() against Astro.site. BaseLayout was updated to import SEO.astro and replace the hand-written title/description tags, so every page using BaseLayout automatically gets complete SEO markup.\n\nT02 created src/pages/404.astro using BaseLayout — which means the 404 page gets site chrome (Header/Footer) and full SEO tags for free. The page renders a centered 404 heading, friendly message, and styled \"Back to Home\" link using design tokens. lighthouserc.cjs was updated to include the 404.html URL with a per-URL assertMatrix entry (SEO threshold set to warn at 0.8 for 404). .github/workflows/lighthouse.yml was created to run LHCI autorun on PRs to main. LHCI autorun was verified locally — 9 runs across 3 URLs (index, styleguide, 404) all passed assertions.\n\n## Verification\n\nnpm run build exited 0 producing 4 pages including dist/404.html. Grep checks confirmed og:title, og:description, og:url, og:image, application/ld+json, Church, twitter:card, and canonical present in dist/index.html. Grep checks confirmed header, footer, and og:title present in dist/404.html. .github/workflows/lighthouse.yml exists. npx @lhci/cli autorun passed all assertions across 9 runs (3 URLs × 3 runs each).\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nNone.\n\n## Known Limitations\n\nJSON-LD defaults to Church schema — page-specific schemas (Event, Article) will need to pass jsonLd prop when those page types are built. OG image defaults to /og-default.png which doesn't exist yet — needs a real image asset in a future milestone.\n\n## Follow-ups\n\nCreate /og-default.png image asset for social sharing. Add page-specific JSON-LD schemas when sermon/event pages are built. Monitor LHCI workflow on first real PR to confirm GitHub Actions runner performance matches local.\n\n## Files Created/Modified\n\n- `src/components/SEO.astro` — New reusable SEO component rendering meta/OG/Twitter/JSON-LD tags\n- `src/layouts/BaseLayout.astro` — Replaced raw title/description with SEO component import\n- `src/pages/404.astro` — New custom 404 page using BaseLayout with site chrome\n- `lighthouserc.cjs` — Added 404.html URL and assertMatrix entry\n- `.github/workflows/lighthouse.yml` — New LHCI workflow triggered on PRs to main\n",
+      "full_uat_md": "# S07: Remediation: SEO Components, 404 Page & LHCI CI Pipeline — UAT\n\n**Milestone:** M001\n**Written:** 2026-04-01T03:49:38.862Z\n\n# S07: Remediation: SEO Components, 404 Page & LHCI CI Pipeline — UAT\n\n**Milestone:** M001\n**Written:** 2026-04-01\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: All deliverables are static build artifacts (HTML files, workflow YAML) verifiable via build output inspection and grep checks. No runtime server needed.\n\n## Preconditions\n\n- Node.js 20+ installed\n- `npm ci` completed\n- `npm run build` succeeds\n\n## Smoke Test\n\nRun `npm run build && grep -q 'og:title' dist/index.html && grep -q 'og:title' dist/404.html` — confirms SEO component is rendering on both pages.\n\n## Test Cases\n\n### 1. SEO meta tags on homepage\n\n1. Run `npm run build`\n2. Open `dist/index.html` in a text editor or grep for tags\n3. **Expected:** File contains `<meta property=\"og:title\"`, `<meta property=\"og:description\"`, `<meta property=\"og:url\"`, `<meta property=\"og:image\"` with absolute URL, `<meta name=\"twitter:card\" content=\"summary_large_image\"`, `<link rel=\"canonical\"` with absolute URL\n\n### 2. JSON-LD structured data on homepage\n\n1. Run `npm run build`\n2. Search `dist/index.html` for `application/ld+json`\n3. **Expected:** A `<script type=\"application/ld+json\">` block containing `\"@type\":\"Church\"`, `\"@context\":\"https://schema.org\"`, and the site name/description/url\n\n### 3. 404 page renders with site chrome\n\n1. Run `npm run build`\n2. Open `dist/404.html`\n3. **Expected:** Page contains `<header>` and `<footer>` elements (site chrome from BaseLayout), a heading with \"404\", a friendly message, and a link to `/`\n\n### 4. 404 page has SEO tags\n\n1. Search `dist/404.html` for `og:title`\n2. **Expected:** OG tags, Twitter card tags, canonical link, and JSON-LD block are present (inherited from BaseLayout → SEO.astro)\n\n### 5. LHCI workflow file exists and is valid\n\n1. Open `.github/workflows/lighthouse.yml`\n2. **Expected:** Triggers on `pull_request` to `main`. Steps include checkout, Node.js setup, `npm ci`, `npm run build`, and `npx @lhci/cli autorun`\n\n### 6. LHCI autorun passes locally\n\n1. Run `npx @lhci/cli autorun`\n2. **Expected:** Runs 3 URLs (index, styleguide, 404) × 3 runs each = 9 total runs. All assertions pass with exit code 0.\n\n## Edge Cases\n\n### OG image URL is absolute\n\n1. Grep `dist/index.html` for `og:image`\n2. **Expected:** URL starts with `https://` (absolute, not relative `/og-default.png`)\n\n### Canonical URL uses Astro.site\n\n1. Grep `dist/index.html` for `canonical`\n2. **Expected:** href is a full absolute URL matching the site domain, not a relative path\n\n## Failure Signals\n\n- `npm run build` fails — SEO component has a syntax or type error\n- `grep -q 'og:title' dist/index.html` fails — SEO component not wired into BaseLayout\n- `dist/404.html` missing header/footer — 404 page not using BaseLayout\n- `npx @lhci/cli autorun` fails — Lighthouse thresholds regressed or 404 URL not configured in lighthouserc.cjs\n\n## Not Proven By This UAT\n\n- OG image renders correctly when shared on social platforms (no /og-default.png asset exists yet)\n- LHCI workflow runs correctly on GitHub Actions (only verified locally)\n- Page-specific JSON-LD schemas (Event, Article) — only default Church schema tested\n\n## Notes for Tester\n\n- The /og-default.png file doesn't exist yet — OG image meta tag points to it but the asset is deferred to a future milestone\n- LHCI local run takes ~90 seconds due to 9 Lighthouse runs with throttling\n- 404 SEO score threshold is set to warn (not error) at 0.8 since 404 pages inherently score lower on SEO\n",
       "goal": "Add SEO meta/OG tags and JSON-LD structured data to all pages via a reusable SEO component, create a custom 404 page with site chrome, and add a GitHub Actions LHCI workflow for PR-level Lighthouse CI.",
       "success_criteria": "- `npm run build` succeeds with 404.html in dist/\n- Built index.html contains og:title, og:description, og:url, og:type, og:image meta tags\n- Built index.html contains `<script type=\"application/ld+json\">` with `@type: \"Church\"`\n- dist/404.html contains Header/Footer site chrome and SEO meta tags\n- `.github/workflows/lighthouse.yml` exists with valid YAML\n- `npx @lhci/cli autorun` passes all existing thresholds",
       "proof_level": "contract — verified via build output inspection and LHCI run",
@@ -1955,6 +1955,18 @@
       "choice": "Keep `output: 'static'` with `@astrojs/vercel@9` adapter — Astro 5 removed `hybrid` mode; static + adapter provides identical per-page SSR opt-in via `export const prerender = false`",
       "rationale": "Astro 5 merged hybrid into static: adding an adapter to a static site enables per-page SSR opt-in without a separate mode. D013 planned for hybrid but this is the Astro 5 equivalent. @astrojs/vercel@9 used because v10 requires Astro 6.",
       "revisable": "No — determined by Astro version",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 17,
+      "id": "D015",
+      "when_context": "",
+      "scope": "infrastructure",
+      "decision": "LHCI SEO threshold for 404 page",
+      "choice": "Set 404 page SEO assertion to warn at 0.8 instead of error at 0.95",
+      "rationale": "404 pages inherently score lower on SEO (no meaningful content, noindex intent) so a strict 0.95 threshold would cause false failures in CI.",
+      "revisable": "Yes",
       "made_by": "agent",
       "superseded_by": null
     }
