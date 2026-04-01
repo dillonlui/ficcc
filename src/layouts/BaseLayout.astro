@@ -32,9 +32,9 @@ const isVisualEditingEnabled =
     <noscript><link rel="stylesheet" href={cjkFontsHref} /></noscript>
   </head>
   <body>
-    <Header />
+    <Header lang={lang} />
     <slot />
-    <Footer />
+    <Footer lang={lang} />
     {isVisualEditingEnabled && <VisualEditing enabled={true} />}
   </body>
 </html>

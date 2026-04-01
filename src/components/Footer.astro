@@ -3,15 +3,17 @@
  * Site footer — church info, nav links, copyright.
  * Uses CSS custom properties only.
  */
-const currentYear = new Date().getFullYear();
+import { getFooterNav, getServiceTimes, getChurchName, type Lang } from '../lib/navigation';
 
-const footerNav = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
-  { label: 'Ministries', href: '/ministries' },
-  { label: 'Sermons', href: '/sermons' },
-  { label: 'Contact', href: '/contact' },
-];
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const currentYear = new Date().getFullYear();
+const footerNav = getFooterNav(lang);
+const serviceTimes = getServiceTimes(lang);
+const churchName = getChurchName(lang);
 ---
 
 <footer class="site-footer">
@@ -28,11 +30,11 @@ const footerNav = [
 
     <!-- Service times -->
     <div class="footer-col footer-services">
-      <h2 class="footer-heading">Service Times</h2>
+      <h2 class="footer-heading">{serviceTimes.heading}</h2>
       <ul class="footer-list" role="list">
-        <li>Sunday Worship: 10:00 AM</li>
-        <li>Sunday School: 11:30 AM</li>
-        <li>Friday Fellowship: 7:30 PM</li>
+        {serviceTimes.items.map((item) => (
+          <li>{item.label}</li>
+        ))}
       </ul>
     </div>
 
@@ -48,7 +50,7 @@ const footerNav = [
   </div>
 
   <div class="footer-bottom">
-    <p>&copy; {currentYear} First Ithaca Chinese Christian Church. All rights reserved.</p>
+    <p>&copy; {currentYear} {churchName}. All rights reserved.</p>
   </div>
 </footer>
 

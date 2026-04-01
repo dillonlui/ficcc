@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T14:41:40.726Z",
+  "exported_at": "2026-04-01T16:42:14.793Z",
   "milestones": [
     {
       "id": "M001",
@@ -595,11 +595,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Core Chinese Ministry pages with accurate content from cm.ficcc.org",
-      "success_criteria": "ZH Homepage with CM service info (11:15am). ZH About with church history timeline. ZH Beliefs with EFCA statement. ZH Staff with Pastor Simon Ye. ZH Sundays with 7-stop bus route and seasonal schedule.",
-      "proof_level": "All content accurate vs cm.ficcc.org. CJK renders cleanly.",
-      "integration_closure": "ZH pages pull from Sanity documents with language='zh'",
-      "observability_impact": "N/A",
+      "goal": "ZH Homepage and core pages (About, Beliefs, Staff, Sundays) render at /zh/ paths with Chinese fallback content, lang=\"zh\", ZH-specific nav links, and bespoke sections (1983-2009 history timeline, EFCA 11-point statement, 7-stop bus route).",
+      "success_criteria": "`npm run build` succeeds with all 5 ZH pages in `dist/zh/`. Each page has `<html lang=\"zh\">`. Header/Footer show ZH nav links on ZH pages. Chinese fallback content renders. ZH-specific sections (history timeline on About, 11-point beliefs, bus route on Sundays) are present. All internal links on ZH pages point to `/zh/...` paths. EN pages are unchanged.",
+      "proof_level": "Build verification — static output confirms all pages render with correct lang, content, and links.",
+      "integration_closure": "Upstream: `src/lib/sanity.ts` GROQ helpers (already accept `language` param), `src/layouts/BaseLayout.astro` (already accepts `lang` prop), all EN page templates as structural references. New wiring: `lang` prop threaded from BaseLayout → Header/Footer. `src/lib/navigation.ts` shared nav config. What remains: S02 (community/ministries ZH pages), S03 (sermons/events/give/contact ZH pages), S04 (language toggle wiring).",
+      "observability_impact": "Build errors surface through `npm run build` exit code and Astro's error output. Missing pages are detectable via `find dist/zh -name '*.html'` count.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2617,6 +2617,133 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S01",
+      "id": "T01",
+      "title": "Extracted nav config into src/lib/navigation.ts and made Header/Footer language-aware via lang prop so ZH pages render Chinese labels and hrefs while EN pages are unchanged",
+      "status": "complete",
+      "one_liner": "Extracted nav config into src/lib/navigation.ts and made Header/Footer language-aware via lang prop so ZH pages render Chinese labels and hrefs while EN pages are unchanged",
+      "narrative": "Created src/lib/navigation.ts with typed exports for nav links, footer nav, service times, and church name by language. Updated Header.astro and Footer.astro to accept a lang prop and use the shared config. Updated BaseLayout.astro to thread lang to both components. Changed language toggle from non-functional button to anchor link for actual navigation between language versions.",
+      "verification_result": "npm run build succeeded. EN homepage confirmed unchanged: no Chinese nav labels present, English nav links present.",
+      "duration": "",
+      "completed_at": "2026-04-01T16:42:14.775Z",
+      "blocker_discovered": false,
+      "deviations": "Changed language toggle from button to anchor link for actual navigation between / and /zh.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/lib/navigation.ts",
+        "src/components/Header.astro",
+        "src/components/Footer.astro",
+        "src/layouts/BaseLayout.astro"
+      ],
+      "key_decisions": [
+        "Changed lang toggle from button to anchor link so it navigates between /zh and / without JS"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S01\nmilestone: M003\nkey_files:\n  - src/lib/navigation.ts\n  - src/components/Header.astro\n  - src/components/Footer.astro\n  - src/layouts/BaseLayout.astro\nkey_decisions:\n  - Changed lang toggle from button to anchor link so it navigates between /zh and / without JS\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T16:42:14.776Z\nblocker_discovered: false\n---\n\n# T01: Extracted nav config into src/lib/navigation.ts and made Header/Footer language-aware via lang prop so ZH pages render Chinese labels and hrefs while EN pages are unchanged\n\n**Extracted nav config into src/lib/navigation.ts and made Header/Footer language-aware via lang prop so ZH pages render Chinese labels and hrefs while EN pages are unchanged**\n\n## What Happened\n\nCreated src/lib/navigation.ts with typed exports for nav links, footer nav, service times, and church name by language. Updated Header.astro and Footer.astro to accept a lang prop and use the shared config. Updated BaseLayout.astro to thread lang to both components. Changed language toggle from non-functional button to anchor link for actual navigation between language versions.\n\n## Verification\n\nnpm run build succeeded. EN homepage confirmed unchanged: no Chinese nav labels present, English nav links present.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 9400ms |\n| 2 | `! grep -q '首頁' dist/client/index.html` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q 'About' dist/client/index.html` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nChanged language toggle from button to anchor link for actual navigation between / and /zh.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/lib/navigation.ts`\n- `src/components/Header.astro`\n- `src/components/Footer.astro`\n- `src/layouts/BaseLayout.astro`\n",
+      "description": "## Description\n\nHeader and Footer currently hardcode English nav links and labels. All ZH pages need ZH nav links pointing to `/zh/...` paths. This task extracts navigation config into a shared module, makes Header/Footer accept a `lang` prop, and threads `lang` from BaseLayout through to both components.\n\n## Steps\n\n1. Create `src/lib/navigation.ts` exporting a `getNavLinks(lang: 'en' | 'zh')` function that returns nav links with labels and hrefs appropriate to the language. EN links: Home→`/`, About→`/about`, Ministries→`/ministries`, Sermons→`/sermons`, Contact→`/contact`. ZH links: 首頁→`/zh`, 關於我們→`/zh/about`, 團契→`/zh/ministries`, 講道→`/zh/sermons`, 聯絡我們→`/zh/contact`. Export a similar `getFooterNav(lang)` function.\n2. Update `src/components/Header.astro`:\n   - Accept a `lang` prop (default `'en'`) via the Props interface and frontmatter destructuring.\n   - Import and call `getNavLinks(lang)` instead of hardcoding the `navLinks` array.\n   - Update the logo href to `lang === 'zh' ? '/zh' : '/'`.\n   - Update the logo text: keep `FICCC` for EN, show `伊的家` for ZH (or both).\n   - Update the language toggle button label to reflect current language.\n3. Update `src/components/Footer.astro`:\n   - Accept a `lang` prop (default `'en'`).\n   - Import and call `getFooterNav(lang)` instead of hardcoding `footerNav`.\n   - When `lang === 'zh'`, change the Service Times heading and items to Chinese.\n   - Update footer link hrefs to use the language-appropriate paths.\n   - Copyright text should use the Chinese church name when `lang === 'zh'`.\n4. Update `src/layouts/BaseLayout.astro`:\n   - Thread the existing `lang` prop to `<Header lang={lang} />` and `<Footer lang={lang} />`.\n5. Verify EN pages are unchanged: `npm run build` succeeds, spot-check `dist/index.html` still has EN nav.\n\n## Must-Haves\n\n- [ ] `src/lib/navigation.ts` exists with typed nav link functions\n- [ ] Header accepts `lang` prop, defaults to `'en'`, renders language-appropriate links\n- [ ] Footer accepts `lang` prop, defaults to `'en'`, renders language-appropriate links and service times\n- [ ] BaseLayout passes `lang` to Header and Footer\n- [ ] EN pages build and render identically to before (no regression)\n\n## Verification\n\n- `npm run build` succeeds\n- `grep -q '首頁' dist/index.html` returns false (EN homepage unchanged)\n- `grep -q 'About' dist/index.html` returns true (EN nav present)\n\n## Inputs\n\n- `src/components/Header.astro` — current hardcoded EN header\n- `src/components/Footer.astro` — current hardcoded EN footer\n- `src/layouts/BaseLayout.astro` — layout that renders Header/Footer\n\n## Expected Output\n\n- `src/lib/navigation.ts` — shared nav config module\n- `src/components/Header.astro` — language-aware header\n- `src/components/Footer.astro` — language-aware footer\n- `src/layouts/BaseLayout.astro` — threads lang to Header/Footer",
+      "estimate": "45m",
+      "files": [
+        "src/lib/navigation.ts",
+        "src/components/Header.astro",
+        "src/components/Footer.astro",
+        "src/layouts/BaseLayout.astro"
+      ],
+      "verify": "npm run build && ! grep -q '首頁' dist/index.html && grep -q 'About' dist/index.html",
+      "inputs": [
+        "src/components/Header.astro",
+        "src/components/Footer.astro",
+        "src/layouts/BaseLayout.astro"
+      ],
+      "expected_output": [
+        "src/lib/navigation.ts",
+        "src/components/Header.astro",
+        "src/components/Footer.astro",
+        "src/layouts/BaseLayout.astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S01",
+      "id": "T02",
+      "title": "Build ZH Homepage with Chinese fallback content",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "## Description\n\nCreate the ZH homepage at `src/pages/zh/index.astro` by cloning the EN homepage pattern. This page calls all Sanity helpers with `'zh'`, provides Chinese fallback content, passes `lang='zh'` to BaseLayout, and uses `/zh/...` paths for all internal links. This proves the end-to-end ZH page pattern works.\n\n## Steps\n\n1. Create `src/pages/zh/index.astro` using the EN homepage (`src/pages/index.astro`) as the structural template.\n2. Set `lang='zh'` on BaseLayout: `<BaseLayout title={title} description={description} lang=\"zh\">`.\n3. Change all Sanity query calls to pass `'zh'`: `getHomePage('zh')`, `getSermons('zh')`, `getEvents('zh')`.\n4. Replace all English fallback content with Chinese equivalents:\n   - `title`: '伊的家華人基督教會 | First Ithaca Chinese Christian Church'\n   - `description`: Chinese meta description\n   - `heroTitle`: '歡迎回家' (Welcome Home)\n   - `heroSubtitle`: Chinese subtitle about the church\n   - `heroCtaText`: '計劃您的來訪' (Plan Your Visit)\n   - `heroCtaHref`: '/zh/sundays' (note: ZH uses 'sundays' not 'visit')\n   - `fallbackServiceTimes`: Chinese labels ('主日崇拜', '主日學')\n   - `fallbackPillars`: Chinese versions of the 3 pillars\n   - `fallbackNextSteps`: Chinese versions with `/zh/...` hrefs\n5. Ensure the featured section links point to `/zh/sermons` and `/zh/events`.\n6. Keep the same component imports (Hero, ServiceTimes, ImageMosaic, Pillars, Card, NextSteps) — they accept props and are language-agnostic.\n\n## Must-Haves\n\n- [ ] `src/pages/zh/index.astro` exists and follows the EN homepage structure\n- [ ] All Sanity queries use `'zh'` language parameter\n- [ ] Chinese fallback content is complete (not placeholder 'TODO')\n- [ ] All internal links point to `/zh/...` paths\n- [ ] `lang='zh'` passed to BaseLayout\n- [ ] Build succeeds and `dist/zh/index.html` exists\n\n## Verification\n\n- `npm run build` succeeds\n- `test -f dist/zh/index.html`\n- `grep -q 'lang=\"zh\"' dist/zh/index.html`\n- `grep -q '歡迎' dist/zh/index.html` (Chinese content present)\n\n## Inputs\n\n- `src/pages/index.astro` — EN homepage as structural reference\n- `src/lib/navigation.ts` — shared nav config from T01\n- `src/layouts/BaseLayout.astro` — updated layout from T01\n\n## Expected Output\n\n- `src/pages/zh/index.astro` — ZH homepage",
+      "estimate": "30m",
+      "files": [
+        "src/pages/zh/index.astro"
+      ],
+      "verify": "npm run build && test -f dist/zh/index.html && grep -q 'lang=\"zh\"' dist/zh/index.html && grep -q '歡迎' dist/zh/index.html",
+      "inputs": [
+        "src/pages/index.astro",
+        "src/lib/navigation.ts",
+        "src/layouts/BaseLayout.astro"
+      ],
+      "expected_output": [
+        "src/pages/zh/index.astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S01",
+      "id": "T03",
+      "title": "Build ZH About (with history timeline), Beliefs (EFCA 11-point), Staff, and Sundays (with bus route) pages",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "## Description\n\nCreate the remaining 4 ZH core pages following the pattern established by the ZH Homepage in T02. Each page clones its EN counterpart, swaps queries to `'zh'`, provides Chinese fallback content, passes `lang='zh'`, and adjusts internal links to `/zh/...`. Two pages have ZH-specific bespoke content: About gets a 1983-2009 history timeline section, and Sundays gets a 7-stop bus route section.\n\n## Steps\n\n1. **ZH About** — Create `src/pages/zh/about/index.astro`:\n   - Clone from `src/pages/about/index.astro`.\n   - Call `getAboutPage('zh')` instead of `'en'`.\n   - Chinese fallback content: heading '我們是誰', body text about FICCC history and mission in Chinese.\n   - Chinese vision statement fallback.\n   - Chinese stats labels.\n   - **Add a History Timeline section** after the vision section. The timeline covers 1983-2009 key milestones of the Chinese Ministry. Implement as a styled `<section>` with a vertical timeline layout (CSS-only, no JS). Include ~5-7 key dates with Chinese descriptions (e.g., 1983: 華人查經班成立, 1986: 正式成立華人教會, etc.). This is hardcoded fallback content — the CMS `whoWeAreBody` portable text field can hold this when populated.\n\n2. **ZH Beliefs** — Create `src/pages/zh/about/beliefs.astro`:\n   - Clone from `src/pages/about/beliefs.astro`.\n   - Call `getAboutPage('zh')`.\n   - Provide the EFCA 11-point Statement of Faith in Chinese as the fallback beliefs array. The EN version has 8 items; the ZH version should have all 11 points per the EFCA statement: (1) God, (2) The Bible, (3) The Human Condition, (4) Jesus Christ, (5) Christ's Work on the Cross, (6) The Holy Spirit, (7) The Church, (8) Christian Living, (9) Christ's Return, (10) Response and Eternal Destiny, (11) Last Things. Each with a Chinese title and content paragraph.\n   - Chinese intro paragraph.\n\n3. **ZH Staff** — Create `src/pages/zh/about/staff.astro`:\n   - Clone from `src/pages/about/staff.astro`.\n   - Call `getStaff('zh')`.\n   - Chinese fallback: heading '教牧同工', intro text in Chinese, same fallback staff names (names stay in English/Chinese as-is, roles translated to Chinese: '主任牧師', '副牧師', etc.).\n\n4. **ZH Sundays** — Create `src/pages/zh/sundays.astro`:\n   - Clone from `src/pages/visit.astro` (note: different URL — `/zh/sundays` not `/zh/visit`).\n   - Call `getVisitPage('zh')`.\n   - Chinese fallback content for all sections: schedule, what to expect, transportation, FAQ.\n   - **Add a Bus Route section** after the transportation section. The 7-stop Sunday shuttle route: Church (429 Mitchell St) → Hasbrouck Apartments → Collegetown (College Ave & Dryden) → North Campus (Robert Purcell) → Ithaca Commons → East Hill Plaza → Church. Implement as a styled ordered list or visual route display (CSS-only). Include pickup times.\n   - Chinese FAQ items.\n   - Chinese ride request section text.\n\n5. Verify all 4 pages build and contain correct content.\n\n## Must-Haves\n\n- [ ] `src/pages/zh/about/index.astro` exists with Chinese fallbacks and history timeline\n- [ ] `src/pages/zh/about/beliefs.astro` exists with EFCA 11-point Statement of Faith in Chinese\n- [ ] `src/pages/zh/about/staff.astro` exists with Chinese fallbacks\n- [ ] `src/pages/zh/sundays.astro` exists with Chinese fallbacks and 7-stop bus route\n- [ ] All 4 pages pass `lang='zh'` to BaseLayout\n- [ ] All internal links on all 4 pages point to `/zh/...` paths\n- [ ] Build succeeds with all 4 pages in dist\n\n## Verification\n\n- `npm run build` succeeds\n- `test -f dist/zh/about/index.html && test -f dist/zh/about/beliefs/index.html && test -f dist/zh/about/staff/index.html && test -f dist/zh/sundays/index.html`\n- `grep -q 'lang=\"zh\"' dist/zh/about/index.html`\n- `grep -q '1983' dist/zh/about/index.html` (history timeline present)\n- `grep -q 'Mitchell' dist/zh/sundays/index.html` (bus route present)\n\n## Inputs\n\n- `src/pages/about/index.astro` — EN about page as structural reference\n- `src/pages/about/beliefs.astro` — EN beliefs page as structural reference\n- `src/pages/about/staff.astro` — EN staff page as structural reference\n- `src/pages/visit.astro` — EN visit page as structural reference\n- `src/pages/zh/index.astro` — ZH homepage from T02 as pattern reference\n- `src/lib/navigation.ts` — shared nav config from T01\n\n## Expected Output\n\n- `src/pages/zh/about/index.astro` — ZH about page with history timeline\n- `src/pages/zh/about/beliefs.astro` — ZH beliefs page with EFCA 11-point\n- `src/pages/zh/about/staff.astro` — ZH staff page\n- `src/pages/zh/sundays.astro` — ZH sundays page with bus route",
+      "estimate": "1h30m",
+      "files": [
+        "src/pages/zh/about/index.astro",
+        "src/pages/zh/about/beliefs.astro",
+        "src/pages/zh/about/staff.astro",
+        "src/pages/zh/sundays.astro"
+      ],
+      "verify": "npm run build && test -f dist/zh/about/index.html && test -f dist/zh/about/beliefs/index.html && test -f dist/zh/about/staff/index.html && test -f dist/zh/sundays/index.html && grep -q 'lang=\"zh\"' dist/zh/about/index.html && grep -q '1983' dist/zh/about/index.html && grep -q 'Mitchell' dist/zh/sundays/index.html",
+      "inputs": [
+        "src/pages/about/index.astro",
+        "src/pages/about/beliefs.astro",
+        "src/pages/about/staff.astro",
+        "src/pages/visit.astro",
+        "src/pages/zh/index.astro",
+        "src/lib/navigation.ts"
+      ],
+      "expected_output": [
+        "src/pages/zh/about/index.astro",
+        "src/pages/zh/about/beliefs.astro",
+        "src/pages/zh/about/staff.astro",
+        "src/pages/zh/sundays.astro"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -4397,6 +4524,39 @@
       "verdict": "✅ pass",
       "duration_ms": 8400,
       "created_at": "2026-04-01T14:37:55.679Z"
+    },
+    {
+      "id": 145,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 9400,
+      "created_at": "2026-04-01T16:42:14.776Z"
+    },
+    {
+      "id": 146,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "! grep -q '首頁' dist/client/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T16:42:14.776Z"
+    },
+    {
+      "id": 147,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "grep -q 'About' dist/client/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T16:42:14.776Z"
     }
   ]
 }
