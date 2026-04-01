@@ -12,6 +12,13 @@ export const sermon = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: { source: 'title' },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: 'speaker',
       title: 'Speaker',
       type: 'string',

@@ -46,6 +46,7 @@ export interface Sermon {
   _id: string;
   _type: 'sermon';
   title: string;
+  slug?: SanitySlug;
   speaker?: string;
   date?: string;
   series?: string;
@@ -223,8 +224,23 @@ export async function getPageBySlug(
  */
 export async function getSermons(language: Language = 'en'): Promise<Sermon[]> {
   return client.fetch<Sermon[]>(
-    `*[_type == "sermon" && language == $language] | order(date desc)`,
+    `*[_type == "sermon" && language == $language]{
+      _id, _type, title, slug, speaker, date, series, scripture, videoId, language
+    } | order(date desc)`,
     { language },
+  );
+}
+
+/**
+ * Fetch a single sermon by its slug and language.
+ */
+export async function getSermonBySlug(
+  slug: string,
+  language: Language = 'en',
+): Promise<Sermon | null> {
+  return client.fetch<Sermon | null>(
+    `*[_type == "sermon" && slug.current == $slug && language == $language][0]`,
+    { slug, language },
   );
 }
 

@@ -4,13 +4,15 @@ First Ithaca Chinese Christian Church — bilingual (EN/ZH) church website built
 
 ## Current State
 
-**M002: EN Content Pages — In Progress (S01, S02 complete).**
+**M002: EN Content Pages — In Progress (S01, S02, S03 complete).**
 
 M001 (Foundation & Design System) is complete. M002 is building all English Ministry pages.
 
 S01 (Homepage) delivered the full homepage with hero, service times, photo mosaic, pillars, featured content, and next-steps sections — all CMS-editable via a homePage Sanity singleton with hardcoded fallbacks.
 
 S02 (About / Beliefs / Staff) delivered three identity pages: Who We Are with two-column layout, Beliefs with an 8-item accordion, and Staff with a responsive 1/2/3-column card grid. Added aboutPage Sanity singleton, portableTextToHtml() server-side utility, and enhanced Accordion to render HTML content.
+
+S03 (Sundays / Plan a Visit) delivered /visit with CMS-editable hero, Sunday schedule cards, what-to-expect, transportation with embedded Google Maps, 6-question FAQ accordion, and ride request form with Turnstile captcha. Added visitPage Sanity singleton and RideRequestForm component.
 
 The full project scaffold is in place:
 - Astro 5 + Sanity monorepo deployed to Vercel (ficcc.vercel.app)

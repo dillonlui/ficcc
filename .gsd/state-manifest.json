@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:43:35.260Z",
+  "exported_at": "2026-04-01T13:50:27.968Z",
   "milestones": [
     {
       "id": "M001",
@@ -476,16 +476,16 @@
       "milestone_id": "M002",
       "id": "S03",
       "title": "Sundays / Plan a Visit",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S01"
       ],
       "demo": "Plan a Visit with FAQ, transportation, schedule, ride request form",
       "created_at": "2026-03-31T22:33:41.124Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T13:45:18.222Z",
+      "full_summary_md": "---\nid: S03\nparent: M002\nmilestone: M002\nprovides:\n  - Visit page at /visit with all sections\n  - visitPage Sanity singleton schema (EN+ZH)\n  - RideRequestForm component\n  - getVisitPage() GROQ helper\nrequires:\n  - slice: S01\n    provides: Hero component, BaseLayout, Accordion component, global CSS custom properties, CMS fetch pattern with try-catch fallbacks\naffects:\n  - S06\nkey_files:\n  - sanity/schemas/singletons/visitPage.ts\n  - sanity/schemas/index.ts\n  - src/lib/sanity.ts\n  - src/pages/visit.astro\n  - src/components/RideRequestForm.astro\nkey_decisions:\n  - Built schedule as custom card grid rather than reusing ServiceTimes component — schedule items need a description field that ServiceTimes doesn't support\n  - Embedded Google Maps iframe in transportation section for directions\n  - RideRequestForm follows ContactForm pattern exactly: BEM CSS, Turnstile widget, inline script validation, fetch submission\npatterns_established:\n  - visitPage singleton schema pattern with portable text + array-of-objects fields — reusable for future page singletons\n  - Conditional form rendering based on CMS boolean field (rideRequestEnabled)\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M002/slices/S03/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M002/slices/S03/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M002/slices/S03/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:45:18.223Z\nblocker_discovered: false\n---\n\n# S03: Sundays / Plan a Visit\n\n**Plan a Visit page at /visit with CMS-editable hero, Sunday schedule cards, what-to-expect, transportation with embedded map, 6-question FAQ accordion, and ride request form with Turnstile captcha — all with hardcoded fallbacks**\n\n## What Happened\n\nThree tasks delivered the full Plan a Visit experience. T01 created the visitPage Sanity singleton schema with all required fields (heroImage, heroTitle, heroSubtitle, whatToExpect portable text, schedule array, transportation portable text, faqItems array, rideRequestEnabled boolean, language), registered it in the schema index with EN+ZH singleton document IDs, and added the VisitPage/ScheduleItem/FaqItem TypeScript interfaces plus getVisitPage() GROQ helper to the data layer.\n\nT02 built the /visit page itself with five content sections: Hero (reused component), Schedule (custom card grid with time + label + description — deliberately not reusing ServiceTimes since schedule items need a description field), What to Expect (portable text or fallback HTML), Getting Here (two-column layout with transportation text and embedded Google Maps iframe), and FAQ (6 visitor questions rendered via the existing Accordion component). CMS fetch uses try-catch with complete hardcoded fallbacks per K008.\n\nT03 added the RideRequestForm component following the ContactForm pattern — 6 fields (name, email, phone, pickup location, date, notes), client-side validation for required fields, Cloudflare Turnstile widget, and fetch-based submission to /api/ride-request. Integrated into the visit page as a conditional \"Need a Ride?\" section controlled by the rideRequestEnabled CMS field. No client: directives — all interactivity via inline script.\n\n## Verification\n\nAll slice-level verification checks pass: visitPage schema file exists, registered in schema index (schemaTypes, singletonTypes, singletonDocIds), VisitPage interface and getVisitPage() helper present in sanity.ts, visit.astro exists with Accordion and getVisitPage imports, RideRequestForm component exists with Turnstile integration, no client: directives on either file, npm run build exits 0 with /visit in generated output (8 pages total).\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nT02 switched two FAQ answer strings from single quotes to backtick template literals to handle curly apostrophes. No other deviations.\n\n## Known Limitations\n\n/api/ride-request endpoint does not exist yet — form submission will 404 with a user-friendly error message. This is consistent with the ContactForm pattern and will be wired up in a future slice (S06).\n\n## Follow-ups\n\nWire up /api/ride-request endpoint (same pattern as /api/contact) when building S06 Events, Give & Contact.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/visitPage.ts` — New visitPage singleton schema with hero, schedule, whatToExpect, transportation, FAQ, and rideRequest fields\n- `sanity/schemas/index.ts` — Registered visitPage in exports, imports, schemaTypes, singletonTypes, and singletonDocIds (EN+ZH)\n- `src/lib/sanity.ts` — Added VisitPage, ScheduleItem, FaqItem interfaces and getVisitPage() GROQ helper\n- `src/pages/visit.astro` — New Plan a Visit page with Hero, Schedule, What to Expect, Getting Here, FAQ, and Ride Request sections\n- `src/components/RideRequestForm.astro` — New ride request form with 6 fields, client-side validation, Turnstile captcha, fetch submission\n",
+      "full_uat_md": "# S03: Sundays / Plan a Visit — UAT\n\n**Milestone:** M002\n**Written:** 2026-04-01T13:45:18.224Z\n\n# S03: Sundays / Plan a Visit — UAT\n\n**Milestone:** M002\n**Written:** 2026-03-31\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Static page with hardcoded fallbacks — all content renders at build time without a running CMS\n\n## Preconditions\n\n- `npm run build` succeeds (confirms page generates)\n- `npm run preview` running on localhost:4321\n\n## Smoke Test\n\nNavigate to http://localhost:4321/visit — page loads with hero, schedule, what-to-expect, directions, FAQ accordion, and ride request form all visible.\n\n## Test Cases\n\n### 1. Hero Section Renders\n\n1. Navigate to /visit\n2. **Expected:** Hero displays with title \"Plan Your Visit\" and subtitle \"Everything you need to know for your first Sunday with us\"\n\n### 2. Schedule Section Shows Service Times\n\n1. Scroll to the schedule section\n2. **Expected:** Two schedule cards visible — \"Sunday Gathering\" at \"9:45 AM\" with worship description, and \"Sunday School\" at \"11:15 AM\" with classes description\n\n### 3. What to Expect Section\n\n1. Scroll to What to Expect section\n2. **Expected:** Content paragraphs about casual dress, welcoming atmosphere, and kids welcome are visible\n\n### 4. Getting Here / Transportation Section\n\n1. Scroll to Getting Here section\n2. **Expected:** Church address \"429 Mitchell Street, Ithaca, NY 14850\" is displayed\n3. **Expected:** Google Maps iframe is embedded and shows the church location\n4. **Expected:** Parking information is visible\n\n### 5. FAQ Accordion with 6 Questions\n\n1. Scroll to FAQ section\n2. **Expected:** 6 FAQ items visible as collapsed accordion entries\n3. Click on \"What should I wear?\"\n4. **Expected:** Answer expands with content about casual dress\n5. Click on \"Is there anything for my kids?\"\n6. **Expected:** Answer expands with content about children's programs\n7. Click on \"What should I wear?\" again\n8. **Expected:** Answer collapses\n\n### 6. Ride Request Form Fields\n\n1. Scroll to \"Need a Ride?\" section\n2. **Expected:** Form visible with fields: Name, Email, Phone, Pickup Location, Preferred Date, Notes\n3. **Expected:** Turnstile widget container is present\n4. **Expected:** Submit button reads \"Request a Ride\"\n\n### 7. Ride Request Form Validation\n\n1. Click \"Request a Ride\" without filling any fields\n2. **Expected:** Validation errors shown for Name, Email, and Pickup Location (required fields)\n3. Fill Name with \"A\" (1 char) and click submit\n4. **Expected:** Name validation error about minimum 2 characters\n5. Fill Name with \"Test User\", Email with \"invalid\", Pickup Location with \"abc\"\n6. **Expected:** Email validation error for invalid format, pickup location error for minimum 5 characters\n\n### 8. Ride Request Form Submission\n\n1. Fill valid data: Name \"Test User\", Email \"test@example.com\", Pickup Location \"Balch Hall, Cornell University\"\n2. Click \"Request a Ride\"\n3. **Expected:** Button text changes to \"Sending…\" during submission\n4. **Expected:** Error banner appears (since /api/ride-request endpoint doesn't exist yet) with a user-friendly message\n\n### 9. No Client Directives\n\n1. View page source\n2. **Expected:** No `client:` framework hydration directives — all interactivity is via inline scripts\n\n### 10. Responsive Layout\n\n1. Resize browser to mobile width (~375px)\n2. **Expected:** All sections stack vertically in single column, schedule cards stack, Getting Here map goes full width\n3. Resize to desktop width (~1200px)\n4. **Expected:** Getting Here section shows two-column layout (text + map side by side)\n\n## Edge Cases\n\n### CMS Unavailable\n\n1. Build with invalid/missing Sanity credentials\n2. **Expected:** Build succeeds — all sections render with hardcoded fallback content\n\n### Ride Request Disabled\n\n1. In Sanity, set visitPage rideRequestEnabled to false\n2. **Expected:** \"Need a Ride?\" section does not render on the page\n",
       "goal": "Plan a Visit page at /visit with FAQ accordion, transportation/directions, Sunday schedule, what-to-expect content, and ride request form — all CMS-editable via visitPage Sanity singleton with hardcoded fallbacks.",
       "success_criteria": "- visitPage Sanity singleton schema exists and is registered in schema index\n- getVisitPage() GROQ helper present in src/lib/sanity.ts\n- /visit page renders with Hero, schedule, what-to-expect, transportation, FAQ accordion, and ride request form sections\n- FAQ section uses existing Accordion component with hardcoded fallback Q&A items\n- Ride request form has client-side validation (name, email, pickup location required)\n- `npm run build` succeeds with /visit page in output\n- No `client:*` directives on any new component except form's Turnstile widget\n- All components use pure Astro with scoped CSS using only CSS custom properties from global.css",
       "proof_level": "contract — page builds and renders with fallback content, form validates client-side. No live CMS or API endpoint required.",
@@ -508,11 +508,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Browsable sermon archive from YouTube @FICCCenglish",
-      "success_criteria": "Listing with filter by series/speaker/date. Detail with YouTube embed, scripture, notes. Series view. Malachi series seeded.",
-      "proof_level": "Filter by series works. YouTube loads. LCP < 2.5s.",
-      "integration_closure": "Sermon/sermonSeries from Sanity. YouTube lazy-loaded.",
-      "observability_impact": "Sermon play events tracked",
+      "goal": "Sermon library with series-based filtering at /sermons and individual sermon detail pages at /sermons/[slug] with YouTube video embed",
+      "success_criteria": "- `/sermons` listing page renders with Hero, sermon card grid, and series filter\n- `/sermons/[slug]` detail pages render with sermon metadata and responsive YouTube embed\n- Series filter toggles sermon card visibility via inline script (no client:* directives)\n- YouTube embed uses `youtube-nocookie.com` and `loading=\"lazy\"`\n- `npm run build` succeeds with both new routes in output\n- Build succeeds with empty CMS (no sermons in Sanity) — fallback content shown on listing page, empty getStaticPaths returns zero detail pages\n- No `client:*` directives on any new Astro component",
+      "proof_level": "integration — pages compose data layer, components, and layout into navigable routes",
+      "integration_closure": "- Upstream consumed: `src/lib/sanity.ts` (getSermons, Sermon interface), `src/layouts/BaseLayout.astro`, `src/components/Hero.astro`, `src/components/Card.astro`, `sanity/schemas/documents/sermon.ts`\n- New wiring: slug field on sermon schema, getSermonBySlug() helper, SermonCard and YouTubeEmbed components, two new page routes\n- Remaining: S05 (Community), S06 (Events/Give/Contact), S07 (Resources) before milestone is complete",
+      "observability_impact": "None — static pages with CMS try-catch fallback pattern already established in S01",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2159,6 +2159,96 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S04",
+      "id": "T01",
+      "title": "Added slug field to sermon schema, updated Sermon interface/queries, and built SermonCard and YouTubeEmbed components",
+      "status": "complete",
+      "one_liner": "Added slug field to sermon schema, updated Sermon interface/queries, and built SermonCard and YouTubeEmbed components",
+      "narrative": "Extended the Sanity sermon schema with a required slug field (source: title), updated the Sermon TypeScript interface to include slug, modified getSermons() with an explicit projection including slug, and added getSermonBySlug() helper. Built SermonCard.astro (series badge, date, speaker, scripture, data-series attribute for filtering) and YouTubeEmbed.astro (responsive 16:9 iframe, youtube-nocookie.com, lazy loading). Both components follow project conventions — BEM scoped CSS with custom properties, no client: directives.",
+      "verification_result": "Ran composite verification: slug in schema, getSermonBySlug in sanity.ts, both component files exist, youtube-nocookie.com in embed, no client: directives in either component. All checks passed (exit 0). Additionally confirmed slug has source: 'title' option, data-series attribute present on SermonCard root, loading=lazy on iframe.",
+      "duration": "",
+      "completed_at": "2026-04-01T13:50:27.946Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "sanity/schemas/documents/sermon.ts",
+        "src/lib/sanity.ts",
+        "src/components/SermonCard.astro",
+        "src/components/YouTubeEmbed.astro"
+      ],
+      "key_decisions": [
+        "Used color-mix() for series badge background tint",
+        "SermonCard formats dates via toLocaleDateString for locale-aware display"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S04\nmilestone: M002\nkey_files:\n  - sanity/schemas/documents/sermon.ts\n  - src/lib/sanity.ts\n  - src/components/SermonCard.astro\n  - src/components/YouTubeEmbed.astro\nkey_decisions:\n  - Used color-mix() for series badge background tint\n  - SermonCard formats dates via toLocaleDateString for locale-aware display\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:50:27.947Z\nblocker_discovered: false\n---\n\n# T01: Added slug field to sermon schema, updated Sermon interface/queries, and built SermonCard and YouTubeEmbed components\n\n**Added slug field to sermon schema, updated Sermon interface/queries, and built SermonCard and YouTubeEmbed components**\n\n## What Happened\n\nExtended the Sanity sermon schema with a required slug field (source: title), updated the Sermon TypeScript interface to include slug, modified getSermons() with an explicit projection including slug, and added getSermonBySlug() helper. Built SermonCard.astro (series badge, date, speaker, scripture, data-series attribute for filtering) and YouTubeEmbed.astro (responsive 16:9 iframe, youtube-nocookie.com, lazy loading). Both components follow project conventions — BEM scoped CSS with custom properties, no client: directives.\n\n## Verification\n\nRan composite verification: slug in schema, getSermonBySlug in sanity.ts, both component files exist, youtube-nocookie.com in embed, no client: directives in either component. All checks passed (exit 0). Additionally confirmed slug has source: 'title' option, data-series attribute present on SermonCard root, loading=lazy on iframe.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `grep -q 'slug' sanity/schemas/documents/sermon.ts && grep -q 'getSermonBySlug' src/lib/sanity.ts && test -f src/components/SermonCard.astro && test -f src/components/YouTubeEmbed.astro && grep -q 'youtube-nocookie.com' src/components/YouTubeEmbed.astro && ! grep -q 'client:' src/components/SermonCard.astro && ! grep -q 'client:' src/components/YouTubeEmbed.astro` | 0 | ✅ pass | 200ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/documents/sermon.ts`\n- `src/lib/sanity.ts`\n- `src/components/SermonCard.astro`\n- `src/components/YouTubeEmbed.astro`\n",
+      "description": "Foundation task: extend the sermon schema with a slug field for SEO-friendly URLs, update the TypeScript interface and add a getSermonBySlug() GROQ helper, then build two reusable components (SermonCard.astro for the listing grid, YouTubeEmbed.astro for responsive video embeds).\n\n## Steps\n\n1. Add `slug` field to `sanity/schemas/documents/sermon.ts` — type `slug`, source `title`, required validation. Place it after the `title` field.\n2. Update `Sermon` interface in `src/lib/sanity.ts` — add `slug?: SanitySlug` field. Update the `getSermons()` GROQ query to include `slug` in the projection.\n3. Add `getSermonBySlug(slug: string, language?: Language)` helper to `src/lib/sanity.ts` — fetch a single sermon by `slug.current == $slug` with language filter.\n4. Create `src/components/SermonCard.astro` — accepts title, speaker, date, series, scripture, href props. Renders as a card with series badge, date, speaker, scripture reference, and links to the detail page. Pure Astro with scoped CSS using CSS custom properties only.\n5. Create `src/components/YouTubeEmbed.astro` — accepts videoId prop. Renders a responsive 16:9 iframe wrapper using `youtube-nocookie.com` domain, `loading=\"lazy\"`, and `allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"`. Pure Astro with scoped CSS.\n\n## Must-Haves\n\n- [ ] Sermon schema has slug field with `options: { source: 'title' }`\n- [ ] Sermon interface includes `slug?: SanitySlug`\n- [ ] getSermonBySlug() helper exists and filters by slug + language\n- [ ] SermonCard.astro renders title, speaker, date, series badge, scripture, links to detail page\n- [ ] SermonCard.astro includes `data-series` attribute on the root element for filter script\n- [ ] YouTubeEmbed.astro uses `youtube-nocookie.com` and `loading=\"lazy\"`\n- [ ] No `client:*` directives on either component",
+      "estimate": "45m",
+      "files": [
+        "sanity/schemas/documents/sermon.ts",
+        "src/lib/sanity.ts",
+        "src/components/SermonCard.astro",
+        "src/components/YouTubeEmbed.astro"
+      ],
+      "verify": "grep -q 'slug' sanity/schemas/documents/sermon.ts && grep -q 'getSermonBySlug' src/lib/sanity.ts && test -f src/components/SermonCard.astro && test -f src/components/YouTubeEmbed.astro && grep -q 'youtube-nocookie.com' src/components/YouTubeEmbed.astro && ! grep -q 'client:' src/components/SermonCard.astro && ! grep -q 'client:' src/components/YouTubeEmbed.astro",
+      "inputs": [
+        "`sanity/schemas/documents/sermon.ts` — existing sermon schema to extend with slug field",
+        "`src/lib/sanity.ts` — existing data layer with Sermon interface and getSermons() helper",
+        "`src/components/Card.astro` — reference for card styling patterns and CSS custom property usage",
+        "`src/components/Hero.astro` — reference for component structure conventions"
+      ],
+      "expected_output": [
+        "`sanity/schemas/documents/sermon.ts` — updated with slug field",
+        "`src/lib/sanity.ts` — updated Sermon interface with slug, updated getSermons projection, new getSermonBySlug() helper",
+        "`src/components/SermonCard.astro` — new sermon card component with data-series attribute",
+        "`src/components/YouTubeEmbed.astro` — new responsive YouTube embed component"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S04",
+      "id": "T02",
+      "title": "Build sermons listing page with series filter and sermon detail page with YouTube embed",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Build both user-facing sermon pages. The listing page at /sermons shows a Hero, a series filter bar, and a grid of SermonCard components. The detail page at /sermons/[slug] shows sermon metadata and a YouTubeEmbed. Both use BaseLayout, try-catch CMS fetching with hardcoded fallbacks, and pure Astro patterns.\n\n## Steps\n\n1. Create `src/pages/sermons/index.astro` — import BaseLayout, Hero, SermonCard. Fetch sermons via `getSermons()` wrapped in try-catch (empty array fallback). Extract distinct series values from fetched sermons. Render Hero with title 'Sermons' and a subtitle. Render a filter bar with 'All' button + one button per series. Render sermon cards in a responsive grid. Add an inline `<script>` that listens for filter button clicks and toggles `hidden` attribute on sermon cards based on `data-series` match. Show a 'No sermons available' message when the array is empty.\n2. Style the listing page — series filter buttons as pill-style toggles with active state, responsive grid (3 columns desktop, 2 tablet, 1 mobile), consistent spacing using CSS custom properties.\n3. Create `src/pages/sermons/[slug].astro` — implement `getStaticPaths()` that fetches all sermons and returns params with slug + full sermon as props. Import BaseLayout, Hero, YouTubeEmbed. Render Hero with sermon title. Show metadata block (speaker, date, scripture, series). Conditionally render YouTubeEmbed when videoId exists. Handle empty getStaticPaths gracefully (returns empty array when no sermons exist).\n4. Style the detail page — metadata in a clean layout, YouTube embed centered with max-width, back link to /sermons.\n5. Run `npm run build` to verify both pages build successfully and handle empty CMS state.\n\n## Must-Haves\n\n- [ ] /sermons/index.astro renders with Hero, filter bar, and sermon card grid\n- [ ] Series filter uses inline script toggling hidden attribute — no client:* directives\n- [ ] Filter has 'All' option that shows all sermons\n- [ ] /sermons/[slug].astro uses getStaticPaths() with sermon data as props\n- [ ] Detail page shows sermon metadata (title, speaker, date, scripture, series)\n- [ ] Detail page conditionally renders YouTubeEmbed when videoId is present\n- [ ] Both pages use BaseLayout and try-catch CMS fetch pattern\n- [ ] npm run build succeeds with empty CMS (zero sermons)\n- [ ] No client:* directives on either page",
+      "estimate": "1h",
+      "files": [
+        "src/pages/sermons/index.astro",
+        "src/pages/sermons/[slug].astro"
+      ],
+      "verify": "npm run build 2>&1 | tail -5 && test -f src/pages/sermons/index.astro && test -f 'src/pages/sermons/[slug].astro' && ! grep -q 'client:' src/pages/sermons/index.astro && ! grep -q 'client:' 'src/pages/sermons/[slug].astro'",
+      "inputs": [
+        "`src/lib/sanity.ts` — getSermons() and getSermonBySlug() helpers, Sermon interface with slug",
+        "`src/components/SermonCard.astro` — card component with data-series attribute for filter wiring",
+        "`src/components/YouTubeEmbed.astro` — responsive YouTube embed component",
+        "`src/components/Hero.astro` — hero banner component",
+        "`src/layouts/BaseLayout.astro` — page layout wrapper",
+        "`src/pages/index.astro` — reference for CMS try-catch fetch pattern and page structure"
+      ],
+      "expected_output": [
+        "`src/pages/sermons/index.astro` — sermon listing page with series filter and card grid",
+        "`src/pages/sermons/[slug].astro` — sermon detail page with metadata and YouTube embed"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -3751,6 +3841,17 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T13:43:35.244Z"
+    },
+    {
+      "id": 129,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M002",
+      "command": "grep -q 'slug' sanity/schemas/documents/sermon.ts && grep -q 'getSermonBySlug' src/lib/sanity.ts && test -f src/components/SermonCard.astro && test -f src/components/YouTubeEmbed.astro && grep -q 'youtube-nocookie.com' src/components/YouTubeEmbed.astro && ! grep -q 'client:' src/components/SermonCard.astro && ! grep -q 'client:' src/components/YouTubeEmbed.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 200,
+      "created_at": "2026-04-01T13:50:27.947Z"
     }
   ]
 }
