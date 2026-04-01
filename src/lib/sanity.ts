@@ -111,6 +111,42 @@ export interface Navigation {
   language: 'en' | 'zh';
 }
 
+export interface ServiceTime {
+  label: string;
+  time: string;
+}
+
+export interface Pillar {
+  title: string;
+  description?: string;
+}
+
+export interface NextStep {
+  title: string;
+  body?: string;
+  href?: string;
+  image?: SanityImage;
+}
+
+export interface MosaicImage extends SanityImage {
+  alt?: string;
+}
+
+export interface HomePage {
+  _id: string;
+  _type: 'homePage';
+  heroImage?: SanityImage;
+  heroTitle: string;
+  heroSubtitle?: string;
+  heroCtaText?: string;
+  heroCtaHref?: string;
+  serviceTimes?: ServiceTime[];
+  mosaicImages?: MosaicImage[];
+  pillars?: Pillar[];
+  nextSteps?: NextStep[];
+  language: 'en' | 'zh';
+}
+
 // ---------------------------------------------------------------------------
 // GROQ query helpers
 // ---------------------------------------------------------------------------
@@ -185,6 +221,59 @@ export async function getNavigation(
     `*[_type == "navigation" && language == $language][0]`,
     { language },
   );
+}
+
+/**
+ * Fetch the singleton home-page document for a language.
+ */
+export async function getHomePage(
+  language: Language = 'en',
+): Promise<HomePage | null> {
+  return client.fetch<HomePage | null>(
+    `*[_type == "homePage" && language == $language][0]`,
+    { language },
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Image helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Resolve a Sanity image asset reference to a CDN URL.
+ *
+ * Asset refs look like `image-<id>-<WxH>-<ext>`. We strip the `image-`
+ * prefix and replace the last `-` (before the extension) with `.` to get
+ * the filename portion used in the CDN path.
+ *
+ * Example ref: `image-abc123-800x600-jpg`
+ * Result:      `https://cdn.sanity.io/images/{projectId}/{dataset}/abc123-800x600.jpg`
+ */
+export function urlForImage(
+  image: SanityImage | undefined | null,
+  options?: { width?: number; format?: string },
+): string {
+  if (!image?.asset?._ref) return '';
+
+  const ref = image.asset._ref;
+  // Strip leading "image-" and split on the last "-" to get id and extension
+  const withoutPrefix = ref.replace(/^image-/, '');
+  const lastDash = withoutPrefix.lastIndexOf('-');
+  if (lastDash === -1) return '';
+
+  const idAndDimensions = withoutPrefix.slice(0, lastDash);
+  const ext = withoutPrefix.slice(lastDash + 1);
+  const filename = `${idAndDimensions}.${ext}`;
+
+  let url = `https://cdn.sanity.io/images/${projectId}/${dataset}/${filename}`;
+
+  const params = new URLSearchParams();
+  if (options?.width) params.set('w', String(options.width));
+  if (options?.format) params.set('fm', options.format);
+  const qs = params.toString();
+  if (qs) url += `?${qs}`;
+
+  return url;
 }
 
 // ---------------------------------------------------------------------------

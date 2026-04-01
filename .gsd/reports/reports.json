@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "projectName": "ficcc",
+  "projectPath": "/Users/dillonlui/Documents/Code/ficcc",
+  "gsdVersion": "2.50.0",
+  "entries": [
+    {
+      "filename": "M001-2026-04-01T03-52-46.html",
+      "generatedAt": "2026-04-01T03:52:46.627Z",
+      "milestoneId": "M001",
+      "milestoneTitle": "Foundation & Design System",
+      "label": "M001: Foundation & Design System",
+      "kind": "milestone",
+      "totalCost": 23.377527750000002,
+      "totalTokens": 28090394,
+      "totalDuration": 8124916,
+      "doneSlices": 7,
+      "totalSlices": 25,
+      "doneMilestones": 1,
+      "totalMilestones": 4,
+      "phase": "planning"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T03:52:19.736Z",
+  "exported_at": "2026-04-01T13:13:26.691Z",
   "milestones": [
     {
       "id": "M001",
@@ -442,11 +442,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Design proof homepage answering Who/When/What-next in 10 seconds",
-      "success_criteria": "Hero with church photo. Service time block above fold on mobile. Photo mosaic. Mission pillars. Featured content strip. Next-steps cards. Footer.",
-      "proof_level": "Lighthouse >= 90. Service time above fold on mobile.",
-      "integration_closure": "Pulls dynamic content from Sanity",
-      "observability_impact": "Lighthouse scores on deploy",
+      "goal": "Homepage with hero, service times, photo mosaic, pillars, featured content, and next-steps cards — all CMS-editable via Sanity homePage singleton, with hardcoded fallbacks for empty CMS state.",
+      "success_criteria": "## Must-Haves\n\n- `homePage` Sanity singleton schema with hero, service times, pillars, and next-steps fields\n- `getHomePage()` GROQ helper and `HomePage` TypeScript interface in `src/lib/sanity.ts`\n- `urlForImage()` helper for resolving Sanity image references to CDN URLs\n- ServiceTimes, Pillars, and NextSteps Astro components using only CSS custom properties\n- Full homepage composition in `index.astro` using Hero, ServiceTimes, ImageMosaic, Pillars, Card, NextSteps\n- Graceful fallback content when CMS is empty — page renders without Sanity data\n- No client-side JS — pure Astro components with scoped CSS only\n- `npm run build` succeeds with and without Sanity connection\n\n## Proof Level\n\n- This slice proves: integration\n- Real runtime required: yes (dev server for visual check)\n- Human/UAT required: no\n\n## Verification\n\n- `npm run build` — static build succeeds without errors\n- `test -f sanity/schemas/singletons/homePage.ts` — schema file exists\n- `grep -q \"getHomePage\" src/lib/sanity.ts` — GROQ helper registered\n- `grep -q \"ServiceTimes\" src/pages/index.astro && grep -q \"Pillars\" src/pages/index.astro && grep -q \"NextSteps\" src/pages/index.astro` — all sections composed\n- `! grep -q 'client:' src/components/ServiceTimes.astro && ! grep -q 'client:' src/components/Pillars.astro && ! grep -q 'client:' src/components/NextSteps.astro` — no client-side JS directives\n- Visual verification at 3 breakpoints (375px, 768px, 1280px) via dev server\n\n## Integration Closure\n\n- Upstream surfaces consumed: `src/components/Hero.astro`, `src/components/Card.astro`, `src/components/ImageMosaic.astro`, `src/lib/sanity.ts` GROQ helpers, `src/layouts/BaseLayout.astro`, `src/styles/global.css` design tokens\n- New wiring introduced in this slice: `homePage` Sanity singleton → `getHomePage()` → `index.astro` page composition with 3 new section components\n- What remains before the milestone is truly usable end-to-end: all other English Ministry pages (About, Sundays, Sermons, Community, Events/Give/Contact, Resources)",
+      "proof_level": "integration",
+      "integration_closure": "Upstream: Hero.astro, Card.astro, ImageMosaic.astro, sanity.ts, BaseLayout.astro, global.css tokens. New wiring: homePage singleton → getHomePage() → index.astro composition. Remaining: all other EM pages.",
+      "observability_impact": "Build-time: Astro build logs surface Sanity fetch errors. Dev server console shows missing CMS data warnings. No runtime observability needed — static site.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -1787,6 +1787,101 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S01",
+      "id": "T01",
+      "title": "Added homePage Sanity singleton schema with hero/service-times/mosaic/pillars/next-steps fields, registered in schema index, and added getHomePage() + urlForImage() helpers",
+      "status": "complete",
+      "one_liner": "Added homePage Sanity singleton schema with hero/service-times/mosaic/pillars/next-steps fields, registered in schema index, and added getHomePage() + urlForImage() helpers",
+      "narrative": "Created the homePage singleton schema following the siteSettings pattern, registered it in the schema index (exports, imports, schemaTypes, singletonTypes, singletonDocIds for EN/ZH), and added TypeScript interfaces plus getHomePage() and urlForImage() helpers to the data layer.",
+      "verification_result": "All five checks passed: schema file exists, homePage registered in index, getHomePage present, urlForImage present, npm run build succeeds (4 pages, 7.31s).",
+      "duration": "",
+      "completed_at": "2026-04-01T13:13:26.674Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "sanity/schemas/singletons/homePage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts"
+      ],
+      "key_decisions": [
+        "urlForImage accepts optional width/format params for responsive image sizing",
+        "MosaicImage extends SanityImage with alt field matching schema inline image+alt pattern"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S01\nmilestone: M002\nkey_files:\n  - sanity/schemas/singletons/homePage.ts\n  - sanity/schemas/index.ts\n  - src/lib/sanity.ts\nkey_decisions:\n  - urlForImage accepts optional width/format params for responsive image sizing\n  - MosaicImage extends SanityImage with alt field matching schema inline image+alt pattern\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:13:26.677Z\nblocker_discovered: false\n---\n\n# T01: Added homePage Sanity singleton schema with hero/service-times/mosaic/pillars/next-steps fields, registered in schema index, and added getHomePage() + urlForImage() helpers\n\n**Added homePage Sanity singleton schema with hero/service-times/mosaic/pillars/next-steps fields, registered in schema index, and added getHomePage() + urlForImage() helpers**\n\n## What Happened\n\nCreated the homePage singleton schema following the siteSettings pattern, registered it in the schema index (exports, imports, schemaTypes, singletonTypes, singletonDocIds for EN/ZH), and added TypeScript interfaces plus getHomePage() and urlForImage() helpers to the data layer.\n\n## Verification\n\nAll five checks passed: schema file exists, homePage registered in index, getHomePage present, urlForImage present, npm run build succeeds (4 pages, 7.31s).\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f sanity/schemas/singletons/homePage.ts` | 0 | ✅ pass | 100ms |\n| 2 | `grep -q 'homePage' sanity/schemas/index.ts` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q 'getHomePage' src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n| 4 | `grep -q 'urlForImage' src/lib/sanity.ts` | 0 | ✅ pass | 100ms |\n| 5 | `npm run build` | 0 | ✅ pass | 8400ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `sanity/schemas/singletons/homePage.ts`\n- `sanity/schemas/index.ts`\n- `src/lib/sanity.ts`\n",
+      "description": "## Description\n\nCreate the `homePage` Sanity singleton schema that defines the CMS-editable structure for the homepage content. Register it in the schema index, add it to singleton types and document IDs, and add a typed `getHomePage()` GROQ helper plus a `urlForImage()` helper for resolving Sanity image references to CDN URLs.\n\nThe schema follows the established `siteSettings` singleton pattern: per-language documents with IDs like `homePage-en`. Fields cover the four CMS-editable sections: hero (image, title, subtitle, CTA), service times (array of label+time pairs), pillars (array of title+description), and next-steps cards (array of title+body+href+image).\n\n## Steps\n\n1. Create `sanity/schemas/singletons/homePage.ts` with `defineType`/`defineField` following the `siteSettings.ts` pattern. Fields:\n   - `heroImage` (type: `image`, hotspot enabled)\n   - `heroTitle` (string, required)\n   - `heroSubtitle` (string)\n   - `heroCtaText` (string)\n   - `heroCtaHref` (string)\n   - `serviceTimes` (array of objects with `label` string + `time` string)\n   - `pillars` (array of objects with `title` string + `description` text)\n   - `nextSteps` (array of objects with `title` string + `body` string + `href` string + `image` type:image)\n   - `language` (string, options list: en/zh, required, initialValue: 'en')\n   - `mosaicImages` (array of images with alt text for the photo mosaic section)\n\n2. Register in `sanity/schemas/index.ts`:\n   - Add named export: `export { homePage } from './singletons/homePage';`\n   - Add import and include in `schemaTypes` array\n   - Add `'homePage'` to `singletonTypes` Set\n   - Add entries to `singletonDocIds`: `{ id: 'homePage-en', type: 'homePage', title: 'Home Page (EN)' }` and ZH variant\n\n3. Add `HomePage` interface to `src/lib/sanity.ts` matching the schema shape. Include `SanityImage` type for image fields.\n\n4. Add `getHomePage(language)` GROQ helper following the `getSiteSettings` pattern.\n\n5. Add `urlForImage(image: SanityImage): string` helper that constructs a Sanity CDN URL from an image asset reference. Pattern: `https://cdn.sanity.io/images/${projectId}/${dataset}/${assetId}` where assetId is extracted from `image.asset._ref` by stripping `image-` prefix and replacing the last `-` with `.`. Accept optional width/format query params.\n\n## Must-Haves\n\n- [ ] homePage schema file exists with all fields defined\n- [ ] Schema registered in index.ts with singleton types and doc IDs\n- [ ] HomePage TypeScript interface matches schema shape\n- [ ] getHomePage() GROQ helper works for both 'en' and 'zh'\n- [ ] urlForImage() correctly parses Sanity image asset refs to CDN URLs\n\n## Verification\n\n- `test -f sanity/schemas/singletons/homePage.ts`\n- `grep -q 'homePage' sanity/schemas/index.ts`\n- `grep -q 'getHomePage' src/lib/sanity.ts`\n- `grep -q 'urlForImage' src/lib/sanity.ts`\n- `npm run build` succeeds (schema changes don't break the build)",
+      "estimate": "30m",
+      "files": [
+        "sanity/schemas/singletons/homePage.ts",
+        "sanity/schemas/index.ts",
+        "src/lib/sanity.ts"
+      ],
+      "verify": "test -f sanity/schemas/singletons/homePage.ts && grep -q 'homePage' sanity/schemas/index.ts && grep -q 'getHomePage' src/lib/sanity.ts && grep -q 'urlForImage' src/lib/sanity.ts && npm run build",
+      "inputs": [
+        "`sanity/schemas/singletons/siteSettings.ts` — pattern for singleton schema definition",
+        "`sanity/schemas/index.ts` — register new schema type, singletons, and doc IDs",
+        "`src/lib/sanity.ts` — add HomePage interface, getHomePage() helper, urlForImage() helper"
+      ],
+      "expected_output": [
+        "`sanity/schemas/singletons/homePage.ts` — new homePage singleton schema",
+        "`sanity/schemas/index.ts` — updated with homePage registration",
+        "`src/lib/sanity.ts` — updated with HomePage interface, getHomePage(), and urlForImage()"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M002",
+      "slice_id": "S01",
+      "id": "T02",
+      "title": "Build homepage section components and compose full page",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "## Description\n\nBuild the three new section-level Astro components (ServiceTimes, Pillars, NextSteps), create placeholder images for development, and compose the full homepage in `index.astro` by wiring all sections together with data from `getHomePage()` and existing GROQ helpers. Every section must render with hardcoded fallback content when Sanity returns null.\n\nAll components must be pure Astro with scoped CSS using only CSS custom properties from `global.css` (D010, K003). No `client:*` directives.\n\n## Steps\n\n1. Create placeholder images in `public/images/` for development:\n   - `hero-placeholder.jpg` — a solid warm-toned placeholder (can generate via ImageMagick or use a small SVG)\n   - `placeholder-1.jpg` through `placeholder-6.jpg` — for mosaic and card images\n   - Keep them small (< 50KB each) since they're dev-only placeholders\n\n2. Build `src/components/ServiceTimes.astro`:\n   - Props: `times: { label: string; time: string }[]`\n   - Layout: horizontal banner with warm background (`--color-stone`), centered content\n   - Each time entry shows label (e.g. 'Sunday Gathering') and time (e.g. '9:45 AM')\n   - Responsive: stack vertically on mobile, row on desktop\n   - Use `--font-heading` for times, `--font-body` for labels\n\n3. Build `src/components/Pillars.astro`:\n   - Props: `pillars: { title: string; description: string }[]`\n   - Layout: 3-column grid on desktop, single column on mobile\n   - Each pillar: heading + paragraph in a card-like container\n   - Section heading: 'Who We Are' or similar\n   - Use `--space-16` vertical padding, `--color-bg` background\n\n4. Build `src/components/NextSteps.astro`:\n   - Props: `steps: { title: string; body: string; href: string; image?: string }[]`\n   - Layout: grid of cards using existing `Card.astro` component\n   - Section heading: 'Next Steps' or similar\n   - 3-column on desktop, 1-column on mobile\n   - Each card links to its `href`\n\n5. Compose `src/pages/index.astro`:\n   - Import and call `getHomePage('en')`, `getSermons('en')`, `getEvents('en')` at top of frontmatter\n   - Define fallback data for when CMS returns null (hardcoded hero title, service times, pillars, next-steps)\n   - Section order: Hero → ServiceTimes → ImageMosaic (placeholder images) → Pillars → Featured Content (latest sermon + next event as Cards) → NextSteps\n   - Pass CMS data to components when available, fallbacks otherwise\n   - Use `urlForImage()` for any Sanity image fields\n   - Wrap in `BaseLayout` with proper title and description\n   - Use proper section landmarks with `<section>` elements and heading hierarchy\n\n6. Verify build and visual rendering:\n   - Run `npm run build` — must succeed\n   - Start dev server, check homepage renders all sections\n   - Check 3 breakpoints: 375px (mobile), 768px (tablet), 1280px (desktop)\n\n## Must-Haves\n\n- [ ] ServiceTimes component renders service schedule in horizontal/vertical layout\n- [ ] Pillars component renders church values in responsive grid\n- [ ] NextSteps component renders CTA cards using Card.astro\n- [ ] index.astro composes all sections in correct order\n- [ ] All sections have hardcoded fallback content for empty CMS state\n- [ ] No client-side JS — no `client:*` directives in any new component\n- [ ] All styles use CSS custom properties from global.css\n- [ ] `npm run build` succeeds\n- [ ] Page renders correctly at mobile, tablet, and desktop breakpoints\n\n## Verification\n\n- `npm run build` succeeds without errors\n- `grep -q 'ServiceTimes' src/pages/index.astro && grep -q 'Pillars' src/pages/index.astro && grep -q 'NextSteps' src/pages/index.astro`\n- `! grep -q 'client:' src/components/ServiceTimes.astro && ! grep -q 'client:' src/components/Pillars.astro && ! grep -q 'client:' src/components/NextSteps.astro`\n- Visual verification via dev server at 3 breakpoints",
+      "estimate": "1h30m",
+      "files": [
+        "src/pages/index.astro",
+        "src/components/ServiceTimes.astro",
+        "src/components/Pillars.astro",
+        "src/components/NextSteps.astro",
+        "public/images/hero-placeholder.jpg",
+        "public/images/placeholder-1.jpg"
+      ],
+      "verify": "npm run build && grep -q 'ServiceTimes' src/pages/index.astro && grep -q 'Pillars' src/pages/index.astro && grep -q 'NextSteps' src/pages/index.astro && ! grep -q 'client:' src/components/ServiceTimes.astro && ! grep -q 'client:' src/components/Pillars.astro && ! grep -q 'client:' src/components/NextSteps.astro",
+      "inputs": [
+        "`sanity/schemas/singletons/homePage.ts` — schema shape defines component props",
+        "`src/lib/sanity.ts` — getHomePage(), getSermons(), getEvents(), urlForImage()",
+        "`src/components/Hero.astro` — existing hero component (backgroundImage, title, subtitle, ctaText, ctaHref props)",
+        "`src/components/Card.astro` — existing card component (title, body, image, href props)",
+        "`src/components/ImageMosaic.astro` — existing mosaic component (images[{src,alt}] props)",
+        "`src/layouts/BaseLayout.astro` — page wrapper with Header/Footer/SEO",
+        "`src/styles/global.css` — CSS custom properties for all styling"
+      ],
+      "expected_output": [
+        "`src/components/ServiceTimes.astro` — new service times banner component",
+        "`src/components/Pillars.astro` — new church pillars/values grid component",
+        "`src/components/NextSteps.astro` — new CTA cards section component",
+        "`src/pages/index.astro` — full homepage composition with all sections",
+        "`public/images/hero-placeholder.jpg` — placeholder hero image for development",
+        "`public/images/placeholder-1.jpg` — placeholder mosaic/card images for development"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -3005,6 +3100,61 @@
       "verdict": "✅ pass",
       "duration_ms": 10,
       "created_at": "2026-04-01T03:46:23.107Z"
+    },
+    {
+      "id": 95,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M002",
+      "command": "test -f sanity/schemas/singletons/homePage.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:13:26.674Z"
+    },
+    {
+      "id": 96,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M002",
+      "command": "grep -q 'homePage' sanity/schemas/index.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:13:26.675Z"
+    },
+    {
+      "id": 97,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M002",
+      "command": "grep -q 'getHomePage' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:13:26.675Z"
+    },
+    {
+      "id": 98,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M002",
+      "command": "grep -q 'urlForImage' src/lib/sanity.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:13:26.675Z"
+    },
+    {
+      "id": 99,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8400,
+      "created_at": "2026-04-01T13:13:26.675Z"
     }
   ]
 }
