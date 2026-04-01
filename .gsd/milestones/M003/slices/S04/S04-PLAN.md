@@ -36,7 +36,7 @@
   - Estimate: 30m
   - Files: src/lib/navigation.ts, src/lib/navigation.test.ts, package.json
   - Verify: npx vitest run --reporter=verbose
-- [ ] **T02: Wire alternate URL into Header toggle, SEO hreflang, and BaseLayout** — Thread the computed alternate URL from BaseLayout into Header (toggle href) and SEO (hreflang tags), add cookie-set script, and verify with build output.
+- [x] **T02: Wired getAlternateUrl into BaseLayout → Header toggle href and SEO hreflang tags, with lang-pref cookie set on toggle click** — Thread the computed alternate URL from BaseLayout into Header (toggle href) and SEO (hreflang tags), add cookie-set script, and verify with build output.
 
 ## Steps
 

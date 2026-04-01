@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T17:12:46.631Z",
+  "exported_at": "2026-04-01T17:15:09.238Z",
   "milestones": [
     {
       "id": "M001",
@@ -2985,19 +2985,25 @@
       "milestone_id": "M003",
       "slice_id": "S04",
       "id": "T02",
-      "title": "Wire alternate URL into Header toggle, SEO hreflang, and BaseLayout",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Wired getAlternateUrl into BaseLayout → Header toggle href and SEO hreflang tags, with lang-pref cookie set on toggle click",
+      "status": "complete",
+      "one_liner": "Wired getAlternateUrl into BaseLayout → Header toggle href and SEO hreflang tags, with lang-pref cookie set on toggle click",
+      "narrative": "Updated BaseLayout to import getAlternateUrl, compute alternate URLs, and thread them to Header (langToggleHref prop) and SEO (alternateUrl prop with absolute URL). Header falls back to previous hardcoded logic if prop not passed. SEO emits hreflang en/zh/x-default link tags when alternateUrl is provided. Added inline script that sets lang-pref cookie to the target language on .lang-toggle click.",
+      "verification_result": "npm run build succeeded. 20/20 vitest tests pass. All 6 verification greps pass: EN about→/zh/about, ZH about→/about, visit→/zh/sundays (asymmetric), hreflang tags present on both EN and ZH pages, cookie script present.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T17:15:09.217Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Cookie script stores target language (from toggle href) instead of document.documentElement.lang — semantically correct since user is navigating to their preferred language.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/layouts/BaseLayout.astro",
+        "src/components/Header.astro",
+        "src/components/SEO.astro"
+      ],
+      "key_decisions": [
+        "Cookie stores target language (derived from toggle href) rather than current language"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S04\nmilestone: M003\nkey_files:\n  - src/layouts/BaseLayout.astro\n  - src/components/Header.astro\n  - src/components/SEO.astro\nkey_decisions:\n  - Cookie stores target language (derived from toggle href) rather than current language\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:15:09.218Z\nblocker_discovered: false\n---\n\n# T02: Wired getAlternateUrl into BaseLayout → Header toggle href and SEO hreflang tags, with lang-pref cookie set on toggle click\n\n**Wired getAlternateUrl into BaseLayout → Header toggle href and SEO hreflang tags, with lang-pref cookie set on toggle click**\n\n## What Happened\n\nUpdated BaseLayout to import getAlternateUrl, compute alternate URLs, and thread them to Header (langToggleHref prop) and SEO (alternateUrl prop with absolute URL). Header falls back to previous hardcoded logic if prop not passed. SEO emits hreflang en/zh/x-default link tags when alternateUrl is provided. Added inline script that sets lang-pref cookie to the target language on .lang-toggle click.\n\n## Verification\n\nnpm run build succeeded. 20/20 vitest tests pass. All 6 verification greps pass: EN about→/zh/about, ZH about→/about, visit→/zh/sundays (asymmetric), hreflang tags present on both EN and ZH pages, cookie script present.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8900ms |\n| 2 | `npx vitest run` | 0 | ✅ pass | 2700ms |\n| 3 | `grep -q href=/zh/about dist/client/about/index.html` | 0 | ✅ pass | 100ms |\n| 4 | `grep -q href=/about dist/client/zh/about/index.html` | 0 | ✅ pass | 100ms |\n| 5 | `grep -q href=/zh/sundays dist/client/visit/index.html` | 0 | ✅ pass | 100ms |\n| 6 | `grep -q hreflang=zh dist/client/about/index.html` | 0 | ✅ pass | 100ms |\n| 7 | `grep -q hreflang=en dist/client/zh/about/index.html` | 0 | ✅ pass | 100ms |\n| 8 | `grep -q lang-pref dist/client/about/index.html` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nCookie script stores target language (from toggle href) instead of document.documentElement.lang — semantically correct since user is navigating to their preferred language.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/layouts/BaseLayout.astro`\n- `src/components/Header.astro`\n- `src/components/SEO.astro`\n",
       "description": "Thread the computed alternate URL from BaseLayout into Header (toggle href) and SEO (hreflang tags), add cookie-set script, and verify with build output.\n\n## Steps\n\n1. Update `src/layouts/BaseLayout.astro`:\n   - Import `getAlternateUrl` from `../lib/navigation`\n   - Compute `const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as 'en' | 'zh');`\n   - Compute absolute alternate URL: `const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.org').href;`\n   - Pass `alternateUrl` to Header: `<Header lang={lang} langToggleHref={alternateUrl} />`\n   - Pass `alternateUrl` and `lang` to SEO: `<SEO ... alternateUrl={absoluteAlternateUrl} />`\n   - Add a small inline `<script>` that sets `document.cookie = 'lang-pref=' + document.documentElement.lang + ';path=/;max-age=31536000;SameSite=Lax'` on click of `.lang-toggle` link\n2. Update `src/components/Header.astro`:\n   - Add `langToggleHref?: string` to Props interface\n   - Replace `const langToggleHref = lang === 'zh' ? '/' : '/zh';` with `const langToggleHref = Astro.props.langToggleHref ?? (lang === 'zh' ? '/' : '/zh');` (fallback preserves existing behavior if prop not passed)\n3. Update `src/components/SEO.astro`:\n   - Add `alternateUrl?: string` to Props interface\n   - When `alternateUrl` is provided, emit two `<link rel=\"alternate\">` tags:\n     - `<link rel=\"alternate\" hreflang=\"en\" href={lang === 'en' ? canonical : alternateUrl} />`\n     - `<link rel=\"alternate\" hreflang=\"zh\" href={lang === 'zh' ? canonical : alternateUrl} />`\n     - Also emit `<link rel=\"alternate\" hreflang=\"x-default\" href={lang === 'en' ? canonical : alternateUrl} />` (EN as default)\n4. Run `npm run build` and verify:\n   - `grep -q 'href=\"/zh/about\"' dist/client/about/index.html` (EN about toggle → ZH about)\n   - `grep -q 'href=\"/about\"' dist/client/zh/about/index.html` (ZH about toggle → EN about)\n   - `grep -q 'href=\"/zh/sundays\"' dist/client/visit/index.html` (asymmetric mapping)\n   - `grep -q 'hreflang=\"zh\"' dist/client/about/index.html` (hreflang present)\n   - `grep -q 'hreflang=\"en\"' dist/client/zh/about/index.html` (hreflang present)\n   - `grep -q 'lang-pref' dist/client/about/index.html` (cookie script present)\n5. Run `npx vitest run` to confirm unit tests still pass\n\n## Must-Haves\n\n- [ ] Header toggle uses computed alternate URL from BaseLayout\n- [ ] SEO emits hreflang alternate tags with absolute URLs\n- [ ] BaseLayout computes and threads alternateUrl to both components\n- [ ] Cookie script sets `lang-pref` on toggle click\n- [ ] `npm run build` succeeds\n- [ ] All verification greps pass on built output",
       "estimate": "45m",
       "files": [
@@ -5186,6 +5192,94 @@
       "verdict": "✅ pass",
       "duration_ms": 95,
       "created_at": "2026-04-01T17:12:46.612Z"
+    },
+    {
+      "id": 179,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8900,
+      "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 180,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "npx vitest run",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 2700,
+      "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 181,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "grep -q href=/zh/about dist/client/about/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 182,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "grep -q href=/about dist/client/zh/about/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 183,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "grep -q href=/zh/sundays dist/client/visit/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 184,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "grep -q hreflang=zh dist/client/about/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 185,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "grep -q hreflang=en dist/client/zh/about/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:15:09.217Z"
+    },
+    {
+      "id": 186,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "grep -q lang-pref dist/client/about/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T17:15:09.217Z"
     }
   ]
 }

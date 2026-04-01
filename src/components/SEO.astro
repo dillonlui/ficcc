@@ -7,6 +7,7 @@ interface Props {
   ogType?: string;
   lang?: string;
   jsonLd?: Record<string, unknown>;
+  alternateUrl?: string;
 }
 
 const {
@@ -17,6 +18,7 @@ const {
   ogType = 'website',
   lang = 'en',
   jsonLd,
+  alternateUrl,
 } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL('https://ficcc.org');
@@ -43,6 +45,14 @@ const structuredData = jsonLd ?? defaultJsonLd;
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
+
+{alternateUrl && (
+  <>
+    <link rel="alternate" hreflang="en" href={lang === 'en' ? canonical : alternateUrl} />
+    <link rel="alternate" hreflang="zh" href={lang === 'zh' ? canonical : alternateUrl} />
+    <link rel="alternate" hreflang="x-default" href={lang === 'en' ? canonical : alternateUrl} />
+  </>
+)}
 
 <!-- Open Graph -->
 <meta property="og:title" content={title} />
