@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:26:55.056Z",
+  "exported_at": "2026-04-01T13:29:05.422Z",
   "milestones": [
     {
       "id": "M001",
@@ -1946,19 +1946,26 @@
       "milestone_id": "M002",
       "slice_id": "S02",
       "id": "T02",
-      "title": "Build About (Who We Are) and Beliefs pages with Accordion HTML support",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created /about and /about/beliefs pages with CMS-editable content and modified Accordion to render HTML via set:html",
+      "status": "complete",
+      "one_liner": "Created /about and /about/beliefs pages with CMS-editable content and modified Accordion to render HTML via set:html",
+      "narrative": "Modified Accordion.astro to render item.content through set:html on a div instead of text interpolation in a p tag. Updated CSS with :global() selectors for rich HTML content. Created /about page with responsive two-column layout (text + optional CMS image) and /about/beliefs page with intro text and 8-belief accordion. Both pages fetch from getAboutPage() with try-catch and realistic hardcoded fallbacks. Zero client:* directives.",
+      "verification_result": "Pre-checks pass: both files exist, set:html in Accordion, no client: directives. npm run build succeeds — both /about/index.html and /about/beliefs/index.html generated.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T13:29:05.407Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/Accordion.astro",
+        "src/pages/about/index.astro",
+        "src/pages/about/beliefs.astro"
+      ],
+      "key_decisions": [
+        "Accordion uses set:html on a div — non-breaking for plain-text consumers while enabling rich HTML",
+        "Fallback beliefs use 8 standard evangelical doctrinal statements"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S02\nmilestone: M002\nkey_files:\n  - src/components/Accordion.astro\n  - src/pages/about/index.astro\n  - src/pages/about/beliefs.astro\nkey_decisions:\n  - Accordion uses set:html on a div — non-breaking for plain-text consumers while enabling rich HTML\n  - Fallback beliefs use 8 standard evangelical doctrinal statements\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:29:05.407Z\nblocker_discovered: false\n---\n\n# T02: Created /about and /about/beliefs pages with CMS-editable content and modified Accordion to render HTML via set:html\n\n**Created /about and /about/beliefs pages with CMS-editable content and modified Accordion to render HTML via set:html**\n\n## What Happened\n\nModified Accordion.astro to render item.content through set:html on a div instead of text interpolation in a p tag. Updated CSS with :global() selectors for rich HTML content. Created /about page with responsive two-column layout (text + optional CMS image) and /about/beliefs page with intro text and 8-belief accordion. Both pages fetch from getAboutPage() with try-catch and realistic hardcoded fallbacks. Zero client:* directives.\n\n## Verification\n\nPre-checks pass: both files exist, set:html in Accordion, no client: directives. npm run build succeeds — both /about/index.html and /about/beliefs/index.html generated.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f src/pages/about/index.astro && test -f src/pages/about/beliefs.astro && grep -q 'set:html' src/components/Accordion.astro && ! grep -rq 'client:' src/pages/about/index.astro src/pages/about/beliefs.astro` | 0 | ✅ pass | 10300ms |\n| 2 | `npm run build` | 0 | ✅ pass | 7500ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/Accordion.astro`\n- `src/pages/about/index.astro`\n- `src/pages/about/beliefs.astro`\n",
       "description": "Create the `/about` and `/about/beliefs` pages. Modify the Accordion component to accept HTML content via `set:html`. Both pages fetch from the `aboutPage` singleton via `getAboutPage()` with try-catch and hardcoded fallbacks.\n\n## Steps\n\n1. Modify `src/components/Accordion.astro`:\n   - Change the content rendering from `<p>{item.content}</p>` to `<div class=\"accordion__content-inner\"><Fragment set:html={item.content} /></div>`\n   - This is non-breaking: plain text strings render identically, HTML strings render as HTML\n   - Update the `.accordion__content p` styles to `.accordion__content` styles that work for both plain text and rich HTML\n2. Create `src/pages/about/index.astro` — Who We Are page:\n   - Import BaseLayout, use `getAboutPage()` wrapped in try-catch\n   - Hardcoded fallback with real FICCC content (church history/mission narrative)\n   - Render heading, body text (via `portableTextToHtml` or fallback), optional image\n   - Use `urlForImage()` for any CMS images\n   - Pure Astro with scoped CSS, responsive layout\n3. Create `src/pages/about/beliefs.astro` — Beliefs page:\n   - Import BaseLayout, Accordion, use `getAboutPage()` wrapped in try-catch\n   - Hardcoded fallback beliefs array with real doctrinal statements (e.g., Scripture, God, Salvation, Church — use common evangelical statement of faith content)\n   - Convert each belief's Portable Text content to HTML via `portableTextToHtml()`, or use fallback HTML strings\n   - Pass items to Accordion component\n   - Page intro text above the accordion\n4. Verify both pages build and render\n\n## Must-Haves\n\n- [ ] Accordion accepts HTML content without breaking existing usage\n- [ ] /about page renders Who We Are narrative with heading, body, optional image\n- [ ] /about/beliefs page renders beliefs accordion with rich-text content\n- [ ] Both pages use try-catch CMS fetch with realistic hardcoded fallbacks\n- [ ] No client:* directives\n- [ ] npm run build succeeds",
       "estimate": "45m",
       "files": [
@@ -3357,6 +3364,28 @@
       "verdict": "✅ pass",
       "duration_ms": 7500,
       "created_at": "2026-04-01T13:26:55.040Z"
+    },
+    {
+      "id": 106,
+      "task_id": "T02",
+      "slice_id": "S02",
+      "milestone_id": "M002",
+      "command": "test -f src/pages/about/index.astro && test -f src/pages/about/beliefs.astro && grep -q 'set:html' src/components/Accordion.astro && ! grep -rq 'client:' src/pages/about/index.astro src/pages/about/beliefs.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10300,
+      "created_at": "2026-04-01T13:29:05.407Z"
+    },
+    {
+      "id": 107,
+      "task_id": "T02",
+      "slice_id": "S02",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7500,
+      "created_at": "2026-04-01T13:29:05.407Z"
     }
   ]
 }

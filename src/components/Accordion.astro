@@ -21,7 +21,7 @@ const { items } = Astro.props;
         </svg>
       </summary>
       <div class="accordion__content">
-        <p>{item.content}</p>
+        <div class="accordion__content-inner" set:html={item.content} />
       </div>
     </details>
   ))}
@@ -88,11 +88,24 @@ const { items } = Astro.props;
     padding: 0 var(--space-2) var(--space-4);
   }
 
-  .accordion__content p {
+  .accordion__content-inner {
     font-family: var(--font-body);
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: var(--color-body);
     max-width: 48rem;
+  }
+
+  .accordion__content-inner :global(p) {
+    margin-block-end: var(--space-3, 0.75rem);
+  }
+
+  .accordion__content-inner :global(p:last-child) {
+    margin-block-end: 0;
+  }
+
+  .accordion__content-inner :global(a) {
+    color: var(--color-terracotta, #c75a30);
+    text-decoration: underline;
   }
 </style>

@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Accordion from '../../components/Accordion.astro';
+import { getAboutPage, portableTextToHtml } from '../../lib/sanity';
+
+const title = 'What We Believe | FICCC';
+const description =
+  'The core doctrinal beliefs of First Ithaca Chinese Christian Church.';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
+
+try {
+  aboutPage = await getAboutPage('en');
+} catch {
+  // Sanity unreachable — continue with fallbacks
+}
+
+// ---------- Fallback beliefs ----------
+const fallbackBeliefs = [
+  {
+    title: 'The Scriptures',
+    content:
+      '<p>We believe the Bible is the inspired, infallible, and authoritative Word of God. It is the supreme standard for all faith, life, and conduct, given by the Holy Spirit through human authors without error in the original manuscripts.</p>',
+  },
+  {
+    title: 'God',
+    content:
+      '<p>We believe in one God, eternally existing in three persons — Father, Son, and Holy Spirit — each fully God, each personally distinct, yet one in essence and purpose.</p>',
+  },
+  {
+    title: 'Jesus Christ',
+    content:
+      '<p>We believe in the deity of our Lord Jesus Christ, His virgin birth, His sinless life, His miracles, His atoning death on the cross, His bodily resurrection, His ascension to the right hand of the Father, and His personal return in power and glory.</p>',
+  },
+  {
+    title: 'The Holy Spirit',
+    content:
+      '<p>We believe the Holy Spirit convicts the world of sin, regenerates believers, indwells them from the moment of salvation, and empowers them for godly living and service. He illuminates Scripture and distributes spiritual gifts for the building up of the Church.</p>',
+  },
+  {
+    title: 'Salvation',
+    content:
+      '<p>We believe that all people are sinners by nature and by choice and are therefore under condemnation. We believe that salvation is a gift of God received by faith alone in Jesus Christ alone. Those who repent and believe are justified, adopted into God\'s family, and sealed by the Holy Spirit.</p>',
+  },
+  {
+    title: 'The Church',
+    content:
+      '<p>We believe in the universal Church, a living spiritual body of which Christ is the Head and of which all regenerated people are members. We believe that the local church is a community of baptized believers, organized for worship, instruction, fellowship, and evangelism, observing the ordinances of baptism and the Lord\'s Supper.</p>',
+  },
+  {
+    title: 'The Christian Life',
+    content:
+      '<p>We believe that God\'s justifying grace must not be separated from His sanctifying power and purpose. God commands us to love Him supremely and to love others sacrificially, and to live out our faith through prayer, service, generosity, and obedience to His Word.</p>',
+  },
+  {
+    title: 'Eternity',
+    content:
+      '<p>We believe in the personal, visible return of the Lord Jesus Christ, the resurrection of the body, the final judgment, the eternal blessedness of the righteous, and the endless suffering of the wicked. We look forward to the new heavens and new earth in which righteousness dwells.</p>',
+  },
+];
+
+// ---------- Resolved beliefs (CMS ▸ fallback) ----------
+const beliefs =
+  aboutPage?.beliefs && aboutPage.beliefs.length > 0
+    ? aboutPage.beliefs.map((b) => ({
+        title: b.title,
+        content: b.content?.length
+          ? portableTextToHtml(b.content)
+          : `<p>${b.title}</p>`,
+      }))
+    : fallbackBeliefs;
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="beliefs">
+    <section class="beliefs__hero" aria-label="What We Believe">
+      <div class="beliefs__inner">
+        <h1 class="beliefs__heading">What We Believe</h1>
+        <p class="beliefs__intro">
+          These core convictions, rooted in Scripture, shape who we are as a
+          church and how we live together as followers of Jesus Christ.
+        </p>
+        <Accordion items={beliefs} />
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .beliefs {
+    padding-block: var(--space-16);
+  }
+
+  .beliefs__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .beliefs__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-4);
+  }
+
+  .beliefs__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    max-width: 48rem;
+    margin-block-end: var(--space-10);
+  }
+
+  @media (max-width: 767px) {
+    .beliefs__heading {
+      font-size: var(--text-3xl);
+    }
+
+    .beliefs__intro {
+      font-size: var(--text-base);
+    }
+  }
+</style>

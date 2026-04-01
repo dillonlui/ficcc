@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAboutPage, portableTextToHtml, urlForImage } from '../../lib/sanity';
+
+const title = 'Who We Are | FICCC';
+const description =
+  'Learn about First Ithaca Chinese Christian Church — our history, mission, and community.';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
+
+try {
+  aboutPage = await getAboutPage('en');
+} catch {
+  // Sanity unreachable — continue with fallbacks
+}
+
+// ---------- Fallback defaults ----------
+const fallbackHeading = 'Who We Are';
+const fallbackBody = `
+<p>First Ithaca Chinese Christian Church (FICCC) was founded in 1968 by a small group of Chinese graduate students and scholars at Cornell University who longed for a Christ-centered community where they could worship in their heart language while welcoming the broader Ithaca community.</p>
+<p>Over the decades the church has grown into a multigenerational, multicultural congregation that bridges Chinese heritage and American life. We gather every Sunday at 429 Mitchell Street for worship, teaching, and fellowship — in English and Mandarin — serving students, families, and neighbors throughout the Finger Lakes region.</p>
+<p>Our mission is to glorify God by making disciples of Jesus Christ who love God wholeheartedly, love one another sacrificially, and reach out to the world with the Gospel. We believe the local church is God's primary instrument for advancing His kingdom, and we are committed to equipping every member for a life of faithful service.</p>
+<p>Whether you are a longtime resident of Ithaca, a visiting scholar, or a student far from home, there is a place for you at FICCC. We invite you to come as you are and experience the warmth of Christ's love in community.</p>
+`.trim();
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heading = aboutPage?.whoWeAreHeading || fallbackHeading;
+const bodyHtml = aboutPage?.whoWeAreBody?.length
+  ? portableTextToHtml(aboutPage.whoWeAreBody)
+  : fallbackBody;
+const imageUrl = aboutPage?.whoWeAreImage
+  ? urlForImage(aboutPage.whoWeAreImage, { width: 800 })
+  : '';
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="about">
+    <section class="about__hero" aria-label="Who We Are">
+      <div class="about__inner">
+        <h1 class="about__heading">{heading}</h1>
+        <div class="about__content">
+          <div class="about__body" set:html={bodyHtml} />
+          {imageUrl && (
+            <div class="about__image-wrap">
+              <img
+                class="about__image"
+                src={imageUrl}
+                alt={heading}
+                loading="lazy"
+                width="800"
+                height="533"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-block: var(--space-16);
+  }
+
+  .about__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .about__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-8);
+  }
+
+  .about__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+  }
+
+  .about__body {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    max-width: 48rem;
+  }
+
+  .about__body :global(p) {
+    margin-block-end: var(--space-4);
+  }
+
+  .about__body :global(p:last-child) {
+    margin-block-end: 0;
+  }
+
+  .about__body :global(a) {
+    color: var(--color-terracotta);
+    text-decoration: underline;
+  }
+
+  .about__image-wrap {
+    border-radius: var(--radius-lg, 0.75rem);
+    overflow: hidden;
+  }
+
+  .about__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  @media (min-width: 768px) {
+    .about__content {
+      grid-template-columns: 3fr 2fr;
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .about__heading {
+      font-size: var(--text-3xl);
+    }
+
+    .about__body {
+      font-size: var(--text-base);
+    }
+  }
+</style>

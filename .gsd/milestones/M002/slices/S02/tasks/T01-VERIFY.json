@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M002/S02/T01",
+  "timestamp": 1775050017720,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "test -f sanity/schemas/singletons/aboutPage.ts",
+      "exitCode": 0,
+      "durationMs": 14,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'aboutPage' sanity/schemas/index.ts",
+      "exitCode": 0,
+      "durationMs": 17,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'getAboutPage' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 16,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'getStaff' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 12,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'portableTextToHtml' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 15,
+      "verdict": "pass"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 7430,
+      "verdict": "pass"
+    }
+  ]
+}

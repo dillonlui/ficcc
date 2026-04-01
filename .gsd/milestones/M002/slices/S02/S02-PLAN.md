@@ -36,7 +36,7 @@
   - Estimate: 45m
   - Files: sanity/schemas/singletons/aboutPage.ts, sanity/schemas/index.ts, sanity/structure.ts, src/lib/sanity.ts
   - Verify: test -f sanity/schemas/singletons/aboutPage.ts && grep -q 'aboutPage' sanity/schemas/index.ts && grep -q 'getAboutPage' src/lib/sanity.ts && grep -q 'getStaff' src/lib/sanity.ts && grep -q 'portableTextToHtml' src/lib/sanity.ts && npm run build
-- [ ] **T02: Build About (Who We Are) and Beliefs pages with Accordion HTML support** — Create the `/about` and `/about/beliefs` pages. Modify the Accordion component to accept HTML content via `set:html`. Both pages fetch from the `aboutPage` singleton via `getAboutPage()` with try-catch and hardcoded fallbacks.
+- [x] **T02: Created /about and /about/beliefs pages with CMS-editable content and modified Accordion to render HTML via set:html** — Create the `/about` and `/about/beliefs` pages. Modify the Accordion component to accept HTML content via `set:html`. Both pages fetch from the `aboutPage` singleton via `getAboutPage()` with try-catch and hardcoded fallbacks.
 
 ## Steps
 
