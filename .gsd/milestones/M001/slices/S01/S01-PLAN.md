@@ -46,7 +46,7 @@
   - Estimate: 15min
   - Files: lighthouserc.js, package.json
   - Verify: npm run lhci runs and generates report against local dev server.
-- [ ] **T05: Create README & Project Documentation** — 1. Write README.md with:
+- [x] **T05: README and .env.example documenting project setup, structure, and architecture** — 1. Write README.md with:
    - Project overview (FICCC website rebuild)
    - Tech stack (Astro + Sanity + Vercel)
    - Setup instructions (clone, npm install, npm run dev)

@@ -6,7 +6,7 @@ Establish the full project scaffold, design system, CMS schema, and shared infra
 ## Slice Overview
 | ID | Slice | Risk | Depends | Done | After this |
 |----|-------|------|---------|------|------------|
-| S01 | Project Scaffold & CI/CD Pipeline | low | — | ⬜ | Astro + Sanity monorepo deploys to Vercel with preview URLs on PRs |
+| S01 | Project Scaffold & CI/CD Pipeline | low | — | ✅ | Astro + Sanity monorepo deploys to Vercel with preview URLs on PRs |
 | S02 | Design Tokens & Typography | medium | S01 | ⬜ | /styleguide page showing full color palette, EN + ZH type scale, spacing scale |
 | S03 | Base Components | medium | S02 | ⬜ | All components on /styleguide — Header, Footer, Hero, Cards, Accordion, Forms, ImageMosaic, AudioPlayer |
 | S04 | Sanity Schema & Studio | medium | S01 | ⬜ | Sanity Studio with all document types. Sample content created and queryable. |

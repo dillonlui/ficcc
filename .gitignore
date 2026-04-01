@@ -27,3 +27,23 @@ Thumbs.db
 .gsd/browser-state/
 .gsd/browser-baselines/
 .vercel
+
+# ── GSD baseline (auto-generated) ──
+*.swp
+*.swo
+*~
+*.code-workspace
+.env.*
+!.env.example
+.next/
+build/
+__pycache__/
+*.pyc
+.venv/
+venv/
+target/
+vendor/
+*.log
+coverage/
+.cache/
+tmp/
