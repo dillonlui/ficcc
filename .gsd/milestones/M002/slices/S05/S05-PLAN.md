@@ -15,7 +15,7 @@ Steps:
   - Estimate: 30m
   - Files: sanity/schemas/documents/ministry.ts, src/lib/sanity.ts
   - Verify: npx tsc --noEmit && grep -q 'getMinistryBySlug' src/lib/sanity.ts && grep -q 'slug' sanity/schemas/documents/ministry.ts
-- [ ] **T02: Build ministries hub page, MinistryCard component, and detail page** — Create the /ministries hub page with a Hero and responsive card grid, a MinistryCard component that wraps Card.astro with meeting time display, and the /ministries/[slug] detail page with getStaticPaths, leader info, meeting time, and portable text description.
+- [x] **T02: Created /ministries hub with responsive MinistryCard grid and /ministries/[slug] detail page with leader info, meeting time, and portable text description** — Create the /ministries hub page with a Hero and responsive card grid, a MinistryCard component that wraps Card.astro with meeting time display, and the /ministries/[slug] detail page with getStaticPaths, leader info, meeting time, and portable text description.
 
 Steps:
 1. Create `src/components/MinistryCard.astro` — accepts ministry data (name, image, meetingTime, slug), renders Card.astro with href='/ministries/{slug}' and adds meeting time below the card title. Pure Astro, scoped CSS, CSS custom properties only.

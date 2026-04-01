@@ -1,0 +1,35 @@
+---
+import Card from './Card.astro';
+
+interface Props {
+  name: string;
+  image?: string;
+  meetingTime?: string;
+  slug: string;
+}
+
+const { name, image, meetingTime, slug } = Astro.props;
+---
+
+<div class="ministry-card">
+  <Card title={name} image={image} href={`/ministries/${slug}`} />
+  {meetingTime && (
+    <p class="ministry-card__time">{meetingTime}</p>
+  )}
+</div>
+
+<style>
+  .ministry-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ministry-card__time {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-body);
+    padding: 0 var(--space-6) var(--space-4);
+    margin-block-start: calc(-1 * var(--space-4));
+    line-height: var(--leading-relaxed);
+  }
+</style>

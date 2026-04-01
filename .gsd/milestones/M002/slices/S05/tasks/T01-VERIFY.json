@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M002/S05/T01",
+  "timestamp": 1775051926071,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 2,
+      "durationMs": 1033,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q 'getMinistryBySlug' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 22,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'slug' sanity/schemas/documents/ministry.ts",
+      "exitCode": 0,
+      "durationMs": 19,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

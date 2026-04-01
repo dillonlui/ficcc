@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import MinistryCard from '../../components/MinistryCard.astro';
+import { getMinistries, urlForImage, type Ministry } from '../../lib/sanity';
+
+const title = 'Community & Ministries | FICCC';
+const description = 'Explore the ministries and community groups at First Ithaca Chinese Christian Church.';
+
+let ministries: Ministry[] = [];
+
+try {
+  ministries = await getMinistries('en');
+} catch {
+  // Sanity unreachable — continue with empty array
+}
+
+const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
+---
+
+<BaseLayout title={title} description={description}>
+  <main>
+    <Hero
+      title="Community & Ministries"
+      subtitle="Get connected through our church ministries"
+      backgroundImage="/images/hero-placeholder.svg"
+    />
+
+    {ministriesWithSlug.length > 0 ? (
+      <section class="ministries-listing" aria-label="Ministries">
+        <div class="ministries-listing__inner">
+          <div class="ministries-grid">
+            {ministriesWithSlug.map((ministry) => (
+              <MinistryCard
+                name={ministry.name}
+                image={urlForImage(ministry.image, { width: 600 }) || undefined}
+                meetingTime={ministry.meetingTime}
+                slug={ministry.slug!.current}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class="ministries-empty" aria-label="No ministries">
+        <div class="ministries-empty__inner">
+          <p class="ministries-empty__message">
+            No ministries available at this time. Check back soon.
+          </p>
+        </div>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .ministries-listing {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .ministries-listing__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .ministries-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .ministries-empty {
+    padding: var(--space-20) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .ministries-empty__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .ministries-empty__message {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    color: var(--color-body);
+    line-height: var(--leading-relaxed);
+  }
+
+  @media (max-width: 1024px) {
+    .ministries-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ministries-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .ministries-listing {
+      padding: var(--space-10) var(--space-4);
+    }
+  }
+</style>

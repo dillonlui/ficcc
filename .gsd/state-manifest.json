@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:58:39.220Z",
+  "exported_at": "2026-04-01T14:00:41.970Z",
   "milestones": [
     {
       "id": "M001",
@@ -2301,19 +2301,26 @@
       "milestone_id": "M002",
       "slice_id": "S05",
       "id": "T02",
-      "title": "Build ministries hub page, MinistryCard component, and detail page",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created /ministries hub with responsive MinistryCard grid and /ministries/[slug] detail page with leader info, meeting time, and portable text description",
+      "status": "complete",
+      "one_liner": "Created /ministries hub with responsive MinistryCard grid and /ministries/[slug] detail page with leader info, meeting time, and portable text description",
+      "narrative": "Created three files: MinistryCard.astro wraps Card.astro with meeting time display, ministries/index.astro is a hub page with Hero and responsive 3→2→1 card grid following the sermons pattern, and ministries/[slug].astro is a detail page using getStaticPaths with leader photo, name, role, meeting time, and portable text description rendered via set:html. All styles use CSS custom properties, no client directives.",
+      "verification_result": "npm run build succeeded generating /ministries/index.html. No client directives found in new files. tsc --noEmit shows only pre-existing sanity config errors, no new errors from task files.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T14:00:41.948Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Detail page fetches ministry in page body via getMinistryBySlug() rather than passing through getStaticPaths props, to get the resolved leader reference.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/MinistryCard.astro",
+        "src/pages/ministries/index.astro",
+        "src/pages/ministries/[slug].astro"
+      ],
+      "key_decisions": [
+        "Detail page fetches MinistryDetail in page body (not getStaticPaths props) to get resolved leader via getMinistryBySlug",
+        "Redirect to /ministries when slug not found rather than 404"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S05\nmilestone: M002\nkey_files:\n  - src/components/MinistryCard.astro\n  - src/pages/ministries/index.astro\n  - src/pages/ministries/[slug].astro\nkey_decisions:\n  - Detail page fetches MinistryDetail in page body (not getStaticPaths props) to get resolved leader via getMinistryBySlug\n  - Redirect to /ministries when slug not found rather than 404\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:00:41.949Z\nblocker_discovered: false\n---\n\n# T02: Created /ministries hub with responsive MinistryCard grid and /ministries/[slug] detail page with leader info, meeting time, and portable text description\n\n**Created /ministries hub with responsive MinistryCard grid and /ministries/[slug] detail page with leader info, meeting time, and portable text description**\n\n## What Happened\n\nCreated three files: MinistryCard.astro wraps Card.astro with meeting time display, ministries/index.astro is a hub page with Hero and responsive 3→2→1 card grid following the sermons pattern, and ministries/[slug].astro is a detail page using getStaticPaths with leader photo, name, role, meeting time, and portable text description rendered via set:html. All styles use CSS custom properties, no client directives.\n\n## Verification\n\nnpm run build succeeded generating /ministries/index.html. No client directives found in new files. tsc --noEmit shows only pre-existing sanity config errors, no new errors from task files.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 7500ms |\n| 2 | `test -f dist/ministries/index.html` | 0 | ✅ pass | 100ms |\n| 3 | `grep -r 'client:' src/components/MinistryCard.astro src/pages/ministries/` | 1 | ✅ pass (none found) | 100ms |\n| 4 | `npx tsc --noEmit` | 2 | ✅ pass (pre-existing errors only) | 8000ms |\n\n\n## Deviations\n\nDetail page fetches ministry in page body via getMinistryBySlug() rather than passing through getStaticPaths props, to get the resolved leader reference.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/MinistryCard.astro`\n- `src/pages/ministries/index.astro`\n- `src/pages/ministries/[slug].astro`\n",
       "description": "Create the /ministries hub page with a Hero and responsive card grid, a MinistryCard component that wraps Card.astro with meeting time display, and the /ministries/[slug] detail page with getStaticPaths, leader info, meeting time, and portable text description.\n\nSteps:\n1. Create `src/components/MinistryCard.astro` — accepts ministry data (name, image, meetingTime, slug), renders Card.astro with href='/ministries/{slug}' and adds meeting time below the card title. Pure Astro, scoped CSS, CSS custom properties only.\n2. Create `src/pages/ministries/index.astro` — hub page following sermons/index.astro pattern. Import getMinistries from sanity.ts. Fetch ministries in try-catch (K008 pattern). Hero with title 'Community & Ministries'. Responsive card grid using MinistryCard for each ministry that has a slug. Fallback messaging when no ministries exist.\n3. Create `src/pages/ministries/[slug].astro` — detail page following sermons/[slug].astro getStaticPaths pattern. Import getMinistries and getMinistryBySlug. getStaticPaths fetches all ministries, filters to those with slugs, returns params/props. Page renders: Hero with ministry name, back link to /ministries, leader info section (photo via urlForImage, name, role) when leader is resolved, meeting time, and description via portableTextToHtml rendered with set:html.\n4. Verify: `npm run build` succeeds and generates /ministries/index.html. Verify no client: directives in new files. Verify all styles use CSS custom properties only.",
       "estimate": "45m",
       "files": [
@@ -3985,6 +3992,50 @@
       "verdict": "✅ pass",
       "duration_ms": 50,
       "created_at": "2026-04-01T13:58:39.202Z"
+    },
+    {
+      "id": 134,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7500,
+      "created_at": "2026-04-01T14:00:41.949Z"
+    },
+    {
+      "id": 135,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M002",
+      "command": "test -f dist/ministries/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T14:00:41.949Z"
+    },
+    {
+      "id": 136,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M002",
+      "command": "grep -r 'client:' src/components/MinistryCard.astro src/pages/ministries/",
+      "exit_code": 1,
+      "verdict": "✅ pass (none found)",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T14:00:41.949Z"
+    },
+    {
+      "id": 137,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M002",
+      "command": "npx tsc --noEmit",
+      "exit_code": 2,
+      "verdict": "✅ pass (pre-existing errors only)",
+      "duration_ms": 8000,
+      "created_at": "2026-04-01T14:00:41.949Z"
     }
   ]
 }
