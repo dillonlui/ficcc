@@ -1,0 +1,65 @@
+---
+interface Props {
+  times: { label: string; time: string }[];
+}
+
+const { times } = Astro.props;
+---
+
+<section class="service-times" aria-label="Service Times">
+  <div class="service-times__inner">
+    {times.map((entry) => (
+      <div class="service-times__entry">
+        <span class="service-times__label">{entry.label}</span>
+        <span class="service-times__time">{entry.time}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .service-times {
+    background-color: var(--color-stone);
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .service-times__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    display: flex;
+    justify-content: center;
+    gap: var(--space-12);
+    flex-wrap: wrap;
+  }
+
+  .service-times__entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    text-align: center;
+  }
+
+  .service-times__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-body);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .service-times__time {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    line-height: var(--leading-tight);
+  }
+
+  @media (max-width: 640px) {
+    .service-times__inner {
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-6);
+    }
+  }
+</style>

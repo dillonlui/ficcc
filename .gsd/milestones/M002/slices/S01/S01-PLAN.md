@@ -54,7 +54,7 @@ The schema follows the established `siteSettings` singleton pattern: per-languag
   - Estimate: 30m
   - Files: sanity/schemas/singletons/homePage.ts, sanity/schemas/index.ts, src/lib/sanity.ts
   - Verify: test -f sanity/schemas/singletons/homePage.ts && grep -q 'homePage' sanity/schemas/index.ts && grep -q 'getHomePage' src/lib/sanity.ts && grep -q 'urlForImage' src/lib/sanity.ts && npm run build
-- [ ] **T02: Build homepage section components and compose full page** — ## Description
+- [x] **T02: Built ServiceTimes, Pillars, and NextSteps components and composed full homepage with all six sections, CMS data wiring, and hardcoded fallbacks for empty CMS state** — ## Description
 
 Build the three new section-level Astro components (ServiceTimes, Pillars, NextSteps), create placeholder images for development, and compose the full homepage in `index.astro` by wiring all sections together with data from `getHomePage()` and existing GROQ helpers. Every section must render with hardcoded fallback content when Sanity returns null.
 

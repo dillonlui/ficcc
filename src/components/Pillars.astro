@@ -1,0 +1,80 @@
+---
+interface Props {
+  pillars: { title: string; description: string }[];
+}
+
+const { pillars } = Astro.props;
+---
+
+<section class="pillars" aria-label="Who We Are">
+  <div class="pillars__inner">
+    <h2 class="pillars__heading">Who We Are</h2>
+    <div class="pillars__grid">
+      {pillars.map((pillar) => (
+        <div class="pillars__card">
+          <h3 class="pillars__title">{pillar.title}</h3>
+          <p class="pillars__desc">{pillar.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pillars {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .pillars__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .pillars__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-12);
+  }
+
+  .pillars__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .pillars__card {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-stone);
+    border-radius: var(--radius-md);
+    padding: var(--space-8);
+    text-align: center;
+  }
+
+  .pillars__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-3);
+  }
+
+  .pillars__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  @media (max-width: 768px) {
+    .pillars__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .pillars__heading {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

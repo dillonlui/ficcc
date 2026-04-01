@@ -1,0 +1,62 @@
+---
+import Card from './Card.astro';
+
+interface Props {
+  steps: { title: string; body: string; href: string; image?: string }[];
+}
+
+const { steps } = Astro.props;
+---
+
+<section class="next-steps" aria-label="Next Steps">
+  <div class="next-steps__inner">
+    <h2 class="next-steps__heading">Next Steps</h2>
+    <div class="next-steps__grid">
+      {steps.map((step) => (
+        <Card
+          title={step.title}
+          body={step.body}
+          href={step.href}
+          image={step.image}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .next-steps {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .next-steps__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .next-steps__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-12);
+  }
+
+  .next-steps__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  @media (max-width: 768px) {
+    .next-steps__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .next-steps__heading {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

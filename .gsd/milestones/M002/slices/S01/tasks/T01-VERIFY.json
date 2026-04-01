@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M002/S01/T01",
+  "timestamp": 1775049213534,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "test -f sanity/schemas/singletons/homePage.ts",
+      "exitCode": 0,
+      "durationMs": 13,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'homePage' sanity/schemas/index.ts",
+      "exitCode": 0,
+      "durationMs": 18,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'getHomePage' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 13,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'urlForImage' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 13,
+      "verdict": "pass"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 7818,
+      "verdict": "pass"
+    }
+  ]
+}

@@ -1,15 +1,215 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ServiceTimes from '../components/ServiceTimes.astro';
+import ImageMosaic from '../components/ImageMosaic.astro';
+import Pillars from '../components/Pillars.astro';
+import Card from '../components/Card.astro';
+import NextSteps from '../components/NextSteps.astro';
+import { getHomePage, getSermons, getEvents, urlForImage } from '../lib/sanity';
 
 const title = 'First Ithaca Chinese Christian Church | 伊的家華人基督教會';
-const description = 'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY. Sunday gathering at 9:45am, 429 Mitchell Street.';
+const description =
+  'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY. Sunday gathering at 9:45am, 429 Mitchell Street.';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let homePage: Awaited<ReturnType<typeof getHomePage>> = null;
+let sermons: Awaited<ReturnType<typeof getSermons>> = [];
+let events: Awaited<ReturnType<typeof getEvents>> = [];
+
+try {
+  [homePage, sermons, events] = await Promise.all([
+    getHomePage('en'),
+    getSermons('en'),
+    getEvents('en'),
+  ]);
+} catch {
+  // Sanity unreachable (placeholder project, no network, etc.) — continue with fallbacks
+}
+
+// ---------- Fallback defaults ----------
+const fallbackServiceTimes = [
+  { label: 'Sunday Gathering', time: '9:45 AM' },
+  { label: 'Sunday School', time: '11:15 AM' },
+];
+
+const fallbackPillars = [
+  {
+    title: 'Rooted in Scripture',
+    description:
+      "We hold to the Bible as God's inspired Word and the foundation for all of life and faith.",
+  },
+  {
+    title: 'Christ-Centered Community',
+    description:
+      'We gather as a Christ-centered community, welcoming students, families, and neighbors of all backgrounds.',
+  },
+  {
+    title: 'Bridging Cultures',
+    description:
+      'We celebrate our Chinese heritage while building a church home that bridges cultures and generations.',
+  },
+];
+
+const fallbackNextSteps = [
+  {
+    title: 'Plan Your Visit',
+    body: 'Join us Sunday at 9:45 AM. Learn what to expect and how to find us.',
+    href: '/visit',
+  },
+  {
+    title: 'Get Connected',
+    body: 'Discover small groups, ministries, and ways to grow alongside others.',
+    href: '/ministries',
+  },
+  {
+    title: 'Watch Sermons',
+    body: 'Catch up on recent messages or explore a teaching series.',
+    href: '/sermons',
+  },
+];
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heroImage = homePage?.heroImage
+  ? urlForImage(homePage.heroImage, { width: 1600 })
+  : '/images/hero-placeholder.svg';
+const heroTitle = homePage?.heroTitle || 'Welcome Home';
+const heroSubtitle =
+  homePage?.heroSubtitle ||
+  'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY.';
+const heroCtaText = homePage?.heroCtaText || 'Plan Your Visit';
+const heroCtaHref = homePage?.heroCtaHref || '/visit';
+
+const serviceTimes =
+  homePage?.serviceTimes && homePage.serviceTimes.length > 0
+    ? homePage.serviceTimes
+    : fallbackServiceTimes;
+
+const mosaicImages =
+  homePage?.mosaicImages && homePage.mosaicImages.length > 0
+    ? homePage.mosaicImages.map((img) => ({
+        src: urlForImage(img, { width: 800 }),
+        alt: img.alt || '',
+      }))
+    : Array.from({ length: 6 }, (_, i) => ({
+        src: `/images/placeholder-${i + 1}.svg`,
+        alt: `Church life ${i + 1}`,
+      }));
+
+const pillars =
+  homePage?.pillars && homePage.pillars.length > 0
+    ? homePage.pillars.map((p) => ({
+        title: p.title,
+        description: p.description || '',
+      }))
+    : fallbackPillars;
+
+const nextSteps =
+  homePage?.nextSteps && homePage.nextSteps.length > 0
+    ? homePage.nextSteps.map((s) => ({
+        title: s.title,
+        body: s.body || '',
+        href: s.href || '#',
+        image: s.image ? urlForImage(s.image, { width: 600 }) : undefined,
+      }))
+    : fallbackNextSteps;
+
+// ---------- Featured content ----------
+const latestSermon = sermons[0] ?? null;
+const nextEvent = events[0] ?? null;
 ---
 
 <BaseLayout title={title} description={description}>
   <main>
-    <h1>First Ithaca Chinese Christian Church</h1>
-    <p>伊的家華人基督教會</p>
-    <p>Sunday Gathering: 9:45am | 429 Mitchell Street, Ithaca, NY</p>
-    <p>Site rebuild in progress.</p>
+    <Hero
+      title={heroTitle}
+      subtitle={heroSubtitle}
+      ctaText={heroCtaText}
+      ctaHref={heroCtaHref}
+      backgroundImage={heroImage}
+    />
+
+    <ServiceTimes times={serviceTimes} />
+
+    <section class="mosaic-section" aria-label="Church Life">
+      <div class="mosaic-section__inner">
+        <ImageMosaic images={mosaicImages} />
+      </div>
+    </section>
+
+    <Pillars pillars={pillars} />
+
+    {(latestSermon || nextEvent) && (
+      <section class="featured" aria-label="Featured">
+        <div class="featured__inner">
+          <h2 class="featured__heading">Stay Connected</h2>
+          <div class="featured__grid">
+            {latestSermon && (
+              <Card
+                title={latestSermon.title}
+                body={latestSermon.speaker ? `Speaker: ${latestSermon.speaker}` : 'Latest sermon'}
+                href="/sermons"
+              />
+            )}
+            {nextEvent && (
+              <Card
+                title={nextEvent.title}
+                body={nextEvent.date ? `Date: ${nextEvent.date}` : 'Upcoming event'}
+                href="/events"
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <NextSteps steps={nextSteps} />
   </main>
 </BaseLayout>
+
+<style>
+  .mosaic-section {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .mosaic-section__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .featured {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .featured__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .featured__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-12);
+  }
+
+  .featured__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+
+  @media (max-width: 768px) {
+    .featured__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .featured__heading {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>
