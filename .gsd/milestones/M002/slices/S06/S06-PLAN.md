@@ -41,7 +41,7 @@ Create a shared helper (`src/lib/form-helpers.ts`) to avoid duplicating Turnstil
   - Estimate: 45m
   - Files: src/lib/form-helpers.ts, src/pages/api/contact.ts, src/pages/api/prayer-request.ts, src/pages/api/ride-request.ts, src/pages/api/connect.ts
   - Verify: grep -q 'prerender = false' src/pages/api/contact.ts src/pages/api/prayer-request.ts src/pages/api/ride-request.ts src/pages/api/connect.ts && test -f src/lib/form-helpers.ts && npm run build
-- [ ] **T02: Build Events listing page and Give page** — Create the Events page with EventCard component and the static Give page. These are the two simpler pages with no form wiring.
+- [x] **T02: Created Events listing page with upcoming/past event split, EventCard component, and static Give page with three donation methods** — Create the Events page with EventCard component and the static Give page. These are the two simpler pages with no form wiring.
 
 ### Steps
 

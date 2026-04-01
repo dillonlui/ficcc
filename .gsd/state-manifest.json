@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T14:10:41.959Z",
+  "exported_at": "2026-04-01T14:13:22.503Z",
   "milestones": [
     {
       "id": "M001",
@@ -2402,19 +2402,28 @@
       "milestone_id": "M002",
       "slice_id": "S06",
       "id": "T02",
-      "title": "Build Events listing page and Give page",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created Events listing page with upcoming/past event split, EventCard component, and static Give page with three donation methods",
+      "status": "complete",
+      "one_liner": "Created Events listing page with upcoming/past event split, EventCard component, and static Give page with three donation methods",
+      "narrative": "Added image field to event Sanity schema, updated Event interface and GROQ query. Built EventCard.astro component with date formatting, recurring badge, and optional image. Created events.astro with CMS fetch, fallback events, and upcoming/past split. Created give.astro as a static page with PayPal, check, and in-person giving methods plus a scripture verse.",
+      "verification_result": "All file existence checks pass. npm run build completes successfully with both /events/index.html and /give/index.html pre-rendered without errors.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T14:13:22.482Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "PayPal donate link uses placeholder URL (hosted_button_id=PLACEHOLDER) — church needs to replace with actual PayPal donate link.",
+      "key_files": [
+        "src/pages/events.astro",
+        "src/pages/give.astro",
+        "src/components/EventCard.astro",
+        "sanity/schemas/documents/event.ts",
+        "src/lib/sanity.ts"
+      ],
+      "key_decisions": [
+        "Recurring events always show in upcoming section regardless of date",
+        "PayPal donate link uses placeholder URL for church to replace"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S06\nmilestone: M002\nkey_files:\n  - src/pages/events.astro\n  - src/pages/give.astro\n  - src/components/EventCard.astro\n  - sanity/schemas/documents/event.ts\n  - src/lib/sanity.ts\nkey_decisions:\n  - Recurring events always show in upcoming section regardless of date\n  - PayPal donate link uses placeholder URL for church to replace\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T14:13:22.483Z\nblocker_discovered: false\n---\n\n# T02: Created Events listing page with upcoming/past event split, EventCard component, and static Give page with three donation methods\n\n**Created Events listing page with upcoming/past event split, EventCard component, and static Give page with three donation methods**\n\n## What Happened\n\nAdded image field to event Sanity schema, updated Event interface and GROQ query. Built EventCard.astro component with date formatting, recurring badge, and optional image. Created events.astro with CMS fetch, fallback events, and upcoming/past split. Created give.astro as a static page with PayPal, check, and in-person giving methods plus a scripture verse.\n\n## Verification\n\nAll file existence checks pass. npm run build completes successfully with both /events/index.html and /give/index.html pre-rendered without errors.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f src/pages/events.astro && test -f src/pages/give.astro && test -f src/components/EventCard.astro` | 0 | ✅ pass | 100ms |\n| 2 | `npm run build` | 0 | ✅ pass | 8500ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nPayPal donate link uses placeholder URL (hosted_button_id=PLACEHOLDER) — church needs to replace with actual PayPal donate link.\n\n## Files Created/Modified\n\n- `src/pages/events.astro`\n- `src/pages/give.astro`\n- `src/components/EventCard.astro`\n- `sanity/schemas/documents/event.ts`\n- `src/lib/sanity.ts`\n",
       "description": "Create the Events page with EventCard component and the static Give page. These are the two simpler pages with no form wiring.\n\n### Steps\n\n1. Add an `image` field to the event Sanity schema (`sanity/schemas/documents/event.ts`) — type `image` with hotspot, optional. Update the Event interface in `src/lib/sanity.ts` to include `image?: SanityImage`.\n\n2. Create `src/components/EventCard.astro`:\n   - Props: title, date (string), time (optional), location (optional), image (optional string URL), recurring (optional boolean)\n   - Display formatted date, time, location, and optional image\n   - Follow Card.astro/MinistryCard.astro pattern — pure Astro, scoped CSS, CSS custom properties only\n   - Show a recurring badge if `recurring` is true\n\n3. Create `src/pages/events.astro`:\n   - Use BaseLayout, Hero\n   - Fetch events via `getEvents('en')` wrapped in try-catch\n   - Filter to upcoming events (date >= today) for main section, with past events shown below\n   - If no events, show friendly empty state message\n   - Responsive grid of EventCard components\n   - Include hardcoded fallback events for when CMS is empty\n\n4. Create `src/pages/give.astro`:\n   - Use BaseLayout, Hero\n   - Static content: why we give, how to give (PayPal link, check, in-person)\n   - PayPal.me link or PayPal donate button (use a link — simpler than embed, CSP already allows frame-src paypal.com if needed later)\n   - Church mailing address for check donations\n   - Scripture verse about generosity\n   - All hardcoded content (no CMS dependency)\n\n### Constraints\n- Pure Astro components, scoped CSS, CSS custom properties only (D010)\n- CMS fetch in try-catch with fallback (K008)\n- Update the GROQ query in getEvents to fetch the image field: add `image` to the projection\n- No client:* directives",
       "estimate": "40m",
       "files": [
@@ -4199,6 +4208,28 @@
       "verdict": "✅ pass",
       "duration_ms": 8600,
       "created_at": "2026-04-01T14:10:41.936Z"
+    },
+    {
+      "id": 140,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M002",
+      "command": "test -f src/pages/events.astro && test -f src/pages/give.astro && test -f src/components/EventCard.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T14:13:22.482Z"
+    },
+    {
+      "id": 141,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8500,
+      "created_at": "2026-04-01T14:13:22.482Z"
     }
   ]
 }

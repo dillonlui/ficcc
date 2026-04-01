@@ -39,6 +39,12 @@ export const event = defineType({
       of: [{ type: 'block' }],
     }),
     defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: { hotspot: true },
+    }),
+    defineField({
       name: 'recurring',
       title: 'Recurring',
       type: 'boolean',

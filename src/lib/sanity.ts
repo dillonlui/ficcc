@@ -64,6 +64,7 @@ export interface Event {
   time?: string;
   location?: string;
   description?: PortableTextBlock[];
+  image?: SanityImage;
   recurring?: boolean;
   language: 'en' | 'zh';
 }
@@ -260,7 +261,9 @@ export async function getSermonBySlug(
  */
 export async function getEvents(language: Language = 'en'): Promise<Event[]> {
   return client.fetch<Event[]>(
-    `*[_type == "event" && language == $language] | order(date asc)`,
+    `*[_type == "event" && language == $language]{
+      _id, _type, title, date, endDate, time, location, description, image, recurring, language
+    } | order(date asc)`,
     { language },
   );
 }
