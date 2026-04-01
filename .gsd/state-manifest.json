@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T01:36:21.906Z",
+  "exported_at": "2026-04-01T01:45:55.597Z",
   "milestones": [
     {
       "id": "M001",
@@ -343,16 +343,16 @@
       "milestone_id": "M001",
       "id": "S04",
       "title": "Sanity Schema & Studio",
-      "status": "pending",
+      "status": "complete",
       "risk": "medium",
       "depends": [
         "S01"
       ],
       "demo": "Sanity Studio with all document types. Sample content created and queryable.",
       "created_at": "2026-03-31T22:32:16.176Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T01:38:08.880Z",
+      "full_summary_md": "---\nid: S04\nparent: M001\nmilestone: M001\nprovides:\n  - Sanity Studio at /admin with all 12 schema types registered\n  - Typed GROQ query helpers (getPageBySlug, getSermons, getEvents, getMinistries, getSiteSettings, getNavigation)\n  - Schema barrel export at sanity/schemas/index.ts for extending schema types\nrequires:\n  - slice: S01\n    provides: Astro project scaffold, Vercel deployment, env var setup\naffects:\n  - S06\nkey_files:\n  - sanity.config.ts\n  - sanity/structure.ts\n  - sanity/schemas/index.ts\n  - sanity/schemas/documents/page.ts\n  - sanity/schemas/documents/sermon.ts\n  - sanity/schemas/documents/event.ts\n  - sanity/schemas/documents/ministry.ts\n  - sanity/schemas/documents/person.ts\n  - sanity/schemas/singletons/siteSettings.ts\n  - sanity/schemas/singletons/navigation.ts\n  - sanity/schemas/objects/heroBlock.ts\n  - sanity/schemas/objects/imageMosaicBlock.ts\n  - sanity/schemas/objects/accordionBlock.ts\n  - sanity/schemas/objects/cardGridBlock.ts\n  - sanity/schemas/objects/youtubeEmbedBlock.ts\n  - src/lib/sanity.ts\n  - src/components/Studio.tsx\n  - src/pages/admin/index.astro\n  - astro.config.mjs\n  - .env.example\nkey_decisions:\n  - D011: Manual client:only React component at /admin instead of studioBasePath to preserve static output\n  - Singleton IDs follow {type}-{lang} pattern for per-language singleton documents\n  - Page body accepts standard Portable Text plus all 5 custom block types as an array\n  - Structure builder groups singletons under Settings & Navigation, filters them from default document list\n  - No CSP changes needed — Studio scripts are self-hosted from Astro build bundle\npatterns_established:\n  - Sanity schema files organized as sanity/schemas/{objects,documents,singletons}/ with barrel export from index.ts\n  - Language field on every document type with 'en' | 'zh' options, initial value 'en'\n  - Typed GROQ query helpers in src/lib/sanity.ts accepting language parameter — pattern for all future content fetching\nobservability_surfaces:\n  - none — CMS schema and Studio are design-time artifacts with no runtime monitoring needs\ndrill_down_paths:\n  - .gsd/milestones/M001/slices/S04/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M001/slices/S04/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M001/slices/S04/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:38:08.882Z\nblocker_discovered: false\n---\n\n# S04: Sanity Schema & Studio\n\n**Sanity Studio embedded at /admin with 12 schema types (5 documents, 2 singletons, 5 block types), per-language singleton structure, and 6 typed GROQ query helpers for downstream page building**\n\n## What Happened\n\nThree tasks delivered the full Sanity CMS layer. T01 installed Sanity v5, React 19, @sanity/astro, and @astrojs/react, then embedded Sanity Studio at /admin via a client:only React component (studioBasePath requires server rendering, incompatible with static output). T02 created all 12 schema types: 5 document types (page, sermon, event, ministry, person), 2 singletons (siteSettings, navigation), and 5 Portable Text block types (hero, imageMosaic, accordion, cardGrid, youtubeEmbed). Every document type includes a language field with en/zh options per D003. Singletons use {type}-{lang} IDs and appear as single-doc editors in a dedicated Settings & Navigation group. The page body field accepts standard Portable Text plus all 5 custom block types. T03 added 6 typed GROQ query helpers (getPageBySlug, getSermons, getEvents, getMinistries, getSiteSettings, getNavigation) to src/lib/sanity.ts, removed the old standalone studio/ directory, and confirmed Lighthouse CI passes with no regressions.\n\n## Verification\n\nAll verification checks pass across all three tasks: npm run build exits 0 (3 pages built including /admin), 13 schema files found under sanity/schemas/, schemas import confirmed in sanity.config.ts, sanity integration confirmed in astro.config.mjs, sanity.config.ts and sanity/structure.ts exist, old studio/ directory removed, GROQ helpers present (7 exports), Lighthouse CI passes all assertions.\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nReact 19 used instead of planned React 18 — Sanity v5 requires it as a peer dependency. Dropped @sanity/astro studioBasePath in favor of manual client:only React component embed to preserve output:static mode (documented in D011). Used PUBLIC_ prefixed env vars for client-side Studio config.\n\n## Known Limitations\n\nStudio at /admin is client-rendered only — no SSR preview integration yet (deferred to S06). No sample content seeded — schema types exist but the Sanity dataset is empty until editors create content or a seed script is added. Large Sanity Studio chunks (~5MB pane2 bundle) — acceptable for admin-only route but could benefit from manual chunking if load time becomes an issue.\n\n## Follow-ups\n\nS06 will wire preview mode so editors can see draft content rendered on the live site. Sample content seeding could be added as a convenience script but is not blocking.\n\n## Files Created/Modified\n\n- `package.json` — Added sanity, @sanity/astro, @astrojs/react, react 19, react-dom, @sanity/vision dependencies\n- `astro.config.mjs` — Added sanity() and react() integrations\n- `sanity.config.ts` — Root Sanity config with structureTool, visionTool, and all 12 schema types\n- `sanity/structure.ts` — Custom desk structure with singleton handling and language grouping\n- `sanity/schemas/index.ts` — Barrel export of all schema types, singletonTypes set, and singletonDocIds\n- `sanity/schemas/documents/page.ts` — Page schema with title, slug, body (Portable Text + custom blocks), language\n- `sanity/schemas/documents/sermon.ts` — Sermon schema with videoId, speaker, date, series, scripture, language\n- `sanity/schemas/documents/event.ts` — Event schema with date, endDate, time, location, recurring, language\n- `sanity/schemas/documents/ministry.ts` — Ministry schema with leader reference, meetingTime, language\n- `sanity/schemas/documents/person.ts` — Person schema with name, role, bio, photo with hotspot, language\n- `sanity/schemas/singletons/siteSettings.ts` — Site settings singleton with church info and social links\n- `sanity/schemas/singletons/navigation.ts` — Navigation singleton with nested nav items\n- `sanity/schemas/objects/heroBlock.ts` — Hero block with heading, subheading, background image, CTA\n- `sanity/schemas/objects/imageMosaicBlock.ts` — Image mosaic block with array of captioned images\n- `sanity/schemas/objects/accordionBlock.ts` — Accordion block with title/content pairs\n- `sanity/schemas/objects/cardGridBlock.ts` — Card grid block with inline cards\n- `sanity/schemas/objects/youtubeEmbedBlock.ts` — YouTube embed block with videoId and caption\n- `src/lib/sanity.ts` — Sanity client + 6 typed GROQ query helpers with TypeScript interfaces\n- `src/components/Studio.tsx` — Client-only React component wrapping Sanity Studio\n- `src/pages/admin/index.astro` — Admin page hosting Studio via client:only='react'\n- `.env.example` — Documented PUBLIC_ prefixed Sanity env vars\n",
+      "full_uat_md": "# S04: Sanity Schema & Studio — UAT\n\n**Milestone:** M001\n**Written:** 2026-04-01T01:38:08.882Z\n\n# S04: Sanity Schema & Studio — UAT\n\n**Milestone:** M001\n**Written:** 2026-03-31\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: Sanity Studio is a client-side React app that loads against a remote Sanity dataset — schema correctness is verified by successful build compilation. Live Studio interaction requires valid Sanity credentials and a browser session, which is beyond static CI. The build validates all schema definitions are syntactically correct and the Studio bundle compiles.\n\n## Preconditions\n\n- `npm install` completed\n- `.env` contains valid `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` values\n- `npm run build` exits 0\n\n## Smoke Test\n\nRun `npm run build` — should exit 0 and produce 3 pages including `/admin/index.html`. Open `dist/admin/index.html` to confirm it contains a React mount point for Sanity Studio.\n\n## Test Cases\n\n### 1. All 13 schema files exist with correct structure\n\n1. Run `find sanity/schemas -name '*.ts' -not -name 'index.ts' | sort`\n2. **Expected:** 12 files listed:\n   - `sanity/schemas/documents/event.ts`\n   - `sanity/schemas/documents/ministry.ts`\n   - `sanity/schemas/documents/page.ts`\n   - `sanity/schemas/documents/person.ts`\n   - `sanity/schemas/documents/sermon.ts`\n   - `sanity/schemas/objects/accordionBlock.ts`\n   - `sanity/schemas/objects/cardGridBlock.ts`\n   - `sanity/schemas/objects/heroBlock.ts`\n   - `sanity/schemas/objects/imageMosaicBlock.ts`\n   - `sanity/schemas/objects/youtubeEmbedBlock.ts`\n   - `sanity/schemas/singletons/navigation.ts`\n   - `sanity/schemas/singletons/siteSettings.ts`\n3. Run `test -f sanity/schemas/index.ts`\n4. **Expected:** Exit 0 — barrel export exists\n\n### 2. Every document type has a language field\n\n1. Run `grep -l \"name: 'language'\" sanity/schemas/documents/*.ts sanity/schemas/singletons/*.ts`\n2. **Expected:** All 7 files (5 documents + 2 singletons) listed\n\n### 3. Barrel export registers all schema types\n\n1. Run `grep -c 'export' sanity/schemas/index.ts`\n2. **Expected:** At least 3 exports (schemaTypes array, singletonTypes, singletonDocIds)\n3. Run `grep 'schemaTypes' sanity.config.ts`\n4. **Expected:** sanity.config.ts imports and uses schemaTypes from barrel export\n\n### 4. GROQ query helpers are typed and exported\n\n1. Run `grep -c 'export.*function\\|export.*const.*=' src/lib/sanity.ts`\n2. **Expected:** At least 7 (client + 6 query functions)\n3. Run `grep 'getPageBySlug\\|getSermons\\|getEvents\\|getMinistries\\|getSiteSettings\\|getNavigation' src/lib/sanity.ts`\n4. **Expected:** All 6 function names present\n\n### 5. Old studio/ directory removed\n\n1. Run `test -d studio && echo \"FAIL: studio/ still exists\" || echo \"PASS\"`\n2. **Expected:** \"PASS\"\n\n### 6. Studio page builds and is accessible\n\n1. Run `npm run build`\n2. **Expected:** Exit 0, output includes `/admin/index.html`\n3. Run `grep -q 'Studio\\|sanity\\|react' dist/admin/index.html`\n4. **Expected:** Exit 0 — admin page references Studio/React\n\n### 7. Lighthouse CI passes with no regressions\n\n1. Run `npm run build && npx lhci autorun`\n2. **Expected:** All assertions pass. /admin is not in the tested URL set so it doesn't affect scores.\n\n## Edge Cases\n\n### Schema barrel export completeness\n\n1. Run `node -e \"const fs = require('fs'); const idx = fs.readFileSync('sanity/schemas/index.ts','utf8'); const types = (idx.match(/import/g)||[]).length; console.log(types + ' imports')\"`\n2. **Expected:** 12 imports (matching the 12 non-index schema files)\n\n### Singleton ID pattern\n\n1. Run `grep -r \"siteSettings-\\|navigation-\" sanity/`\n2. **Expected:** References to `siteSettings-en`, `siteSettings-zh`, `navigation-en`, `navigation-zh` in structure.ts or schemas\n\n## Failure Signals\n\n- `npm run build` fails — schema syntax error or missing import\n- Missing schema files under `sanity/schemas/`\n- `src/lib/sanity.ts` missing query helper exports\n- `studio/` directory still exists\n- Lighthouse CI assertion failures indicating performance regression\n\n## Not Proven By This UAT\n\n- Live Sanity Studio functionality (requires valid project credentials and browser session)\n- Content creation and querying against real Sanity dataset\n- Preview mode integration (deferred to S06)\n- CSP headers for Studio in production (verified as not needed — scripts are self-hosted)\n\n## Notes for Tester\n\n- The Studio at /admin loads as a client-side React app. Without valid Sanity credentials in env vars, it will show a connection error — this is expected. The UAT focuses on build-time validation of schemas and query helpers.\n- The pane2 chunk (~5MB) is large but only loads on /admin. Production content pages are unaffected.\n- Lighthouse CI tests only / and /styleguide, not /admin.\n",
       "goal": "Sanity Studio with all document types embedded in Astro at /admin, with schema definitions for all content models (pages, sermons, events, ministries, people, singletons) and reusable Portable Text blocks.",
       "success_criteria": "- `npm run build` succeeds with `@sanity/astro` and `@astrojs/react` integrations\n- All document types defined: page, sermon, event, ministry, person, siteSettings (singleton), navigation (singleton)\n- All Portable Text block types defined: heroBlock, imageMosaicBlock, accordionBlock, cardGridBlock, youtubeEmbedBlock\n- Every document type has a `language` field (`'en' | 'zh'`) per D003\n- Singleton types use custom structure builder for single-document editing\n- Root `sanity.config.ts` imports all schema types and configures structure\n- Old standalone `studio/` directory removed\n- Lighthouse CI still passes (`npm run lhci` or `npm run build` as proxy)\n- CSP in `vercel.json` updated if needed for Studio script loading",
       "proof_level": "- This slice proves: integration (Sanity Studio embedded in Astro build pipeline)\n- Real runtime required: yes (build must succeed; full Studio requires SANITY_PROJECT_ID)\n- Human/UAT required: no (Studio UI tested visually in S06)",
@@ -375,11 +375,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Shared infrastructure for forms, SEO, and security",
-      "success_criteria": "Form endpoint with Turnstile + Resend working. sitemap.xml auto-generated. robots.txt configured. BaseHead with meta/OG/JSON-LD. Security headers in vercel.json. 404 page.",
-      "proof_level": "Form delivers email. curl confirms headers. Lighthouse SEO > 95.",
-      "integration_closure": "All pages inherit SEO and security automatically",
-      "observability_impact": "Form submissions in Resend dashboard. Headers verifiable via curl.",
+      "goal": "Wire up contact form submission (Turnstile + Resend), add SEO static files, and harden security headers so the infrastructure layer is complete for page-building milestones.",
+      "success_criteria": "- `api/contact.ts` serverless function validates inputs, verifies Turnstile token, sends email via Resend\n- ContactForm.astro includes Turnstile widget, client-side submission JS with loading/success/error states\n- `public/robots.txt` exists with correct sitemap URL\n- `npm run build` produces `dist/sitemap-index.xml`\n- Security headers in vercel.json include Strict-Transport-Security\n- `npm run build` succeeds with no errors\n- Lighthouse CI (`npm run lhci`) passes existing thresholds",
+      "proof_level": "Integration — form submission exercises Turnstile + Resend integration; SEO and security are verifiable from build output and header inspection.",
+      "integration_closure": "- Upstream consumed: `src/components/ContactForm.astro` (S03), `vercel.json` security headers (S01), `.env.example` env var contract (S01)\n- New wiring: `api/contact.ts` serverless function, Turnstile widget in ContactForm, `public/robots.txt`\n- Remains for milestone: S06 (preview mode + CMS integration wiring)",
+      "observability_impact": "- Runtime signals: API function returns structured JSON with success/error status and error codes (validation_error, turnstile_failed, send_failed)\n- Inspection surfaces: Vercel function logs for /api/contact, Resend dashboard for delivery status\n- Failure visibility: API response includes error type and field-level validation errors; client-side form shows user-facing error messages\n- Redaction constraints: Turnstile secret key and Resend API key server-side only, never in client bundle",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -1484,6 +1484,94 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S05",
+      "id": "T01",
+      "title": "Build Edge API endpoint at api/contact.ts with Turnstile verification and Resend email delivery, update ContactForm.astro with widget, fetch submission, and loading/success/error states",
+      "status": "complete",
+      "one_liner": "Build Edge API endpoint at api/contact.ts with Turnstile verification and Resend email delivery, update ContactForm.astro with widget, fetch submission, and loading/success/error states",
+      "narrative": "Created api/contact.ts as a Vercel Edge Runtime function with input validation, Turnstile server-side verification, and Resend email delivery. Updated ContactForm.astro with Cloudflare Turnstile widget, client-side validation, fetch-based submission, spinner, success/error banners, and field-level error display. Installed resend npm package.",
+      "verification_result": "npm run build succeeds. api/contact.ts exists. Turnstile integration confirmed in ContactForm.astro. Resend dependency confirmed in package.json.",
+      "duration": "",
+      "completed_at": "2026-04-01T01:45:55.578Z",
+      "blocker_discovered": false,
+      "deviations": "Initially wrote endpoint using VercelRequest/VercelResponse (Node.js runtime), corrected to web-standard Request/Response for Edge Runtime as specified.",
+      "known_issues": "None.",
+      "key_files": [
+        "api/contact.ts",
+        "src/components/ContactForm.astro",
+        "package.json"
+      ],
+      "key_decisions": [
+        "Used Vercel Edge Runtime with web-standard Request/Response API",
+        "Structured JSON error responses with field-level errors array for form validation",
+        "Console-based observability with [contact] prefix for serverless logs"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S05\nmilestone: M001\nkey_files:\n  - api/contact.ts\n  - src/components/ContactForm.astro\n  - package.json\nkey_decisions:\n  - Used Vercel Edge Runtime with web-standard Request/Response API\n  - Structured JSON error responses with field-level errors array for form validation\n  - Console-based observability with [contact] prefix for serverless logs\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T01:45:55.579Z\nblocker_discovered: false\n---\n\n# T01: Build Edge API endpoint at api/contact.ts with Turnstile verification and Resend email delivery, update ContactForm.astro with widget, fetch submission, and loading/success/error states\n\n**Build Edge API endpoint at api/contact.ts with Turnstile verification and Resend email delivery, update ContactForm.astro with widget, fetch submission, and loading/success/error states**\n\n## What Happened\n\nCreated api/contact.ts as a Vercel Edge Runtime function with input validation, Turnstile server-side verification, and Resend email delivery. Updated ContactForm.astro with Cloudflare Turnstile widget, client-side validation, fetch-based submission, spinner, success/error banners, and field-level error display. Installed resend npm package.\n\n## Verification\n\nnpm run build succeeds. api/contact.ts exists. Turnstile integration confirmed in ContactForm.astro. Resend dependency confirmed in package.json.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 7200ms |\n| 2 | `test -f api/contact.ts` | 0 | ✅ pass | 50ms |\n| 3 | `grep -q 'turnstile' src/components/ContactForm.astro` | 0 | ✅ pass | 50ms |\n| 4 | `grep -q 'resend' package.json` | 0 | ✅ pass | 50ms |\n\n\n## Deviations\n\nInitially wrote endpoint using VercelRequest/VercelResponse (Node.js runtime), corrected to web-standard Request/Response for Edge Runtime as specified.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `api/contact.ts`\n- `src/components/ContactForm.astro`\n- `package.json`\n",
+      "description": "Create the Vercel serverless function at api/contact.ts that handles form submissions. Install the resend package. The function must: (1) parse and validate form fields (name, email, message — all required, email format check), (2) verify the Turnstile token via Cloudflare's siteverify API, (3) send email via Resend SDK to a configured recipient, (4) return structured JSON responses with appropriate status codes. Then update ContactForm.astro to include the Cloudflare Turnstile widget (using PUBLIC_TURNSTILE_SITE_KEY from env), add client-side JavaScript for form submission via fetch to /api/contact, and implement loading/success/error UI states. The form JS should do client-side validation before submission, show a spinner during submit, display success confirmation, and show field-level or general error messages on failure.\n\nKey constraints:\n- Use Vercel Edge Runtime for fast cold starts (export const config = { runtime: 'edge' })\n- Turnstile verification is server-side only — secret key never reaches client\n- CSP in vercel.json already allows challenges.cloudflare.com for script-src and frame-src, and connect-src 'self' covers /api/contact\n- Rate limiting is not in scope — Turnstile provides sufficient spam protection\n- The Turnstile widget script must be loaded from https://challenges.cloudflare.com/turnstile/v0/api.js\n- For dev/test without real keys, the API should return clear error messages about missing env vars rather than crashing",
+      "estimate": "1h30m",
+      "files": [
+        "api/contact.ts",
+        "src/components/ContactForm.astro",
+        "package.json",
+        ".env.example"
+      ],
+      "verify": "npm run build && test -f api/contact.ts && grep -q 'turnstile' src/components/ContactForm.astro && grep -q 'resend' package.json",
+      "inputs": [
+        "`src/components/ContactForm.astro` — existing styled form component with name/email/message fields, no submission handler",
+        "`.env.example` — already defines RESEND_API_KEY, PUBLIC_TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY",
+        "`vercel.json` — CSP already allows challenges.cloudflare.com and connect-src 'self'",
+        "`package.json` — current dependencies, needs resend added"
+      ],
+      "expected_output": [
+        "`api/contact.ts` — Vercel Edge serverless function with input validation, Turnstile verification, Resend email delivery",
+        "`src/components/ContactForm.astro` — updated with Turnstile widget, client-side fetch submission, loading/success/error states",
+        "`package.json` — resend dependency added"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M001",
+      "slice_id": "S05",
+      "id": "T02",
+      "title": "Add robots.txt, verify sitemap output, harden security headers, and run Lighthouse CI",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Complete the SEO and security infrastructure:\n\n1. Create public/robots.txt — Allow all crawlers, include absolute Sitemap URL (https://ficcc.org/sitemap-index.xml). Keep it simple.\n\n2. Verify sitemap — Run npm run build and confirm dist/sitemap-index.xml exists with valid XML content. The @astrojs/sitemap integration is already configured in astro.config.mjs with site: 'https://ficcc.org'.\n\n3. Security header hardening — Add Strict-Transport-Security header to vercel.json (max-age=63072000; includeSubDomains; preload). Review CSP for completeness — the existing CSP already covers the new /api/contact endpoint via connect-src 'self'. Verify no headers are missing per OWASP recommendations.\n\n4. Lighthouse CI — Run npm run build && npm run lhci to confirm all existing thresholds pass. The form page is not a separate route (ContactForm is a component), so no new LHCI URL needed. If any thresholds regress, investigate and fix.\n\nKey constraints:\n- robots.txt Sitemap URL must be absolute (https://ficcc.org/sitemap-index.xml)\n- HSTS max-age should be at least 1 year (31536000), using 2 years (63072000) per best practice\n- Do NOT change Lighthouse performance thresholds — K002 documents why they're at 0.75/0.50",
+      "estimate": "30m",
+      "files": [
+        "public/robots.txt",
+        "vercel.json",
+        "lighthouserc.cjs"
+      ],
+      "verify": "test -f public/robots.txt && grep -q 'Sitemap' public/robots.txt && npm run build && test -f dist/sitemap-index.xml && grep -q 'Strict-Transport-Security' vercel.json",
+      "inputs": [
+        "`vercel.json` — existing security headers, needs HSTS addition",
+        "`astro.config.mjs` — sitemap integration already configured",
+        "`lighthouserc.cjs` — existing LHCI config with per-URL thresholds"
+      ],
+      "expected_output": [
+        "`public/robots.txt` — robots.txt with Sitemap directive",
+        "`vercel.json` — updated with Strict-Transport-Security header",
+        "`dist/sitemap-index.xml` — verified sitemap output from build"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -2148,6 +2236,50 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-01T01:36:21.888Z"
+    },
+    {
+      "id": 49,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7200,
+      "created_at": "2026-04-01T01:45:55.578Z"
+    },
+    {
+      "id": 50,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "test -f api/contact.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:45:55.578Z"
+    },
+    {
+      "id": 51,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "grep -q 'turnstile' src/components/ContactForm.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:45:55.578Z"
+    },
+    {
+      "id": 52,
+      "task_id": "T01",
+      "slice_id": "S05",
+      "milestone_id": "M001",
+      "command": "grep -q 'resend' package.json",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T01:45:55.579Z"
     }
   ]
 }

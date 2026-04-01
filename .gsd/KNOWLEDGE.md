@@ -14,3 +14,13 @@
 **Context:** `/styleguide` renders all CSS custom properties visually — use it as the definitive reference when building S03 components. All styles on the styleguide use only CSS custom properties from global.css with no additional stylesheets.
 **Rule:** When building components in S03, reference `/styleguide` token names rather than hardcoding values. If a component needs a token that doesn't exist, add it to global.css first.
 **Files:** `src/pages/styleguide.astro`, `src/styles/global.css`
+
+## K004: @sanity/astro studioBasePath requires server rendering — use manual embed for static sites
+**Context:** `@sanity/astro`'s `studioBasePath` option injects a server-rendered route, requiring `output: 'server'` or `'hybrid'` with an adapter. This is incompatible with the project's `output: 'static'` mode.
+**Rule:** Embed Sanity Studio via a `client:only="react"` component (`src/components/Studio.tsx`) on a dedicated Astro page (`src/pages/admin/index.astro`). Use `PUBLIC_` prefixed env vars for project ID and dataset since Studio runs client-side. See D011.
+**Files:** `src/components/Studio.tsx`, `src/pages/admin/index.astro`, `sanity.config.ts`
+
+## K005: Sanity schema organization and query pattern
+**Context:** 12 schema types organized under `sanity/schemas/{objects,documents,singletons}/` with barrel export from `index.ts`. Every document type has a `language` field with `'en' | 'zh'`. Singletons use `{type}-{lang}` IDs (e.g. `siteSettings-en`).
+**Rule:** Use the typed GROQ helpers in `src/lib/sanity.ts` for all content fetching — each accepts a `language` parameter defaulting to `'en'`. When adding new schema types, add them to the barrel export and update the structure builder in `sanity/structure.ts`.
+**Files:** `sanity/schemas/index.ts`, `src/lib/sanity.ts`, `sanity/structure.ts`

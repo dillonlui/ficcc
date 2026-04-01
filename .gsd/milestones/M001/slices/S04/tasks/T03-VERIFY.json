@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M001/S04/T03",
+  "timestamp": 1775007385507,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 7046,
+      "verdict": "pass"
+    },
+    {
+      "command": "! test -d studio",
+      "exitCode": 0,
+      "durationMs": 18,
+      "verdict": "pass"
+    }
+  ]
+}
