@@ -76,6 +76,55 @@ export function getServiceTimes(lang: Lang = 'en'): { heading: string; items: Se
   };
 }
 
+/**
+ * Asymmetric route map: pages where EN and ZH paths differ beyond the /zh prefix.
+ * Key = source path, Value = counterpart path.
+ */
+const ASYMMETRIC_ROUTES: Record<string, string> = {
+  '/visit': '/zh/sundays',
+  '/zh/sundays': '/visit',
+};
+
+/**
+ * Pages that exist only in one language and have no counterpart.
+ * These fall back to the other language's homepage.
+ */
+const NO_COUNTERPART = ['/resources', '/styleguide', '/admin', '/404'];
+
+/**
+ * Given a pathname and current language, return the URL for the same page
+ * in the other language. Handles asymmetric routes, prefix swapping,
+ * trailing-slash normalization, and falls back to the other-language homepage
+ * when no counterpart exists.
+ */
+export function getAlternateUrl(pathname: string, currentLang: Lang): string {
+  // Normalize: strip trailing slash (but keep "/" as-is)
+  const normalized = pathname.length > 1 && pathname.endsWith('/')
+    ? pathname.slice(0, -1)
+    : pathname;
+
+  // Check asymmetric routes first
+  if (ASYMMETRIC_ROUTES[normalized]) {
+    return ASYMMETRIC_ROUTES[normalized];
+  }
+
+  // Check if this page has no counterpart → fall back to other-language homepage
+  if (NO_COUNTERPART.some((p) => normalized === p || normalized.startsWith(p + '/'))) {
+    return currentLang === 'en' ? '/zh' : '/';
+  }
+
+  if (currentLang === 'en') {
+    // EN → ZH: prepend /zh
+    return normalized === '/' ? '/zh' : `/zh${normalized}`;
+  }
+
+  // ZH → EN: strip /zh prefix
+  if (normalized === '/zh') {
+    return '/';
+  }
+  return normalized.replace(/^\/zh/, '');
+}
+
 /** Church name by language for copyright, logos, etc. */
 export function getChurchName(lang: Lang = 'en'): string {
   return lang === 'zh'

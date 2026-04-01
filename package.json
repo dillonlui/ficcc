@@ -9,7 +9,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lhci": "npm run build && lhci autorun"
+    "lhci": "npm run build && lhci autorun",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.2",
@@ -28,6 +29,7 @@
     "sanity": "^5.18.0"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.15.1"
+    "@lhci/cli": "^0.15.1",
+    "vitest": "^4.1.2"
   }
 }

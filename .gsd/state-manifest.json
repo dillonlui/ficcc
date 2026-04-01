@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T17:04:57.430Z",
+  "exported_at": "2026-04-01T17:12:46.631Z",
   "milestones": [
     {
       "id": "M001",
@@ -629,16 +629,16 @@
       "milestone_id": "M003",
       "id": "S03",
       "title": "ZH Sermons, Events & Transactional",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [
         "S01"
       ],
       "demo": "ZH Sermons, Events, Give, and Contact pages with WeChat",
       "created_at": "2026-03-31T22:34:23.911Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-01T17:07:13.968Z",
+      "full_summary_md": "---\nid: S03\nparent: M003\nmilestone: M003\nprovides:\n  - ZH sermons listing and detail pages at /zh/sermons/\n  - ZH events page at /zh/events/\n  - ZH give page at /zh/give/\n  - ZH contact page at /zh/contact/ with WeChat section\nrequires:\n  - slice: S01\n    provides: BaseLayout lang='zh' support, ZH Header/Footer navigation, /zh/ routing pattern\naffects:\n  - S04\n  - S05\nkey_files:\n  - src/pages/zh/sermons/index.astro\n  - src/pages/zh/sermons/[slug].astro\n  - src/pages/zh/events.astro\n  - src/pages/zh/give.astro\n  - src/pages/zh/contact.astro\nkey_decisions:\n  - Built ZH contact as bespoke page with WeChat-first design rather than cloning EN 4-tab contact\n  - Used WeChat brand green (#07c160) for contact page icon\n  - Inline QR placeholder box instead of external SVG asset\n  - Used Chinese Union Version for Bible verse translation (哥林多後書 9:7)\npatterns_established:\n  - ZH transactional pages follow same clone-and-swap pattern as ZH core pages: getX('zh'), lang='zh' to BaseLayout, translated UI text, /zh/ internal links\n  - Bespoke page design when ZH needs differ significantly from EN (contact page WeChat-first vs EN form-first)\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M003/slices/S03/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M003/slices/S03/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M003/slices/S03/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:07:13.970Z\nblocker_discovered: false\n---\n\n# S03: ZH Sermons, Events & Transactional\n\n**Delivered ZH Sermons listing/detail, Events, Give, and Contact pages — completing all Chinese transactional pages with bespoke WeChat-first contact experience**\n\n## What Happened\n\nThree tasks delivered five ZH pages at /zh/ paths, completing the Chinese transactional page set.\n\nT01 cloned EN sermons to /zh/sermons/ (listing + [slug] detail). Listing uses getSermons('zh'), Chinese hero text (證道), translated filter labels, and /zh/sermons/ links. Detail pages format dates with zh-CN locale and use Chinese meta labels (講員/日期/經文/系列). No detail pages generate yet since no ZH sermon content exists in Sanity — the listing renders an empty state in Chinese.\n\nT02 cloned EN events and give pages. Events at /zh/events/ uses getEvents('zh') with Chinese fallback events (主日崇拜, 主日學, 週五團契). Give at /zh/give/ translates all prose including the Bible verse to Chinese Union Version (哥林多後書 9:7), with giving methods (網上奉獻/PayPal, 支票奉獻, 現場奉獻) and /zh/contact cross-link.\n\nT03 built a bespoke contact page at /zh/contact/ — deliberately NOT a clone of the EN 4-tab contact page (1,450 LOC). Instead: a hero (聯繫我們), prominent WeChat section with brand-green icon and inline QR placeholder, simplified 3-field form (姓名/電郵/訊息) with client-side validation in Chinese, and a church info sidebar with Chinese labels. All CSS uses design tokens from global.css.\n\n## Verification\n\nFull build (npm run build) succeeded in 8.19s. All output files verified:\n- dist/client/zh/sermons/index.html: exists, contains lang=\"zh\" and 講\n- dist/client/zh/events/index.html: exists, contains 活動 and 主日崇拜\n- dist/client/zh/give/index.html: exists, contains 奉獻\n- dist/client/zh/contact/index.html: exists, contains WeChat/微信, lang=\"zh\", and 聯繫\n- Give page correctly cross-links to /zh/contact\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nT03 used an inline SVG QR placeholder box instead of /images/wechat-qr-placeholder.svg — avoids external asset dependency while maintaining visual structure.\n\n## Known Limitations\n\nZH sermon detail pages don't generate yet — requires ZH sermon content in Sanity. Contact form uses action='#' placeholder — no server-side form handling for ZH contact (EN contact has Turnstile + Resend API). No Turnstile integration on ZH contact form.\n\n## Follow-ups\n\nWeChat QR code image needs to be provided by church staff to replace the placeholder box. ZH contact form backend (Turnstile + Resend) can be wired in S05 or a later slice if needed.\n\n## Files Created/Modified\n\n- `src/pages/zh/sermons/index.astro` — ZH sermons listing with getSermons('zh'), Chinese UI, series filter\n- `src/pages/zh/sermons/[slug].astro` — ZH sermon detail with zh-CN date format, Chinese meta labels\n- `src/pages/zh/events.astro` — ZH events with getEvents('zh'), Chinese fallback events\n- `src/pages/zh/give.astro` — ZH give page with Chinese prose, Bible verse, giving methods\n- `src/pages/zh/contact.astro` — Bespoke ZH contact with WeChat section, simplified form, Chinese sidebar\n",
+      "full_uat_md": "# S03: ZH Sermons, Events & Transactional — UAT\n\n**Milestone:** M003\n**Written:** 2026-04-01T17:07:13.970Z\n\n# S03: ZH Sermons, Events & Transactional — UAT\n\n**Milestone:** M003\n**Written:** 2026-04-01\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: All pages are statically generated — build output verification confirms correct content, Chinese text, and lang attributes. No runtime behavior to test.\n\n## Preconditions\n\n- `npm run build` completes successfully\n- Build output exists in `dist/client/`\n\n## Smoke Test\n\nRun `npm run build && test -f dist/client/zh/sermons/index.html && test -f dist/client/zh/events/index.html && test -f dist/client/zh/give/index.html && test -f dist/client/zh/contact/index.html` — all four ZH transactional pages must exist.\n\n## Test Cases\n\n### 1. ZH Sermons Listing Page\n\n1. Open `dist/client/zh/sermons/index.html`\n2. Verify `<html lang=\"zh\">` attribute present\n3. Verify page contains 證道 (sermons heading)\n4. Verify series filter bar renders (dynamic from CMS, may be empty)\n5. Verify internal links point to `/zh/sermons/` paths, not `/sermons/`\n6. **Expected:** Fully Chinese sermons listing with correct lang attribute and /zh/ routing\n\n### 2. ZH Sermons Detail Page\n\n1. Check if any `dist/client/zh/sermons/*/index.html` files exist\n2. If ZH sermon content exists in Sanity, verify detail page has Chinese labels: 講員, 日期, 經文, 系列\n3. Verify date is formatted in zh-CN locale\n4. Verify back link points to `/zh/sermons`\n5. **Expected:** Detail pages generate when ZH sermon content exists; empty state is acceptable when no content\n\n### 3. ZH Events Page\n\n1. Open `dist/client/zh/events/index.html`\n2. Verify `<html lang=\"zh\">` attribute\n3. Verify Chinese section headings: 即將舉行的活動, 過往活動\n4. Verify fallback events render in Chinese: 主日崇拜, 主日學, 週五團契\n5. **Expected:** Events page with Chinese UI text and fallback event content\n\n### 4. ZH Give Page\n\n1. Open `dist/client/zh/give/index.html`\n2. Verify `<html lang=\"zh\">` attribute\n3. Verify 奉獻 heading present\n4. Verify Chinese Bible verse reference (哥林多後書 9:7)\n5. Verify three giving methods in Chinese: 網上奉獻, 支票奉獻, 現場奉獻\n6. Verify link to `/zh/contact` (not `/contact`)\n7. **Expected:** Give page with fully translated Chinese prose and correct cross-links\n\n### 5. ZH Contact Page — WeChat Section\n\n1. Open `dist/client/zh/contact/index.html`\n2. Verify `<html lang=\"zh\">` attribute\n3. Verify 聯繫我們 hero heading\n4. Verify WeChat/微信 section is present and prominent\n5. Verify WeChat icon uses brand green (#07c160)\n6. Verify QR code placeholder area exists\n7. **Expected:** WeChat section is the primary contact method, visually prominent\n\n### 6. ZH Contact Page — Form and Sidebar\n\n1. In `dist/client/zh/contact/index.html`, verify simplified contact form\n2. Verify Chinese form labels: 姓名, 電郵, 訊息\n3. Verify submit button text: 發送\n4. Verify church info sidebar with Chinese labels: 教會地址, 主日崇拜, 電子郵件, 電話\n5. **Expected:** Simplified 3-field form (not 4-tab like EN) with Chinese labels and church info\n\n## Edge Cases\n\n### No ZH Sermon Content in Sanity\n\n1. Build with no ZH sermon documents in Sanity\n2. **Expected:** Sermons listing shows Chinese empty state text, no detail pages generated, build succeeds\n\n### No ZH Event Content in Sanity\n\n1. Build with no ZH event documents in Sanity\n2. **Expected:** Events page shows Chinese fallback events (主日崇拜, 主日學, 週五團契), build succeeds\n\n## Failure Signals\n\n- Build fails with missing file errors for any `/zh/` transactional page\n- Any page outputs `lang=\"en\"` instead of `lang=\"zh\"`\n- English text appears where Chinese should be (e.g. \"Sermons\" instead of \"證道\")\n- Links point to EN paths (e.g. `/sermons/` instead of `/zh/sermons/`)\n- Contact page missing WeChat section\n\n## Not Proven By This UAT\n\n- ZH contact form actually submits (no backend wired)\n- WeChat QR code scans correctly (placeholder only)\n- Sermon detail pages render with real ZH content (no ZH sermons in Sanity yet)\n- Visual design quality (artifact-driven UAT checks content, not layout)\n- Mobile responsive behavior of ZH pages\n\n## Notes for Tester\n\n- ZH contact page is intentionally different from EN — 1 form instead of 4 tabs, WeChat section instead of Turnstile-protected forms\n- WeChat QR is a placeholder box — real QR code image needs to be provided by church staff\n- Sermon detail pages only generate if ZH sermon documents exist in Sanity\n",
       "goal": "Create ZH Sermons (listing + detail), Events, Give, and Contact pages at /zh/ paths, completing all Chinese ministry transactional pages.",
       "success_criteria": "## Must-Haves\n\n- ZH Sermons listing at `/zh/sermons/` with Chinese labels, series filter, and links to `/zh/sermons/[slug]`\n- ZH Sermon detail at `/zh/sermons/[slug]` with Chinese meta labels (講員, 日期, 經文, 系列)\n- ZH Events at `/zh/events` with Chinese section headings and fallback events in Chinese\n- ZH Give at `/zh/give` with Chinese prose, verse in Chinese, and `/zh/contact` link\n- ZH Contact at `/zh/contact` with WeChat section as primary CTA, Chinese church info sidebar, and simplified Chinese contact form\n- All pages pass `lang=\"zh\"` to BaseLayout\n- All internal links use `/zh/` paths\n- CMS fetches wrapped in try-catch for build resilience (K008)\n- EN pages unchanged — no Chinese content leaked\n\n## Verification\n\n```bash\nnpm run build && \\\ntest -f dist/client/zh/sermons/index.html && \\\ntest -f dist/client/zh/events/index.html && \\\ntest -f dist/client/zh/give/index.html && \\\ntest -f dist/client/zh/contact/index.html && \\\ngrep -q 'lang=\"zh\"' dist/client/zh/sermons/index.html && \\\ngrep -q '講' dist/client/zh/sermons/index.html && \\\ngrep -q '活動' dist/client/zh/events/index.html && \\\ngrep -q '奉獻' dist/client/zh/give/index.html && \\\ngrep -q '微信\\|WeChat' dist/client/zh/contact/index.html && \\\n! grep -q '證道\\|講道\\|奉獻\\|微信' dist/client/sermons/index.html && \\\necho \"S03 verification passed\"\n```",
       "proof_level": "Build-time static output verification. No runtime required.",
@@ -661,11 +661,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Bilingual wiring: language toggle, hreflang tags, lang attribute, route-level separation",
-      "success_criteria": "EN ↔ ZH toggle on every page. URL updates to /zh/ prefix. lang attribute switches. Cookie persists preference. hreflang tags on all page pairs.",
-      "proof_level": "Toggle works on every page. hreflang tags validated. lang attribute correct.",
-      "integration_closure": "All EN pages have corresponding ZH links and vice versa",
-      "observability_impact": "Language toggle usage tracked in analytics",
+      "goal": "Language toggle navigates to the correct counterpart page in the other language, and every bilingual page emits hreflang alternate tags for SEO.",
+      "success_criteria": "## Must-Haves\n\n- `getAlternateUrl(pathname, lang)` utility handles standard prefix swap, asymmetric routes (`/visit` ↔ `/zh/sundays`), and fallback to other-language homepage\n- Header lang toggle href uses computed alternate URL (not hardcoded `/` or `/zh`)\n- SEO component emits `<link rel=\"alternate\" hreflang=\"en\">` and `<link rel=\"alternate\" hreflang=\"zh\">` tags with absolute URLs on every bilingual page\n- BaseLayout computes and threads `alternateUrl` to both Header and SEO\n- Cookie `lang-pref` is set on toggle click (client-side script)\n- `npm run build` succeeds with no regressions\n- Unit tests pass for route mapping logic\n\n## Proof Level\n\n- This slice proves: integration\n- Real runtime required: no (static build output verification)\n- Human/UAT required: no\n\n## Verification\n\n- `npx vitest run --reporter=verbose` — unit tests for `getAlternateUrl` pass (standard swap, asymmetric, fallback, trailing slash)\n- `npm run build` succeeds\n- `grep -q 'href=\"/zh/about\"' dist/client/about/index.html` — EN about toggle points to ZH about\n- `grep -q 'href=\"/about\"' dist/client/zh/about/index.html` — ZH about toggle points to EN about\n- `grep -q 'href=\"/zh/sundays\"' dist/client/visit/index.html` — asymmetric: EN visit toggle points to ZH sundays\n- `grep -q 'hreflang=\"zh\"' dist/client/about/index.html` — EN about has ZH hreflang\n- `grep -q 'hreflang=\"en\"' dist/client/zh/about/index.html` — ZH about has EN hreflang\n- `grep -q 'lang-pref' dist/client/about/index.html` — cookie script present\n\n## Integration Closure\n\n- Upstream surfaces consumed: `src/lib/navigation.ts` (Lang type, nav config from S01), `src/components/Header.astro` (lang toggle link from S01), `src/components/SEO.astro` (canonical URL pattern from M001), `src/layouts/BaseLayout.astro` (lang prop threading from S01)\n- New wiring introduced in this slice: `getAlternateUrl()` function in navigation.ts, `alternateUrl` prop threaded through BaseLayout → Header + SEO, client-side cookie script in BaseLayout\n- What remains before the milestone is truly usable end-to-end: S05 (CM content migration into Sanity)",
+      "proof_level": "integration",
+      "integration_closure": "Upstream: navigation.ts Lang type, Header.astro toggle, SEO.astro canonical pattern, BaseLayout.astro lang threading. New wiring: getAlternateUrl() utility, alternateUrl prop through BaseLayout → Header + SEO, cookie script. Remaining: S05 content migration.",
+      "observability_impact": "None — static pages with no runtime behavior. Route mapping correctness verified via unit tests and build output grep.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -2936,6 +2936,90 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S04",
+      "id": "T01",
+      "title": "Added getAlternateUrl utility with asymmetric route map, trailing-slash normalization, and homepage fallback — 20 Vitest unit tests pass",
+      "status": "complete",
+      "one_liner": "Added getAlternateUrl utility with asymmetric route map, trailing-slash normalization, and homepage fallback — 20 Vitest unit tests pass",
+      "narrative": "Installed vitest, added test script to package.json, built getAlternateUrl in src/lib/navigation.ts with asymmetric route lookup, prefix swap logic, trailing-slash normalization, and no-counterpart fallback. Created 20 unit tests covering all specified cases.",
+      "verification_result": "npx vitest run --reporter=verbose: 20/20 tests pass, 1 test file, 95ms",
+      "duration": "",
+      "completed_at": "2026-04-01T17:12:46.612Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/lib/navigation.ts",
+        "src/lib/navigation.test.ts",
+        "package.json"
+      ],
+      "key_decisions": [
+        "Asymmetric route map as simple Record — only one pair exists",
+        "NO_COUNTERPART list for EN-only pages falling back to other-language homepage"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S04\nmilestone: M003\nkey_files:\n  - src/lib/navigation.ts\n  - src/lib/navigation.test.ts\n  - package.json\nkey_decisions:\n  - Asymmetric route map as simple Record — only one pair exists\n  - NO_COUNTERPART list for EN-only pages falling back to other-language homepage\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T17:12:46.613Z\nblocker_discovered: false\n---\n\n# T01: Added getAlternateUrl utility with asymmetric route map, trailing-slash normalization, and homepage fallback — 20 Vitest unit tests pass\n\n**Added getAlternateUrl utility with asymmetric route map, trailing-slash normalization, and homepage fallback — 20 Vitest unit tests pass**\n\n## What Happened\n\nInstalled vitest, added test script to package.json, built getAlternateUrl in src/lib/navigation.ts with asymmetric route lookup, prefix swap logic, trailing-slash normalization, and no-counterpart fallback. Created 20 unit tests covering all specified cases.\n\n## Verification\n\nnpx vitest run --reporter=verbose: 20/20 tests pass, 1 test file, 95ms\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npx vitest run --reporter=verbose` | 0 | ✅ pass | 95ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/lib/navigation.ts`\n- `src/lib/navigation.test.ts`\n- `package.json`\n",
+      "description": "Add `getAlternateUrl(pathname: string, currentLang: Lang): string` to `src/lib/navigation.ts` and set up Vitest with comprehensive unit tests.\n\n## Steps\n\n1. Install vitest as a dev dependency: `npm i -D vitest`\n2. Add `\"test\": \"vitest run\"` to package.json scripts if not present\n3. Add `getAlternateUrl` function to `src/lib/navigation.ts` with:\n   - An explicit asymmetric route map: `{ '/visit': '/zh/sundays', '/zh/sundays': '/visit' }`\n   - Trailing slash normalization (strip before matching, don't add back)\n   - Standard prefix swap logic: EN `/about` → ZH `/zh/about`, ZH `/zh/about` → EN `/about`\n   - Fallback: pages with no counterpart (e.g. `/resources`, `/styleguide`, `/admin/*`, `/404`) → other language homepage (`/zh` or `/`)\n   - Handle root paths: `/` → `/zh`, `/zh` → `/`\n4. Create `src/lib/navigation.test.ts` with test cases:\n   - Standard swap: `/about` (en) → `/zh/about`, `/zh/about` (zh) → `/about`\n   - Nested paths: `/about/beliefs` (en) → `/zh/about/beliefs`\n   - Asymmetric: `/visit` (en) → `/zh/sundays`, `/zh/sundays` (zh) → `/visit`\n   - Root: `/` (en) → `/zh`, `/zh` (zh) → `/`\n   - Fallback: `/resources` (en) → `/zh`, `/styleguide` (en) → `/zh`\n   - Trailing slash: `/about/` (en) → `/zh/about`\n   - Dynamic routes: `/sermons/some-slug` (en) → `/zh/sermons/some-slug`\n5. Run `npx vitest run` and confirm all tests pass\n\n## Must-Haves\n\n- [ ] `getAlternateUrl` exported from `src/lib/navigation.ts`\n- [ ] Asymmetric route map covers `/visit` ↔ `/zh/sundays`\n- [ ] Fallback to homepage for pages with no counterpart\n- [ ] Trailing slash normalization\n- [ ] All unit tests pass",
+      "estimate": "30m",
+      "files": [
+        "src/lib/navigation.ts",
+        "src/lib/navigation.test.ts",
+        "package.json"
+      ],
+      "verify": "npx vitest run --reporter=verbose",
+      "inputs": [
+        "`src/lib/navigation.ts` — existing navigation module with Lang type and nav link functions"
+      ],
+      "expected_output": [
+        "`src/lib/navigation.ts` — updated with getAlternateUrl function",
+        "`src/lib/navigation.test.ts` — unit tests for route mapping",
+        "`package.json` — vitest dev dependency and test script added"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M003",
+      "slice_id": "S04",
+      "id": "T02",
+      "title": "Wire alternate URL into Header toggle, SEO hreflang, and BaseLayout",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Thread the computed alternate URL from BaseLayout into Header (toggle href) and SEO (hreflang tags), add cookie-set script, and verify with build output.\n\n## Steps\n\n1. Update `src/layouts/BaseLayout.astro`:\n   - Import `getAlternateUrl` from `../lib/navigation`\n   - Compute `const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as 'en' | 'zh');`\n   - Compute absolute alternate URL: `const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.org').href;`\n   - Pass `alternateUrl` to Header: `<Header lang={lang} langToggleHref={alternateUrl} />`\n   - Pass `alternateUrl` and `lang` to SEO: `<SEO ... alternateUrl={absoluteAlternateUrl} />`\n   - Add a small inline `<script>` that sets `document.cookie = 'lang-pref=' + document.documentElement.lang + ';path=/;max-age=31536000;SameSite=Lax'` on click of `.lang-toggle` link\n2. Update `src/components/Header.astro`:\n   - Add `langToggleHref?: string` to Props interface\n   - Replace `const langToggleHref = lang === 'zh' ? '/' : '/zh';` with `const langToggleHref = Astro.props.langToggleHref ?? (lang === 'zh' ? '/' : '/zh');` (fallback preserves existing behavior if prop not passed)\n3. Update `src/components/SEO.astro`:\n   - Add `alternateUrl?: string` to Props interface\n   - When `alternateUrl` is provided, emit two `<link rel=\"alternate\">` tags:\n     - `<link rel=\"alternate\" hreflang=\"en\" href={lang === 'en' ? canonical : alternateUrl} />`\n     - `<link rel=\"alternate\" hreflang=\"zh\" href={lang === 'zh' ? canonical : alternateUrl} />`\n     - Also emit `<link rel=\"alternate\" hreflang=\"x-default\" href={lang === 'en' ? canonical : alternateUrl} />` (EN as default)\n4. Run `npm run build` and verify:\n   - `grep -q 'href=\"/zh/about\"' dist/client/about/index.html` (EN about toggle → ZH about)\n   - `grep -q 'href=\"/about\"' dist/client/zh/about/index.html` (ZH about toggle → EN about)\n   - `grep -q 'href=\"/zh/sundays\"' dist/client/visit/index.html` (asymmetric mapping)\n   - `grep -q 'hreflang=\"zh\"' dist/client/about/index.html` (hreflang present)\n   - `grep -q 'hreflang=\"en\"' dist/client/zh/about/index.html` (hreflang present)\n   - `grep -q 'lang-pref' dist/client/about/index.html` (cookie script present)\n5. Run `npx vitest run` to confirm unit tests still pass\n\n## Must-Haves\n\n- [ ] Header toggle uses computed alternate URL from BaseLayout\n- [ ] SEO emits hreflang alternate tags with absolute URLs\n- [ ] BaseLayout computes and threads alternateUrl to both components\n- [ ] Cookie script sets `lang-pref` on toggle click\n- [ ] `npm run build` succeeds\n- [ ] All verification greps pass on built output",
+      "estimate": "45m",
+      "files": [
+        "src/layouts/BaseLayout.astro",
+        "src/components/Header.astro",
+        "src/components/SEO.astro"
+      ],
+      "verify": "npm run build && grep -q 'href=\"/zh/about\"' dist/client/about/index.html && grep -q 'href=\"/about\"' dist/client/zh/about/index.html && grep -q 'href=\"/zh/sundays\"' dist/client/visit/index.html && grep -q 'hreflang=\"zh\"' dist/client/about/index.html && grep -q 'hreflang=\"en\"' dist/client/zh/about/index.html && grep -q 'lang-pref' dist/client/about/index.html && echo 'ALL CHECKS PASS'",
+      "inputs": [
+        "`src/lib/navigation.ts` — getAlternateUrl function from T01",
+        "`src/layouts/BaseLayout.astro` — existing layout with lang prop",
+        "`src/components/Header.astro` — existing header with hardcoded toggle href",
+        "`src/components/SEO.astro` — existing SEO component with canonical URL logic"
+      ],
+      "expected_output": [
+        "`src/layouts/BaseLayout.astro` — computes and threads alternateUrl to Header and SEO, adds cookie script",
+        "`src/components/Header.astro` — uses langToggleHref prop instead of hardcoded value",
+        "`src/components/SEO.astro` — emits hreflang alternate link tags"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -5091,6 +5175,17 @@
       "verdict": "✅ pass",
       "duration_ms": 10,
       "created_at": "2026-04-01T17:04:57.411Z"
+    },
+    {
+      "id": 178,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M003",
+      "command": "npx vitest run --reporter=verbose",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 95,
+      "created_at": "2026-04-01T17:12:46.612Z"
     }
   ]
 }
