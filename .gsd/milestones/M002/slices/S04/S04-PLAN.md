@@ -26,7 +26,7 @@
   - Estimate: 45m
   - Files: sanity/schemas/documents/sermon.ts, src/lib/sanity.ts, src/components/SermonCard.astro, src/components/YouTubeEmbed.astro
   - Verify: grep -q 'slug' sanity/schemas/documents/sermon.ts && grep -q 'getSermonBySlug' src/lib/sanity.ts && test -f src/components/SermonCard.astro && test -f src/components/YouTubeEmbed.astro && grep -q 'youtube-nocookie.com' src/components/YouTubeEmbed.astro && ! grep -q 'client:' src/components/SermonCard.astro && ! grep -q 'client:' src/components/YouTubeEmbed.astro
-- [ ] **T02: Build sermons listing page with series filter and sermon detail page with YouTube embed** — Build both user-facing sermon pages. The listing page at /sermons shows a Hero, a series filter bar, and a grid of SermonCard components. The detail page at /sermons/[slug] shows sermon metadata and a YouTubeEmbed. Both use BaseLayout, try-catch CMS fetching with hardcoded fallbacks, and pure Astro patterns.
+- [x] **T02: Built /sermons listing with series pill filter and /sermons/[slug] detail page with metadata grid and conditional YouTube embed** — Build both user-facing sermon pages. The listing page at /sermons shows a Hero, a series filter bar, and a grid of SermonCard components. The detail page at /sermons/[slug] shows sermon metadata and a YouTubeEmbed. Both use BaseLayout, try-catch CMS fetching with hardcoded fallbacks, and pure Astro patterns.
 
 ## Steps
 

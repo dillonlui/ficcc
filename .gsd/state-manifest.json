@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:50:27.968Z",
+  "exported_at": "2026-04-01T13:52:29.081Z",
   "milestones": [
     {
       "id": "M001",
@@ -2214,19 +2214,25 @@
       "milestone_id": "M002",
       "slice_id": "S04",
       "id": "T02",
-      "title": "Build sermons listing page with series filter and sermon detail page with YouTube embed",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Built /sermons listing with series pill filter and /sermons/[slug] detail page with metadata grid and conditional YouTube embed",
+      "status": "complete",
+      "one_liner": "Built /sermons listing with series pill filter and /sermons/[slug] detail page with metadata grid and conditional YouTube embed",
+      "narrative": "Created both sermon pages. The listing at /sermons renders a Hero, centered pill-style filter bar (All + per-series buttons), and a responsive 3/2/1 column card grid with inline script toggling hidden attributes for filtering. Empty CMS renders a fallback message. The detail page at /sermons/[slug] uses getStaticPaths() with full sermon props, shows a metadata grid (speaker, date, scripture, series), conditionally renders YouTubeEmbed, and includes a back link. Both use BaseLayout and try-catch CMS fetch pattern.",
+      "verification_result": "npm run build succeeds (9 pages built). Both files exist at expected paths. No client: directives in either file. Empty CMS state handled gracefully — listing shows fallback message, [slug] generates zero pages without error.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T13:52:29.069Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/pages/sermons/index.astro",
+        "src/pages/sermons/[slug].astro"
+      ],
+      "key_decisions": [
+        "Wrapped sermon cards in grid-item divs with data-series for filter toggling rather than applying hidden directly to SermonCard",
+        "Used getSermons() in getStaticPaths passing full sermon as props to avoid double-fetch"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S04\nmilestone: M002\nkey_files:\n  - src/pages/sermons/index.astro\n  - src/pages/sermons/[slug].astro\nkey_decisions:\n  - Wrapped sermon cards in grid-item divs with data-series for filter toggling rather than applying hidden directly to SermonCard\n  - Used getSermons() in getStaticPaths passing full sermon as props to avoid double-fetch\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:52:29.070Z\nblocker_discovered: false\n---\n\n# T02: Built /sermons listing with series pill filter and /sermons/[slug] detail page with metadata grid and conditional YouTube embed\n\n**Built /sermons listing with series pill filter and /sermons/[slug] detail page with metadata grid and conditional YouTube embed**\n\n## What Happened\n\nCreated both sermon pages. The listing at /sermons renders a Hero, centered pill-style filter bar (All + per-series buttons), and a responsive 3/2/1 column card grid with inline script toggling hidden attributes for filtering. Empty CMS renders a fallback message. The detail page at /sermons/[slug] uses getStaticPaths() with full sermon props, shows a metadata grid (speaker, date, scripture, series), conditionally renders YouTubeEmbed, and includes a back link. Both use BaseLayout and try-catch CMS fetch pattern.\n\n## Verification\n\nnpm run build succeeds (9 pages built). Both files exist at expected paths. No client: directives in either file. Empty CMS state handled gracefully — listing shows fallback message, [slug] generates zero pages without error.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build 2>&1 | tail -5 && test -f src/pages/sermons/index.astro && test -f src/pages/sermons/[slug].astro && ! grep -q client: src/pages/sermons/index.astro && ! grep -q client: src/pages/sermons/[slug].astro` | 0 | ✅ pass | 7300ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/pages/sermons/index.astro`\n- `src/pages/sermons/[slug].astro`\n",
       "description": "Build both user-facing sermon pages. The listing page at /sermons shows a Hero, a series filter bar, and a grid of SermonCard components. The detail page at /sermons/[slug] shows sermon metadata and a YouTubeEmbed. Both use BaseLayout, try-catch CMS fetching with hardcoded fallbacks, and pure Astro patterns.\n\n## Steps\n\n1. Create `src/pages/sermons/index.astro` — import BaseLayout, Hero, SermonCard. Fetch sermons via `getSermons()` wrapped in try-catch (empty array fallback). Extract distinct series values from fetched sermons. Render Hero with title 'Sermons' and a subtitle. Render a filter bar with 'All' button + one button per series. Render sermon cards in a responsive grid. Add an inline `<script>` that listens for filter button clicks and toggles `hidden` attribute on sermon cards based on `data-series` match. Show a 'No sermons available' message when the array is empty.\n2. Style the listing page — series filter buttons as pill-style toggles with active state, responsive grid (3 columns desktop, 2 tablet, 1 mobile), consistent spacing using CSS custom properties.\n3. Create `src/pages/sermons/[slug].astro` — implement `getStaticPaths()` that fetches all sermons and returns params with slug + full sermon as props. Import BaseLayout, Hero, YouTubeEmbed. Render Hero with sermon title. Show metadata block (speaker, date, scripture, series). Conditionally render YouTubeEmbed when videoId exists. Handle empty getStaticPaths gracefully (returns empty array when no sermons exist).\n4. Style the detail page — metadata in a clean layout, YouTube embed centered with max-width, back link to /sermons.\n5. Run `npm run build` to verify both pages build successfully and handle empty CMS state.\n\n## Must-Haves\n\n- [ ] /sermons/index.astro renders with Hero, filter bar, and sermon card grid\n- [ ] Series filter uses inline script toggling hidden attribute — no client:* directives\n- [ ] Filter has 'All' option that shows all sermons\n- [ ] /sermons/[slug].astro uses getStaticPaths() with sermon data as props\n- [ ] Detail page shows sermon metadata (title, speaker, date, scripture, series)\n- [ ] Detail page conditionally renders YouTubeEmbed when videoId is present\n- [ ] Both pages use BaseLayout and try-catch CMS fetch pattern\n- [ ] npm run build succeeds with empty CMS (zero sermons)\n- [ ] No client:* directives on either page",
       "estimate": "1h",
       "files": [
@@ -3852,6 +3858,17 @@
       "verdict": "✅ pass",
       "duration_ms": 200,
       "created_at": "2026-04-01T13:50:27.947Z"
+    },
+    {
+      "id": 130,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M002",
+      "command": "npm run build 2>&1 | tail -5 && test -f src/pages/sermons/index.astro && test -f src/pages/sermons/[slug].astro && ! grep -q client: src/pages/sermons/index.astro && ! grep -q client: src/pages/sermons/[slug].astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7300,
+      "created_at": "2026-04-01T13:52:29.069Z"
     }
   ]
 }

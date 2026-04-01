@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M002/S04/T01",
+  "timestamp": 1775051430751,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "grep -q 'slug' sanity/schemas/documents/sermon.ts",
+      "exitCode": 0,
+      "durationMs": 21,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'getSermonBySlug' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 18,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f src/components/SermonCard.astro",
+      "exitCode": 0,
+      "durationMs": 13,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f src/components/YouTubeEmbed.astro",
+      "exitCode": 0,
+      "durationMs": 11,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'youtube-nocookie.com' src/components/YouTubeEmbed.astro",
+      "exitCode": 0,
+      "durationMs": 13,
+      "verdict": "pass"
+    },
+    {
+      "command": "! grep -q 'client:' src/components/SermonCard.astro",
+      "exitCode": 0,
+      "durationMs": 15,
+      "verdict": "pass"
+    },
+    {
+      "command": "! grep -q 'client:' src/components/YouTubeEmbed.astro",
+      "exitCode": 0,
+      "durationMs": 14,
+      "verdict": "pass"
+    }
+  ]
+}
