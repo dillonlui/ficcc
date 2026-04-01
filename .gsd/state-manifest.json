@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T13:37:55.788Z",
+  "exported_at": "2026-04-01T13:41:17.401Z",
   "milestones": [
     {
       "id": "M001",
@@ -2080,19 +2080,25 @@
       "milestone_id": "M002",
       "slice_id": "S03",
       "id": "T02",
-      "title": "Build /visit page with Hero, schedule, what-to-expect, transportation, and FAQ sections",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Built complete /visit page with Hero, Sunday schedule cards, what-to-expect, transportation/directions with embedded map, and 6-question FAQ accordion — all CMS-wired with hardcoded fallbacks",
+      "status": "complete",
+      "one_liner": "Built complete /visit page with Hero, Sunday schedule cards, what-to-expect, transportation/directions with embedded map, and 6-question FAQ accordion — all CMS-wired with hardcoded fallbacks",
+      "narrative": "Created src/pages/visit.astro following the index.astro CMS-fetch pattern. The page fetches visitPage data via getVisitPage('en') with try-catch fallback. Five content sections: Hero (reused component), Schedule (custom card grid with time + label + description), What to Expect (portable text or fallback HTML), Getting Here (two-column with transportation text and Google Maps iframe), and FAQ (6 items via Accordion component). All scoped CSS using only global.css custom properties. Responsive layout. No client directives.",
+      "verification_result": "All 9 verification checks pass: file exists, Accordion component used, getVisitPage present, no client: directives, npm run build exits 0 with /visit in output, plus all 4 slice-level checks (visitPage schema exists, registered in index, getVisitPage and VisitPage in sanity.ts).",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T13:41:17.382Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Switched two FAQ answer strings from single quotes to backtick template literals to fix curly apostrophe parse errors.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/pages/visit.astro"
+      ],
+      "key_decisions": [
+        "Used backtick template literals for FAQ answers containing apostrophes",
+        "Built schedule as custom card grid (not ServiceTimes) to support description field",
+        "Embedded Google Maps iframe in transportation section"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S03\nmilestone: M002\nkey_files:\n  - src/pages/visit.astro\nkey_decisions:\n  - Used backtick template literals for FAQ answers containing apostrophes\n  - Built schedule as custom card grid (not ServiceTimes) to support description field\n  - Embedded Google Maps iframe in transportation section\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T13:41:17.382Z\nblocker_discovered: false\n---\n\n# T02: Built complete /visit page with Hero, Sunday schedule cards, what-to-expect, transportation/directions with embedded map, and 6-question FAQ accordion — all CMS-wired with hardcoded fallbacks\n\n**Built complete /visit page with Hero, Sunday schedule cards, what-to-expect, transportation/directions with embedded map, and 6-question FAQ accordion — all CMS-wired with hardcoded fallbacks**\n\n## What Happened\n\nCreated src/pages/visit.astro following the index.astro CMS-fetch pattern. The page fetches visitPage data via getVisitPage('en') with try-catch fallback. Five content sections: Hero (reused component), Schedule (custom card grid with time + label + description), What to Expect (portable text or fallback HTML), Getting Here (two-column with transportation text and Google Maps iframe), and FAQ (6 items via Accordion component). All scoped CSS using only global.css custom properties. Responsive layout. No client directives.\n\n## Verification\n\nAll 9 verification checks pass: file exists, Accordion component used, getVisitPage present, no client: directives, npm run build exits 0 with /visit in output, plus all 4 slice-level checks (visitPage schema exists, registered in index, getVisitPage and VisitPage in sanity.ts).\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f src/pages/visit.astro` | 0 | ✅ pass | 100ms |\n| 2 | `grep -q 'Accordion' src/pages/visit.astro` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q 'getVisitPage' src/pages/visit.astro` | 0 | ✅ pass | 100ms |\n| 4 | `npm run build` | 0 | ✅ pass | 7900ms |\n| 5 | `test -f sanity/schemas/singletons/visitPage.ts` | 0 | ✅ pass | 100ms |\n| 6 | `grep -q 'visitPage' sanity/schemas/index.ts` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nSwitched two FAQ answer strings from single quotes to backtick template literals to fix curly apostrophe parse errors.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/pages/visit.astro`\n",
       "description": "Create the Plan a Visit page at src/pages/visit.astro with all content sections composed from existing and new components, wired to CMS data with hardcoded fallbacks.\n\n## Steps\n\n1. Create `src/pages/visit.astro`. Import BaseLayout, Hero, Accordion, and getVisitPage/urlForImage/portableTextToHtml from sanity.ts.\n2. Fetch visitPage data via getVisitPage('en') wrapped in try-catch (K008 pattern from index.astro). Define hardcoded fallbacks for all sections:\n   - Hero: title 'Plan Your Visit', subtitle 'Everything you need to know for your first Sunday with us'\n   - Schedule: [{label: 'Sunday Gathering', time: '9:45 AM', description: 'Worship service with singing, prayer, and a message from Scripture'}, {label: 'Sunday School', time: '11:15 AM', description: 'Age-specific classes for children, youth, and adults'}]\n   - What to expect: paragraphs about casual dress, welcoming atmosphere, kids welcome, etc.\n   - Transportation: address (429 Mitchell Street, Ithaca, NY 14850), parking info, Cornell campus proximity\n   - FAQ items: 5-6 common visitor questions (dress code, kids, language, parking, duration, how to connect)\n3. Build the page layout in this order: Hero → Schedule section (custom layout with time + description per entry, NOT reusing ServiceTimes since we need the description field) → What to Expect section (rendered via portableTextToHtml or fallback HTML) → Transportation/Directions section (with embedded Google Maps iframe or static address) → FAQ section using Accordion component.\n4. All sections should use pure Astro with scoped CSS and only CSS custom properties from global.css (D010). Each section gets a semantic `<section>` with aria-label.\n5. Ensure responsive layout: single column on mobile (<768px), comfortable reading width on desktop.\n6. Run `npm run build` to verify the page generates successfully.\n\n## Must-Haves\n\n- [ ] /visit page exists and builds successfully\n- [ ] Hero section with CMS data or fallback\n- [ ] Schedule section showing time + description per entry\n- [ ] What to Expect section with CMS portable text or fallback HTML\n- [ ] Transportation/directions section with church address\n- [ ] FAQ accordion using existing Accordion component with 5+ fallback questions\n- [ ] CMS fetch wrapped in try-catch with complete fallback content\n- [ ] All scoped CSS using only CSS custom properties from global.css\n- [ ] Responsive layout at mobile and desktop breakpoints\n\n## Verification\n\n- `test -f src/pages/visit.astro`\n- `grep -q 'Accordion' src/pages/visit.astro`\n- `grep -q 'getVisitPage' src/pages/visit.astro`\n- `npm run build` succeeds and output includes /visit\n- No `client:` directives in visit.astro (grep returns no matches)",
       "estimate": "45m",
       "files": [
@@ -3574,6 +3580,72 @@
       "verdict": "✅ pass",
       "duration_ms": 7200,
       "created_at": "2026-04-01T13:37:55.770Z"
+    },
+    {
+      "id": 114,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "test -f src/pages/visit.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:41:17.382Z"
+    },
+    {
+      "id": 115,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'Accordion' src/pages/visit.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:41:17.382Z"
+    },
+    {
+      "id": 116,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'getVisitPage' src/pages/visit.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:41:17.382Z"
+    },
+    {
+      "id": 117,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7900,
+      "created_at": "2026-04-01T13:41:17.382Z"
+    },
+    {
+      "id": 118,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "test -f sanity/schemas/singletons/visitPage.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:41:17.382Z"
+    },
+    {
+      "id": 119,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M002",
+      "command": "grep -q 'visitPage' sanity/schemas/index.ts",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T13:41:17.382Z"
     }
   ]
 }

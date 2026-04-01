@@ -30,7 +30,7 @@
   - Estimate: 25m
   - Files: sanity/schemas/singletons/visitPage.ts, sanity/schemas/index.ts, src/lib/sanity.ts
   - Verify: test -f sanity/schemas/singletons/visitPage.ts && grep -q 'visitPage' sanity/schemas/index.ts && grep -q 'getVisitPage' src/lib/sanity.ts && npm run build
-- [ ] **T02: Build /visit page with Hero, schedule, what-to-expect, transportation, and FAQ sections** — Create the Plan a Visit page at src/pages/visit.astro with all content sections composed from existing and new components, wired to CMS data with hardcoded fallbacks.
+- [x] **T02: Built complete /visit page with Hero, Sunday schedule cards, what-to-expect, transportation/directions with embedded map, and 6-question FAQ accordion — all CMS-wired with hardcoded fallbacks** — Create the Plan a Visit page at src/pages/visit.astro with all content sections composed from existing and new components, wired to CMS data with hardcoded fallbacks.
 
 ## Steps
 
