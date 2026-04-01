@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StaffCard from '../../../components/StaffCard.astro';
+import { getStaff, urlForImage } from '../../../lib/sanity';
+import type { Person } from '../../../lib/sanity';
+
+const title = '教牧同工 | 伊的家華人基督教會';
+const description =
+  '認識伊的家華人基督教會的教牧和事工同工團隊。';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let staff: Person[] = [];
+
+try {
+  staff = await getStaff('zh');
+} catch {
+  // Sanity unreachable — continue with fallbacks
+}
+
+// ---------- Hardcoded fallbacks ----------
+const fallbackStaff: Pick<Person, 'name' | 'role'>[] = [
+  { name: 'Rev. David Chen', role: '主任牧師' },
+  { name: 'Pastor Grace Liu', role: '副牧師' },
+  { name: 'Elder James Wang', role: '敬拜主任' },
+  { name: 'Sarah Thompson', role: '青年事工主任' },
+];
+
+const hasStaff = staff.length > 0;
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main class="staff-page">
+    <section class="staff-page__inner" aria-label="教牧同工">
+      <h1 class="staff-page__heading">教牧同工</h1>
+      <p class="staff-page__intro">
+        伊的家華人基督教會的教牧團隊和事工同工以共同的使命服事——忠心傳講神的話語、牧養祂的子民、裝備教會在伊薩卡及更遠的地方完成宣教使命。
+      </p>
+
+      <div class="staff-page__grid">
+        {hasStaff
+          ? staff.map((person) => (
+              <StaffCard
+                name={person.name}
+                role={person.role}
+                photoUrl={person.photo ? urlForImage(person.photo, { width: 400 }) : undefined}
+              />
+            ))
+          : fallbackStaff.map((person) => (
+              <StaffCard name={person.name} role={person.role} />
+            ))
+        }
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .staff-page {
+    padding-block: var(--space-16);
+  }
+
+  .staff-page__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .staff-page__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-4);
+  }
+
+  .staff-page__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    max-width: 48rem;
+    margin-block-end: var(--space-12);
+  }
+
+  .staff-page__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  @media (min-width: 640px) {
+    .staff-page__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .staff-page__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 639px) {
+    .staff-page__heading { font-size: var(--text-3xl); }
+    .staff-page__intro { font-size: var(--text-base); }
+  }
+</style>

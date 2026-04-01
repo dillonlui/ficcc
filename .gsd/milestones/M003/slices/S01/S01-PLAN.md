@@ -106,7 +106,7 @@ Create the ZH homepage at `src/pages/zh/index.astro` by cloning the EN homepage 
   - Estimate: 30m
   - Files: src/pages/zh/index.astro
   - Verify: npm run build && test -f dist/zh/index.html && grep -q 'lang="zh"' dist/zh/index.html && grep -q '歡迎' dist/zh/index.html
-- [ ] **T03: Build ZH About (with history timeline), Beliefs (EFCA 11-point), Staff, and Sundays (with bus route) pages** — ## Description
+- [x] **T03: Created 4 ZH core pages (About with history timeline, Beliefs with EFCA 11-point, Staff, Sundays with bus route) with Chinese fallback content at /zh/ paths** — ## Description
 
 Create the remaining 4 ZH core pages following the pattern established by the ZH Homepage in T02. Each page clones its EN counterpart, swaps queries to `'zh'`, provides Chinese fallback content, passes `lang='zh'`, and adjusts internal links to `/zh/...`. Two pages have ZH-specific bespoke content: About gets a 1983-2009 history timeline section, and Sundays gets a 7-stop bus route section.
 

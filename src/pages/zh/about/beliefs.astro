@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Accordion from '../../../components/Accordion.astro';
+import { getAboutPage, portableTextToHtml } from '../../../lib/sanity';
+
+const title = '我們的信仰 | 伊的家華人基督教會';
+const description =
+  '伊的家華人基督教會的核心信仰——美國播道會（EFCA）十一條信仰宣言。';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
+
+try {
+  aboutPage = await getAboutPage('zh');
+} catch {
+  // Sanity unreachable — continue with fallbacks
+}
+
+// ---------- EFCA 11-point Statement of Faith in Chinese ----------
+const fallbackBeliefs = [
+  {
+    title: '一、神',
+    content:
+      '<p>我們相信獨一的真神，祂是永恆存在的三個位格——聖父、聖子、聖靈——每一位都完全是神，各有位格之分，卻在本質和目的上合而為一。祂是萬物的創造者、維持者和統治者。</p>',
+  },
+  {
+    title: '二、聖經',
+    content:
+      '<p>我們相信聖經——舊約和新約——是神所默示的話語，在原稿中完全無誤。聖經是信仰和生活的最高和最終權威，是神啟示的完整記錄。</p>',
+  },
+  {
+    title: '三、人的境況',
+    content:
+      '<p>我們相信神按自己的形像造人，但人因悖逆而墮落。全人類生來就有罪性，與神隔絕，處於神公義的審判之下。人無法靠自己的努力恢復與神的關係。</p>',
+  },
+  {
+    title: '四、耶穌基督',
+    content:
+      '<p>我們相信耶穌基督是完全的神，也是完全的人。祂由童貞女馬利亞所生，過無罪的生活，行了神蹟，被釘在十字架上為罪人代死，第三天從死裡復活，升天坐在父神的右邊。</p>',
+  },
+  {
+    title: '五、基督十架的救贖',
+    content:
+      '<p>我們相信主耶穌基督為我們的罪而死，作為替代的贖罪祭。凡相信祂的人，都因祂所流的寶血而被稱為義。祂的死是完全的、充分的，足以贖一切人的罪。</p>',
+  },
+  {
+    title: '六、聖靈',
+    content:
+      '<p>我們相信聖靈叫世人知罪，使信徒重生，從得救的那一刻起內住在他們裡面，賜能力使他們過敬虔的生活並事奉。聖靈光照聖經，分賜屬靈恩賜，建造教會。</p>',
+  },
+  {
+    title: '七、教會',
+    content:
+      '<p>我們相信普世教會是基督的身體，由一切重生的信徒組成，基督是教會的元首。地方教會是受洗信徒的群體，為敬拜、教導、團契和傳福音而組織，遵行洗禮和聖餐。</p>',
+  },
+  {
+    title: '八、基督徒的生活',
+    content:
+      '<p>我們相信神稱義的恩典不可與祂成聖的能力和目的分開。神命令我們至高地愛祂，犧牲地愛人，藉著禱告、服事、奉獻和順服祂的話語來活出信仰。</p>',
+  },
+  {
+    title: '九、基督的再來',
+    content:
+      '<p>我們相信主耶穌基督將親自、有形地再來。祂的再來是教會有福的盼望，激勵我們過聖潔的生活和忠心的事奉。</p>',
+  },
+  {
+    title: '十、回應與永恆的歸宿',
+    content:
+      '<p>我們相信神命令所有人悔改相信主耶穌基督。凡拒絕福音的人將面對永遠的刑罰；凡接受的人將享受與神同在的永生福樂。</p>',
+  },
+  {
+    title: '十一、末後的事',
+    content:
+      '<p>我們相信身體的復活、義人的永恆福樂和惡人的永遠受苦。我們盼望新天新地，在那裡有義居住，神將擦去一切的眼淚。</p>',
+  },
+];
+
+// ---------- Resolved beliefs (CMS ▸ fallback) ----------
+const beliefs =
+  aboutPage?.beliefs && aboutPage.beliefs.length > 0
+    ? aboutPage.beliefs.map((b) => ({
+        title: b.title,
+        content: b.content?.length
+          ? portableTextToHtml(b.content)
+          : `<p>${b.title}</p>`,
+      }))
+    : fallbackBeliefs;
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main class="beliefs">
+    <section class="beliefs__hero" aria-label="我們的信仰">
+      <div class="beliefs__inner">
+        <h1 class="beliefs__heading">我們的信仰</h1>
+        <p class="beliefs__intro">
+          以下核心信念根植於聖經，塑造了我們教會的身份，也指引我們作為耶穌基督跟隨者的共同生活。本信仰宣言遵循美國播道會（EFCA）十一條信仰宣言。
+        </p>
+        <Accordion items={beliefs} />
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .beliefs {
+    padding-block: var(--space-16);
+  }
+
+  .beliefs__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .beliefs__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-4);
+  }
+
+  .beliefs__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    max-width: 48rem;
+    margin-block-end: var(--space-10);
+  }
+
+  @media (max-width: 767px) {
+    .beliefs__heading { font-size: var(--text-3xl); }
+    .beliefs__intro { font-size: var(--text-base); }
+  }
+</style>

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T02",
+  "unitId": "M003/S01/T02",
+  "timestamp": 1775061832140,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 8297,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f dist/zh/index.html",
+      "exitCode": 1,
+      "durationMs": 16,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q 'lang=\"zh\"' dist/zh/index.html",
+      "exitCode": 2,
+      "durationMs": 17,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q '歡迎' dist/zh/index.html",
+      "exitCode": 2,
+      "durationMs": 13,
+      "verdict": "fail"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

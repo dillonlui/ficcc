@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-01T16:43:49.405Z",
+  "exported_at": "2026-04-01T16:48:16.236Z",
   "milestones": [
     {
       "id": "M001",
@@ -2707,19 +2707,28 @@
       "milestone_id": "M003",
       "slice_id": "S01",
       "id": "T03",
-      "title": "Build ZH About (with history timeline), Beliefs (EFCA 11-point), Staff, and Sundays (with bus route) pages",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created 4 ZH core pages (About with history timeline, Beliefs with EFCA 11-point, Staff, Sundays with bus route) with Chinese fallback content at /zh/ paths",
+      "status": "complete",
+      "one_liner": "Created 4 ZH core pages (About with history timeline, Beliefs with EFCA 11-point, Staff, Sundays with bus route) with Chinese fallback content at /zh/ paths",
+      "narrative": "Created all 4 remaining ZH core pages by cloning EN counterparts: ZH About with 1968-2009 history timeline (CSS-only vertical layout), ZH Beliefs with full EFCA 11-point Statement of Faith in Chinese, ZH Staff with Chinese role labels, and ZH Sundays with 7-stop bus route visual display. All pages pass lang=\"zh\" to BaseLayout and follow the T02 pattern.",
+      "verification_result": "Build succeeds (8.6s). All 4 output files exist at dist/client/zh/. Content checks confirm lang=\"zh\", 1983 timeline, Mitchell St bus route, Chinese homepage text. EN homepage unchanged.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-01T16:48:16.219Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "History timeline expanded to 1968-2009 (7 entries) instead of plan's 1983-2009. Verification gate path mismatch: gate checks dist/zh/ but Vercel adapter outputs to dist/client/zh/.",
+      "known_issues": "Verification gate commands reference dist/zh/ but actual output is dist/client/zh/ due to Vercel adapter — affects all ZH page gate checks.",
+      "key_files": [
+        "src/pages/zh/about/index.astro",
+        "src/pages/zh/about/beliefs.astro",
+        "src/pages/zh/about/staff.astro",
+        "src/pages/zh/sundays.astro"
+      ],
+      "key_decisions": [
+        "History timeline uses CSS-only vertical left-border layout with dot markers",
+        "Bus route uses numbered circle stops with connecting line visual display",
+        "Beliefs page has all 11 EFCA points vs EN's 8 items"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S01\nmilestone: M003\nkey_files:\n  - src/pages/zh/about/index.astro\n  - src/pages/zh/about/beliefs.astro\n  - src/pages/zh/about/staff.astro\n  - src/pages/zh/sundays.astro\nkey_decisions:\n  - History timeline uses CSS-only vertical left-border layout with dot markers\n  - Bus route uses numbered circle stops with connecting line visual display\n  - Beliefs page has all 11 EFCA points vs EN's 8 items\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-01T16:48:16.221Z\nblocker_discovered: false\n---\n\n# T03: Created 4 ZH core pages (About with history timeline, Beliefs with EFCA 11-point, Staff, Sundays with bus route) with Chinese fallback content at /zh/ paths\n\n**Created 4 ZH core pages (About with history timeline, Beliefs with EFCA 11-point, Staff, Sundays with bus route) with Chinese fallback content at /zh/ paths**\n\n## What Happened\n\nCreated all 4 remaining ZH core pages by cloning EN counterparts: ZH About with 1968-2009 history timeline (CSS-only vertical layout), ZH Beliefs with full EFCA 11-point Statement of Faith in Chinese, ZH Staff with Chinese role labels, and ZH Sundays with 7-stop bus route visual display. All pages pass lang=\"zh\" to BaseLayout and follow the T02 pattern.\n\n## Verification\n\nBuild succeeds (8.6s). All 4 output files exist at dist/client/zh/. Content checks confirm lang=\"zh\", 1983 timeline, Mitchell St bus route, Chinese homepage text. EN homepage unchanged.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 8600ms |\n| 2 | `test -f dist/client/zh/about/index.html && test -f dist/client/zh/about/beliefs/index.html && test -f dist/client/zh/about/staff/index.html && test -f dist/client/zh/sundays/index.html` | 0 | ✅ pass | 100ms |\n| 3 | `grep -q 'lang=\"zh\"' dist/client/zh/about/index.html` | 0 | ✅ pass | 50ms |\n| 4 | `grep -q '1983' dist/client/zh/about/index.html` | 0 | ✅ pass | 50ms |\n| 5 | `grep -q 'Mitchell' dist/client/zh/sundays/index.html` | 0 | ✅ pass | 50ms |\n\n\n## Deviations\n\nHistory timeline expanded to 1968-2009 (7 entries) instead of plan's 1983-2009. Verification gate path mismatch: gate checks dist/zh/ but Vercel adapter outputs to dist/client/zh/.\n\n## Known Issues\n\nVerification gate commands reference dist/zh/ but actual output is dist/client/zh/ due to Vercel adapter — affects all ZH page gate checks.\n\n## Files Created/Modified\n\n- `src/pages/zh/about/index.astro`\n- `src/pages/zh/about/beliefs.astro`\n- `src/pages/zh/about/staff.astro`\n- `src/pages/zh/sundays.astro`\n",
       "description": "## Description\n\nCreate the remaining 4 ZH core pages following the pattern established by the ZH Homepage in T02. Each page clones its EN counterpart, swaps queries to `'zh'`, provides Chinese fallback content, passes `lang='zh'`, and adjusts internal links to `/zh/...`. Two pages have ZH-specific bespoke content: About gets a 1983-2009 history timeline section, and Sundays gets a 7-stop bus route section.\n\n## Steps\n\n1. **ZH About** — Create `src/pages/zh/about/index.astro`:\n   - Clone from `src/pages/about/index.astro`.\n   - Call `getAboutPage('zh')` instead of `'en'`.\n   - Chinese fallback content: heading '我們是誰', body text about FICCC history and mission in Chinese.\n   - Chinese vision statement fallback.\n   - Chinese stats labels.\n   - **Add a History Timeline section** after the vision section. The timeline covers 1983-2009 key milestones of the Chinese Ministry. Implement as a styled `<section>` with a vertical timeline layout (CSS-only, no JS). Include ~5-7 key dates with Chinese descriptions (e.g., 1983: 華人查經班成立, 1986: 正式成立華人教會, etc.). This is hardcoded fallback content — the CMS `whoWeAreBody` portable text field can hold this when populated.\n\n2. **ZH Beliefs** — Create `src/pages/zh/about/beliefs.astro`:\n   - Clone from `src/pages/about/beliefs.astro`.\n   - Call `getAboutPage('zh')`.\n   - Provide the EFCA 11-point Statement of Faith in Chinese as the fallback beliefs array. The EN version has 8 items; the ZH version should have all 11 points per the EFCA statement: (1) God, (2) The Bible, (3) The Human Condition, (4) Jesus Christ, (5) Christ's Work on the Cross, (6) The Holy Spirit, (7) The Church, (8) Christian Living, (9) Christ's Return, (10) Response and Eternal Destiny, (11) Last Things. Each with a Chinese title and content paragraph.\n   - Chinese intro paragraph.\n\n3. **ZH Staff** — Create `src/pages/zh/about/staff.astro`:\n   - Clone from `src/pages/about/staff.astro`.\n   - Call `getStaff('zh')`.\n   - Chinese fallback: heading '教牧同工', intro text in Chinese, same fallback staff names (names stay in English/Chinese as-is, roles translated to Chinese: '主任牧師', '副牧師', etc.).\n\n4. **ZH Sundays** — Create `src/pages/zh/sundays.astro`:\n   - Clone from `src/pages/visit.astro` (note: different URL — `/zh/sundays` not `/zh/visit`).\n   - Call `getVisitPage('zh')`.\n   - Chinese fallback content for all sections: schedule, what to expect, transportation, FAQ.\n   - **Add a Bus Route section** after the transportation section. The 7-stop Sunday shuttle route: Church (429 Mitchell St) → Hasbrouck Apartments → Collegetown (College Ave & Dryden) → North Campus (Robert Purcell) → Ithaca Commons → East Hill Plaza → Church. Implement as a styled ordered list or visual route display (CSS-only). Include pickup times.\n   - Chinese FAQ items.\n   - Chinese ride request section text.\n\n5. Verify all 4 pages build and contain correct content.\n\n## Must-Haves\n\n- [ ] `src/pages/zh/about/index.astro` exists with Chinese fallbacks and history timeline\n- [ ] `src/pages/zh/about/beliefs.astro` exists with EFCA 11-point Statement of Faith in Chinese\n- [ ] `src/pages/zh/about/staff.astro` exists with Chinese fallbacks\n- [ ] `src/pages/zh/sundays.astro` exists with Chinese fallbacks and 7-stop bus route\n- [ ] All 4 pages pass `lang='zh'` to BaseLayout\n- [ ] All internal links on all 4 pages point to `/zh/...` paths\n- [ ] Build succeeds with all 4 pages in dist\n\n## Verification\n\n- `npm run build` succeeds\n- `test -f dist/zh/about/index.html && test -f dist/zh/about/beliefs/index.html && test -f dist/zh/about/staff/index.html && test -f dist/zh/sundays/index.html`\n- `grep -q 'lang=\"zh\"' dist/zh/about/index.html`\n- `grep -q '1983' dist/zh/about/index.html` (history timeline present)\n- `grep -q 'Mitchell' dist/zh/sundays/index.html` (bus route present)\n\n## Inputs\n\n- `src/pages/about/index.astro` — EN about page as structural reference\n- `src/pages/about/beliefs.astro` — EN beliefs page as structural reference\n- `src/pages/about/staff.astro` — EN staff page as structural reference\n- `src/pages/visit.astro` — EN visit page as structural reference\n- `src/pages/zh/index.astro` — ZH homepage from T02 as pattern reference\n- `src/lib/navigation.ts` — shared nav config from T01\n\n## Expected Output\n\n- `src/pages/zh/about/index.astro` — ZH about page with history timeline\n- `src/pages/zh/about/beliefs.astro` — ZH beliefs page with EFCA 11-point\n- `src/pages/zh/about/staff.astro` — ZH staff page\n- `src/pages/zh/sundays.astro` — ZH sundays page with bus route",
       "estimate": "1h30m",
       "files": [
@@ -4625,6 +4634,61 @@
       "verdict": "✅ pass",
       "duration_ms": 10,
       "created_at": "2026-04-01T16:43:49.389Z"
+    },
+    {
+      "id": 154,
+      "task_id": "T03",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 8600,
+      "created_at": "2026-04-01T16:48:16.219Z"
+    },
+    {
+      "id": 155,
+      "task_id": "T03",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "test -f dist/client/zh/about/index.html && test -f dist/client/zh/about/beliefs/index.html && test -f dist/client/zh/about/staff/index.html && test -f dist/client/zh/sundays/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-01T16:48:16.220Z"
+    },
+    {
+      "id": 156,
+      "task_id": "T03",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "grep -q 'lang=\"zh\"' dist/client/zh/about/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T16:48:16.220Z"
+    },
+    {
+      "id": 157,
+      "task_id": "T03",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "grep -q '1983' dist/client/zh/about/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T16:48:16.220Z"
+    },
+    {
+      "id": 158,
+      "task_id": "T03",
+      "slice_id": "S01",
+      "milestone_id": "M003",
+      "command": "grep -q 'Mitchell' dist/client/zh/sundays/index.html",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-01T16:48:16.220Z"
     }
   ]
 }

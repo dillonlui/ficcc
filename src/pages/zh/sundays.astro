@@ -1,0 +1,458 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Accordion from '../../components/Accordion.astro';
+import RideRequestForm from '../../components/RideRequestForm.astro';
+import { getVisitPage, urlForImage, portableTextToHtml } from '../../lib/sanity';
+
+const title = '主日聚會 | 伊的家華人基督教會';
+const description =
+  '您第一次來教會需要知道的一切——聚會時間、交通方式、停車資訊及注意事項。';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let visitPage: Awaited<ReturnType<typeof getVisitPage>> = null;
+
+try {
+  visitPage = await getVisitPage('zh');
+} catch {
+  // Sanity unreachable — continue with fallbacks
+}
+
+// ---------- Fallback defaults ----------
+const fallbackSchedule = [
+  {
+    label: '主日崇拜',
+    time: '9:45 AM',
+    description: '包含詩歌敬拜、禱告和聖經信息的崇拜聚會',
+  },
+  {
+    label: '主日學',
+    time: '11:15 AM',
+    description: '按年齡分班——兒童、青少年和成人',
+  },
+];
+
+const fallbackWhatToExpectHtml = `
+<p>無論您是第一次來教會，還是曾經參加過其他教會，都歡迎您如實地來到這裡。</p>
+<p><strong>穿著：</strong>隨意穿著即可——大多數人穿休閒服裝。</p>
+<p><strong>主日流程：</strong>聚會包括詩歌敬拜、禱告、讀經和講道。崇拜以中文為主，部分環節為雙語。</p>
+<p><strong>歡迎孩子：</strong>兒童隨時歡迎參加主堂崇拜。崇拜後我們也提供按年齡分組的主日學課程。</p>
+<p><strong>聚會多長時間？</strong>主日崇拜通常約75分鐘。</p>
+`;
+
+const fallbackTransportationHtml = `
+<p><strong>地址：</strong>429 Mitchell Street, Ithaca, NY 14850</p>
+<p><strong>停車：</strong>教會旁設有免費停車場。Mitchell Street 及附近街道也有路邊停車位。</p>
+<p><strong>靠近康奈爾：</strong>我們距離康奈爾大學校園很近。如果您是沒有車的學生，我們很樂意安排接送——請與我們聯繫！</p>
+<p><strong>公共交通：</strong>TCAT公車可到達附近地區。請查詢 <a href="https://tcatbus.com">tcatbus.com</a> 了解時刻表。</p>
+`;
+
+// ---------- Bus Route (ZH-specific bespoke content) ----------
+const busRoute = [
+  { stop: '教會（429 Mitchell St）', time: '9:00 AM' },
+  { stop: 'Hasbrouck Apartments', time: '9:10 AM' },
+  { stop: 'Collegetown（College Ave & Dryden）', time: '9:15 AM' },
+  { stop: 'North Campus（Robert Purcell）', time: '9:22 AM' },
+  { stop: 'Ithaca Commons', time: '9:30 AM' },
+  { stop: 'East Hill Plaza', time: '9:35 AM' },
+  { stop: '返回教會（429 Mitchell St）', time: '9:40 AM' },
+];
+
+const fallbackFaqItems = [
+  {
+    question: '應該穿什麼？',
+    answer: '沒有穿著要求——隨意穿著即可。大多數人穿休閒服裝。',
+  },
+  {
+    question: '歡迎兒童嗎？',
+    answer:
+      '當然！兒童隨時歡迎參加主堂崇拜，崇拜後我們也提供按年齡分組的主日學課程。',
+  },
+  {
+    question: '崇拜使用什麼語言？',
+    answer:
+      '我們的崇拜以中文為主，部分環節為雙語（中英文）。無論您的語言背景如何，都歡迎您。',
+  },
+  {
+    question: '有停車位嗎？',
+    answer:
+      '有——教會旁設有免費停車場，附近街道也有路邊停車位。',
+  },
+  {
+    question: '聚會多長時間？',
+    answer:
+      '主日崇拜通常約75分鐘。主日學在11:15 AM開始，約45分鐘。',
+  },
+  {
+    question: '平日如何聯繫教會？',
+    answer:
+      '我們很期待幫助您融入社區！聚會後請到歡迎桌了解小組、查經班和其他連結方式。您也可以通過我們的聯繫頁面與我們溝通。',
+  },
+];
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heroImage = visitPage?.heroImage
+  ? urlForImage(visitPage.heroImage, { width: 1600 })
+  : '/images/hero-placeholder.svg';
+const heroTitle = visitPage?.heroTitle || '主日聚會';
+const heroSubtitle =
+  visitPage?.heroSubtitle ||
+  '您第一次來教會需要知道的一切';
+
+const schedule =
+  visitPage?.schedule && visitPage.schedule.length > 0
+    ? visitPage.schedule
+    : fallbackSchedule;
+
+const whatToExpectHtml =
+  visitPage?.whatToExpect && visitPage.whatToExpect.length > 0
+    ? portableTextToHtml(visitPage.whatToExpect)
+    : fallbackWhatToExpectHtml;
+
+const transportationHtml =
+  visitPage?.transportation && visitPage.transportation.length > 0
+    ? portableTextToHtml(visitPage.transportation)
+    : fallbackTransportationHtml;
+
+const faqItems =
+  visitPage?.faqItems && visitPage.faqItems.length > 0
+    ? visitPage.faqItems
+    : fallbackFaqItems;
+
+const accordionItems = faqItems.map((item) => ({
+  title: item.question,
+  content: item.answer,
+}));
+
+const showRideRequest = visitPage?.rideRequestEnabled !== false;
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main>
+    <Hero
+      title={heroTitle}
+      subtitle={heroSubtitle}
+      backgroundImage={heroImage}
+    />
+
+    <!-- Schedule -->
+    <section class="schedule" aria-label="主日時間表">
+      <div class="schedule__inner">
+        <h2 class="section-heading">主日時間表</h2>
+        <div class="schedule__grid">
+          {schedule.map((item) => (
+            <div class="schedule__card">
+              <span class="schedule__time">{item.time}</span>
+              <h3 class="schedule__label">{item.label}</h3>
+              {item.description && (
+                <p class="schedule__desc">{item.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- What to Expect -->
+    <section class="expect" aria-label="注意事項">
+      <div class="expect__inner">
+        <h2 class="section-heading">注意事項</h2>
+        <div class="expect__body" set:html={whatToExpectHtml} />
+      </div>
+    </section>
+
+    <!-- Transportation & Directions -->
+    <section class="directions" aria-label="交通指引">
+      <div class="directions__inner">
+        <h2 class="section-heading">如何到達</h2>
+        <div class="directions__columns">
+          <div class="directions__body" set:html={transportationHtml} />
+          <div class="directions__map">
+            <iframe
+              title="教會在Google地圖上的位置"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2942.8!2d-76.5005!3d42.4440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z429+Mitchell+Street%2C+Ithaca%2C+NY+14850!5e0!3m2!1sen!2sus!4v1"
+              width="100%"
+              height="300"
+              style="border:0; border-radius: var(--radius-md);"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sunday Bus Route (ZH-specific) -->
+    <section class="bus-route" aria-label="主日接送路線">
+      <div class="bus-route__inner">
+        <h2 class="section-heading">主日接送巴士路線</h2>
+        <p class="bus-route__intro">
+          每週日早上，教會提供免費接送巴士服務。以下為七站路線及預計到達時間：
+        </p>
+        <ol class="bus-route__list">
+          {busRoute.map((stop, i) => (
+            <li class="bus-route__stop">
+              <span class="bus-route__number" aria-hidden="true">{i + 1}</span>
+              <div class="bus-route__details">
+                <span class="bus-route__name">{stop.stop}</span>
+                <span class="bus-route__time">{stop.time}</span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" aria-label="常見問題">
+      <div class="faq__inner">
+        <h2 class="section-heading">常見問題</h2>
+        <Accordion items={accordionItems} />
+      </div>
+    </section>
+
+    <!-- Ride Request -->
+    {showRideRequest && (
+      <section class="ride-request" aria-label="申請接送">
+        <div class="ride-request__inner">
+          <h2 class="section-heading">需要接送嗎？</h2>
+          <p class="ride-request__intro">
+            沒有車？沒問題——我們很樂意接送您！請填寫以下表格，我們的同工會與您聯繫安排接送。
+          </p>
+          <RideRequestForm />
+        </div>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<!-- Cloudflare Turnstile — loaded async for form spam protection -->
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<style>
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-10);
+  }
+
+  /* ---------- Schedule ---------- */
+  .schedule {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .schedule__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .schedule__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-8);
+  }
+
+  .schedule__card {
+    background-color: var(--color-stone);
+    border-radius: var(--radius-md);
+    padding: var(--space-8) var(--space-6);
+    text-align: center;
+  }
+
+  .schedule__time {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--color-terracotta);
+    margin-block-end: var(--space-2);
+  }
+
+  .schedule__label {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-3);
+  }
+
+  .schedule__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  /* ---------- What to Expect ---------- */
+  .expect {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .expect__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .expect__body {
+    max-width: 48rem;
+    margin-inline: auto;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .expect__body :global(p) { margin-block-end: var(--space-4); }
+  .expect__body :global(p:last-child) { margin-block-end: 0; }
+  .expect__body :global(strong) { color: var(--color-ink); }
+
+  /* ---------- Directions ---------- */
+  .directions {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .directions__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .directions__columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .directions__body {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .directions__body :global(p) { margin-block-end: var(--space-4); }
+  .directions__body :global(p:last-child) { margin-block-end: 0; }
+  .directions__body :global(strong) { color: var(--color-ink); }
+  .directions__body :global(a) { color: var(--color-terracotta); text-decoration: underline; }
+
+  .directions__map { border-radius: var(--radius-md); overflow: hidden; }
+  .directions__map iframe { display: block; }
+
+  /* ---------- Bus Route ---------- */
+  .bus-route {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .bus-route__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .bus-route__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    text-align: center;
+    max-width: 36rem;
+    margin-inline: auto;
+    margin-block-end: var(--space-10);
+  }
+
+  .bus-route__list {
+    list-style: none;
+    padding: 0;
+    max-width: 32rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    position: relative;
+  }
+
+  .bus-route__list::before {
+    content: '';
+    position: absolute;
+    left: 1.25rem;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    width: 3px;
+    background-color: var(--color-terracotta);
+    border-radius: 2px;
+    opacity: 0.4;
+  }
+
+  .bus-route__stop {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    position: relative;
+  }
+
+  .bus-route__number {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: var(--color-terracotta);
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .bus-route__details {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .bus-route__name {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+  }
+
+  .bus-route__time {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-terracotta);
+    white-space: nowrap;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .faq__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  /* ---------- Ride Request ---------- */
+  .ride-request {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .ride-request__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .ride-request__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    text-align: center;
+    max-width: 36rem;
+    margin-inline: auto;
+    margin-block-end: var(--space-10);
+  }
+
+  @media (max-width: 768px) {
+    .section-heading { font-size: var(--text-2xl); }
+    .directions__columns { grid-template-columns: 1fr; }
+    .schedule__grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,345 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getAboutPage, portableTextToHtml, urlForImage } from '../../../lib/sanity';
+
+const title = '我們是誰 | 伊的家華人基督教會';
+const description =
+  '了解伊的家華人基督教會的歷史、使命與社區。';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
+
+try {
+  aboutPage = await getAboutPage('zh');
+} catch {
+  // Sanity unreachable — continue with fallbacks
+}
+
+// ---------- Fallback defaults ----------
+const fallbackHeading = '我們是誰';
+const fallbackBody = `
+<p>伊的家華人基督教會（FICCC）於1968年由一群在康奈爾大學的華人研究生和學者創立。他們渴望建立一個以基督為中心的社區，在這裡可以用母語敬拜，同時歡迎伊薩卡更廣大的社區。</p>
+<p>經過數十年的成長，教會已發展為一個多世代、多文化的會眾，連結華人傳統與美國生活。每週日我們在429 Mitchell Street聚集敬拜、教導和團契——以英語和普通話進行——服務手指湖地區的學生、家庭和鄰舍。</p>
+<p>我們的使命是榮耀神，培養愛神、彼此相愛、向世界傳福音的耶穌基督門徒。我們相信地方教會是神推進祂國度的首要器皿，致力於裝備每位成員過忠心服事的生活。</p>
+<p>無論您是伊薩卡的長期居民、訪問學者，還是遠離家鄉的學生，在FICCC都有您的位置。我們邀請您來到這裡，體驗基督之愛的溫暖社區。</p>
+`.trim();
+
+const fallbackVisionHeading = '我們的異象';
+const fallbackVisionHtml = `
+<p><strong>培養謙卑的僕人，愛主、愛失喪的人、愛地方教會——一生之久。</strong></p>
+<p>大多數走進我們教會的學生和學者只會在伊薩卡待幾年。但我們相信，這幾年中所發生的——敬拜的習慣、社區的深度、與聖經的相遇——能夠塑造一生的軌跡。</p>
+<p>我們的異象是培養基督的跟隨者，不僅在此期間「參加教會」，而是帶著門徒訓練的印記走向各處：進入職場、家庭、教會和世界各地的社區。</p>
+`.trim();
+
+const fallbackStats = [
+  { value: '~150', label: '會眾人數' },
+  { value: '~20', label: '每年受洗人數' },
+  { value: '18', label: '差派全職傳道人' },
+  { value: '40+', label: '在伊薩卡的年數' },
+];
+
+// ---------- History Timeline (ZH-specific bespoke content) ----------
+const historyTimeline = [
+  { year: '1968', description: '康奈爾大學華人學生查經班成立' },
+  { year: '1974', description: '查經班發展為主日崇拜聚會' },
+  { year: '1983', description: '華人查經班正式組織化，開始有系統的門徒訓練' },
+  { year: '1986', description: '正式成立伊的家華人基督教會，成為獨立堂會' },
+  { year: '1993', description: '購置 429 Mitchell Street 現址作為永久會堂' },
+  { year: '2001', description: '開展英語事工，服事第二代及國際學生' },
+  { year: '2009', description: '加入美國播道會（EFCA），完成會堂擴建工程' },
+];
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heading = aboutPage?.whoWeAreHeading || fallbackHeading;
+const bodyHtml = aboutPage?.whoWeAreBody?.length
+  ? portableTextToHtml(aboutPage.whoWeAreBody)
+  : fallbackBody;
+const imageUrl = aboutPage?.whoWeAreImage
+  ? urlForImage(aboutPage.whoWeAreImage, { width: 800 })
+  : '';
+
+const visionHeading = aboutPage?.visionHeading || fallbackVisionHeading;
+const visionHtml = aboutPage?.visionBody?.length
+  ? portableTextToHtml(aboutPage.visionBody)
+  : fallbackVisionHtml;
+
+const stats =
+  aboutPage?.churchStats && aboutPage.churchStats.length > 0
+    ? aboutPage.churchStats
+    : fallbackStats;
+---
+
+<BaseLayout title={title} description={description} lang="zh">
+  <main class="about">
+    <section class="about__hero" aria-label="我們是誰">
+      <div class="about__inner">
+        <h1 class="about__heading">{heading}</h1>
+        <div class="about__content">
+          <div class="about__body" set:html={bodyHtml} />
+          {imageUrl && (
+            <div class="about__image-wrap">
+              <img
+                class="about__image"
+                src={imageUrl}
+                alt={heading}
+                loading="lazy"
+                width="800"
+                height="533"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision Statement -->
+    <section class="vision" aria-label="我們的異象">
+      <div class="vision__inner">
+        <h2 class="vision__heading">{visionHeading}</h2>
+        <div class="vision__body" set:html={visionHtml} />
+      </div>
+    </section>
+
+    <!-- History Timeline (ZH-specific) -->
+    <section class="timeline" aria-label="教會歷史">
+      <div class="timeline__inner">
+        <h2 class="timeline__heading">教會歷史</h2>
+        <div class="timeline__track">
+          {historyTimeline.map((item, i) => (
+            <div class={`timeline__item ${i % 2 === 0 ? 'timeline__item--left' : 'timeline__item--right'}`}>
+              <div class="timeline__dot" aria-hidden="true" />
+              <div class="timeline__card">
+                <span class="timeline__year">{item.year}</span>
+                <p class="timeline__desc">{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Church Stats -->
+    <section class="stats" aria-label="教會數據">
+      <div class="stats__inner">
+        <h2 class="stats__heading">數據一覽</h2>
+        <div class="stats__grid">
+          {stats.map((stat) => (
+            <div class="stats__item">
+              <span class="stats__value">{stat.value}</span>
+              <span class="stats__label">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-block: var(--space-16);
+  }
+
+  .about__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .about__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-8);
+  }
+
+  .about__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+  }
+
+  .about__body {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    max-width: 48rem;
+  }
+
+  .about__body :global(p) { margin-block-end: var(--space-4); }
+  .about__body :global(p:last-child) { margin-block-end: 0; }
+  .about__body :global(a) { color: var(--color-terracotta); text-decoration: underline; }
+
+  .about__image-wrap {
+    border-radius: var(--radius-lg, 0.75rem);
+    overflow: hidden;
+  }
+
+  .about__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* ---------- Vision ---------- */
+  .vision {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .vision__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .vision__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-8);
+  }
+
+  .vision__body {
+    max-width: 48rem;
+    margin-inline: auto;
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .vision__body :global(p) { margin-block-end: var(--space-4); }
+  .vision__body :global(p:last-child) { margin-block-end: 0; }
+  .vision__body :global(strong) { color: var(--color-ink); }
+
+  /* ---------- History Timeline ---------- */
+  .timeline {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .timeline__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .timeline__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-12);
+  }
+
+  .timeline__track {
+    position: relative;
+    max-width: 40rem;
+    margin-inline: auto;
+    padding-inline-start: var(--space-8);
+  }
+
+  .timeline__track::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--color-terracotta);
+    border-radius: 2px;
+  }
+
+  .timeline__item {
+    position: relative;
+    padding-block-end: var(--space-8);
+  }
+
+  .timeline__item:last-child {
+    padding-block-end: 0;
+  }
+
+  .timeline__dot {
+    position: absolute;
+    left: calc(-1 * var(--space-8) - 1.5px);
+    top: 0.25rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--color-terracotta);
+    border: 3px solid var(--color-bg);
+  }
+
+  .timeline__card {
+    background-color: var(--color-stone);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .timeline__year {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-terracotta);
+    margin-block-end: var(--space-1);
+  }
+
+  .timeline__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    margin: 0;
+  }
+
+  /* ---------- Stats ---------- */
+  .stats {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+  }
+
+  .stats__inner { max-width: var(--max-width); margin-inline: auto; }
+
+  .stats__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-10);
+  }
+
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-8);
+    text-align: center;
+  }
+
+  .stats__item { display: flex; flex-direction: column; gap: var(--space-2); }
+
+  .stats__value {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--color-terracotta);
+  }
+
+  .stats__label {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-body);
+  }
+
+  @media (min-width: 768px) {
+    .about__content {
+      grid-template-columns: 3fr 2fr;
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .about__heading { font-size: var(--text-3xl); }
+    .about__body { font-size: var(--text-base); }
+    .vision__heading { font-size: var(--text-2xl); }
+    .timeline__heading { font-size: var(--text-2xl); }
+    .stats__grid { grid-template-columns: repeat(2, 1fr); }
+    .stats__value { font-size: var(--text-3xl); }
+  }
+</style>
