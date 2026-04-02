@@ -11,7 +11,8 @@
     "astro": "astro",
     "lhci": "npm run build && lhci autorun",
     "test": "vitest run",
-    "test:a11y": "npx @axe-core/cli http://localhost:4321/ http://localhost:4321/about/ http://localhost:4321/contact/ http://localhost:4321/zh/ --exit"
+    "test:a11y": "npx @axe-core/cli http://localhost:4321/ http://localhost:4321/about/ http://localhost:4321/contact/ http://localhost:4321/zh/ --exit",
+    "test:e2e": "npx playwright test"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.2",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@axe-core/cli": "^4.11.1",
     "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.59.1",
     "serve": "^14.2.6",
     "vitest": "^4.1.2"
   }

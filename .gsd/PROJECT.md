@@ -36,6 +36,8 @@ All ZH pages follow a consistent pattern: clone EN structure, swap to getX('zh')
 
 S01 (Performance & Accessibility Audit) complete: Hero converted from CSS background-image to `<img>` with fetchpriority="high", preconnect for Sanity CDN, WebP default, skip-to-content link, id="main-content" on all 27 pages, LHCI expanded to 10 URLs with per-archetype thresholds, axe-core CLI integrated, and WCAG contrast fixes begun (--color-terracotta-dark for AA compliance).
 
+S02 (SEO & Analytics) complete: BaseLayout forwards jsonLd/ogImage/ogType to SEO component. GA4 analytics gated on PUBLIC_GA_MEASUREMENT_ID with window.sendAnalyticsEvent() custom event helper. Google site verification meta gated on env var. Sitemap includes hreflang alternates for en/zh. JSON-LD structured data on 4 page types (Church+WebSite on homepage, VideoObject on sermons, ItemList of Events, Organization on about). 7 unit tests for structured data builders. Default OG image placeholder at 1200×630.
+
 ## Queued Milestones
 
 None — M004 is the final milestone.
