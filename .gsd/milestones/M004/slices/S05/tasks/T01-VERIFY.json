@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M004/S05/T01",
+  "timestamp": 1775150373733,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 9931,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'announcementBarEnabled' sanity/schemas/singletons/siteSettings.ts",
+      "exitCode": 0,
+      "durationMs": 19,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'announcementBarEnabled' src/lib/sanity.ts",
+      "exitCode": 0,
+      "durationMs": 9,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'announcementBar' src/layouts/BaseLayout.astro",
+      "exitCode": 0,
+      "durationMs": 9,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q 'announcement-bar' src/styles/global.css",
+      "exitCode": 0,
+      "durationMs": 11,
+      "verdict": "pass"
+    }
+  ]
+}

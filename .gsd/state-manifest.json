@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T17:19:30.693Z",
+  "exported_at": "2026-04-02T17:21:22.820Z",
   "milestones": [
     {
       "id": "M001",
@@ -3692,19 +3692,26 @@
       "milestone_id": "M004",
       "slice_id": "S05",
       "id": "T02",
-      "title": "Write staff documentation guides for sermon, event, and announcement bar workflows",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created four Markdown staff guides covering Studio access, sermon publishing, event creation, and announcement bar management with field-level accuracy from Sanity schemas",
+      "status": "complete",
+      "one_liner": "Created four Markdown staff guides covering Studio access, sermon publishing, event creation, and announcement bar management with field-level accuracy from Sanity schemas",
+      "narrative": "Read sermon.ts, event.ts, and siteSettings.ts schemas to extract exact field definitions. Wrote docs/staff/README.md (overview, login, content model, publish pipeline), publishing-a-sermon.md (field table, YouTube ID extraction, common mistakes), creating-an-event.md (field table, hotspot/rich text tips, common mistakes), and managing-announcement-bar.md (enable/disable/edit workflow, both-language reminder). All guides explain the 2-3 minute publish → rebuild → live delay and cover EN/ZH language variants.",
+      "verification_result": "Ran combined verification: all 4 files exist, no TBD/TODO placeholders found, README has 3+ H2 headings. All checks passed.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-02T17:21:22.799Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "docs/staff/README.md",
+        "docs/staff/publishing-a-sermon.md",
+        "docs/staff/creating-an-event.md",
+        "docs/staff/managing-announcement-bar.md"
+      ],
+      "key_decisions": [
+        "Documented exact field names and types from Sanity schemas rather than paraphrasing"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S05\nmilestone: M004\nkey_files:\n  - docs/staff/README.md\n  - docs/staff/publishing-a-sermon.md\n  - docs/staff/creating-an-event.md\n  - docs/staff/managing-announcement-bar.md\nkey_decisions:\n  - Documented exact field names and types from Sanity schemas rather than paraphrasing\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-02T17:21:22.799Z\nblocker_discovered: false\n---\n\n# T02: Created four Markdown staff guides covering Studio access, sermon publishing, event creation, and announcement bar management with field-level accuracy from Sanity schemas\n\n**Created four Markdown staff guides covering Studio access, sermon publishing, event creation, and announcement bar management with field-level accuracy from Sanity schemas**\n\n## What Happened\n\nRead sermon.ts, event.ts, and siteSettings.ts schemas to extract exact field definitions. Wrote docs/staff/README.md (overview, login, content model, publish pipeline), publishing-a-sermon.md (field table, YouTube ID extraction, common mistakes), creating-an-event.md (field table, hotspot/rich text tips, common mistakes), and managing-announcement-bar.md (enable/disable/edit workflow, both-language reminder). All guides explain the 2-3 minute publish → rebuild → live delay and cover EN/ZH language variants.\n\n## Verification\n\nRan combined verification: all 4 files exist, no TBD/TODO placeholders found, README has 3+ H2 headings. All checks passed.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f docs/staff/README.md && test -f docs/staff/publishing-a-sermon.md && test -f docs/staff/creating-an-event.md && test -f docs/staff/managing-announcement-bar.md && ! grep -rq 'TBD\\|TODO' docs/staff/ && test $(grep -c '## ' docs/staff/README.md) -ge 3` | 0 | ✅ pass | 500ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `docs/staff/README.md`\n- `docs/staff/publishing-a-sermon.md`\n- `docs/staff/creating-an-event.md`\n- `docs/staff/managing-announcement-bar.md`\n",
       "description": "Create four Markdown documentation files in `docs/staff/` that enable non-technical church staff to manage content via Sanity Studio without developer help.\n\nThese guides are written for staff who know nothing about web development. Each guide must explain the publish → rebuild → live pipeline (static site takes ~2-3 min to update after publishing). Guides must mention both EN and ZH language variants where applicable.\n\n## Steps\n\n1. Create `docs/staff/README.md` — overview guide covering:\n   - Studio access URL (`/admin`)\n   - How to log in\n   - Content model overview: what's a document vs singleton, language variants\n   - The publish → rebuild → live pipeline (explain that changes aren't instant — Sanity publish triggers a Vercel rebuild, ~2-3 min delay)\n   - Links to the three workflow guides\n\n2. Create `docs/staff/publishing-a-sermon.md` — step-by-step guide covering:\n   - Navigate to Sermons in Studio sidebar\n   - Click + to create new sermon\n   - Fill in fields: Title (required), Slug (click Generate), Speaker, Date, Series, Scripture Reference, YouTube Video ID (just the ID, not full URL), Language (en or zh)\n   - Click Publish\n   - Verify on live site after rebuild (~2-3 min)\n   - Common mistakes: forgetting slug, pasting full YouTube URL instead of ID, forgetting language selection\n\n3. Create `docs/staff/creating-an-event.md` — step-by-step guide covering:\n   - Navigate to Events in Studio sidebar\n   - Click + to create new event\n   - Fill in fields: Title (required), Start Date, End Date, Time Description (human-readable, e.g. 'Sundays 10:00 AM'), Location, Description (rich text), Image (with hotspot), Recurring toggle, Language\n   - Click Publish\n   - Verify on live site after rebuild\n   - Common mistakes: date format confusion, forgetting language\n\n4. Create `docs/staff/managing-announcement-bar.md` — step-by-step guide covering:\n   - Navigate to Site Settings in Studio sidebar\n   - Select the correct language variant (EN or ZH)\n   - Find the announcement bar fields section\n   - Set Announcement Bar Enabled to true\n   - Enter Announcement Bar Text\n   - Optionally enter Announcement Bar Link (full URL)\n   - Click Publish\n   - Verify on live site after rebuild\n   - To disable: set Announcement Bar Enabled to false and publish\n   - Common mistakes: forgetting to update both EN and ZH variants, leaving enabled with empty text\n\n## Must-Haves\n\n- [ ] `docs/staff/README.md` exists with Studio overview, login, content model, and publish pipeline explanation\n- [ ] `docs/staff/publishing-a-sermon.md` exists with complete field-by-field guide\n- [ ] `docs/staff/creating-an-event.md` exists with complete field-by-field guide\n- [ ] `docs/staff/managing-announcement-bar.md` exists with enable/disable/edit workflow\n- [ ] All guides explain the publish → rebuild → live delay\n- [ ] All guides mention language variants where applicable\n- [ ] No TBD or TODO placeholders in any guide",
       "estimate": "45m",
       "files": [
@@ -6535,6 +6542,17 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-02T17:19:30.677Z"
+    },
+    {
+      "id": 235,
+      "task_id": "T02",
+      "slice_id": "S05",
+      "milestone_id": "M004",
+      "command": "test -f docs/staff/README.md && test -f docs/staff/publishing-a-sermon.md && test -f docs/staff/creating-an-event.md && test -f docs/staff/managing-announcement-bar.md && ! grep -rq 'TBD\\|TODO' docs/staff/ && test $(grep -c '## ' docs/staff/README.md) -ge 3",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 500,
+      "created_at": "2026-04-02T17:21:22.799Z"
     }
   ]
 }

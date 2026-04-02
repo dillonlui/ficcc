@@ -28,7 +28,7 @@ This is the only code change in the slice — schema change + frontend rendering
   - Estimate: 45m
   - Files: sanity/schemas/singletons/siteSettings.ts, src/lib/sanity.ts, src/layouts/BaseLayout.astro, src/styles/global.css
   - Verify: npm run build && grep -q 'announcementBarEnabled' sanity/schemas/singletons/siteSettings.ts && grep -q 'announcementBarEnabled' src/lib/sanity.ts && grep -q 'announcementBar' src/layouts/BaseLayout.astro && grep -q 'announcement-bar' src/styles/global.css
-- [ ] **T02: Write staff documentation guides for sermon, event, and announcement bar workflows** — Create four Markdown documentation files in `docs/staff/` that enable non-technical church staff to manage content via Sanity Studio without developer help.
+- [x] **T02: Created four Markdown staff guides covering Studio access, sermon publishing, event creation, and announcement bar management with field-level accuracy from Sanity schemas** — Create four Markdown documentation files in `docs/staff/` that enable non-technical church staff to manage content via Sanity Studio without developer help.
 
 These guides are written for staff who know nothing about web development. Each guide must explain the publish → rebuild → live pipeline (static site takes ~2-3 min to update after publishing). Guides must mention both EN and ZH language variants where applicable.
 
