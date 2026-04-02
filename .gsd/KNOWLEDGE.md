@@ -58,3 +58,13 @@
 **Context:** ZH contact page uses WeChat-first design with QR code and simplified 3-field form, vs EN's 4-tab form layout with Turnstile. Force-cloning EN structure would create a poor ZH experience.
 **Rule:** When ZH content or UX needs differ significantly from EN, build a bespoke page rather than cloning. Follow the same BaseLayout/lang='zh' pattern, but design the page layout for the ZH audience. Current bespoke pages: /zh/contact (WeChat-first), /zh/about (extended 1968-2009 timeline), /zh/about/beliefs (11 EFCA points vs EN's 8).
 **Files:** `src/pages/zh/contact.astro`, `src/pages/zh/about/index.astro`, `src/pages/zh/about/beliefs.astro`
+
+## K012: Use npx serve for LHCI instead of astro preview with Vercel adapter
+**Context:** With `@astrojs/vercel` adapter, `astro preview` tries to start a Vercel dev server which is incompatible with Lighthouse CI. Static output lives in `dist/client/`.
+**Rule:** Use `npx serve dist/client -l 4321` as the LHCI startServerCommand. Match `startServerReadyPattern: 'Accepting connections'` for serve's output.
+**Files:** `lighthouserc.cjs`
+
+## K013: --color-terracotta fails WCAG AA — use --color-terracotta-dark for text
+**Context:** `--color-terracotta` (#C4745A) has only 3.31:1 contrast ratio against `--color-bg`, failing WCAG AA for normal text (4.5:1 required). `--color-terracotta-dark` (#A85E42) achieves 4.56:1.
+**Rule:** Use `--color-terracotta-dark` for all text-color and interactive element usages. `--color-terracotta` is still fine for background-color on buttons (where the text is white/light) or decorative accents. Site-wide audit is ongoing — check contrast when touching any component that uses terracotta for text.
+**Files:** `src/styles/global.css`, `src/pages/contact.astro`, `src/components/Hero.astro`

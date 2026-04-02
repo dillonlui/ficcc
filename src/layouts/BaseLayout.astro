@@ -11,13 +11,22 @@ interface Props {
   title: string;
   description?: string;
   lang?: string;
+  jsonLd?: Record<string, unknown>;
+  ogImage?: string;
+  ogType?: string;
 }
 
 const {
   title,
   description = 'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY.',
   lang = 'en',
+  jsonLd,
+  ogImage,
+  ogType,
 } = Astro.props;
+
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as Lang);
 const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.org').href;
@@ -31,7 +40,8 @@ const isVisualEditingEnabled =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <SEO title={title} description={description} lang={lang} alternateUrl={absoluteAlternateUrl} />
+    <SEO title={title} description={description} lang={lang} alternateUrl={absoluteAlternateUrl} jsonLd={jsonLd} ogImage={ogImage} ogType={ogType} />
+    {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     <link rel="stylesheet" href={cjkFontsHref} media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href={cjkFontsHref} /></noscript>
@@ -42,6 +52,24 @@ const isVisualEditingEnabled =
     <slot />
     <Footer lang={lang} />
     {isVisualEditingEnabled && <VisualEditing enabled={true} />}
+    {gaMeasurementId && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+        <script define:vars={{ gaMeasurementId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', gaMeasurementId);
+
+          // Custom event helper for sermon_play, language_switch, form_submit
+          window.sendAnalyticsEvent = function(eventName, params) {
+            if (typeof gtag === 'function') {
+              gtag('event', eventName, params || {});
+            }
+          };
+        </script>
+      </>
+    )}
     <script>
       document.addEventListener('click', (e) => {
         const toggle = (e.target as HTMLElement).closest('.lang-toggle') as HTMLAnchorElement | null;

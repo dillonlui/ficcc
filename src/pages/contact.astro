@@ -114,7 +114,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
           </div>
 
           <!-- Church info sidebar -->
-          <aside class="contact-info" aria-label="Church contact information">
+          <div class="contact-info" role="region" aria-label="Church contact information">
             <h2 class="contact-info__heading">Church Information</h2>
 
             <div class="contact-info__block">
@@ -147,7 +147,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
                 <a href="tel:+16072731223" class="contact-info__link">(607) 273-1223</a>
               </p>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
     </section>
@@ -336,8 +336,8 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   }
 
   .contact-tabs__tab--active {
-    color: var(--color-terracotta);
-    border-bottom-color: var(--color-terracotta);
+    color: var(--color-terracotta-dark);
+    border-bottom-color: var(--color-terracotta-dark);
   }
 
   .contact-tabs__tab:focus-visible {
@@ -401,7 +401,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   }
 
   .contact-info__link {
-    color: var(--color-terracotta);
+    color: var(--color-terracotta-dark);
     text-decoration: none;
     transition: color var(--transition);
   }

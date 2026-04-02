@@ -30,9 +30,15 @@ All ZH pages follow a consistent pattern: clone EN structure, swap to getX('zh')
 - **M002**: EN Content Pages
 - **M003**: ZH Content & Bilingual Toggle
 
+## Current Milestone
+
+**M004: Performance, Search, Analytics & Launch — In Progress.**
+
+S01 (Performance & Accessibility Audit) complete: Hero converted from CSS background-image to `<img>` with fetchpriority="high", preconnect for Sanity CDN, WebP default, skip-to-content link, id="main-content" on all 27 pages, LHCI expanded to 10 URLs with per-archetype thresholds, axe-core CLI integrated, and WCAG contrast fixes begun (--color-terracotta-dark for AA compliance).
+
 ## Queued Milestones
 
-- **M004**: Performance, Search, Analytics & Launch — Pagefind, Vercel Analytics, DNS cutover
+None — M004 is the final milestone.
 
 ## Tech Stack
 

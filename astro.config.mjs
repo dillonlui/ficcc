@@ -11,7 +11,15 @@ export default defineConfig({
   output: 'static', // hybrid equivalent with adapter
   adapter: vercel(),
   integrations: [
-    sitemap(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: {
+          en: 'en',
+          zh: 'zh',
+        },
+      },
+    }),
     sanity({
       projectId: import.meta.env.SANITY_PROJECT_ID || 'placeholder',
       dataset: import.meta.env.SANITY_DATASET || 'production',
