@@ -11,7 +11,7 @@
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://cdn.sanity.io data:; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://challenges.cloudflare.com https://www.paypal.com; connect-src 'self' https://*.sanity.io https://*.vercel-analytics.com; media-src 'self' https://cdn.sanity.io"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.youtube-nocookie.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://cdn.sanity.io data:; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://challenges.cloudflare.com https://www.paypal.com; connect-src 'self' https://*.sanity.io https://*.vercel-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self' https://cdn.sanity.io"
         }
       ]
     },
@@ -23,6 +23,54 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/",
+      "permanent": true
+    },
+    {
+      "source": "/home/about/",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/about",
+      "permanent": true
+    },
+    {
+      "source": "/home/faith/",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/about/beliefs",
+      "permanent": true
+    },
+    {
+      "source": "/home/sermons/",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/sermons",
+      "permanent": true
+    },
+    {
+      "source": "/home/worship/",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/visit",
+      "permanent": true
+    },
+    {
+      "source": "/home/fellowships/",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/ministries",
+      "permanent": true
+    },
+    {
+      "source": "/home/contact/",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/contact",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "em.ficcc.org" }],
+      "destination": "https://ficcc.org/",
+      "permanent": true
+    },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "cm.ficcc.org" }],

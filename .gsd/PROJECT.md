@@ -42,6 +42,10 @@ S03 (Responsive & E2E Testing) complete: Playwright test suite with 4 viewport p
 
 S04 (Pagefind Search Integration) complete: astro-pagefind integration indexes 24 content pages (excluding admin/styleguide/404). SearchModal.astro wraps Pagefind's Search component in a keyboard-accessible modal overlay themed with site CSS custom properties. Search trigger button in header. 3 Playwright E2E tests cover search open → query → results → close flow.
 
+S05 (Staff Documentation & Training) complete: Announcement bar CMS feature added to siteSettings schema (enabled boolean, text, optional link) with conditional rendering in BaseLayout. Four staff guides in docs/staff/ covering Studio access, sermon publishing, event creation, and announcement bar management — all with field-level accuracy from Sanity schemas and publish→rebuild→live pipeline explanation.
+
+Only S06 (DNS Cutover & Launch) remains.
+
 ## Queued Milestones
 
 None — M004 is the final milestone.
@@ -56,8 +60,8 @@ None — M004 is the final milestone.
 | Styling | CSS custom properties, scoped styles |
 | Fonts | Lora (variable), Inter (variable), Noto Serif SC (400/700) — self-hosted via fontsource |
 | Forms | Vercel Edge Runtime + Cloudflare Turnstile + Resend |
-| Analytics | Vercel Web Analytics (planned M004) |
-| Search | Pagefind (planned M004) |
+| Analytics | GA4 (gated on PUBLIC_GA_MEASUREMENT_ID) |
+| Search | Pagefind (astro-pagefind, 24 pages indexed) |
 
 ## Key URLs
 
