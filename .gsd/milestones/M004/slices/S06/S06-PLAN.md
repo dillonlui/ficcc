@@ -57,7 +57,7 @@ Update vercel.json with two changes needed for launch: (1) em.ficcc.org redirect
   - Estimate: 30m
   - Files: vercel.json
   - Verify: node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8'))" && grep -c 'em.ficcc.org' vercel.json && grep -q 'googletagmanager' vercel.json && grep -q 'google-analytics' vercel.json && npm run build && npm test && npm run test:e2e
-- [ ] **T02: Write DNS cutover launch runbook** — ## Description
+- [x] **T02: Created docs/launch-runbook.md with full DNS cutover procedure and fixed Vitest config to exclude Playwright e2e specs** — ## Description
 
 Create docs/launch-runbook.md documenting the exact DNS cutover procedure for ficcc.org, em.ficcc.org, and cm.ficcc.org. This is the final deliverable — a staff/developer reference for executing the launch.
 

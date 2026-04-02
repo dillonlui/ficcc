@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T17:27:19.081Z",
+  "exported_at": "2026-04-02T17:30:05.308Z",
   "milestones": [
     {
       "id": "M001",
@@ -3778,19 +3778,24 @@
       "milestone_id": "M004",
       "slice_id": "S06",
       "id": "T02",
-      "title": "Write DNS cutover launch runbook",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created docs/launch-runbook.md with full DNS cutover procedure and fixed Vitest config to exclude Playwright e2e specs",
+      "status": "complete",
+      "one_liner": "Created docs/launch-runbook.md with full DNS cutover procedure and fixed Vitest config to exclude Playwright e2e specs",
+      "narrative": "Fixed the npm test failure by creating vitest.config.ts to exclude e2e/ from Vitest discovery (Playwright specs use test.describe which Vitest rejects). Then wrote the complete launch runbook covering prerequisites, Vercel domain setup, DNS records for all three domains, post-cutover verification checklist with redirect tables matching vercel.json, rollback procedure, and timeline.",
+      "verification_result": "All task and slice-level verification checks pass: file exists with 6 sections, no placeholders, vercel.json valid with 8 em.ficcc.org rules and GA4 CSP domains, npm test 27/27 pass, npm run build exits 0.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-02T17:30:05.285Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Created vitest.config.ts (not in task plan) to fix pre-existing npm test failure from Vitest loading Playwright e2e specs.",
+      "known_issues": "npm run test:e2e not verified — requires running dev server and Playwright browsers.",
+      "key_files": [
+        "docs/launch-runbook.md",
+        "vitest.config.ts"
+      ],
+      "key_decisions": [
+        "Created vitest.config.ts using Astro getViteConfig to exclude e2e/ and .gsd/ from Vitest test discovery"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S06\nmilestone: M004\nkey_files:\n  - docs/launch-runbook.md\n  - vitest.config.ts\nkey_decisions:\n  - Created vitest.config.ts using Astro getViteConfig to exclude e2e/ and .gsd/ from Vitest test discovery\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-02T17:30:05.286Z\nblocker_discovered: false\n---\n\n# T02: Created docs/launch-runbook.md with full DNS cutover procedure and fixed Vitest config to exclude Playwright e2e specs\n\n**Created docs/launch-runbook.md with full DNS cutover procedure and fixed Vitest config to exclude Playwright e2e specs**\n\n## What Happened\n\nFixed the npm test failure by creating vitest.config.ts to exclude e2e/ from Vitest discovery (Playwright specs use test.describe which Vitest rejects). Then wrote the complete launch runbook covering prerequisites, Vercel domain setup, DNS records for all three domains, post-cutover verification checklist with redirect tables matching vercel.json, rollback procedure, and timeline.\n\n## Verification\n\nAll task and slice-level verification checks pass: file exists with 6 sections, no placeholders, vercel.json valid with 8 em.ficcc.org rules and GA4 CSP domains, npm test 27/27 pass, npm run build exits 0.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `test -f docs/launch-runbook.md && grep -c '^## ' docs/launch-runbook.md >= 5 && no TBD/TODO` | 0 | ✅ pass | 100ms |\n| 2 | `npm test` | 0 | ✅ pass | 3100ms |\n| 3 | `npm run build` | 0 | ✅ pass | 10500ms |\n| 4 | `node -e JSON.parse vercel.json` | 0 | ✅ pass | 100ms |\n| 5 | `grep -c em.ficcc.org vercel.json (8)` | 0 | ✅ pass | 100ms |\n| 6 | `grep googletagmanager/google-analytics vercel.json` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nCreated vitest.config.ts (not in task plan) to fix pre-existing npm test failure from Vitest loading Playwright e2e specs.\n\n## Known Issues\n\nnpm run test:e2e not verified — requires running dev server and Playwright browsers.\n\n## Files Created/Modified\n\n- `docs/launch-runbook.md`\n- `vitest.config.ts`\n",
       "description": "## Description\n\nCreate docs/launch-runbook.md documenting the exact DNS cutover procedure for ficcc.org, em.ficcc.org, and cm.ficcc.org. This is the final deliverable — a staff/developer reference for executing the launch.\n\n## Steps\n\n1. Create `docs/launch-runbook.md` with the following sections:\n2. **Prerequisites** — list what must be true before cutover: Vercel deployment live at ficcc.vercel.app, all tests passing, env vars set (PUBLIC_GA_MEASUREMENT_ID, PUBLIC_GOOGLE_SITE_VERIFICATION), Sanity dataset populated.\n3. **Vercel Domain Configuration** — step-by-step for adding ficcc.org, em.ficcc.org, and cm.ficcc.org as custom domains in Vercel dashboard. Note that Vercel auto-provisions SSL via Let's Encrypt.\n4. **DNS Records** — exact record types and values:\n   - ficcc.org: A record → 76.76.21.21, AAAA → 2606:4700:20::681a:... (or CNAME to cname.vercel-dns.com for subdomain)\n   - em.ficcc.org: CNAME → cname.vercel-dns.com\n   - cm.ficcc.org: CNAME → cname.vercel-dns.com\n5. **Post-Cutover Verification** — checklist:\n   - ficcc.org loads new site (check for skip-to-content or main-content landmark)\n   - em.ficcc.org/home/about/ redirects to ficcc.org/about (301)\n   - cm.ficcc.org/home/about/ redirects to ficcc.org/zh/about (301)\n   - SSL valid on all three domains (check padlock)\n   - GA4 receiving hits (check Real-Time report in Google Analytics)\n   - Search console verified\n   - Sitemap accessible at ficcc.org/sitemap-index.xml\n6. **Rollback** — how to revert DNS if issues are found.\n7. **Timeline** — expected propagation times (DNS: 5min–48hr, SSL: usually immediate with Vercel).\n\n## Must-Haves\n\n- [ ] docs/launch-runbook.md exists and is non-empty\n- [ ] Contains sections for prerequisites, domain config, DNS records, post-cutover verification, rollback\n- [ ] No TBD or TODO placeholders\n\n## Verification\n\n- `test -f docs/launch-runbook.md` — file exists\n- `grep -c '^## ' docs/launch-runbook.md` returns >= 5 (5+ sections)\n- `! grep -qi 'TBD\\|TODO' docs/launch-runbook.md` — no placeholders\n\n## Inputs\n\n- `vercel.json` — redirect rules to reference in post-cutover verification\n- `.env.example` — env vars to list in prerequisites\n\n## Expected Output\n\n- `docs/launch-runbook.md` — complete DNS cutover and launch procedure",
       "estimate": "20m",
       "files": [
@@ -6701,6 +6706,72 @@
       "verdict": "✅ pass (112 passed)",
       "duration_ms": 6900,
       "created_at": "2026-04-02T17:27:19.058Z"
+    },
+    {
+      "id": 243,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M004",
+      "command": "test -f docs/launch-runbook.md && grep -c '^## ' docs/launch-runbook.md >= 5 && no TBD/TODO",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:30:05.285Z"
+    },
+    {
+      "id": 244,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M004",
+      "command": "npm test",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 3100,
+      "created_at": "2026-04-02T17:30:05.285Z"
+    },
+    {
+      "id": 245,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M004",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10500,
+      "created_at": "2026-04-02T17:30:05.285Z"
+    },
+    {
+      "id": 246,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M004",
+      "command": "node -e JSON.parse vercel.json",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:30:05.285Z"
+    },
+    {
+      "id": 247,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M004",
+      "command": "grep -c em.ficcc.org vercel.json (8)",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:30:05.285Z"
+    },
+    {
+      "id": 248,
+      "task_id": "T02",
+      "slice_id": "S06",
+      "milestone_id": "M004",
+      "command": "grep googletagmanager/google-analytics vercel.json",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:30:05.285Z"
     }
   ]
 }
