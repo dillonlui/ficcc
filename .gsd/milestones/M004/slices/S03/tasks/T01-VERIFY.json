@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M004/S03/T01",
+  "timestamp": 1775149044840,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationMs": 10491,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx playwright test e2e/smoke.spec.ts --reporter=list",
+      "exitCode": 0,
+      "durationMs": 4053,
+      "verdict": "pass"
+    }
+  ]
+}

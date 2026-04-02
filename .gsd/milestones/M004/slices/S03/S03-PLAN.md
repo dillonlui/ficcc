@@ -16,7 +16,7 @@ Key constraints:
   - Estimate: 45m
   - Files: package.json, playwright.config.ts, e2e/smoke.spec.ts
   - Verify: npm run build && npx playwright test e2e/smoke.spec.ts --reporter=list
-- [ ] **T02: Add responsive layout and bilingual E2E tests** — Write e2e/responsive.spec.ts with viewport-specific layout assertions and e2e/bilingual.spec.ts with language toggle and ZH content tests.
+- [x] **T02: Added responsive layout and bilingual E2E tests — 60 passed across 4 viewports covering hamburger nav, overflow, Chinese content, language toggle, and hreflang tags** — Write e2e/responsive.spec.ts with viewport-specific layout assertions and e2e/bilingual.spec.ts with language toggle and ZH content tests.
 
 Responsive tests (e2e/responsive.spec.ts):
 - Mobile (375px): hamburger button visible, desktop nav links hidden, no horizontal scroll overflow (document.documentElement.scrollWidth <= document.documentElement.clientWidth) on /, /about/, /sermons/

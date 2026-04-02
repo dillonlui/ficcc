@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T16:57:18.491Z",
+  "exported_at": "2026-04-02T16:59:57.028Z",
   "milestones": [
     {
       "id": "M001",
@@ -3447,19 +3447,25 @@
       "milestone_id": "M004",
       "slice_id": "S03",
       "id": "T02",
-      "title": "Add responsive layout and bilingual E2E tests",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Added responsive layout and bilingual E2E tests — 60 passed across 4 viewports covering hamburger nav, overflow, Chinese content, language toggle, and hreflang tags",
+      "status": "complete",
+      "one_liner": "Added responsive layout and bilingual E2E tests — 60 passed across 4 viewports covering hamburger nav, overflow, Chinese content, language toggle, and hreflang tags",
+      "narrative": "Created e2e/responsive.spec.ts with 9 viewport-aware layout tests (horizontal overflow, hamburger toggle, tablet breakpoint, desktop nav, wide containment) and e2e/bilingual.spec.ts with 11 tests (Chinese content, WeChat section, language toggle hrefs, hreflang tags). Used test.skip with page.viewportSize() to gate viewport-specific assertions. Fixed one test where Playwright's toBeVisible didn't detect off-screen translateX positioning — switched to checking is-open class instead.",
+      "verification_result": "Ran npx playwright test e2e/responsive.spec.ts e2e/bilingual.spec.ts --reporter=list. 60 passed, 20 correctly skipped, 0 failed in 4.3s.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-02T16:59:57.007Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Changed nav visibility test from toBeVisible to is-open class check due to Playwright not detecting translateX off-screen elements as hidden.",
+      "known_issues": "None.",
+      "key_files": [
+        "e2e/responsive.spec.ts",
+        "e2e/bilingual.spec.ts"
+      ],
+      "key_decisions": [
+        "Used viewport-aware test.skip with page.viewportSize() for responsive test gating",
+        "Checked is-open class instead of toBeVisible for off-screen nav panel"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S03\nmilestone: M004\nkey_files:\n  - e2e/responsive.spec.ts\n  - e2e/bilingual.spec.ts\nkey_decisions:\n  - Used viewport-aware test.skip with page.viewportSize() for responsive test gating\n  - Checked is-open class instead of toBeVisible for off-screen nav panel\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-02T16:59:57.008Z\nblocker_discovered: false\n---\n\n# T02: Added responsive layout and bilingual E2E tests — 60 passed across 4 viewports covering hamburger nav, overflow, Chinese content, language toggle, and hreflang tags\n\n**Added responsive layout and bilingual E2E tests — 60 passed across 4 viewports covering hamburger nav, overflow, Chinese content, language toggle, and hreflang tags**\n\n## What Happened\n\nCreated e2e/responsive.spec.ts with 9 viewport-aware layout tests (horizontal overflow, hamburger toggle, tablet breakpoint, desktop nav, wide containment) and e2e/bilingual.spec.ts with 11 tests (Chinese content, WeChat section, language toggle hrefs, hreflang tags). Used test.skip with page.viewportSize() to gate viewport-specific assertions. Fixed one test where Playwright's toBeVisible didn't detect off-screen translateX positioning — switched to checking is-open class instead.\n\n## Verification\n\nRan npx playwright test e2e/responsive.spec.ts e2e/bilingual.spec.ts --reporter=list. 60 passed, 20 correctly skipped, 0 failed in 4.3s.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npx playwright test e2e/responsive.spec.ts e2e/bilingual.spec.ts --reporter=list` | 0 | ✅ pass | 4300ms |\n\n\n## Deviations\n\nChanged nav visibility test from toBeVisible to is-open class check due to Playwright not detecting translateX off-screen elements as hidden.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `e2e/responsive.spec.ts`\n- `e2e/bilingual.spec.ts`\n",
       "description": "Write e2e/responsive.spec.ts with viewport-specific layout assertions and e2e/bilingual.spec.ts with language toggle and ZH content tests.\n\nResponsive tests (e2e/responsive.spec.ts):\n- Mobile (375px): hamburger button visible, desktop nav links hidden, no horizontal scroll overflow (document.documentElement.scrollWidth <= document.documentElement.clientWidth) on /, /about/, /sermons/\n- Tablet (768px): check layout adapts (hamburger may still be visible at exactly 768px since breakpoint is max-width:767px)\n- Desktop (1280px): desktop nav links visible, hamburger hidden\n- Wide (1920px): page content doesn't stretch beyond max-width, no horizontal overflow\n- Use the `.hamburger` selector and desktop nav link selectors from Header.astro\n\nBilingual tests (e2e/bilingual.spec.ts):\n- /zh/ loads with Chinese content (check for known Chinese characters in heading/body)\n- /zh/contact/ loads with WeChat-specific content\n- Language toggle link on EN pages points to /zh/ equivalent and vice versa\n- hreflang tags present on pages that have alternates\n\nKey constraints:\n- Tests reuse the Playwright config and 4-viewport projects from T01\n- For responsive tests, run specific viewport projects (not all 4) using test.describe with project filtering or playwright.config project-scoped test dirs\n- Actually: simpler approach — write the tests to check viewport width inside the test using page.viewportSize() and skip assertions that don't apply to the current viewport",
       "estimate": "45m",
       "files": [
@@ -6132,6 +6138,17 @@
       "verdict": "✅ pass",
       "duration_ms": 6000,
       "created_at": "2026-04-02T16:57:18.469Z"
+    },
+    {
+      "id": 219,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M004",
+      "command": "npx playwright test e2e/responsive.spec.ts e2e/bilingual.spec.ts --reporter=list",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 4300,
+      "created_at": "2026-04-02T16:59:57.007Z"
     }
   ]
 }
