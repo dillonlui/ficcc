@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T16:59:57.028Z",
+  "exported_at": "2026-04-02T17:00:56.050Z",
   "milestones": [
     {
       "id": "M001",
@@ -3491,19 +3491,23 @@
       "milestone_id": "M004",
       "slice_id": "S03",
       "id": "T03",
-      "title": "Add Playwright CI workflow for GitHub Actions",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created .github/workflows/playwright.yml running Playwright E2E tests on PRs to main with chromium-only install and report artifact upload",
+      "status": "complete",
+      "one_liner": "Created .github/workflows/playwright.yml running Playwright E2E tests on PRs to main with chromium-only install and report artifact upload",
+      "narrative": "Created the CI workflow following the existing lighthouse.yml pattern. The workflow triggers on pull_request to main, sets up Node 20 with npm cache, installs only chromium (with system deps), builds the site, runs the full Playwright test suite, and uploads playwright-report/ as an artifact regardless of test outcome. CI=true env var is set at job level so Playwright picks up retry and worker config from playwright.config.ts.",
+      "verification_result": "Confirmed YAML structure via cat, actionlint not available locally so manual review passed. Full Playwright suite ran: 100 passed, 20 skipped, 5.3s.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-02T17:00:56.030Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        ".github/workflows/playwright.yml"
+      ],
+      "key_decisions": [
+        "Chromium-only install in CI to minimize setup time (~30s vs ~2min for all browsers)"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S03\nmilestone: M004\nkey_files:\n  - .github/workflows/playwright.yml\nkey_decisions:\n  - Chromium-only install in CI to minimize setup time (~30s vs ~2min for all browsers)\nduration: \"\"\nverification_result: mixed\ncompleted_at: 2026-04-02T17:00:56.030Z\nblocker_discovered: false\n---\n\n# T03: Created .github/workflows/playwright.yml running Playwright E2E tests on PRs to main with chromium-only install and report artifact upload\n\n**Created .github/workflows/playwright.yml running Playwright E2E tests on PRs to main with chromium-only install and report artifact upload**\n\n## What Happened\n\nCreated the CI workflow following the existing lighthouse.yml pattern. The workflow triggers on pull_request to main, sets up Node 20 with npm cache, installs only chromium (with system deps), builds the site, runs the full Playwright test suite, and uploads playwright-report/ as an artifact regardless of test outcome. CI=true env var is set at job level so Playwright picks up retry and worker config from playwright.config.ts.\n\n## Verification\n\nConfirmed YAML structure via cat, actionlint not available locally so manual review passed. Full Playwright suite ran: 100 passed, 20 skipped, 5.3s.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `cat .github/workflows/playwright.yml` | 0 | ✅ pass | 100ms |\n| 2 | `npx --yes actionlint .github/workflows/playwright.yml` | 1 | ⚠️ not installed — manual review | 500ms |\n| 3 | `npx playwright test` | 0 | ✅ pass | 6100ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `.github/workflows/playwright.yml`\n",
       "description": "Create .github/workflows/playwright.yml that runs Playwright tests on PRs to main.\n\nWorkflow steps:\n1. Checkout, setup Node 20, npm ci\n2. npx playwright install --with-deps chromium (only chromium)\n3. npm run build\n4. npx playwright test\n5. Upload playwright-report/ as artifact (always, even on failure)\n\nKey constraints:\n- Only install chromium browser to keep CI fast (~30s vs ~2min for all browsers)\n- Use `actions/upload-artifact@v4` for report upload with `if: always()`\n- Trigger on pull_request to main branch (same pattern as lighthouse.yml)\n- Set CI=true env var for Playwright to pick up retry config\n- Verify the workflow YAML is valid using actionlint if available, otherwise manual structure review",
       "estimate": "20m",
       "files": [
@@ -6149,6 +6153,39 @@
       "verdict": "✅ pass",
       "duration_ms": 4300,
       "created_at": "2026-04-02T16:59:57.007Z"
+    },
+    {
+      "id": 220,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M004",
+      "command": "cat .github/workflows/playwright.yml",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:00:56.030Z"
+    },
+    {
+      "id": 221,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M004",
+      "command": "npx --yes actionlint .github/workflows/playwright.yml",
+      "exit_code": 1,
+      "verdict": "⚠️ not installed — manual review",
+      "duration_ms": 500,
+      "created_at": "2026-04-02T17:00:56.030Z"
+    },
+    {
+      "id": 222,
+      "task_id": "T03",
+      "slice_id": "S03",
+      "milestone_id": "M004",
+      "command": "npx playwright test",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 6100,
+      "created_at": "2026-04-02T17:00:56.030Z"
     }
   ]
 }

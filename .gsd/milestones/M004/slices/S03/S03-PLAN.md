@@ -38,7 +38,7 @@ Key constraints:
   - Estimate: 45m
   - Files: e2e/responsive.spec.ts, e2e/bilingual.spec.ts
   - Verify: npx playwright test e2e/responsive.spec.ts e2e/bilingual.spec.ts --reporter=list
-- [ ] **T03: Add Playwright CI workflow for GitHub Actions** — Create .github/workflows/playwright.yml that runs Playwright tests on PRs to main.
+- [x] **T03: Created .github/workflows/playwright.yml running Playwright E2E tests on PRs to main with chromium-only install and report artifact upload** — Create .github/workflows/playwright.yml that runs Playwright tests on PRs to main.
 
 Workflow steps:
 1. Checkout, setup Node 20, npm ci
