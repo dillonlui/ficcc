@@ -54,7 +54,7 @@ const sermonJsonLd = sermon.videoId
 ---
 
 <BaseLayout title={title} description={sermonDescription} jsonLd={sermonJsonLd} ogType="article">
-  <main id="main-content">
+  <main id="main-content" data-pagefind-body>
     <Hero
       title={sermon.title}
       subtitle={sermon.series ?? undefined}

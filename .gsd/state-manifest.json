@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T17:00:56.050Z",
+  "exported_at": "2026-04-02T17:08:30.172Z",
   "milestones": [
     {
       "id": "M001",
@@ -737,14 +737,14 @@
       "milestone_id": "M004",
       "id": "S03",
       "title": "Responsive & E2E Testing",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [],
       "demo": "Playwright test suite passing at 4 viewports. E2E smoke tests in CI.",
       "created_at": "2026-03-31T22:35:14.813Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-04-02T17:02:26.355Z",
+      "full_summary_md": "---\nid: S03\nparent: M004\nmilestone: M004\nprovides:\n  - Playwright test suite and CI workflow for E2E regression testing\n  - test:e2e npm script for local test runs\nrequires:\n  []\naffects:\n  - S06\nkey_files:\n  - playwright.config.ts\n  - e2e/smoke.spec.ts\n  - e2e/responsive.spec.ts\n  - e2e/bilingual.spec.ts\n  - .github/workflows/playwright.yml\n  - package.json\nkey_decisions:\n  - Used domcontentloaded waitUntil instead of networkidle for faster static site tests\n  - Used viewport-aware test.skip with page.viewportSize() for responsive test gating\n  - Chromium-only install in CI to minimize setup time (~30s vs ~2min)\n  - Checked is-open class instead of toBeVisible for off-screen nav panel\npatterns_established:\n  - Parameterized Playwright smoke tests with page array for easy addition of new pages\n  - Viewport-aware test.skip pattern for responsive assertions across 4 viewport projects\n  - CI workflow pattern: build → test → upload artifact (always) matching lighthouse.yml structure\nobservability_surfaces:\n  - playwright-report/ artifact uploaded on every CI run (pass or fail)\ndrill_down_paths:\n  - .gsd/milestones/M004/slices/S03/tasks/T01-SUMMARY.md\n  - .gsd/milestones/M004/slices/S03/tasks/T02-SUMMARY.md\n  - .gsd/milestones/M004/slices/S03/tasks/T03-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-02T17:02:26.357Z\nblocker_discovered: false\n---\n\n# S03: Responsive & E2E Testing\n\n**Playwright E2E suite with 100 tests across 4 viewports covering smoke, responsive layout, and bilingual content, plus CI workflow for PRs**\n\n## What Happened\n\nBuilt a complete Playwright E2E testing infrastructure in three tasks. T01 installed @playwright/test with a 4-viewport config (mobile 375px, tablet 768px, desktop 1280px, wide 1920px) and wrote parameterized smoke tests for all 10 critical pages — each checking HTTP 200, h1/main landmark presence, and zero JS console errors. Used `domcontentloaded` waitUntil instead of `networkidle` for faster static site tests, and `npx serve dist/client -l 4321` as the webServer (matching K009/K012 patterns).\n\nT02 added responsive layout tests (horizontal overflow detection, hamburger toggle, desktop nav visibility, wide-viewport containment) and bilingual tests (Chinese content verification, WeChat section, language toggle hrefs, hreflang tags). Used viewport-aware `test.skip` with `page.viewportSize()` to gate assertions to relevant viewport sizes — this produces 20 intentional skips. One deviation: switched nav visibility check from `toBeVisible` to `is-open` class check because Playwright doesn't detect `translateX` off-screen elements as hidden.\n\nT03 created `.github/workflows/playwright.yml` triggered on PRs to main, installing only chromium (not firefox/webkit) to keep CI fast (~30s setup vs ~2min). The workflow builds the site, runs all Playwright tests, and uploads `playwright-report/` as an artifact regardless of outcome.\n\n## Verification\n\nFull Playwright suite ran against fresh build: 100 passed, 20 skipped (viewport-gated), 0 failed in 5.3s. Smoke tests cover all 10 critical pages × 4 viewports (40 tests). Responsive tests verify hamburger, nav, overflow, and containment. Bilingual tests verify Chinese content, language toggle, and hreflang tags. CI workflow YAML validated via manual review (actionlint not available locally).\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nT02 changed nav visibility test from toBeVisible to is-open class check — Playwright doesn't detect translateX off-screen elements as hidden.\n\n## Known Limitations\n\nCI workflow not yet tested in actual GitHub Actions environment — validated locally and via YAML structure review only. Only chromium browser is tested (no firefox/webkit cross-browser coverage).\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `playwright.config.ts` — Playwright config with 4 viewport projects and webServer pointing to npx serve dist/client\n- `e2e/smoke.spec.ts` — Parameterized smoke tests for 10 critical pages × 4 viewports\n- `e2e/responsive.spec.ts` — Viewport-aware responsive layout tests (hamburger, nav, overflow, containment)\n- `e2e/bilingual.spec.ts` — Bilingual tests (Chinese content, language toggle, hreflang tags)\n- `.github/workflows/playwright.yml` — CI workflow running Playwright on PRs to main with chromium-only install\n- `package.json` — Added @playwright/test dependency and test:e2e script\n",
+      "full_uat_md": "# S03: Responsive & E2E Testing — UAT\n\n**Milestone:** M004\n**Written:** 2026-04-02T17:02:26.357Z\n\n# S03: Responsive & E2E Testing — UAT\n\n**Milestone:** M004\n**Written:** 2026-04-02\n\n## UAT Type\n\n- UAT mode: artifact-driven\n- Why this mode is sufficient: All tests run against the static build output — no live CMS or runtime services needed. Test results are deterministic.\n\n## Preconditions\n\n- `npm run build` completes successfully (static output in `dist/client/`)\n- Chromium browser installed (`npx playwright install chromium`)\n\n## Smoke Test\n\nRun `npm run test:e2e` — expect 100 passed, 20 skipped, 0 failed.\n\n## Test Cases\n\n### 1. All critical pages load without errors\n\n1. Run `npx playwright test e2e/smoke.spec.ts --reporter=list`\n2. **Expected:** 40 tests pass (10 pages × 4 viewports). Each page returns 200, has h1 or main, zero console errors.\n\n### 2. Responsive layout — mobile hamburger nav\n\n1. Run `npx playwright test e2e/responsive.spec.ts --project=mobile --reporter=list`\n2. **Expected:** Hamburger button visible, desktop nav links hidden, no horizontal overflow on /, /about/, /sermons/.\n\n### 3. Responsive layout — desktop nav\n\n1. Run `npx playwright test e2e/responsive.spec.ts --project=desktop --reporter=list`\n2. **Expected:** Desktop nav links visible, hamburger hidden.\n\n### 4. Responsive layout — wide viewport containment\n\n1. Run `npx playwright test e2e/responsive.spec.ts --project=wide --reporter=list`\n2. **Expected:** Page content doesn't stretch beyond max-width, no horizontal overflow.\n\n### 5. Bilingual — Chinese content loads\n\n1. Run `npx playwright test e2e/bilingual.spec.ts --reporter=list`\n2. **Expected:** /zh/ has Chinese characters in heading. /zh/contact/ has WeChat content. Language toggle links point to correct alternate URLs. hreflang tags present on EN home page.\n\n### 6. CI workflow structure\n\n1. Review `.github/workflows/playwright.yml`\n2. **Expected:** Triggers on pull_request to main. Steps: checkout, Node 20, npm ci, chromium install, build, test, upload artifact (always).\n\n## Edge Cases\n\n### No horizontal overflow at any viewport\n\n1. Resize browser to each breakpoint (375, 768, 1280, 1920)\n2. Navigate to /, /about/, /sermons/\n3. **Expected:** `scrollWidth <= clientWidth` at all sizes — no horizontal scrollbar appears.\n\n### Viewport-specific test skipping\n\n1. Run `npx playwright test e2e/responsive.spec.ts --reporter=list`\n2. **Expected:** Mobile-specific tests (hamburger) skip on desktop/wide projects. Desktop-specific tests skip on mobile. 20 total skips.\n\n## Failure Signals\n\n- Any test failure in `npx playwright test` output\n- `playwright-report/` contains failure screenshots and traces (on CI, uploaded as artifact)\n- Console errors detected in smoke tests indicate broken JS on a page\n\n## Not Proven By This UAT\n\n- Cross-browser compatibility (only chromium tested)\n- Actual CI execution in GitHub Actions (workflow validated locally only)\n- Visual regression (no screenshot comparison baseline)\n- Performance under load (tests run sequentially against static server)\n\n## Notes for Tester\n\n- The 20 skipped tests are intentional — viewport-aware assertions that don't apply to all 4 viewports.\n- If tests fail with \"port 4321 already in use\", kill any existing serve process first.\n- The `reuseExistingServer: !CI` config means local runs reuse an already-running server if present.\n",
       "goal": "Playwright test suite covering critical pages at 4 viewports (mobile 375px, tablet 768px, desktop 1280px, wide 1920px) with E2E smoke, responsive layout, and bilingual tests, wired into CI.",
       "success_criteria": "- `npx playwright test` passes locally with 0 failures across all 4 viewport projects\n- Smoke tests verify every critical EN and ZH page loads with expected landmarks\n- Responsive tests assert hamburger visibility, grid collapse, and no horizontal overflow\n- Bilingual tests verify language toggle and ZH content presence\n- CI workflow runs Playwright on PRs and uploads report artifact\n- `npm run test:e2e` convenience script works",
       "proof_level": "integration — tests run against real built static output served locally",
@@ -767,11 +767,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Build-time search index covering EN + ZH content with CJK support",
-      "success_criteria": "Pagefind integrated into Astro build. Search UI component. EN and ZH content indexed. CJK queries work. Index size reasonable.",
-      "proof_level": "Search returns relevant results for EN and ZH queries. Index < 500KB.",
-      "integration_closure": "Pagefind index built at deploy time, search UI component on site",
-      "observability_impact": "Search usage tracked in analytics",
+      "goal": "Pagefind-powered search is integrated into the site — users can search sermons, pages, and ZH content from the header, with results scoped by language.",
+      "success_criteria": "- `npm run build` produces `dist/client/pagefind/` with index files for both EN and ZH content\n- Search UI is accessible from the site header on all pages\n- Typing a query returns relevant results from sermons, pages, and events\n- ZH pages search ZH-indexed content only (automatic via `lang` attribute)\n- Admin, styleguide, and 404 pages do not appear in search results\n- Search modal is keyboard accessible (Escape closes, focus management)\n- Playwright E2E test verifies search end-to-end",
+      "proof_level": "integration — requires real build output and runtime search interaction",
+      "integration_closure": "- Upstream: `src/layouts/BaseLayout.astro` (header slot, lang attribute), `src/components/Header.astro` (nav structure, z-index layers), `astro.config.mjs` (integrations array)\n- New wiring: `astro-pagefind` integration in astro.config.mjs, Search component in Header, `data-pagefind-body` on all page `<main>` elements\n- Remaining for milestone: S05 (staff docs), S06 (DNS cutover)",
+      "observability_impact": "Pagefind is fully static — no runtime signals needed. Build-time verification via `ls dist/client/pagefind/` confirms index generation. Search failures are visible in browser console (pagefind.js errors).",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -3524,6 +3524,111 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M004",
+      "slice_id": "S04",
+      "id": "T01",
+      "title": "Installed astro-pagefind, configured Pagefind integration in Astro, and scoped search indexing to 25 content pages while excluding admin/styleguide/404",
+      "status": "complete",
+      "one_liner": "Installed astro-pagefind, configured Pagefind integration in Astro, and scoped search indexing to 25 content pages while excluding admin/styleguide/404",
+      "narrative": "Installed astro-pagefind and added pagefind() integration to astro.config.mjs. Added data-pagefind-body to all 27 main elements, then replaced it with data-pagefind-ignore=\"all\" on 3 exclusion pages (admin, styleguide, 404). Build succeeded with Pagefind indexing 24 pages.",
+      "verification_result": "npm run build exited 0 with Pagefind indexing 24 pages. pagefind.js and fragment files confirmed in dist/client/pagefind/. grep counts verified: 25 pages with data-pagefind-body, 3 pages with data-pagefind-ignore.",
+      "duration": "",
+      "completed_at": "2026-04-02T17:08:30.154Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "astro.config.mjs",
+        "package.json",
+        "src/pages/admin/index.astro",
+        "src/pages/styleguide.astro",
+        "src/pages/404.astro"
+      ],
+      "key_decisions": [
+        "Replaced data-pagefind-body with data-pagefind-ignore on exclusion pages rather than stacking both attributes"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S04\nmilestone: M004\nkey_files:\n  - astro.config.mjs\n  - package.json\n  - src/pages/admin/index.astro\n  - src/pages/styleguide.astro\n  - src/pages/404.astro\nkey_decisions:\n  - Replaced data-pagefind-body with data-pagefind-ignore on exclusion pages rather than stacking both attributes\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-02T17:08:30.155Z\nblocker_discovered: false\n---\n\n# T01: Installed astro-pagefind, configured Pagefind integration in Astro, and scoped search indexing to 25 content pages while excluding admin/styleguide/404\n\n**Installed astro-pagefind, configured Pagefind integration in Astro, and scoped search indexing to 25 content pages while excluding admin/styleguide/404**\n\n## What Happened\n\nInstalled astro-pagefind and added pagefind() integration to astro.config.mjs. Added data-pagefind-body to all 27 main elements, then replaced it with data-pagefind-ignore=\"all\" on 3 exclusion pages (admin, styleguide, 404). Build succeeded with Pagefind indexing 24 pages.\n\n## Verification\n\nnpm run build exited 0 with Pagefind indexing 24 pages. pagefind.js and fragment files confirmed in dist/client/pagefind/. grep counts verified: 25 pages with data-pagefind-body, 3 pages with data-pagefind-ignore.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 10500ms |\n| 2 | `test -f dist/client/pagefind/pagefind.js` | 0 | ✅ pass | 100ms |\n| 3 | `ls dist/client/pagefind/fragment/ | head -5` | 0 | ✅ pass | 100ms |\n| 4 | `grep -r 'data-pagefind-body' src/pages/ --include='*.astro' | wc -l → 25` | 0 | ✅ pass | 100ms |\n| 5 | `grep -r 'data-pagefind-ignore' ... | wc -l → 3` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `astro.config.mjs`\n- `package.json`\n- `src/pages/admin/index.astro`\n- `src/pages/styleguide.astro`\n- `src/pages/404.astro`\n",
+      "description": "Install `astro-pagefind` and configure the Astro build to produce Pagefind indexes. Add `data-pagefind-body` to all `<main id=\"main-content\">` elements so only page content is indexed (not header/footer/nav). Add `data-pagefind-ignore=\"all\"` to admin, styleguide, and 404 pages. Verify build produces pagefind index files in `dist/client/pagefind/`.\n\n## Steps\n\n1. Install `astro-pagefind` as a dependency: `npm install astro-pagefind`\n2. Add `pagefind()` integration to `astro.config.mjs` integrations array (import from `astro-pagefind`)\n3. Add `data-pagefind-body` attribute to all `<main id=\"main-content\">` elements across all pages. Use a sed command or manual edit — there are ~27 pages under `src/pages/`. Every `<main id=\"main-content\">` becomes `<main id=\"main-content\" data-pagefind-body>`.\n4. Add `data-pagefind-ignore=\"all\"` to the top-level element in `src/pages/admin/index.astro`, `src/pages/styleguide.astro`, and `src/pages/404.astro` to exclude them from search indexing.\n5. Run `npm run build` and verify `dist/client/pagefind/` directory exists with `pagefind.js` and index fragment files.\n\n## Must-Haves\n\n- [ ] `astro-pagefind` installed and configured in astro.config.mjs\n- [ ] All `<main id=\"main-content\">` elements have `data-pagefind-body`\n- [ ] Admin, styleguide, and 404 pages have `data-pagefind-ignore=\"all\"`\n- [ ] Build succeeds and `dist/client/pagefind/pagefind.js` exists\n\n## Verification\n\n- `npm run build` exits 0\n- `test -f dist/client/pagefind/pagefind.js` exits 0\n- `ls dist/client/pagefind/fragment/` shows index fragment files\n- `grep -r 'data-pagefind-body' src/pages/ --include='*.astro' | wc -l` shows count matching number of pages with `<main>`\n- `grep -r 'data-pagefind-ignore' src/pages/admin/index.astro src/pages/styleguide.astro src/pages/404.astro | wc -l` equals 3",
+      "estimate": "45m",
+      "files": [
+        "package.json",
+        "astro.config.mjs",
+        "src/pages/index.astro",
+        "src/pages/about/index.astro",
+        "src/pages/sermons/index.astro",
+        "src/pages/events.astro",
+        "src/pages/contact.astro",
+        "src/pages/visit.astro",
+        "src/pages/give.astro",
+        "src/pages/resources.astro",
+        "src/pages/styleguide.astro",
+        "src/pages/404.astro",
+        "src/pages/admin/index.astro"
+      ],
+      "verify": "npm run build && test -f dist/client/pagefind/pagefind.js && ls dist/client/pagefind/fragment/ | head -5",
+      "inputs": [
+        "`astro.config.mjs` — current integrations array to add pagefind to",
+        "`src/layouts/BaseLayout.astro` — reference for page structure (slot, lang attribute)",
+        "`src/pages/index.astro` — representative page showing `<main id=\"main-content\">` pattern",
+        "`src/pages/admin/index.astro` — page to exclude from search",
+        "`src/pages/styleguide.astro` — page to exclude from search",
+        "`src/pages/404.astro` — page to exclude from search"
+      ],
+      "expected_output": [
+        "`package.json` — astro-pagefind dependency added",
+        "`astro.config.mjs` — pagefind integration configured",
+        "`src/pages/**/*.astro` — all pages with `<main>` have data-pagefind-body attribute",
+        "`src/pages/admin/index.astro` — data-pagefind-ignore added",
+        "`src/pages/styleguide.astro` — data-pagefind-ignore added",
+        "`src/pages/404.astro` — data-pagefind-ignore added",
+        "`dist/client/pagefind/pagefind.js` — build output confirming index generation"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M004",
+      "slice_id": "S04",
+      "id": "T02",
+      "title": "Build search UI in header and add Playwright E2E test",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Create a search modal component using astro-pagefind's `<Search>` component, styled with site CSS custom properties. Add a search trigger button (magnifying glass) to the Header component. Wire up open/close behavior with keyboard accessibility. Write a Playwright E2E test that verifies search functionality end-to-end.\n\n## Steps\n\n1. Create `src/components/SearchModal.astro` — a modal overlay containing the `<Search>` component from `astro-pagefind/components/Search`. Style with CSS variables mapping to site tokens: `--pagefind-ui-primary` → `var(--color-terracotta-dark)`, `--pagefind-ui-text` → `var(--color-text)`, `--pagefind-ui-background` → `var(--color-bg)`, `--pagefind-ui-border` → `var(--color-stone)`, `--pagefind-ui-font` → `var(--font-sans)`. Use `z-index: 200` to layer above header (100) and mobile nav (105). Include a close button.\n2. Add a search trigger button to `src/components/Header.astro` — place a magnifying glass icon button (SVG) in the header, before the hamburger on mobile and in the nav area on desktop. The button toggles the search modal visibility.\n3. Wire up client-side JS in SearchModal.astro: open on search button click, close on Escape key, close on clicking the backdrop, trap focus inside the modal when open. Follow the same vanilla JS pattern as the existing hamburger menu.\n4. Ensure the search modal is responsive — full-width on mobile, centered max-width on desktop.\n5. Create `e2e/search.spec.ts` Playwright test that: (a) navigates to the home page, (b) clicks the search button, (c) types a query like 'sermon', (d) verifies search results appear, (e) presses Escape to close the modal and verifies it's hidden. Run against a single desktop viewport (not all 4) since search behavior is viewport-independent.\n\n## Must-Haves\n\n- [ ] SearchModal component renders astro-pagefind Search with site-themed CSS\n- [ ] Search trigger button visible in header on all pages\n- [ ] Modal opens on click, closes on Escape and backdrop click\n- [ ] z-index layering correct (above header and mobile nav)\n- [ ] Playwright E2E test passes for search open → query → results → close flow\n\n## Verification\n\n- `npm run build` exits 0\n- Serve site and visually verify search button appears in header\n- `npx playwright test e2e/search.spec.ts --project=desktop` passes\n- `grep -q 'pagefind-ui' src/components/SearchModal.astro` confirms component exists",
+      "estimate": "1h",
+      "files": [
+        "src/components/SearchModal.astro",
+        "src/components/Header.astro",
+        "e2e/search.spec.ts"
+      ],
+      "verify": "npm run build && npx playwright test e2e/search.spec.ts --project=desktop",
+      "inputs": [
+        "`src/components/Header.astro` — existing header to add search trigger to",
+        "`src/styles/global.css` — CSS custom properties for theming search UI",
+        "`astro.config.mjs` — astro-pagefind already configured (from T01)",
+        "`dist/client/pagefind/pagefind.js` — pagefind index exists (from T01 build)",
+        "`e2e/smoke.spec.ts` — reference for existing E2E test patterns and setup"
+      ],
+      "expected_output": [
+        "`src/components/SearchModal.astro` — search modal component with styled Pagefind UI",
+        "`src/components/Header.astro` — search trigger button added to header",
+        "`e2e/search.spec.ts` — Playwright E2E test for search functionality"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -3739,6 +3844,18 @@
       "decision": "WCAG AA contrast remediation approach",
       "choice": "Added --color-terracotta-dark (#A85E42, 4.56:1) as WCAG-compliant variant; applied to interactive text elements",
       "rationale": "Original --color-terracotta (#C4745A) has 3.31:1 contrast ratio on --color-bg, failing WCAG AA for normal text. Dark variant achieves 4.56:1 (AA pass). Applied to Hero CTA, contact page active tabs, and sidebar links. Broader site-wide replacement is follow-up work.",
+      "revisable": "Yes",
+      "made_by": "agent",
+      "superseded_by": null
+    },
+    {
+      "seq": 23,
+      "id": "D019",
+      "when_context": "M004/S04",
+      "scope": "library",
+      "decision": "Search integration approach for static site",
+      "choice": "Use `astro-pagefind` integration (not manual Pagefind CLI)",
+      "rationale": "astro-pagefind auto-runs indexing after build, provides a typed `<Search>` Astro component, and handles the build pipeline integration. Manual CLI requires a postbuild script and manual JS wiring. The integration is well-maintained (8.7 trust score) and zero-config for multilingual support via `lang` attributes.",
       "revisable": "Yes",
       "made_by": "agent",
       "superseded_by": null
@@ -6186,6 +6303,61 @@
       "verdict": "✅ pass",
       "duration_ms": 6100,
       "created_at": "2026-04-02T17:00:56.030Z"
+    },
+    {
+      "id": 223,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10500,
+      "created_at": "2026-04-02T17:08:30.154Z"
+    },
+    {
+      "id": 224,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "test -f dist/client/pagefind/pagefind.js",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:08:30.154Z"
+    },
+    {
+      "id": 225,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "ls dist/client/pagefind/fragment/ | head -5",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:08:30.154Z"
+    },
+    {
+      "id": 226,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "grep -r 'data-pagefind-body' src/pages/ --include='*.astro' | wc -l → 25",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:08:30.154Z"
+    },
+    {
+      "id": 227,
+      "task_id": "T01",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "grep -r 'data-pagefind-ignore' ... | wc -l → 3",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:08:30.154Z"
     }
   ]
 }

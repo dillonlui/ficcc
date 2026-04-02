@@ -3,6 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
 import vercel from '@astrojs/vercel';
+import pagefind from 'astro-pagefind';
 
 export default defineConfig({
   site: 'https://ficcc.org',
@@ -29,6 +30,7 @@ export default defineConfig({
       },
     }),
     react(),
+    pagefind(),
   ],
   i18n: {
     defaultLocale: 'en',
