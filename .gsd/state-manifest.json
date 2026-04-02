@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T16:47:54.729Z",
+  "exported_at": "2026-04-02T16:50:50.039Z",
   "milestones": [
     {
       "id": "M001",
@@ -3345,19 +3345,29 @@
       "milestone_id": "M004",
       "slice_id": "S02",
       "id": "T02",
-      "title": "Wire structured data per page type and add build verification test",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Created JSON-LD structured data helpers and wired Church+WebSite (home), VideoObject (sermon), Event ItemList (events), and Organization (about) through BaseLayout, with 7 passing Vitest tests",
+      "status": "complete",
+      "one_liner": "Created JSON-LD structured data helpers and wired Church+WebSite (home), VideoObject (sermon), Event ItemList (events), and Organization (about) through BaseLayout, with 7 passing Vitest tests",
+      "narrative": "Created src/lib/structured-data.ts with five pure builder functions for schema.org types. Wired homepage with Church+WebSite @graph, sermon detail with VideoObject (when videoId exists), events page with ItemList of Events, and about page with Organization (foundingDate 1968). Wrote 7 Vitest tests covering all builders including edge cases. All tests pass, build succeeds, and JSON-LD verified in built HTML output.",
+      "verification_result": "npm test: 27 tests pass (7 structured data + 20 navigation). npm run build: succeeds. Homepage HTML contains application/ld+json with @graph containing Church and WebSite types. About page emits Organization with foundingDate. Events page emits ItemList with Event items.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-02T16:50:50.018Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "None.",
+      "known_issues": "Sermon detail pages not built without live CMS — VideoObject wiring verified via unit tests only.",
+      "key_files": [
+        "src/lib/structured-data.ts",
+        "src/lib/structured-data.test.ts",
+        "src/pages/index.astro",
+        "src/pages/sermons/[slug].astro",
+        "src/pages/events.astro",
+        "src/pages/about/index.astro"
+      ],
+      "key_decisions": [
+        "Used @graph wrapper for homepage to combine Church and WebSite schemas in single JSON-LD block",
+        "Events page uses ItemList schema wrapping individual Event items"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S02\nmilestone: M004\nkey_files:\n  - src/lib/structured-data.ts\n  - src/lib/structured-data.test.ts\n  - src/pages/index.astro\n  - src/pages/sermons/[slug].astro\n  - src/pages/events.astro\n  - src/pages/about/index.astro\nkey_decisions:\n  - Used @graph wrapper for homepage to combine Church and WebSite schemas in single JSON-LD block\n  - Events page uses ItemList schema wrapping individual Event items\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-02T16:50:50.019Z\nblocker_discovered: false\n---\n\n# T02: Created JSON-LD structured data helpers and wired Church+WebSite (home), VideoObject (sermon), Event ItemList (events), and Organization (about) through BaseLayout, with 7 passing Vitest tests\n\n**Created JSON-LD structured data helpers and wired Church+WebSite (home), VideoObject (sermon), Event ItemList (events), and Organization (about) through BaseLayout, with 7 passing Vitest tests**\n\n## What Happened\n\nCreated src/lib/structured-data.ts with five pure builder functions for schema.org types. Wired homepage with Church+WebSite @graph, sermon detail with VideoObject (when videoId exists), events page with ItemList of Events, and about page with Organization (foundingDate 1968). Wrote 7 Vitest tests covering all builders including edge cases. All tests pass, build succeeds, and JSON-LD verified in built HTML output.\n\n## Verification\n\nnpm test: 27 tests pass (7 structured data + 20 navigation). npm run build: succeeds. Homepage HTML contains application/ld+json with @graph containing Church and WebSite types. About page emits Organization with foundingDate. Events page emits ItemList with Event items.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm test` | 0 | ✅ pass | 2800ms |\n| 2 | `npm run build` | 0 | ✅ pass | 10000ms |\n| 3 | `node -e \"...JSON-LD verification...\"` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nSermon detail pages not built without live CMS — VideoObject wiring verified via unit tests only.\n\n## Files Created/Modified\n\n- `src/lib/structured-data.ts`\n- `src/lib/structured-data.test.ts`\n- `src/pages/index.astro`\n- `src/pages/sermons/[slug].astro`\n- `src/pages/events.astro`\n- `src/pages/about/index.astro`\n",
       "description": "Pass page-specific JSON-LD structured data from each page through BaseLayout to SEO, and write a verification test.\n\n## Steps\n\n1. **Create structured data helpers (`src/lib/structured-data.ts`)** — Export pure functions that build JSON-LD objects for each page type:\n   - `buildChurchJsonLd()` → Church schema with name, description, url, address (429 Mitchell Street, Ithaca, NY 14850)\n   - `buildWebSiteJsonLd(siteUrl: string)` → WebSite schema with name and url\n   - `buildVideoObjectJsonLd(sermon: { title, date?, videoId, scripture?, speaker? })` → VideoObject with name, uploadDate, thumbnailUrl (YouTube), embedUrl\n   - `buildEventJsonLd(event: { title, date?, location?, description? })` → Event with name, startDate, location as Place\n   - `buildOrganizationJsonLd()` → Organization with name, url, address, foundingDate (1968)\n   All functions return `Record<string, unknown>` with `@context: 'https://schema.org'`.\n\n2. **Homepage (`src/pages/index.astro`)** — Import `buildChurchJsonLd` and `buildWebSiteJsonLd`. Pass an array (wrapped in `@graph`) as `jsonLd` to BaseLayout. Set `ogType='website'`.\n\n3. **Sermon detail (`src/pages/sermons/[slug].astro`)** — Import `buildVideoObjectJsonLd`. Pass VideoObject jsonLd when `sermon.videoId` exists, otherwise pass default. Set `ogType='article'`. Pass a custom description (speaker + scripture) to BaseLayout.\n\n4. **Events page (`src/pages/events.astro`)** — Import `buildEventJsonLd`. Build an ItemList of events. Pass as jsonLd to BaseLayout.\n\n5. **About page (`src/pages/about/index.astro`)** — Import `buildOrganizationJsonLd`. Pass Organization jsonLd to BaseLayout.\n\n6. **Write verification test (`src/lib/structured-data.test.ts`)** — Vitest tests validating:\n   - `buildChurchJsonLd()` returns object with `@type: 'Church'` and required fields\n   - `buildVideoObjectJsonLd()` returns `@type: 'VideoObject'` with embedUrl when videoId present\n   - `buildEventJsonLd()` returns `@type: 'Event'` with startDate\n   - `buildOrganizationJsonLd()` returns `@type: 'Organization'` with foundingDate\n\n7. **Build and verify** — Run `npm test`. Run `npm run build`. Extract JSON-LD from built homepage HTML and confirm `@type` includes Church.\n\n## Must-Haves\n\n- [ ] Homepage emits Church + WebSite JSON-LD\n- [ ] Sermon detail emits VideoObject JSON-LD (when videoId present)\n- [ ] Events page emits Event JSON-LD per event\n- [ ] About page emits Organization JSON-LD\n- [ ] `src/lib/structured-data.test.ts` passes with `npm test`\n- [ ] `npm run build` succeeds with all structured data in place",
       "estimate": "45m",
       "files": [
@@ -5951,6 +5961,39 @@
       "verdict": "✅ pass",
       "duration_ms": 9800,
       "created_at": "2026-04-02T16:47:54.708Z"
+    },
+    {
+      "id": 214,
+      "task_id": "T02",
+      "slice_id": "S02",
+      "milestone_id": "M004",
+      "command": "npm test",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 2800,
+      "created_at": "2026-04-02T16:50:50.018Z"
+    },
+    {
+      "id": 215,
+      "task_id": "T02",
+      "slice_id": "S02",
+      "milestone_id": "M004",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10000,
+      "created_at": "2026-04-02T16:50:50.018Z"
+    },
+    {
+      "id": 216,
+      "task_id": "T02",
+      "slice_id": "S02",
+      "milestone_id": "M004",
+      "command": "node -e \"...JSON-LD verification...\"",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T16:50:50.018Z"
     }
   ]
 }

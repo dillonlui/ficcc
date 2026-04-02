@@ -34,7 +34,7 @@
   - Estimate: 45m
   - Files: src/layouts/BaseLayout.astro, astro.config.mjs, public/og-default.png, .env.example
   - Verify: npm run build && test -f public/og-default.png && grep -q 'og:image' dist/client/index.html && grep -q 'xhtml:link' dist/client/sitemap-0.xml
-- [ ] **T02: Wire structured data per page type and add build verification test** — Pass page-specific JSON-LD structured data from each page through BaseLayout to SEO, and write a verification test.
+- [x] **T02: Created JSON-LD structured data helpers and wired Church+WebSite (home), VideoObject (sermon), Event ItemList (events), and Organization (about) through BaseLayout, with 7 passing Vitest tests** — Pass page-specific JSON-LD structured data from each page through BaseLayout to SEO, and write a verification test.
 
 ## Steps
 

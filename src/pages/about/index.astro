@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAboutPage, portableTextToHtml, urlForImage } from '../../lib/sanity';
+import { buildOrganizationJsonLd } from '../../lib/structured-data';
 
 const title = 'Who We Are | FICCC';
 const description =
@@ -58,7 +59,7 @@ const stats =
     : fallbackStats;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} jsonLd={buildOrganizationJsonLd()}>
   <main id="main-content" class="about">
     <section class="about__hero" aria-label="Who We Are">
       <div class="about__inner">
