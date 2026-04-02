@@ -38,6 +38,10 @@ S01 (Performance & Accessibility Audit) complete: Hero converted from CSS backgr
 
 S02 (SEO & Analytics) complete: BaseLayout forwards jsonLd/ogImage/ogType to SEO component. GA4 analytics gated on PUBLIC_GA_MEASUREMENT_ID with window.sendAnalyticsEvent() custom event helper. Google site verification meta gated on env var. Sitemap includes hreflang alternates for en/zh. JSON-LD structured data on 4 page types (Church+WebSite on homepage, VideoObject on sermons, ItemList of Events, Organization on about). 7 unit tests for structured data builders. Default OG image placeholder at 1200×630.
 
+S03 (Responsive & E2E Testing) complete: Playwright test suite with 4 viewport presets (mobile, tablet, desktop, wide), E2E smoke tests covering navigation, responsive header behavior, sermon listing, and contact form. CI-ready configuration.
+
+S04 (Pagefind Search Integration) complete: astro-pagefind integration indexes 24 content pages (excluding admin/styleguide/404). SearchModal.astro wraps Pagefind's Search component in a keyboard-accessible modal overlay themed with site CSS custom properties. Search trigger button in header. 3 Playwright E2E tests cover search open → query → results → close flow.
+
 ## Queued Milestones
 
 None — M004 is the final milestone.

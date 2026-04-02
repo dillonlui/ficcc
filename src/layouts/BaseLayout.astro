@@ -4,6 +4,7 @@ import cjkFontsHref from '../styles/cjk-fonts.css?url';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
+import { getSiteSettings } from '../lib/sanity';
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import { getAlternateUrl, type Lang } from '../lib/navigation';
 
@@ -33,6 +34,16 @@ const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.
 
 const isVisualEditingEnabled =
   import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
+
+let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
+try {
+  siteSettings = await getSiteSettings(lang as Lang);
+} catch {
+  // K008: build continues without announcement bar when CMS is unreachable
+}
+
+const showAnnouncementBar =
+  siteSettings?.announcementBarEnabled && siteSettings?.announcementBarText;
 ---
 
 <!doctype html>
@@ -48,6 +59,17 @@ const isVisualEditingEnabled =
   </head>
   <body>
     <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    {showAnnouncementBar && (
+      siteSettings.announcementBarLink ? (
+        <a href={siteSettings.announcementBarLink} class="announcement-bar" role="banner">
+          {siteSettings.announcementBarText}
+        </a>
+      ) : (
+        <div class="announcement-bar" role="banner">
+          {siteSettings.announcementBarText}
+        </div>
+      )
+    )}
     <Header lang={lang} langToggleHref={alternateUrl} />
     <slot />
     <Footer lang={lang} />

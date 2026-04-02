@@ -138,3 +138,26 @@ a {
   font-family: var(--font-cjk);
   line-height: var(--leading-cjk);
 }
+
+/* --- Announcement bar --- */
+.announcement-bar {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-ink);
+  color: var(--color-bg);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  text-align: center;
+  text-decoration: none;
+  line-height: var(--leading-normal);
+}
+
+a.announcement-bar:hover {
+  opacity: 0.9;
+}
+
+a.announcement-bar:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}

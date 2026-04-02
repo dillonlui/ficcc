@@ -57,6 +57,29 @@ export const siteSettings = defineType({
       ],
     }),
     defineField({
+      name: 'announcementBarEnabled',
+      title: 'Announcement Bar Enabled',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Show the announcement banner at the top of every page',
+    }),
+    defineField({
+      name: 'announcementBarText',
+      title: 'Announcement Bar Text',
+      type: 'string',
+      description: 'Text to display in the announcement bar',
+      hidden: ({ document }) => !document?.announcementBarEnabled,
+    }),
+    defineField({
+      name: 'announcementBarLink',
+      title: 'Announcement Bar Link',
+      type: 'url',
+      description: 'Optional link — the entire bar becomes clickable',
+      hidden: ({ document }) => !document?.announcementBarEnabled,
+      validation: (rule) =>
+        rule.uri({ allowRelative: true, scheme: ['http', 'https'] }),
+    }),
+    defineField({
       name: 'language',
       title: 'Language',
       type: 'string',

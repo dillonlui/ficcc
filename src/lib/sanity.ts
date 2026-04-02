@@ -104,6 +104,9 @@ export interface SiteSettings {
   email?: string;
   socialLinks?: SocialLink[];
   language: 'en' | 'zh';
+  announcementBarEnabled?: boolean;
+  announcementBarText?: string;
+  announcementBarLink?: string;
 }
 
 export interface NavChild {
