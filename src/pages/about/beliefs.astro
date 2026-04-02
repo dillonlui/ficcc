@@ -1,111 +1,150 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Accordion from '../../components/Accordion.astro';
-import { getAboutPage, portableTextToHtml } from '../../lib/sanity';
 
-const title = 'What We Believe | FICCC';
+const title = 'Beliefs & Vision | FICCC';
 const description =
-  'The core doctrinal beliefs of First Ithaca Chinese Christian Church.';
+  'The core beliefs and vision of First Ithaca Chinese Christian Church — rooted in Scripture, shaping who we are.';
 
-// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
-let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
-
-try {
-  aboutPage = await getAboutPage('en');
-} catch {
-  // Sanity unreachable — continue with fallbacks
-}
-
-// ---------- Fallback beliefs ----------
-const fallbackBeliefs = [
+const beliefs = [
   {
-    title: 'The Scriptures',
+    title: 'The Bible',
     content:
-      '<p>We believe the Bible is the inspired, infallible, and authoritative Word of God. It is the supreme standard for all faith, life, and conduct, given by the Holy Spirit through human authors without error in the original manuscripts.</p>',
+      '<p>We believe the Scriptures of the Old and New Testaments to be the verbally inspired word of God, inerrant in the original writing, the supreme and final authority in all matters of faith and conduct, and the complete revelation of God\'s will for the salvation of man.</p>',
   },
   {
     title: 'God',
     content:
-      '<p>We believe in one God, eternally existing in three persons — Father, Son, and Holy Spirit — each fully God, each personally distinct, yet one in essence and purpose.</p>',
+      '<p>We believe that there is one God, eternally existent in three persons, the Father, the Son, and the Holy Spirit, who is the creator and sustainer of heaven and earth and everything therein.</p>',
   },
   {
-    title: 'Jesus Christ',
+    title: 'Christ',
     content:
-      '<p>We believe in the deity of our Lord Jesus Christ, His virgin birth, His sinless life, His miracles, His atoning death on the cross, His bodily resurrection, His ascension to the right hand of the Father, and His personal return in power and glory.</p>',
+      '<p>We believe that our Lord Jesus Christ, God the Son from eternity, was born of the virgin Mary, fully God and fully man, lived a sinless life, gave his life on the cross as an atoning sacrifice, was buried, on the third day was bodily resurrected from the dead, ascended into heaven, and shall personally return in power and glory.</p>',
   },
   {
-    title: 'The Holy Spirit',
+    title: 'Holy Spirit',
     content:
-      '<p>We believe the Holy Spirit convicts the world of sin, regenerates believers, indwells them from the moment of salvation, and empowers them for godly living and service. He illuminates Scripture and distributes spiritual gifts for the building up of the Church.</p>',
+      '<p>We believe that the Holy Spirit dwells in every believer, enabling him/her to live holy lives, and is ever present to testify of Christ.</p>',
+  },
+  {
+    title: 'Man',
+    content:
+      '<p>We believe that man, created in the image of God, sinned, incurring both death and separation from God, which is spiritual death.</p>',
   },
   {
     title: 'Salvation',
     content:
-      '<p>We believe that all people are sinners by nature and by choice and are therefore under condemnation. We believe that salvation is a gift of God received by faith alone in Jesus Christ alone. Those who repent and believe are justified, adopted into God\'s family, and sealed by the Holy Spirit.</p>',
+      '<p>We believe that our salvation from death has been accomplished solely by the blood of our Lord Jesus Christ, that all who receive him by faith are born of God and sealed by the Holy Spirit until the day of judgment.</p>',
   },
   {
-    title: 'The Church',
+    title: 'Judgment',
     content:
-      '<p>We believe in the universal Church, a living spiritual body of which Christ is the Head and of which all regenerated people are members. We believe that the local church is a community of baptized believers, organized for worship, instruction, fellowship, and evangelism, observing the ordinances of baptism and the Lord\'s Supper.</p>',
+      '<p>We believe in the resurrection of both the saved and the lost, of the saved to eternal life in the presence of God, and the lost to conscious everlasting punishment.</p>',
   },
   {
-    title: 'The Christian Life',
+    title: 'Church',
     content:
-      '<p>We believe that God\'s justifying grace must not be separated from His sanctifying power and purpose. God commands us to love Him supremely and to love others sacrificially, and to live out our faith through prayer, service, generosity, and obedience to His Word.</p>',
-  },
-  {
-    title: 'Eternity',
-    content:
-      '<p>We believe in the personal, visible return of the Lord Jesus Christ, the resurrection of the body, the final judgment, the eternal blessedness of the righteous, and the endless suffering of the wicked. We look forward to the new heavens and new earth in which righteousness dwells.</p>',
+      '<p>We believe in one holy universal church which is the body of Christ, to which all believers belong, and that the duty of the church is to proclaim the gospel of salvation to the world.</p>',
   },
 ];
 
-// ---------- Resolved beliefs (CMS ▸ fallback) ----------
-const beliefs =
-  aboutPage?.beliefs && aboutPage.beliefs.length > 0
-    ? aboutPage.beliefs.map((b) => ({
-        title: b.title,
-        content: b.content?.length
-          ? portableTextToHtml(b.content)
-          : `<p>${b.title}</p>`,
-      }))
-    : fallbackBeliefs;
+const visionItems = [
+  {
+    title: 'Develop Humble Servants',
+    content:
+      '<p>This is embodied in Philippians 2:3-4: "Do nothing out of selfish ambition or vain conceit, but in humility consider others better than yourselves. Each of you should look not only to your own interests, but also to the interests of others." Our church desires to develop in the lives of people a spirit of servanthood instead of a spirit of entitlement.</p>' +
+      '<p>Many of the people involved in our English ministry are very successful. And it\'s easy for this spirit of entitlement to seep into our spiritual lives. But to paraphrase John F. Kennedy, you should ask not what your church can do for you, but rather you should ask what you can do for your church. And that attitude should seep into our interaction with our community. And that principle should seep into the relationships we have in our lives. We should ask not what others can do for us, but we can do for others.</p>' +
+      '<p>And that\'s why we challenge people in our English ministry to get involved in serving while they are living in Ithaca. It might be serving in our church. It might be serving as a mentor for refugees. It might be serving in a campus ministry. Our desire is that by the time our people leave Ithaca that their lives would be characterized by a spirit of servanthood instead of entitlement. We hope that when they start attending a church in another city, they won\'t ask, "Why am I not getting as much out of my new church as I was getting out of FICCC?" But instead, they will ask, "How could I share the blessings that I experienced at FICCC with the people in my new church?"</p>',
+  },
+  {
+    title: 'Love the Lord, the Lost, and the Local Church',
+    content:
+      '<p>This standard is stressed in I Corinthians 13:3. "If I give all I possess to the poor and surrender my body to the flames, but have not love, I gain nothing." The second standard that we desire to develop in the lives of people involved in the English ministry is a motive of love, instead of a motive of self-interest. According to this passage, it\'s possible to do acts of service for self-interest rather than for love. It\'s ironic when we serve others because we want to get something out of it, we get nothing out of it. But when we serve others because we truly love those we serve, then we end up getting much out of it.</p>' +
+      '<p>There are three areas where we hope that our capacity for love will grow. The first area is in our love for the Lord. In fact, Jesus said that loving the Lord is the most important thing a person can do. Our desire is to equip people in our English ministry to have quality times alone with the Lord during the week in which they read the Bible and pray. And our desire is to provide quality worship services in which they can pour out their hearts in expressing their love to the Lord.</p>' +
+      '<p>The second area is our love for the lost. God doesn\'t want us to stay in a Christian bubble in which we have no contact with non-Christians. Instead, we should build friendships with non-Christians and tell them about the Lord. Our hope is that we will develop within the people in our English ministry a genuine love and compassion for those who are lost without Jesus, and that we can equip them to effectively communicate the Gospel to them.</p>' +
+      '<p>The third area is a love for the local church. The local church is not a building or a worship service. The local church is a community of believers. If people\'s involvement in the local church is only attendance in a worship service, they may end up feeling merely like a face in the crowd. We want the people in our church to regularly practice the "one another commandments" of the Bible with one another so that they can experience genuine community. That is why we challenge them to actively participate in our prayer groups, our Adult Bible Fellowship, our monthly brunch and our inreach activities. We also encourage them to take the initiative to meet with their brothers and sisters throughout the week.</p>',
+  },
+  {
+    title: 'For the Rest of Their Lives',
+    content:
+      '<p>This standard is stressed in Matthew 13:20-23. "The one who received the seed that fell on rocky places is the man who hears the word and at once receives it with joy. But since he has no root, he lasts only a short time. When trouble or persecution comes because of the word, he quickly falls away. The one who received the seed that fell among the thorns is the man who hears the word, but the worries of this life and the deceitfulness of wealth choke it, making it unfruitful. But the one who received the seed that fell on good soil is the man who hears the word and understands it. He produces a crop, yielding a hundred, sixty or thirty times what was sown." The third standard that we want to develop in the lives of the people in our English ministry is a goal of long-term growth rather than short periods of time.</p>' +
+      '<p>During the high school and college years, some students lose their faith because of some sort of crisis of faith. Others keep their faith, but their involvement in church becomes very inconsistent because they become really busy and they prioritize their academic life over their spiritual life. But our desire is to do what we can to help students not only survive high school and college, but thrive during high school and college.</p>' +
+      '<p>The fact that a student survives college doesn\'t mean he is home free. Some people sizzle in their spiritual life in college, but fizzle once they are out of college. They leave college and try to find a local church that provides them the same spiritual thrills that they had in college. So they try going to a Chinese church, but they get turned off with the leadership in the church because they practice too much church politics. Or they find the people in the English congregation are too Chinese or too American or too superficial or too serious. So they try going to a multi-ethnic church, but they find out that they are treated cordially, but they never feel fully accepted by the inner circle. And so after awhile, they either drop out of church or become faces in the crowd who only attend worship services on Sundays.</p>' +
+      '<p>But our hope for students is that during their time in Ithaca, they will develop such a strong servant heart that their love for the Lord, the lost and the local church will continue to grow for the rest of their lives. Our hope is that they will not allow the failures of others to be an excuse to become failures. And so it is our duty to warn them of the potential pitfalls that are before them and to equip them so that they can avoid falling into those pitfalls.</p>',
+  },
+];
 ---
 
 <BaseLayout title={title} description={description}>
-  <main id="main-content" data-pagefind-body class="beliefs">
-    <section class="beliefs__hero" aria-label="What We Believe">
-      <div class="beliefs__inner">
-        <h1 class="beliefs__heading">What We Believe</h1>
-        <p class="beliefs__intro">
+  <main id="main-content" data-pagefind-body class="beliefs-vision">
+    <!-- Beliefs -->
+    <section class="section" aria-labelledby="beliefs-heading">
+      <div class="section__inner">
+        <h1 class="section__heading" id="beliefs-heading">What We Believe</h1>
+        <p class="section__intro">
           These core convictions, rooted in Scripture, shape who we are as a
           church and how we live together as followers of Jesus Christ.
         </p>
         <Accordion items={beliefs} />
       </div>
     </section>
+
+    <!-- Vision -->
+    <section class="section section--alt" aria-labelledby="vision-heading">
+      <div class="section__inner">
+        <h2 class="section__heading" id="vision-heading">Our Vision</h2>
+        <p class="vision__intro">
+          The purpose of the FICCC English ministry is "to develop humble
+          servants who will love the Lord, the lost and the local church for the
+          rest of their lives." This vision is based on three standards that are
+          stressed throughout the Bible. These are three standards that we desire
+          to develop in the lives of people involved in the English ministry so
+          that they will be equipped to be good managers of the bountiful
+          blessings that God has given them.
+        </p>
+        <Accordion items={visionItems} />
+      </div>
+    </section>
   </main>
 </BaseLayout>
 
 <style>
-  .beliefs {
+  .beliefs-vision {
     padding-block: var(--space-16);
   }
 
-  .beliefs__inner {
+  .section__inner {
     max-width: var(--max-width);
     margin-inline: auto;
     padding-inline: var(--space-6);
   }
 
-  .beliefs__heading {
+  .section--alt {
+    margin-block-start: var(--space-16);
+    padding-block: var(--space-16);
+    background-color: var(--base-100);
+    border-radius: 2px;
+  }
+
+  .section__heading {
     font-family: var(--font-heading);
     font-size: var(--text-4xl);
     color: var(--color-ink);
     margin-block-end: var(--space-4);
   }
 
-  .beliefs__intro {
+  .section__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    max-width: 48rem;
+    margin-block-end: var(--space-10);
+  }
+
+  /* Vision */
+  .vision__intro {
     font-family: var(--font-body);
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
@@ -115,11 +154,21 @@ const beliefs =
   }
 
   @media (max-width: 767px) {
-    .beliefs__heading {
+    .beliefs-vision {
+      padding-block: var(--space-10);
+    }
+
+    .section--alt {
+      margin-block-start: var(--space-10);
+      padding-block: var(--space-10);
+    }
+
+    .section__heading {
       font-size: var(--text-3xl);
     }
 
-    .beliefs__intro {
+    .section__intro,
+    .vision__intro {
       font-size: var(--text-base);
     }
   }

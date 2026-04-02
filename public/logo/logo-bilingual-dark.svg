@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 56" width="300" height="56">
+  <svg x="0" y="2" width="52" height="52" viewBox="0 0 220 216">
+    <circle cx="110" cy="108" r="92" fill="none" stroke="#A8D4BC" stroke-width="1.5"/>
+  <clipPath id="horizontal-bilingual-color-dark"><circle cx="110" cy="108" r="90"/></clipPath>
+  <g clip-path="url(#horizontal-bilingual-color-dark)">
+    <path d="M18 135 C38 105 62 92 88 98 C110 103 128 118 150 108 C170 99 188 104 202 112 L202 200 L18 200 Z" fill="#49926F"/>
+    <path d="M18 148 C45 130 65 142 90 136 C115 130 140 148 165 142 C185 137 195 130 202 125 L202 200 L18 200 Z" fill="#CFA487"/>
+    <path d="M18 170 C38 158 58 165 82 160 C108 155 135 168 162 164 C180 161 195 155 202 150 L202 200 L18 200 Z" fill="#E0DAD0"/>
+  </g>
+  <line x1="110" y1="34" x2="110" y2="126" stroke="#F5F2EC" stroke-width="7.5" stroke-linecap="round"/>
+  <line x1="88" y1="59" x2="132" y2="59" stroke="#F5F2EC" stroke-width="7.5" stroke-linecap="round"/>
+  </svg>
+  <text x="68" y="19" font-family="'DM Sans', 'Noto Sans SC', -apple-system, sans-serif" font-size="12" font-weight="500" fill="#F5F2EC" letter-spacing="0.3">First Ithaca Chinese</text>
+  <text x="68" y="34" font-family="'DM Sans', 'Noto Sans SC', -apple-system, sans-serif" font-size="12" font-weight="500" fill="#F5F2EC" letter-spacing="0.3">Christian Church</text>
+  <text x="68" y="51" font-family="'DM Sans', 'Noto Sans SC', -apple-system, sans-serif" font-size="12" font-weight="500" fill="#A8D4BC" letter-spacing="0.3">以撒迦中华基督教会</text>
+</svg>

@@ -1,10 +1,6 @@
 ---
-/**
- * Site header with responsive nav and mobile hamburger.
- * Uses CSS custom properties only — no hardcoded colors/sizes.
- */
 import { getNavLinks, type Lang } from '../lib/navigation';
-import SearchModal from './SearchModal.astro';
+import Search from 'astro-pagefind/components/Search';
 
 interface Props {
   lang?: Lang;
@@ -18,45 +14,112 @@ const logoText = lang === 'zh' ? '伊的家' : 'FICCC';
 const logoLabel = lang === 'zh' ? '伊的家 — 首頁' : 'FICCC — Home';
 const langToggleLabel = lang === 'zh' ? '中文 / EN' : 'EN / 中文';
 const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
+const currentPath = Astro.url.pathname;
+const logoSrc = lang === 'zh' ? '/logo/logo-zh-light.svg' : '/logo/logo-en-light.svg';
+
+// About dropdown sub-links
+const aboutPrefix = lang === 'zh' ? '/zh/about' : '/about';
+const aboutDropdown = [
+  { label: lang === 'zh' ? '關於我們' : 'Who We Are', href: aboutPrefix },
+  { label: lang === 'zh' ? '信仰與願景' : 'Beliefs & Vision', href: `${aboutPrefix}/beliefs` },
+  { label: lang === 'zh' ? '來訪我們' : 'Visit Us', href: lang === 'zh' ? '/zh/sundays' : '/visit' },
+];
+const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
 ---
 
 <header class="site-header">
   <div class="header-inner">
-    <a href={logoHref} class="logo" aria-label={logoLabel}>
-      <span class="logo-text">{logoText}</span>
-    </a>
+    <!-- Logo + search grouped together -->
+    <div class="header-left">
+      <a href={logoHref} class="logo" aria-label={logoLabel}>
+        <img src={logoSrc} alt={logoLabel} class="logo-img" width="220" height="44" />
+      </a>
+      <div class="search-inline" id="search-inline">
+        <button
+          id="search-trigger"
+          class="search-trigger"
+          type="button"
+          aria-label="Search"
+          aria-expanded="false"
+        >
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2"/>
+            <path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="search-expand" id="search-expand" hidden>
+          <Search id="search-widget" />
+        </div>
+      </div>
+    </div>
 
     <div class="header-actions">
       <button
-        id="search-trigger"
-        class="search-trigger"
-        type="button"
-        aria-label="Open search"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2"/>
-          <path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-
-      <button
         class="hamburger"
-      type="button"
-      aria-expanded="false"
-      aria-controls="nav-menu"
-      aria-label="Toggle navigation menu"
-    >
-      <span class="hamburger-bar" aria-hidden="true"></span>
-      <span class="hamburger-bar" aria-hidden="true"></span>
-      <span class="hamburger-bar" aria-hidden="true"></span>
-    </button>
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="hamburger-bar" aria-hidden="true"></span>
+        <span class="hamburger-bar" aria-hidden="true"></span>
+        <span class="hamburger-bar" aria-hidden="true"></span>
+      </button>
     </div>
 
     <nav id="nav-menu" class="nav" aria-label="Main navigation">
       <ul class="nav-list" role="list">
-        {navLinks.map((link) => (
-          <li><a href={link.href} class="nav-link">{link.label}</a></li>
-        ))}
+        {navLinks.map((link) => {
+          const isActive = currentPath === link.href
+            || (link.href !== '/' && link.href !== '/zh' && currentPath.startsWith(link.href));
+
+          if (isAboutHref(link.href)) {
+            const aboutActive = currentPath.startsWith(aboutPrefix);
+            return (
+              <li class="nav-dropdown">
+                <button
+                  type="button"
+                  class:list={['nav-link', 'nav-dropdown-trigger', { 'nav-link--active': aboutActive }]}
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                >
+                  {link.label}
+                  <svg class="nav-dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                    <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <ul class="nav-dropdown-panel" role="list">
+                  {aboutDropdown.map((sub) => {
+                    const subActive = currentPath === sub.href || currentPath === sub.href + '/';
+                    return (
+                      <li>
+                        <a
+                          href={sub.href}
+                          class:list={['nav-link', 'nav-dropdown-link', { 'nav-link--active': subActive }]}
+                          aria-current={subActive ? 'page' : undefined}
+                        >
+                          {sub.label}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          }
+
+          return (
+            <li>
+              <a
+                href={link.href}
+                class:list={['nav-link', { 'nav-link--active': isActive }]}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })}
       </ul>
       <a href={langToggleHref} class="lang-toggle" aria-label={lang === 'zh' ? '切換至英文' : 'Switch to Chinese'}>
         {langToggleLabel}
@@ -64,8 +127,6 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
     </nav>
   </div>
 </header>
-
-<SearchModal />
 
 <style>
   .site-header {
@@ -85,16 +146,127 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
     padding: var(--space-4) var(--space-6);
   }
 
-  /* Logo */
+  /* Logo + search grouped tight */
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
   .logo {
     text-decoration: none;
-    color: var(--color-ink);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
   }
-  .logo-text {
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-weight: 700;
-    letter-spacing: 0.04em;
+  .logo-img {
+    height: 44px;
+    width: auto;
+  }
+
+  /* Inline expanding search */
+  .search-inline {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--base-500);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition);
+  }
+  .search-trigger:hover,
+  .search-trigger:focus-visible {
+    color: var(--base-700);
+  }
+  .search-trigger:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* When open, hide the icon button */
+  .search-inline.is-open .search-trigger {
+    display: none;
+  }
+
+  .search-expand {
+    display: none;
+  }
+
+  .search-expand.is-open {
+    display: block;
+    width: 16rem;
+  }
+
+  /* Theme Pagefind UI — compact inline, tight height */
+  :global(#search-widget) {
+    --pagefind-ui-scale: 0.65;
+    --pagefind-ui-primary: var(--base-700);
+    --pagefind-ui-text: var(--base-800);
+    --pagefind-ui-background: var(--base-100);
+    --pagefind-ui-border: var(--base-300);
+    --pagefind-ui-tag: var(--base-200);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius-sm);
+    --pagefind-ui-font: var(--font-body);
+  }
+
+  /* Tighten the input height */
+  :global(#search-widget .pagefind-ui__search-input) {
+    padding: 5px 8px 5px 28px !important;
+    font-size: 13px !important;
+    height: auto !important;
+  }
+
+  :global(#search-widget .pagefind-ui__search-clear) {
+    padding: 2px 6px !important;
+    right: 2px !important;
+  }
+
+  :global(#search-widget .pagefind-ui__form::before) {
+    top: 7px !important;
+    left: 8px !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Pagefind results dropdown — tighter padding */
+  :global(#search-widget .pagefind-ui__results-area) {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    min-width: 22rem;
+    background: var(--color-bg);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-md);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    margin-top: var(--space-1);
+    padding: var(--space-2);
+    z-index: 200;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  :global(#search-widget .pagefind-ui__result) {
+    padding: var(--space-2) !important;
+  }
+
+  :global(#search-widget .pagefind-ui__result-title) {
+    font-size: 13px !important;
+  }
+
+  :global(#search-widget .pagefind-ui__result-excerpt) {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
   }
 
   /* Desktop nav */
@@ -112,21 +284,87 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
     font-family: var(--font-body);
     font-size: var(--text-sm);
     font-weight: 500;
-    color: var(--color-body);
+    color: var(--base-700);
     text-decoration: none;
     padding: var(--space-1) 0;
     border-bottom: 2px solid transparent;
     transition: border-color var(--transition), color var(--transition);
   }
-  .nav-link:hover,
-  .nav-link:focus-visible {
-    color: var(--color-terracotta);
-    border-bottom-color: var(--color-terracotta);
+  .nav-link:hover {
+    color: var(--primary-500);
+    border-bottom-color: var(--primary-500);
+  }
+  .nav-link--active {
+    color: var(--primary-600);
+    border-bottom-color: var(--primary-500);
+    font-weight: 600;
   }
   .nav-link:focus-visible {
+    color: var(--primary-500);
     outline: 2px solid var(--color-focus);
     outline-offset: 4px;
     border-radius: var(--radius-sm);
+  }
+
+  /* About dropdown */
+  .nav-dropdown {
+    position: relative;
+  }
+  .nav-dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    padding: var(--space-1) 0;
+  }
+  .nav-dropdown-chevron {
+    transition: transform var(--transition);
+  }
+  .nav-dropdown:hover .nav-dropdown-chevron,
+  .nav-dropdown:focus-within .nav-dropdown-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-dropdown-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 11rem;
+    background: var(--color-bg);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    padding: var(--space-2);
+    list-style: none;
+    z-index: 200;
+  }
+  /* Invisible bridge between trigger and panel to prevent mouseout gap */
+  .nav-dropdown-panel::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+  }
+  .nav-dropdown:hover .nav-dropdown-panel,
+  .nav-dropdown:focus-within .nav-dropdown-panel {
+    display: block;
+  }
+  .nav-dropdown-link {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: none;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+  .nav-dropdown-link:hover {
+    background: var(--base-100);
+    border-bottom-color: transparent;
   }
 
   /* Language toggle */
@@ -144,8 +382,9 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
   }
   .lang-toggle:hover,
   .lang-toggle:focus-visible {
-    background-color: var(--color-terracotta);
-    color: var(--color-bg);
+    background-color: var(--primary-500);
+    color: var(--base-50);
+    border-color: var(--primary-500);
   }
   .lang-toggle:focus-visible {
     outline: 2px solid var(--color-focus);
@@ -154,34 +393,11 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
 
   /* Hamburger — hidden on desktop */
   .header-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .search-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--color-body);
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
-    transition: color var(--transition);
-  }
-  .search-trigger:hover,
-  .search-trigger:focus-visible {
-    color: var(--color-terracotta);
-  }
-  .search-trigger:focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: 2px;
+    display: none;
   }
 
   .hamburger {
-    display: none;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 5px;
@@ -204,8 +420,6 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
-
-  /* Hamburger open state */
   .hamburger[aria-expanded='true'] .hamburger-bar:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
@@ -216,10 +430,12 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
     transform: translateY(-7px) rotate(-45deg);
   }
 
-  /* Mobile: ≤767px */
+  /* Mobile */
   @media (max-width: 767px) {
-    .hamburger {
+    .header-actions {
       display: flex;
+      align-items: center;
+      gap: var(--space-2);
     }
 
     .nav {
@@ -249,10 +465,35 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
     .nav-link {
       font-size: var(--text-base);
     }
+
+    /* Mobile: flatten dropdown into normal list */
+    .nav-dropdown-trigger {
+      display: none;
+    }
+    .nav-dropdown-panel {
+      display: contents;
+      position: static;
+      transform: none;
+      background: none;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      min-width: 0;
+    }
+    .nav-dropdown-link {
+      padding: var(--space-1) 0;
+      border-radius: 0;
+    }
+    .nav-dropdown-link:hover {
+      background: none;
+    }
   }
 </style>
 
 <script>
+  // Hamburger toggle
   const btn = document.querySelector('.hamburger') as HTMLButtonElement;
   const nav = document.querySelector('#nav-menu') as HTMLElement;
 
@@ -262,13 +503,48 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
       btn.setAttribute('aria-expanded', String(!expanded));
       nav.classList.toggle('is-open', !expanded);
     });
-
-    // Close on Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
         btn.setAttribute('aria-expanded', 'false');
         nav.classList.remove('is-open');
         btn.focus();
+      }
+    });
+  }
+
+  // Inline search toggle
+  const searchTrigger = document.getElementById('search-trigger') as HTMLButtonElement;
+  const searchExpand = document.getElementById('search-expand') as HTMLElement;
+  const searchInline = document.getElementById('search-inline') as HTMLElement;
+
+  if (searchTrigger && searchExpand && searchInline) {
+    searchTrigger.addEventListener('click', () => {
+      searchInline.classList.add('is-open');
+      searchExpand.classList.add('is-open');
+      searchTrigger.setAttribute('aria-expanded', 'true');
+      requestAnimationFrame(() => {
+        const input = searchExpand.querySelector<HTMLInputElement>('input[type="text"]');
+        input?.focus();
+      });
+    });
+
+    function closeSearch() {
+      searchInline.classList.remove('is-open');
+      searchExpand.classList.remove('is-open');
+      searchTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && searchInline.classList.contains('is-open')) {
+        closeSearch();
+        searchTrigger.focus();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (searchInline.classList.contains('is-open')
+        && !searchInline.contains(e.target as Node)) {
+        closeSearch();
       }
     });
   }

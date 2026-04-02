@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "bd0e3cba",
+    "label": "local server",
+    "command": "cd /Users/dillonlui/Documents/Code/ficcc && npx serve dist/client -l 4321",
+    "cwd": "/Users/dillonlui/Documents/Code/ficcc",
+    "ownerSessionFile": "/Users/dillonlui/.gsd/sessions/--Users-dillonlui-Documents-Code-ficcc--/2026-04-02T17-33-50-221Z_7b1aeb8f-1d9d-451a-adaf-ab648a724101.jsonl",
+    "persistAcrossSessions": false,
+    "startedAt": 1775164565227,
+    "processType": "server",
+    "group": null,
+    "readyPattern": null,
+    "readyPort": 4321,
+    "pid": 19184
+  }
+]

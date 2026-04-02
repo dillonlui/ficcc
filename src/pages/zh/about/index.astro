@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Timeline from '../../../components/Timeline.astro';
 import { getAboutPage, portableTextToHtml, urlForImage } from '../../../lib/sanity';
 
 const title = '我們是誰 | 伊的家華人基督教會';
@@ -36,17 +37,6 @@ const fallbackStats = [
   { value: '~20', label: '每年受洗人數' },
   { value: '18', label: '差派全職傳道人' },
   { value: '40+', label: '在伊薩卡的年數' },
-];
-
-// ---------- History Timeline (ZH-specific bespoke content) ----------
-const historyTimeline = [
-  { year: '1968', description: '康奈爾大學華人學生查經班成立' },
-  { year: '1974', description: '查經班發展為主日崇拜聚會' },
-  { year: '1983', description: '華人查經班正式組織化，開始有系統的門徒訓練' },
-  { year: '1986', description: '正式成立伊的家華人基督教會，成為獨立堂會' },
-  { year: '1993', description: '購置 429 Mitchell Street 現址作為永久會堂' },
-  { year: '2001', description: '開展英語事工，服事第二代及國際學生' },
-  { year: '2009', description: '加入美國播道會（EFCA），完成會堂擴建工程' },
 ];
 
 // ---------- Resolved data (CMS ▸ fallback) ----------
@@ -101,22 +91,46 @@ const stats =
     </section>
 
     <!-- History Timeline (ZH-specific) -->
-    <section class="timeline" aria-label="教會歷史">
-      <div class="timeline__inner">
-        <h2 class="timeline__heading">教會歷史</h2>
-        <div class="timeline__track">
-          {historyTimeline.map((item, i) => (
-            <div class={`timeline__item ${i % 2 === 0 ? 'timeline__item--left' : 'timeline__item--right'}`}>
-              <div class="timeline__dot" aria-hidden="true" />
-              <div class="timeline__card">
-                <span class="timeline__year">{item.year}</span>
-                <p class="timeline__desc">{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <Timeline heading="教會歷史" eras={[
+      {
+        title: '起源：從查經班到教會 (1968-1988)',
+        entries: [
+          { year: '1968', description: '康奈爾大學華人學生查經班成立。' },
+          { year: '1974', description: '查經班發展為主日崇拜聚會。' },
+          { year: '1983', description: '華人查經班正式組織化，開始有系統的門徒訓練。' },
+          { year: '1986', description: '正式成立伊的家華人基督教會，成為獨立堂會。' },
+          { year: '1988', description: '購買在1462 Slaterville Rd的房子，並轉換為教堂使用的建築。' },
+        ],
+      },
+      {
+        title: '在伊薩卡扎根 (1988-2000)',
+        entries: [
+          { year: '1993', description: '購置 429 Mitchell Street 現址作為永久會堂。' },
+          { year: '1996', description: '成立教牧同工會，任命長老和執事。' },
+          { year: '1997', description: '加入播道會（EFCA），以確保未來的教義純正。' },
+          { year: '1997', description: '徐心道牧師開始擔任教會的牧師。' },
+          { year: '1998-1999', description: '成立青少年團契和青少年主日學；制定宣教政策並成立宣教委員會。' },
+          { year: '1999-2000', description: '購買 House of Joy 等事工房屋，支持不斷增長的事工。' },
+        ],
+      },
+      {
+        title: '英語事工與下一代 (2000-2010)',
+        entries: [
+          { year: '2000', description: '增加英語部，並於8月20日舉行第一次英語崇拜。' },
+          { year: '2001', description: '與中國福音神學院合作，每年在伊薩卡開設神學延伸制課程。' },
+          { year: '2002', description: '舉行第一次教會退修會。' },
+          { year: '2007', description: '購買House of Peace（230 Ridgedale，教會後方的建築）。' },
+          { year: '2008', description: '艾保羅牧師開始擔任英文部牧師。' },
+          { year: '2009', description: '開始派遣短宣隊，每年夏天在紐約布魯克林市帶領暑期聖經學校。' },
+        ],
+      },
+      {
+        title: '繼續使命 (2010-至今)',
+        entries: [
+          { year: '今天', description: 'FICCC繼續門訓學生、學者和家庭；差派會員進入全職事工；並投資於伊薩卡及其他地方的中文和英文會眆。' },
+        ],
+      },
+    ]} />
 
     <!-- Church Stats -->
     <section class="stats" aria-label="教會數據">
@@ -212,83 +226,6 @@ const stats =
   .vision__body :global(p:last-child) { margin-block-end: 0; }
   .vision__body :global(strong) { color: var(--color-ink); }
 
-  /* ---------- History Timeline ---------- */
-  .timeline {
-    padding: var(--space-16) var(--space-6);
-    background-color: var(--color-bg);
-  }
-
-  .timeline__inner { max-width: var(--max-width); margin-inline: auto; }
-
-  .timeline__heading {
-    font-family: var(--font-heading);
-    font-size: var(--text-3xl);
-    color: var(--color-ink);
-    text-align: center;
-    margin-block-end: var(--space-12);
-  }
-
-  .timeline__track {
-    position: relative;
-    max-width: 40rem;
-    margin-inline: auto;
-    padding-inline-start: var(--space-8);
-  }
-
-  .timeline__track::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: var(--color-terracotta);
-    border-radius: 2px;
-  }
-
-  .timeline__item {
-    position: relative;
-    padding-block-end: var(--space-8);
-  }
-
-  .timeline__item:last-child {
-    padding-block-end: 0;
-  }
-
-  .timeline__dot {
-    position: absolute;
-    left: calc(-1 * var(--space-8) - 1.5px);
-    top: 0.25rem;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background-color: var(--color-terracotta);
-    border: 3px solid var(--color-bg);
-  }
-
-  .timeline__card {
-    background-color: var(--color-stone);
-    border-radius: var(--radius-md);
-    padding: var(--space-4) var(--space-6);
-  }
-
-  .timeline__year {
-    display: block;
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-weight: 700;
-    color: var(--color-terracotta);
-    margin-block-end: var(--space-1);
-  }
-
-  .timeline__desc {
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
-    color: var(--color-body);
-    margin: 0;
-  }
-
   /* ---------- Stats ---------- */
   .stats {
     padding: var(--space-16) var(--space-6);
@@ -338,7 +275,6 @@ const stats =
     .about__heading { font-size: var(--text-3xl); }
     .about__body { font-size: var(--text-base); }
     .vision__heading { font-size: var(--text-2xl); }
-    .timeline__heading { font-size: var(--text-2xl); }
     .stats__grid { grid-template-columns: repeat(2, 1fr); }
     .stats__value { font-size: var(--text-3xl); }
   }

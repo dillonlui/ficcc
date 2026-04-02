@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Timeline from '../../components/Timeline.astro';
 import { getAboutPage, portableTextToHtml, urlForImage } from '../../lib/sanity';
 import { buildOrganizationJsonLd } from '../../lib/structured-data';
 
@@ -32,13 +33,6 @@ const fallbackVisionHtml = `
 <p>Our vision is to nurture Christ-followers who don't just "do church" while they're here, but who carry the marks of discipleship wherever they go: into careers, families, churches, and communities around the world.</p>
 `.trim();
 
-const fallbackStats = [
-  { value: '~150', label: 'Congregation Members' },
-  { value: '~20', label: 'Baptisms Per Year' },
-  { value: '18', label: 'Full-Time Ministers Sent' },
-  { value: '40+', label: 'Years in Ithaca' },
-];
-
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heading = aboutPage?.whoWeAreHeading || fallbackHeading;
 const bodyHtml = aboutPage?.whoWeAreBody?.length
@@ -46,38 +40,52 @@ const bodyHtml = aboutPage?.whoWeAreBody?.length
   : fallbackBody;
 const imageUrl = aboutPage?.whoWeAreImage
   ? urlForImage(aboutPage.whoWeAreImage, { width: 800 })
-  : '';
+  : '/images/hero/campus-wide.webp';
 
 const visionHeading = aboutPage?.visionHeading || fallbackVisionHeading;
 const visionHtml = aboutPage?.visionBody?.length
   ? portableTextToHtml(aboutPage.visionBody)
   : fallbackVisionHtml;
-
-const stats =
-  aboutPage?.churchStats && aboutPage.churchStats.length > 0
-    ? aboutPage.churchStats
-    : fallbackStats;
 ---
 
 <BaseLayout title={title} description={description} jsonLd={buildOrganizationJsonLd()}>
   <main id="main-content" data-pagefind-body class="about">
     <section class="about__hero" aria-label="Who We Are">
-      <div class="about__inner">
-        <h1 class="about__heading">{heading}</h1>
-        <div class="about__content">
+      <div class="about__split">
+        <div class="about__text">
+          <h1 class="about__heading">{heading}</h1>
           <div class="about__body" set:html={bodyHtml} />
-          {imageUrl && (
-            <div class="about__image-wrap">
-              <img
-                class="about__image"
-                src={imageUrl}
-                alt={heading}
-                loading="lazy"
-                width="800"
-                height="533"
-              />
-            </div>
-          )}
+        </div>
+        {imageUrl && (
+          <div class="about__image-col">
+            <img
+              class="about__image"
+              src={imageUrl}
+              alt="Cornell University campus"
+              loading="eager"
+            />
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Snapshots -->
+    <section class="snapshots" aria-label="Snapshots of God's Faithfulness">
+      <div class="snapshots__inner">
+        <h2 class="snapshots__heading">Snapshots of God's Faithfulness</h2>
+        <div class="snapshots__grid">
+          <div class="snapshots__item">
+            <span class="snapshots__accent">40+ years in Ithaca</span>
+            <p class="snapshots__body">Worshiping, studying Scripture, and sharing life together at Cornell and throughout Ithaca.</p>
+          </div>
+          <div class="snapshots__item">
+            <span class="snapshots__accent">A church family of ~100</span>
+            <p class="snapshots__body">Students, scholars, and longtime Ithaca residents walking with Christ together.</p>
+          </div>
+          <div class="snapshots__item">
+            <span class="snapshots__accent">Countless alumni</span>
+            <p class="snapshots__body">Now serving in churches and communities across the US, Canada, and Asia - carrying what they learned here into the rest of their lives.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -90,32 +98,121 @@ const stats =
       </div>
     </section>
 
-    <!-- Church Stats -->
-    <section class="stats" aria-label="Church by the Numbers">
-      <div class="stats__inner">
-        <h2 class="stats__heading">By the Numbers</h2>
-        <div class="stats__grid">
-          {stats.map((stat) => (
-            <div class="stats__item">
-              <span class="stats__value">{stat.value}</span>
-              <span class="stats__label">{stat.label}</span>
+    <!-- Our Pastors -->
+    <section class="pastors" aria-label="Our Pastors">
+      <div class="pastors__inner">
+        <h2 class="pastors__heading">Our Pastors</h2>
+        <div class="pastors__grid">
+          <div class="pastors__card">
+            <div class="pastors__photo">
+              <img src="/images/church/zhida-zhu.webp" alt="Pastor Zhida Zhu" loading="lazy" width="400" height="533" />
             </div>
-          ))}
+            <div class="pastors__info">
+              <h3 class="pastors__name">Min. Zhida Zhu (朱志達)</h3>
+              <p class="pastors__role">Pastor of English Ministry</p>
+              <p class="pastors__bio">
+                Zhida grew up in an immigrant church in Houston, Texas. After declaring himself
+                an atheist in high school, God powerfully changed his heart through 3 key
+                individuals after college, and he gave his life to Christ. He served as a
+                mechanical engineer for 6 years before answering the call to full-time ministry.
+                Zhida is married to Ngun, whom he met at Dallas Theological Seminary.
+              </p>
+              <p class="pastors__contact">
+                <a href="mailto:zhida7zhu@gmail.com">zhida7zhu@gmail.com</a>
+                · (832) 582-9179
+              </p>
+            </div>
+          </div>
+          <div class="pastors__card">
+            <div class="pastors__photo pastors__photo--placeholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M4 21v-1a6 6 0 0112 0v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pastors__info">
+              <h3 class="pastors__name">Min. Simon Ye (葉劍峰)</h3>
+              <p class="pastors__role">Pastor of Chinese Ministry</p>
+              <p class="pastors__bio">
+                Pastor Simon leads the Chinese-speaking congregation, shepherding
+                families, fellowship groups, and community ministries.
+              </p>
+              <p class="pastors__contact">
+                <a href="mailto:simwnos@gmail.com">simwnos@gmail.com</a>
+                · (224) 406-1826
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+
+    <Timeline heading="Our Story" eras={[
+      {
+        title: 'Beginnings: Student Fellowship to Church (1968-1988)',
+        entries: [
+          { year: '1968', description: 'Chinese graduate students and scholars at Cornell University start a Bible study group.' },
+          { year: '1974', description: 'The Bible study grows into a regular Sunday worship gathering.' },
+          { year: '1983', description: 'The fellowship formalizes its organization and begins systematic discipleship training.' },
+          { year: '1986', description: 'First Ithaca Chinese Christian Church is officially established as an independent congregation.' },
+          { year: '1988', description: 'The church purchases a house at 1462 Slaterville Road and converts it into a church building.' },
+        ],
+      },
+      {
+        title: 'Putting Down Roots in Ithaca (1988-2000)',
+        entries: [
+          { year: '1993', description: 'The church purchases 429 Mitchell Street as its permanent home.' },
+          { year: '1996', description: 'Pastoral staff is established; elders and deacons are appointed.' },
+          { year: '1997', description: 'FICCC joins the Evangelical Free Church of America (EFCA).' },
+          { year: '1997', description: 'Pastor Xin-Dao Xu begins serving as lead pastor.' },
+          { year: '1998-1999', description: 'Youth fellowship and youth Sunday school are launched; a missions committee is formed and missions policy established.' },
+          { year: '1999-2000', description: 'Additional ministry houses (such as the House of Joy) are purchased to support growing ministry.' },
+        ],
+      },
+      {
+        title: 'Growing English Ministry & Next Generation (2000-2010)',
+        entries: [
+          { year: '2000', description: 'English ministry launches, with the first English worship service on August 20.' },
+          { year: '2001', description: 'FICCC partners with China Evangelical Seminary to offer annual theology extension courses in Ithaca.' },
+          { year: '2002', description: 'The first church-wide retreat is held.' },
+          { year: '2007', description: 'The church acquires additional property (House of Peace) behind the main building to support ministry needs.' },
+          { year: '2008', description: 'Pastor Paul begins serving as English ministry pastor.' },
+          { year: '2009', description: 'FICCC begins sending summer mission teams to lead VBS in Brooklyn, New York.' },
+        ],
+      },
+      {
+        title: 'Continuing the Mission (2010-Present)',
+        entries: [
+          { year: 'Today', description: 'FICCC continues to disciple students, scholars, and families; send members into full-time ministry; and invest in both Chinese- and English-speaking congregations in Ithaca and beyond.' },
+        ],
+      },
+    ]} />
   </main>
 </BaseLayout>
 
 <style>
   .about {
-    padding-block: var(--space-16);
+    padding-block: 0;
   }
 
-  .about__inner {
+  /* Exilic-style split: text left, image fills right column */
+  .about__hero {
+    background-color: var(--color-bg);
+  }
+
+  .about__split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     max-width: var(--max-width);
     margin-inline: auto;
-    padding-inline: var(--space-6);
+    min-height: 32rem;
+  }
+
+  .about__text {
+    padding: var(--space-16) var(--space-6) var(--space-16) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .about__heading {
@@ -125,18 +222,12 @@ const stats =
     margin-block-end: var(--space-8);
   }
 
-  .about__content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-10);
-  }
-
   .about__body {
     font-family: var(--font-body);
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
     color: var(--color-body);
-    max-width: 48rem;
+    max-width: 36rem;
   }
 
   .about__body :global(p) {
@@ -148,20 +239,25 @@ const stats =
   }
 
   .about__body :global(a) {
-    color: var(--color-terracotta);
+    color: var(--primary-500);
     text-decoration: underline;
   }
 
-  .about__image-wrap {
-    border-radius: var(--radius-lg, 0.75rem);
+  /* Image column — fills full height, zooms to cover */
+  .about__image-col {
+    position: relative;
     overflow: hidden;
+    border-radius: 0 0 0 var(--radius-xl);
   }
 
   .about__image {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
     object-fit: cover;
+    object-position: center;
+  }
   }
 
   /* ---------- Vision ---------- */
@@ -204,18 +300,24 @@ const stats =
     color: var(--color-ink);
   }
 
-  /* ---------- Stats ---------- */
-  .stats {
+  /* ---------- Snapshots ---------- */
+  .snapshots {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-bg);
   }
 
-  .stats__inner {
+  /* ---------- Pastors ---------- */
+  .pastors {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .pastors__inner {
     max-width: var(--max-width);
     margin-inline: auto;
   }
 
-  .stats__heading {
+  .pastors__heading {
     font-family: var(--font-heading);
     font-size: var(--text-3xl);
     color: var(--color-ink);
@@ -223,40 +325,142 @@ const stats =
     margin-block-end: var(--space-10);
   }
 
-  .stats__grid {
+  .pastors__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-8);
-    text-align: center;
+    max-width: 40rem;
+    margin-inline: auto;
   }
 
-  .stats__item {
+  .pastors__card {
+    background-color: var(--color-stone);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    text-align: center;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    align-items: center;
+    gap: var(--space-4);
   }
 
-  .stats__value {
+  .pastors__photo {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .pastors__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pastors__photo--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--base-300);
+    color: var(--base-500);
+  }
+
+  .pastors__name {
     font-family: var(--font-heading);
-    font-size: var(--text-4xl);
-    font-weight: 700;
-    color: var(--color-terracotta);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-2);
   }
 
-  .stats__label {
+  .pastors__role {
     font-family: var(--font-body);
     font-size: var(--text-base);
     color: var(--color-body);
+    margin-block-end: var(--space-3);
+  }
+
+  .pastors__bio {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    margin-block-end: var(--space-3);
+  }
+
+  .pastors__contact {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-body);
+    line-height: var(--leading-relaxed);
+  }
+
+  .pastors__contact a {
+    color: var(--color-terracotta-dark);
+    text-decoration: underline;
+  }
+
+  .snapshots__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .snapshots__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-10);
+  }
+
+  .snapshots__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .snapshots__item {
+    text-align: center;
+    padding: var(--space-6);
+  }
+
+  .snapshots__accent {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--primary-500);
+    margin-block-end: var(--space-2);
+  }
+
+  .snapshots__body {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--base-700);
   }
 
   @media (min-width: 768px) {
-    .about__content {
-      grid-template-columns: 3fr 2fr;
-      align-items: start;
-    }
+    /* desktop: text+image side by side already via grid */
   }
 
   @media (max-width: 767px) {
+    .about__split {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .about__image-col {
+      order: -1;
+      height: 14rem;
+      position: relative;
+      border-radius: 0;
+    }
+
+    .about__text {
+      padding: var(--space-8) var(--space-4);
+    }
+
     .about__heading {
       font-size: var(--text-3xl);
     }
@@ -269,12 +473,8 @@ const stats =
       font-size: var(--text-2xl);
     }
 
-    .stats__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .stats__value {
-      font-size: var(--text-3xl);
+    .snapshots__grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>

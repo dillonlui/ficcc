@@ -65,8 +65,8 @@ const { title, subtitle, ctaText, ctaHref, backgroundImage } = Astro.props;
     inset: 0;
     background: linear-gradient(
       to bottom,
-      rgba(26, 26, 46, 0.55) 0%,
-      rgba(26, 26, 46, 0.72) 100%
+      rgba(26, 58, 44, 0.45) 0%,
+      rgba(26, 58, 44, 0.7) 100%
     );
     display: flex;
     align-items: center;
@@ -108,7 +108,7 @@ const { title, subtitle, ctaText, ctaHref, backgroundImage } = Astro.props;
     background-color: var(--color-terracotta-dark);
     /* Darker than var(--color-terracotta) for WCAG AA contrast (4.56:1 vs --color-bg) */
     padding: var(--space-3) var(--space-8);
-    border-radius: var(--radius-md);
+    border-radius: 100vw;
     text-decoration: none;
     transition: background-color var(--transition), transform var(--transition);
   }

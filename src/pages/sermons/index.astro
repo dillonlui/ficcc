@@ -25,7 +25,7 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
     <Hero
       title="Sermons"
       subtitle="Explore messages from our Sunday gatherings"
-      backgroundImage="/images/hero-placeholder.svg"
+      backgroundImage="/images/hero/worship.webp"
     />
 
     {sermons.length > 0 ? (
@@ -61,11 +61,96 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
         </div>
       </section>
     ) : (
-      <section class="sermons-empty" aria-label="No sermons">
-        <div class="sermons-empty__inner">
-          <p class="sermons-empty__message">No sermons available at this time. Check back soon.</p>
-        </div>
-      </section>
+      <Fragment>
+        {/* Latest Sermon */}
+        <section class="latest-sermon" aria-label="Latest sermon">
+          <div class="latest-sermon__inner">
+            <h2 class="latest-sermon__heading">Latest Sermon</h2>
+            <div class="latest-sermon__embed">
+              <div class="video-wrapper">
+                <iframe
+                  src="https://www.youtube.com/embed/xAh3wAHd8y0"
+                  title="March 22 2026 Sermon - Justice for All"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"
+                ></iframe>
+              </div>
+              <div class="latest-sermon__info">
+                <h3 class="latest-sermon__title">Justice for All</h3>
+                <p class="latest-sermon__meta">March 22, 2026</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Recent Sermons Grid */}
+        <section class="sermons-listing" aria-label="Recent sermons">
+          <div class="sermons-listing__inner">
+            <h2 class="sermons-listing__heading">Recent Sermons</h2>
+            <div class="sermons-grid">
+              {[
+                { id: 'LjKFcXFS5j4', title: 'Staying True to Our First Love', date: 'March 15, 2026' },
+                { id: 'leZx7Tce3m8', title: 'Wholehearted Leaders', date: 'March 8, 2026' },
+                { id: 'tPcwLjAht-c', title: 'Wholehearted Worship', date: 'March 1, 2026' },
+                { id: '7RzzK_y4Ymg', title: 'God Created the Body', date: 'December 7, 2025' },
+                { id: 'f6z9A1HTFE4', title: 'God Cares About Our Body', date: 'December 14, 2025' },
+              ].map((sermon) => (
+                <div class="sermon-card">
+                  <div class="sermon-card__thumb">
+                    <img
+                      src={`https://img.youtube.com/vi/${sermon.id}/mqdefault.jpg`}
+                      alt={sermon.title}
+                      loading="lazy"
+                      width="320"
+                      height="180"
+                    />
+                    <a
+                      href={`https://www.youtube.com/watch?v=${sermon.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="sermon-card__play"
+                      aria-label={`Watch ${sermon.title}`}
+                    >
+                      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                        <circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.6)"/>
+                        <polygon points="19,14 19,34 35,24" fill="white"/>
+                      </svg>
+                    </a>
+                  </div>
+                  <div class="sermon-card__info">
+                    <h3 class="sermon-card__title">
+                      <a href={`https://www.youtube.com/watch?v=${sermon.id}`} target="_blank" rel="noopener noreferrer">
+                        {sermon.title}
+                      </a>
+                    </h3>
+                    <p class="sermon-card__date">{sermon.date}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* YouTube Channel CTA */}
+        <section class="yt-cta" aria-label="YouTube channel">
+          <div class="yt-cta__inner">
+            <h2 class="yt-cta__heading">Sermon Archive</h2>
+            <p class="yt-cta__body">Watch all 83+ sermons from our English ministry on YouTube.</p>
+            <a
+              href="https://www.youtube.com/@FICCCenglish"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="yt-cta__link"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              Visit Our YouTube Channel
+            </a>
+          </div>
+        </section>
+      </Fragment>
     )}
   </main>
 </BaseLayout>
@@ -164,6 +249,192 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
   .sermons-empty {
     padding: var(--space-20) var(--space-6);
     background-color: var(--color-bg);
+  }
+
+  /* ---------- Latest Sermon ---------- */
+  .latest-sermon {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-bg);
+  }
+
+  .latest-sermon__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .latest-sermon__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-8);
+  }
+
+  .latest-sermon__embed {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background-color: var(--color-ink);
+  }
+
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .latest-sermon__info {
+    margin-block-start: var(--space-4);
+    text-align: center;
+  }
+
+  .latest-sermon__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+  }
+
+  .latest-sermon__meta {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-body);
+    margin-block-start: var(--space-1);
+  }
+
+  .sermons-listing__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: center;
+    margin-block-end: var(--space-10);
+  }
+
+  /* ---------- Sermon card (YouTube) ---------- */
+  .sermon-card {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background-color: var(--color-stone);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+
+  .sermon-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .sermon-card__thumb {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .sermon-card__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .sermon-card__play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity var(--transition);
+  }
+
+  .sermon-card__play:hover {
+    opacity: 1;
+  }
+
+  .sermon-card__info {
+    padding: var(--space-4);
+  }
+
+  .sermon-card__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    line-height: var(--leading-snug);
+    color: var(--color-ink);
+  }
+
+  .sermon-card__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .sermon-card__title a:hover {
+    color: var(--color-terracotta-dark);
+  }
+
+  .sermon-card__date {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-body);
+    margin-block-start: var(--space-1);
+  }
+
+  /* ---------- YouTube CTA ---------- */
+  .yt-cta {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+    text-align: center;
+  }
+
+  .yt-cta__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .yt-cta__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-3);
+  }
+
+  .yt-cta__body {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    color: var(--color-body);
+    margin-block-end: var(--space-6);
+  }
+
+  .yt-cta__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-bg);
+    background-color: #c4302b;
+    padding: var(--space-3) var(--space-8);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .yt-cta__link:hover {
+    background-color: #a32722;
+    transform: translateY(-1px);
+  }
+
+  .yt-cta__link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
   }
 
   .sermons-empty__inner {

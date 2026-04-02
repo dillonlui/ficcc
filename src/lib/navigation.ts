@@ -60,18 +60,18 @@ export function getServiceTimes(lang: Lang = 'en'): { heading: string; items: Se
     return {
       heading: '聚會時間',
       items: [
-        { label: '主日崇拜：上午 10:00' },
-        { label: '主日學：上午 11:30' },
-        { label: '週五團契：晚上 7:30' },
+        { label: '英語崇拜：上午 9:45' },
+        { label: '門徒小組：上午 11:00' },
+        { label: '華語崇拜：上午 11:15' },
       ],
     };
   }
   return {
     heading: 'Service Times',
     items: [
-      { label: 'Sunday Worship: 10:00 AM' },
-      { label: 'Sunday School: 11:30 AM' },
-      { label: 'Friday Fellowship: 7:30 PM' },
+      { label: 'English Worship: 9:45 AM' },
+      { label: 'Discipleship Groups: 11:00 AM' },
+      { label: 'Chinese Worship: 11:15 AM' },
     ],
   };
 }

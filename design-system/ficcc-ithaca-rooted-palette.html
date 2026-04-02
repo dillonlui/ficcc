@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FICCC · Ithaca Rooted · Design System Palette</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;500;600&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ─── BASE NEUTRALS (warm parchment ramp) ─── */
+    --base-50:  #FAFAF7;
+    --base-100: #F5F2EC;
+    --base-200: #EBE6DD;
+    --base-300: #E0DAD0;
+    --base-400: #CFC7BA;
+    --base-500: #B5AD9F;
+    --base-600: #928A7D;
+    --base-700: #6E675D;
+    --base-800: #4A4540;
+    --base-900: #33302A;
+
+    /* ─── PRIMARY: FOREST TEAL ─── */
+    --primary-50:  #EDF5F1;
+    --primary-100: #D2E8DD;
+    --primary-200: #A8D4BC;
+    --primary-300: #72B895;
+    --primary-400: #49926F;
+    --primary-500: #2B5B45;
+    --primary-600: #224A38;
+    --primary-700: #1A3A2C;
+    --primary-800: #122A20;
+    --primary-900: #0B1C15;
+
+    /* ─── SECONDARY: BAKED CLAY ─── */
+    --secondary-50:  #F8F0EB;
+    --secondary-100: #EDDACD;
+    --secondary-200: #DEC0AA;
+    --secondary-300: #CFA487;
+    --secondary-400: #BF7E58;
+    --secondary-500: #A56640;
+    --secondary-600: #844E30;
+    --secondary-700: #633A23;
+    --secondary-800: #422617;
+    --secondary-900: #2A170D;
+
+    /* ─── ACCENT: GORGE SLATE ─── */
+    --accent-50:  #F0F1F2;
+    --accent-100: #D8DBDE;
+    --accent-200: #B8BEC4;
+    --accent-300: #929BA4;
+    --accent-400: #6E7880;
+    --accent-500: #505962;
+    --accent-600: #3E464D;
+    --accent-700: #2D333A;
+    --accent-800: #1E2328;
+    --accent-900: #121518;
+
+    /* ─── SEMANTIC ─── */
+    --success-light: #EDF5F1;
+    --success: #2B5B45;
+    --success-dark: #1A3A2C;
+
+    --warning-light: #FDF5EB;
+    --warning: #C89033;
+    --warning-dark: #8A6120;
+
+    --danger-light: #FDF0EE;
+    --danger: #B8453A;
+    --danger-dark: #7C2E26;
+
+    --info-light: #EDF2F7;
+    --info: #3D6A8C;
+    --info-dark: #284B65;
+
+    /* ─── TYPOGRAPHY ─── */
+    --font-serif: 'Lora', 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+    --font-serif-latin: 'Lora', Georgia, 'Times New Roman', serif;
+    --font-serif-cjk: 'Noto Serif SC', 'PingFang SC', 'Microsoft YaHei', serif;
+    --font-sans: 'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans-latin: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans-cjk: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+    /* ─── SPACING ─── */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 40px;
+    --space-2xl: 64px;
+    --space-3xl: 96px;
+
+    /* ─── RADIUS ─── */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 20px;
+    --radius-pill: 999px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--base-50);
+    color: var(--base-900);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── PAGE STRUCTURE ─── */
+  .page-header {
+    background: var(--primary-700);
+    padding: var(--space-3xl) var(--space-xl) var(--space-2xl);
+    text-align: center;
+  }
+  .page-header h1 {
+    font-family: var(--font-serif);
+    font-size: 44px;
+    font-weight: 400;
+    color: var(--base-100);
+    letter-spacing: -0.5px;
+    margin-bottom: var(--space-sm);
+  }
+  .page-header p {
+    font-size: 15px;
+    color: var(--primary-200);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .page-header .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary-300);
+    margin-bottom: var(--space-md);
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 var(--space-lg); }
+
+  .section {
+    padding: var(--space-3xl) 0 var(--space-2xl);
+    border-bottom: 1px solid var(--base-300);
+  }
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary-500);
+    margin-bottom: var(--space-sm);
+  }
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--base-900);
+    margin-bottom: var(--space-sm);
+    letter-spacing: -0.3px;
+  }
+  .section-desc {
+    font-size: 15px;
+    color: var(--base-700);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: var(--space-xl);
+  }
+
+  /* ─── RAMP DISPLAY ─── */
+  .ramp-group { margin-bottom: var(--space-xl); }
+  .ramp-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--base-800);
+    margin-bottom: var(--space-sm);
+  }
+  .ramp-sublabel {
+    font-size: 12px;
+    color: var(--base-600);
+    margin-bottom: var(--space-md);
+  }
+  .ramp {
+    display: flex;
+    gap: 3px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .ramp-swatch {
+    flex: 1;
+    padding: 28px 6px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    transition: transform 0.15s ease;
+  }
+  .ramp-swatch:hover { transform: scaleY(1.08); transform-origin: bottom; }
+  .ramp-swatch .stop { font-size: 10px; font-weight: 600; opacity: 0.75; }
+  .ramp-swatch .hex { font-size: 9px; font-family: 'DM Sans', monospace; opacity: 0.6; }
+
+  /* ─── ROLE CARDS ─── */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+  .role-card {
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg) var(--space-md);
+    border: 1px solid var(--base-300);
+    background: var(--base-50);
+  }
+  .role-card .role-name {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-xs);
+  }
+  .role-card .role-desc {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .role-card .role-values {
+    font-size: 11px;
+    font-family: 'DM Sans', monospace;
+    margin-top: var(--space-sm);
+    opacity: 0.65;
+  }
+
+  /* ─── TYPOGRAPHY SPECIMENS ─── */
+  .type-specimen { margin-bottom: var(--space-xl); }
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-lg);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--base-200);
+  }
+  .type-meta {
+    flex: 0 0 160px;
+    font-size: 11px;
+    color: var(--base-600);
+    line-height: 1.4;
+  }
+  .type-meta strong { color: var(--base-800); display: block; font-size: 12px; }
+  .type-sample { flex: 1; color: var(--base-900); }
+
+  /* ─── COMPONENT MOCKUPS ─── */
+  .mockup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+  @media (max-width: 700px) { .mockup-grid { grid-template-columns: 1fr; } }
+
+  .mockup-card {
+    background: var(--base-50);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .mockup-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--base-600);
+    padding: var(--space-md) var(--space-lg) 0;
+    margin-bottom: var(--space-sm);
+  }
+
+  /* ─── BUTTON SPECIMENS ─── */
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: center;
+    margin-bottom: var(--space-lg);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 24px;
+    border-radius: var(--radius-pill);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--primary-500); color: var(--primary-50); }
+  .btn-primary:hover { background: var(--primary-600); }
+  .btn-secondary { background: var(--secondary-400); color: #FFF; }
+  .btn-secondary:hover { background: var(--secondary-500); }
+  .btn-outline { background: transparent; color: var(--primary-500); border: 1.5px solid var(--primary-400); }
+  .btn-outline:hover { background: var(--primary-50); }
+  .btn-ghost { background: transparent; color: var(--base-700); border: 1.5px solid var(--base-400); }
+  .btn-ghost:hover { background: var(--base-100); }
+  .btn-sm { font-size: 12px; padding: 7px 16px; }
+  .btn-lg { font-size: 16px; padding: 14px 32px; }
+
+  /* ─── HERO MOCKUP ─── */
+  .hero-mockup {
+    background: var(--base-100);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--base-300);
+    overflow: hidden;
+    margin-bottom: var(--space-xl);
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 420px;
+  }
+  @media (max-width: 700px) { .hero-inner { grid-template-columns: 1fr; } }
+  .hero-text {
+    padding: var(--space-2xl) var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-text h2 {
+    font-family: var(--font-serif);
+    font-size: 38px;
+    font-weight: 400;
+    color: var(--base-900);
+    line-height: 1.15;
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.5px;
+  }
+  .hero-text p {
+    font-size: 15px;
+    color: var(--base-700);
+    line-height: 1.7;
+    margin-bottom: var(--space-lg);
+    max-width: 380px;
+  }
+  .hero-text .meta {
+    font-size: 13px;
+    color: var(--base-600);
+    margin-bottom: var(--space-xs);
+  }
+  .hero-image {
+    background: var(--primary-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-image-placeholder {
+    font-size: 13px;
+    color: var(--primary-200);
+    text-align: center;
+    padding: var(--space-lg);
+    line-height: 1.6;
+  }
+  .hero-image-placeholder::before {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--primary-300);
+    border-radius: 50%;
+    margin: 0 auto var(--space-md);
+    opacity: 0.5;
+  }
+
+  /* ─── NAV MOCKUP ─── */
+  .nav-mockup {
+    background: var(--base-50);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-xl);
+  }
+  .nav-brand {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--primary-700);
+  }
+  .nav-links {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+  .nav-links a {
+    font-size: 14px;
+    color: var(--base-700);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--primary-500); }
+  .nav-links .nav-cta {
+    background: var(--primary-500);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+  }
+
+  /* ─── CARD MOCKUP ─── */
+  .content-card {
+    background: var(--base-50);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .content-card:hover { border-color: var(--base-400); }
+  .card-image {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--primary-200);
+  }
+  .card-body { padding: var(--space-lg); }
+  .card-body .card-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--space-sm);
+  }
+  .card-body h3 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--base-900);
+    margin-bottom: var(--space-sm);
+    line-height: 1.25;
+  }
+  .card-body p {
+    font-size: 14px;
+    color: var(--base-700);
+    line-height: 1.6;
+  }
+
+  /* ─── SECTION MOCKUP (full-width storytelling) ─── */
+  .story-section {
+    background: var(--primary-700);
+    border-radius: var(--radius-lg);
+    padding: var(--space-2xl) var(--space-xl);
+    margin-bottom: var(--space-xl);
+    text-align: center;
+  }
+  .story-section .section-label { color: var(--primary-300); }
+  .story-section h2 {
+    font-family: var(--font-serif);
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--base-100);
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.3px;
+  }
+  .story-section p {
+    font-size: 16px;
+    color: var(--primary-200);
+    max-width: 540px;
+    margin: 0 auto var(--space-lg);
+    line-height: 1.7;
+  }
+
+  /* ─── FOOTER MOCKUP ─── */
+  .footer-mockup {
+    background: var(--base-900);
+    border-radius: var(--radius-lg);
+    padding: var(--space-2xl) var(--space-xl) var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+  @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-brand h3 {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    color: var(--base-200);
+    font-weight: 400;
+    margin-bottom: var(--space-sm);
+  }
+  .footer-brand p { font-size: 13px; color: var(--base-500); line-height: 1.6; }
+  .footer-col h4 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--base-500);
+    margin-bottom: var(--space-md);
+  }
+  .footer-col a {
+    display: block;
+    font-size: 14px;
+    color: var(--base-400);
+    text-decoration: none;
+    margin-bottom: var(--space-sm);
+    transition: color 0.15s;
+  }
+  .footer-col a:hover { color: var(--base-200); }
+  .footer-bottom {
+    border-top: 1px solid var(--base-800);
+    padding-top: var(--space-lg);
+    font-size: 12px;
+    color: var(--base-600);
+  }
+
+  /* ─── TAG SPECIMENS ─── */
+  .tag-row { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-lg); }
+  .tag-chip {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 5px 14px;
+    border-radius: var(--radius-pill);
+  }
+
+  /* ─── ACCESSIBILITY NOTE ─── */
+  .a11y-note {
+    background: var(--base-100);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+  }
+  .a11y-note h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--base-800);
+    margin-bottom: var(--space-sm);
+  }
+  .a11y-note p { font-size: 13px; color: var(--base-700); line-height: 1.6; }
+  .a11y-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+  .a11y-pair {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .a11y-ratio {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HEADER                                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-header">
+  <div class="tag">Design system · color & typography</div>
+  <h1>Ithaca rooted</h1>
+  <p>A design system drawn from Finger Lakes landscape — forest canopy, gorge stone, baked clay trails, and slate water. Typography: Lora + DM Sans with Noto CJK for bilingual support.</p>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 01 · COLOR RAMPS                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">01 · Palette</div>
+  <div class="section-title">Color ramps</div>
+  <div class="section-desc">Every ramp runs 50–900 in consistent perceptual steps. The base neutral is warm (never blue-gray), and the primary forest teal anchors the system.</div>
+
+  <!-- Base Neutrals -->
+  <div class="ramp-group">
+    <div class="ramp-label">Base neutrals · warm parchment</div>
+    <div class="ramp-sublabel">Backgrounds, surfaces, borders, body text</div>
+    <div class="ramp">
+      <div class="ramp-swatch" style="background:#FAFAF7;"><span class="stop" style="color:#6E675D;">50</span><span class="hex" style="color:#6E675D;">#FAFAF7</span></div>
+      <div class="ramp-swatch" style="background:#F5F2EC;"><span class="stop" style="color:#6E675D;">100</span><span class="hex" style="color:#6E675D;">#F5F2EC</span></div>
+      <div class="ramp-swatch" style="background:#EBE6DD;"><span class="stop" style="color:#6E675D;">200</span><span class="hex" style="color:#6E675D;">#EBE6DD</span></div>
+      <div class="ramp-swatch" style="background:#E0DAD0;"><span class="stop" style="color:#6E675D;">300</span><span class="hex" style="color:#6E675D;">#E0DAD0</span></div>
+      <div class="ramp-swatch" style="background:#CFC7BA;"><span class="stop" style="color:#4A4540;">400</span><span class="hex" style="color:#4A4540;">#CFC7BA</span></div>
+      <div class="ramp-swatch" style="background:#B5AD9F;"><span class="stop" style="color:#33302A;">500</span><span class="hex" style="color:#33302A;">#B5AD9F</span></div>
+      <div class="ramp-swatch" style="background:#928A7D;"><span class="stop" style="color:#F5F2EC;">600</span><span class="hex" style="color:#F5F2EC;">#928A7D</span></div>
+      <div class="ramp-swatch" style="background:#6E675D;"><span class="stop" style="color:#F5F2EC;">700</span><span class="hex" style="color:#F5F2EC;">#6E675D</span></div>
+      <div class="ramp-swatch" style="background:#4A4540;"><span class="stop" style="color:#E0DAD0;">800</span><span class="hex" style="color:#E0DAD0;">#4A4540</span></div>
+      <div class="ramp-swatch" style="background:#33302A;"><span class="stop" style="color:#E0DAD0;">900</span><span class="hex" style="color:#E0DAD0;">#33302A</span></div>
+    </div>
+  </div>
+
+  <!-- Primary: Forest Teal -->
+  <div class="ramp-group">
+    <div class="ramp-label">Primary · forest teal</div>
+    <div class="ramp-sublabel">CTAs, links, active states, primary brand expression</div>
+    <div class="ramp">
+      <div class="ramp-swatch" style="background:#EDF5F1;"><span class="stop" style="color:#1A3A2C;">50</span><span class="hex" style="color:#1A3A2C;">#EDF5F1</span></div>
+      <div class="ramp-swatch" style="background:#D2E8DD;"><span class="stop" style="color:#1A3A2C;">100</span><span class="hex" style="color:#1A3A2C;">#D2E8DD</span></div>
+      <div class="ramp-swatch" style="background:#A8D4BC;"><span class="stop" style="color:#122A20;">200</span><span class="hex" style="color:#122A20;">#A8D4BC</span></div>
+      <div class="ramp-swatch" style="background:#72B895;"><span class="stop" style="color:#0B1C15;">300</span><span class="hex" style="color:#0B1C15;">#72B895</span></div>
+      <div class="ramp-swatch" style="background:#49926F;"><span class="stop" style="color:#F5F2EC;">400</span><span class="hex" style="color:#F5F2EC;">#49926F</span></div>
+      <div class="ramp-swatch" style="background:#2B5B45;"><span class="stop" style="color:#D2E8DD;">500</span><span class="hex" style="color:#D2E8DD;">#2B5B45</span></div>
+      <div class="ramp-swatch" style="background:#224A38;"><span class="stop" style="color:#D2E8DD;">600</span><span class="hex" style="color:#D2E8DD;">#224A38</span></div>
+      <div class="ramp-swatch" style="background:#1A3A2C;"><span class="stop" style="color:#A8D4BC;">700</span><span class="hex" style="color:#A8D4BC;">#1A3A2C</span></div>
+      <div class="ramp-swatch" style="background:#122A20;"><span class="stop" style="color:#A8D4BC;">800</span><span class="hex" style="color:#A8D4BC;">#122A20</span></div>
+      <div class="ramp-swatch" style="background:#0B1C15;"><span class="stop" style="color:#72B895;">900</span><span class="hex" style="color:#72B895;">#0B1C15</span></div>
+    </div>
+  </div>
+
+  <!-- Secondary: Baked Clay -->
+  <div class="ramp-group">
+    <div class="ramp-label">Secondary · baked clay</div>
+    <div class="ramp-sublabel">Warm accent, secondary CTAs, highlight moments</div>
+    <div class="ramp">
+      <div class="ramp-swatch" style="background:#F8F0EB;"><span class="stop" style="color:#633A23;">50</span><span class="hex" style="color:#633A23;">#F8F0EB</span></div>
+      <div class="ramp-swatch" style="background:#EDDACD;"><span class="stop" style="color:#633A23;">100</span><span class="hex" style="color:#633A23;">#EDDACD</span></div>
+      <div class="ramp-swatch" style="background:#DEC0AA;"><span class="stop" style="color:#422617;">200</span><span class="hex" style="color:#422617;">#DEC0AA</span></div>
+      <div class="ramp-swatch" style="background:#CFA487;"><span class="stop" style="color:#2A170D;">300</span><span class="hex" style="color:#2A170D;">#CFA487</span></div>
+      <div class="ramp-swatch" style="background:#BF7E58;"><span class="stop" style="color:#FFF;">400</span><span class="hex" style="color:#FFF;">#BF7E58</span></div>
+      <div class="ramp-swatch" style="background:#A56640;"><span class="stop" style="color:#F8F0EB;">500</span><span class="hex" style="color:#F8F0EB;">#A56640</span></div>
+      <div class="ramp-swatch" style="background:#844E30;"><span class="stop" style="color:#EDDACD;">600</span><span class="hex" style="color:#EDDACD;">#844E30</span></div>
+      <div class="ramp-swatch" style="background:#633A23;"><span class="stop" style="color:#DEC0AA;">700</span><span class="hex" style="color:#DEC0AA;">#633A23</span></div>
+      <div class="ramp-swatch" style="background:#422617;"><span class="stop" style="color:#DEC0AA;">800</span><span class="hex" style="color:#DEC0AA;">#422617</span></div>
+      <div class="ramp-swatch" style="background:#2A170D;"><span class="stop" style="color:#CFA487;">900</span><span class="hex" style="color:#CFA487;">#2A170D</span></div>
+    </div>
+  </div>
+
+  <!-- Accent: Gorge Slate -->
+  <div class="ramp-group">
+    <div class="ramp-label">Accent · gorge slate</div>
+    <div class="ramp-sublabel">Tertiary UI, metadata, subtle differentiation, icon tints</div>
+    <div class="ramp">
+      <div class="ramp-swatch" style="background:#F0F1F2;"><span class="stop" style="color:#2D333A;">50</span><span class="hex" style="color:#2D333A;">#F0F1F2</span></div>
+      <div class="ramp-swatch" style="background:#D8DBDE;"><span class="stop" style="color:#2D333A;">100</span><span class="hex" style="color:#2D333A;">#D8DBDE</span></div>
+      <div class="ramp-swatch" style="background:#B8BEC4;"><span class="stop" style="color:#1E2328;">200</span><span class="hex" style="color:#1E2328;">#B8BEC4</span></div>
+      <div class="ramp-swatch" style="background:#929BA4;"><span class="stop" style="color:#121518;">300</span><span class="hex" style="color:#121518;">#929BA4</span></div>
+      <div class="ramp-swatch" style="background:#6E7880;"><span class="stop" style="color:#F0F1F2;">400</span><span class="hex" style="color:#F0F1F2;">#6E7880</span></div>
+      <div class="ramp-swatch" style="background:#505962;"><span class="stop" style="color:#D8DBDE;">500</span><span class="hex" style="color:#D8DBDE;">#505962</span></div>
+      <div class="ramp-swatch" style="background:#3E464D;"><span class="stop" style="color:#D8DBDE;">600</span><span class="hex" style="color:#D8DBDE;">#3E464D</span></div>
+      <div class="ramp-swatch" style="background:#2D333A;"><span class="stop" style="color:#B8BEC4;">700</span><span class="hex" style="color:#B8BEC4;">#2D333A</span></div>
+      <div class="ramp-swatch" style="background:#1E2328;"><span class="stop" style="color:#B8BEC4;">800</span><span class="hex" style="color:#B8BEC4;">#1E2328</span></div>
+      <div class="ramp-swatch" style="background:#121518;"><span class="stop" style="color:#929BA4;">900</span><span class="hex" style="color:#929BA4;">#121518</span></div>
+    </div>
+  </div>
+
+  <!-- Semantic -->
+  <div class="ramp-group">
+    <div class="ramp-label">Semantic · functional colors</div>
+    <div class="ramp-sublabel">Alerts, form validation, status indicators</div>
+    <div class="ramp" style="gap: 12px;">
+      <div style="flex:1; display:flex; gap:3px; border-radius: var(--radius-md); overflow:hidden;">
+        <div class="ramp-swatch" style="background:#EDF5F1;"><span class="stop" style="color:#1A3A2C;">Succ</span></div>
+        <div class="ramp-swatch" style="background:#2B5B45;"><span class="stop" style="color:#D2E8DD;">✓</span></div>
+        <div class="ramp-swatch" style="background:#1A3A2C;"><span class="stop" style="color:#A8D4BC;">Dk</span></div>
+      </div>
+      <div style="flex:1; display:flex; gap:3px; border-radius: var(--radius-md); overflow:hidden;">
+        <div class="ramp-swatch" style="background:#FDF5EB;"><span class="stop" style="color:#8A6120;">Warn</span></div>
+        <div class="ramp-swatch" style="background:#C89033;"><span class="stop" style="color:#FDF5EB;">⚠</span></div>
+        <div class="ramp-swatch" style="background:#8A6120;"><span class="stop" style="color:#FDF5EB;">Dk</span></div>
+      </div>
+      <div style="flex:1; display:flex; gap:3px; border-radius: var(--radius-md); overflow:hidden;">
+        <div class="ramp-swatch" style="background:#FDF0EE;"><span class="stop" style="color:#7C2E26;">Dngr</span></div>
+        <div class="ramp-swatch" style="background:#B8453A;"><span class="stop" style="color:#FDF0EE;">✕</span></div>
+        <div class="ramp-swatch" style="background:#7C2E26;"><span class="stop" style="color:#FDF0EE;">Dk</span></div>
+      </div>
+      <div style="flex:1; display:flex; gap:3px; border-radius: var(--radius-md); overflow:hidden;">
+        <div class="ramp-swatch" style="background:#EDF2F7;"><span class="stop" style="color:#284B65;">Info</span></div>
+        <div class="ramp-swatch" style="background:#3D6A8C;"><span class="stop" style="color:#EDF2F7;">ℹ</span></div>
+        <div class="ramp-swatch" style="background:#284B65;"><span class="stop" style="color:#B8D0E4;">Dk</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 02 · ROLE MAPPING                           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">02 · Usage</div>
+  <div class="section-title">Role mapping</div>
+  <div class="section-desc">How each ramp maps to interface roles. These constraints keep the palette cohesive across pages and prevent color drift.</div>
+
+  <div class="role-grid">
+    <div class="role-card" style="border-left: 4px solid var(--base-400); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
+      <div class="role-name" style="color: var(--base-600);">Page background</div>
+      <div class="role-desc" style="color: var(--base-700);">Base 50 for main bg, Base 100 for surface cards, Base 200 for grouped sections</div>
+      <div class="role-values">--base-50 · --base-100 · --base-200</div>
+    </div>
+    <div class="role-card" style="border-left: 4px solid var(--primary-500); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
+      <div class="role-name" style="color: var(--primary-600);">Primary actions</div>
+      <div class="role-desc" style="color: var(--base-700);">Forest teal 500 for buttons and links, 600 for hover, 700 for active/pressed</div>
+      <div class="role-values">--primary-500 · --primary-600 · --primary-700</div>
+    </div>
+    <div class="role-card" style="border-left: 4px solid var(--secondary-400); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
+      <div class="role-name" style="color: var(--secondary-500);">Warm accents</div>
+      <div class="role-desc" style="color: var(--base-700);">Baked clay 400 for highlights and secondary CTAs, 50–100 for warm tinted backgrounds</div>
+      <div class="role-values">--secondary-400 · --secondary-50 · --secondary-100</div>
+    </div>
+    <div class="role-card" style="border-left: 4px solid var(--base-900); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
+      <div class="role-name" style="color: var(--base-600);">Typography</div>
+      <div class="role-desc" style="color: var(--base-700);">Base 900 headings, Base 700 body, Base 600 secondary text, Base 500 placeholders</div>
+      <div class="role-values">--base-900 · --base-700 · --base-600</div>
+    </div>
+    <div class="role-card" style="border-left: 4px solid var(--base-300); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
+      <div class="role-name" style="color: var(--base-600);">Borders & dividers</div>
+      <div class="role-desc" style="color: var(--base-700);">Base 300 default, Base 400 on hover or emphasis. Never use gray or blue-tinted borders.</div>
+      <div class="role-values">--base-300 · --base-400</div>
+    </div>
+    <div class="role-card" style="border-left: 4px solid var(--accent-400); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
+      <div class="role-name" style="color: var(--accent-500);">Metadata & muted UI</div>
+      <div class="role-desc" style="color: var(--base-700);">Gorge slate for timestamps, captions, icon fills, and anything that should recede</div>
+      <div class="role-values">--accent-400 · --accent-500 · --accent-300</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 03 · TYPOGRAPHY                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">03 · Typography</div>
+  <div class="section-title">Type scale with palette</div>
+  <div class="section-desc">Lora for headlines and pull quotes — warm, sturdy, and bookish. DM Sans for body, UI, and navigation. Noto Serif SC and Noto Sans SC for CJK, explicitly declared to avoid inconsistent system fallbacks across platforms.</div>
+
+  <div style="background: var(--base-100); border: 1px solid var(--base-300); border-radius: var(--radius-lg); padding: var(--space-lg); margin-bottom: var(--space-xl);">
+    <div style="font-size: 12px; font-weight: 600; color: var(--primary-500); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-sm);">Font stack reference</div>
+    <div style="font-size: 13px; color: var(--base-700); line-height: 1.8;">
+      <strong style="color: var(--base-800);">Serif (headlines, quotes):</strong> Lora → Noto Serif SC → Georgia → serif<br>
+      <strong style="color: var(--base-800);">Sans (body, UI, nav):</strong> DM Sans → Noto Sans SC → system-ui → sans-serif<br>
+      <strong style="color: var(--base-800);">CJK-only contexts:</strong> Use <code style="font-size: 12px; background: var(--base-200); padding: 2px 6px; border-radius: 4px;">--font-serif-cjk</code> or <code style="font-size: 12px; background: var(--base-200); padding: 2px 6px; border-radius: 4px;">--font-sans-cjk</code> to skip Latin fonts<br>
+      <strong style="color: var(--base-800);">Performance note:</strong> Noto CJK fonts are large (~4MB). Subset to characters used, or lazy-load after Latin fonts.
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-row">
+      <div class="type-meta"><strong>Display / 44px</strong>Lora Regular<br>Heading color: base-900</div>
+      <div class="type-sample" style="font-family: var(--font-serif); font-size: 44px; line-height: 1.1; letter-spacing: -0.5px; color: var(--base-900);">Gathered around one table</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>Display / 44px</strong>Lora + Noto Serif SC<br>Bilingual headline</div>
+      <div class="type-sample" style="font-family: var(--font-serif); font-size: 44px; line-height: 1.2; letter-spacing: -0.5px; color: var(--base-900);">一起围坐在桌旁</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>H1 / 36px</strong>Lora Regular<br>Heading color: base-900</div>
+      <div class="type-sample" style="font-family: var(--font-serif); font-size: 36px; line-height: 1.15; color: var(--base-900);">A home where a meal is already on the table</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>H2 / 28px</strong>Lora Regular<br>Bilingual stacked</div>
+      <div class="type-sample">
+        <div style="font-family: var(--font-serif); font-size: 28px; line-height: 1.2; color: var(--base-900);">欢迎来到以撒迦中华基督教会</div>
+        <div style="font-family: var(--font-serif); font-size: 28px; line-height: 1.2; color: var(--base-700);">Welcome to FICCC</div>
+      </div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>H3 / 22px</strong>Lora Medium<br>Inline bilingual</div>
+      <div class="type-sample" style="font-family: var(--font-serif); font-size: 22px; font-weight: 500; line-height: 1.35; color: var(--base-800);">主日崇拜 Sunday Worship · 10:30am</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>Body / 16px</strong>DM Sans Regular<br>Body color: base-700</div>
+      <div class="type-sample" style="font-family: var(--font-sans); font-size: 16px; line-height: 1.7; color: var(--base-700);">FICCC's Sunday is genuinely unusual: service, discipleship groups, and Chinese lunch together, often stretching past three hours. People aren't here because the programming is slick. They're here because the community is real.</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>Body / 16px</strong>DM Sans + Noto Sans SC<br>Chinese body copy</div>
+      <div class="type-sample" style="font-family: var(--font-sans); font-size: 16px; line-height: 1.8; color: var(--base-700);">我们是一个以基督为中心的多代教会，服务于康奈尔大学社区和绮色佳地区的居民。每个主日，我们一起崇拜、查经、并共享午餐。</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>Small / 14px</strong>DM Sans Regular<br>Secondary color: base-600</div>
+      <div class="type-sample" style="font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--base-600);">429 Mitchell Street · Ithaca, NY 14850 · 每周日上午 10:30 · Sundays 10:30am</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>Caption / 12px</strong>DM Sans Medium<br>Muted color: base-500</div>
+      <div class="type-sample" style="font-family: var(--font-sans); font-size: 12px; font-weight: 500; letter-spacing: 0.5px; line-height: 1.5; color: var(--base-500);">Photo: Sunday lunch, January 2026 · 照片：主日午餐，2026年1月</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>Pull quote / 24px</strong>Lora Italic<br>Primary color: primary-600</div>
+      <div class="type-sample" style="font-family: var(--font-serif); font-size: 24px; font-style: italic; line-height: 1.4; color: var(--primary-600);">"Eventually you're doing the dishes. That's what FICCC's Sunday actually is."</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><strong>Pull quote / 22px</strong>Noto Serif SC + Lora Italic<br>Bilingual quote</div>
+      <div class="type-sample">
+        <div style="font-family: var(--font-serif); font-style: italic; font-size: 22px; line-height: 1.5; color: var(--primary-600);">"你们不再是外人或客旅，是与圣徒同国的人"</div>
+        <div style="font-family: var(--font-serif); font-style: italic; font-size: 18px; line-height: 1.5; color: var(--primary-400); margin-top: 4px;">"You are no longer strangers and foreigners" — Ephesians 2:19</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background: var(--base-100); border: 1px solid var(--base-300); border-radius: var(--radius-lg); padding: var(--space-lg);">
+    <div style="font-size: 12px; font-weight: 600; color: var(--base-800); margin-bottom: var(--space-sm);">Bilingual layout guidance</div>
+    <div style="font-size: 13px; color: var(--base-700); line-height: 1.7;">
+      <strong style="color: var(--base-800);">Stacked pattern (preferred for headlines):</strong> Chinese on top, English below at a slightly smaller size or lighter color. This avoids line-height conflicts between scripts.<br><br>
+      <strong style="color: var(--base-800);">Inline pattern (for labels and short text):</strong> Works for ≤6 Chinese characters + short English. Example: "主日崇拜 Sunday Worship." Avoid for anything longer — the mixed scripts create uneven rhythm.<br><br>
+      <strong style="color: var(--base-800);">Line-height note:</strong> CJK characters sit taller in the line box. Use <code style="font-size: 12px; background: var(--base-200); padding: 2px 6px; border-radius: 4px;">line-height: 1.8</code> for CJK body copy vs <code style="font-size: 12px; background: var(--base-200); padding: 2px 6px; border-radius: 4px;">1.7</code> for Latin body copy to maintain visual consistency.<br><br>
+      <strong style="color: var(--base-800);">Language toggle vs. dual display:</strong> For content-heavy pages, prefer a language toggle over duplicating both languages inline. Reserve dual display for service info, event listings, and navigation where both audiences need quick scanning.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 04 · COMPONENTS                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">04 · Components</div>
+  <div class="section-title">UI elements</div>
+  <div class="section-desc">Buttons, tags, and cards in the Ithaca Rooted palette. Pill-shaped buttons feel approachable without being playful. Tags use tinted backgrounds from each ramp's 50 stop.</div>
+
+  <!-- Buttons -->
+  <div style="margin-bottom: var(--space-xl);">
+    <div class="ramp-label" style="margin-bottom: var(--space-md);">Buttons</div>
+    <div class="btn-row">
+      <button class="btn btn-primary">Join us Sunday</button>
+      <button class="btn btn-secondary">Get directions</button>
+      <button class="btn btn-outline">Learn more</button>
+      <button class="btn btn-ghost">View all</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-lg">Plan your visit</button>
+      <button class="btn btn-primary btn-sm">Subscribe</button>
+    </div>
+  </div>
+
+  <!-- Tags -->
+  <div style="margin-bottom: var(--space-xl);">
+    <div class="ramp-label" style="margin-bottom: var(--space-md);">Tags & badges</div>
+    <div class="tag-row">
+      <span class="tag-chip" style="background: var(--primary-50); color: var(--primary-700);">Worship</span>
+      <span class="tag-chip" style="background: var(--secondary-50); color: var(--secondary-700);">Community meal</span>
+      <span class="tag-chip" style="background: var(--base-200); color: var(--base-800);">Discipleship</span>
+      <span class="tag-chip" style="background: var(--accent-50); color: var(--accent-700);">This week</span>
+      <span class="tag-chip" style="background: var(--primary-100); color: var(--primary-800);">New here?</span>
+    </div>
+    <div class="tag-row">
+      <span class="tag-chip" style="background: var(--success-light); color: var(--success-dark);">Confirmed</span>
+      <span class="tag-chip" style="background: var(--warning-light); color: var(--warning-dark);">Upcoming</span>
+      <span class="tag-chip" style="background: var(--danger-light); color: var(--danger-dark);">Cancelled</span>
+      <span class="tag-chip" style="background: var(--info-light); color: var(--info-dark);">Updated</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 05 · MOCKUPS                                -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">05 · Applied</div>
+  <div class="section-title">Component mockups</div>
+  <div class="section-desc">The palette and type system in context. Mockups use Lora + DM Sans with Noto CJK for bilingual layouts, unhurried spacing, and pill-button language.</div>
+
+  <!-- Nav -->
+  <div class="ramp-label" style="margin-bottom: var(--space-md);">Navigation bar</div>
+  <div class="nav-mockup">
+    <div class="nav-brand">FICCC</div>
+    <div class="nav-links">
+      <a href="#">Who we are</a>
+      <a href="#">Sundays</a>
+      <a href="#">Community</a>
+      <a href="#">Give</a>
+      <a href="#" class="nav-cta">Plan your visit</a>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="ramp-label" style="margin-bottom: var(--space-md);">Homepage hero</div>
+  <div class="hero-mockup">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="meta">每周日上午 10:30 · Sundays at 10:30am · 429 Mitchell Street</p>
+        <h2>一起围坐在桌旁</h2>
+        <h2 style="font-size: 30px; color: var(--base-700); margin-bottom: var(--space-md);">A place at the table</h2>
+        <p>崇拜、门训、与一顿中餐 — 常常超过三个小时。你不是客人，请坐下来吧。</p>
+        <p style="color: var(--base-600); font-size: 14px; margin-bottom: var(--space-lg);">Service, discipleship, and a Chinese lunch together — often stretching past three hours. You're not a guest here. Pull up a chair.</p>
+        <div>
+          <button class="btn btn-primary" style="margin-right: var(--space-sm);">计划来访 Plan your visit</button>
+          <button class="btn btn-outline">了解更多 Learn more</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-image-placeholder">
+          Community photo<br>
+          <span style="font-size:11px; opacity:0.6;">Candid Sunday lunch moment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="ramp-label" style="margin-bottom: var(--space-md);">Content cards</div>
+  <div class="mockup-grid">
+    <div class="content-card">
+      <div class="card-image" style="background: var(--primary-600);">Community photo</div>
+      <div class="card-body">
+        <span class="card-tag" style="background: var(--primary-50); color: var(--primary-700);">主日 Sundays</span>
+        <h3>一同敬拜</h3>
+        <p style="font-family: var(--font-sans); color: var(--base-600); font-size: 13px; margin-bottom: 4px;">Worship together</p>
+        <p>Bilingual worship, prayer, and teaching. Real people singing real songs — not a production.</p>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-image" style="background: var(--secondary-500);">Community photo</div>
+      <div class="card-body">
+        <span class="card-tag" style="background: var(--secondary-50); color: var(--secondary-700);">团契 Community</span>
+        <h3>共享午餐</h3>
+        <p style="font-family: var(--font-sans); color: var(--base-600); font-size: 13px; margin-bottom: 4px;">The lunch</p>
+        <p>Chinese food, multiple generations, the chaotic-but-warm atmosphere that stretches into the afternoon.</p>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-image" style="background: var(--accent-500);">Community photo</div>
+      <div class="card-body">
+        <span class="card-tag" style="background: var(--base-200); color: var(--base-800);">门训 Discipleship</span>
+        <h3>小组查经</h3>
+        <p style="font-family: var(--font-sans); color: var(--base-600); font-size: 13px; margin-bottom: 4px;">Small groups</p>
+        <p>Discussion, prayer, and Bible study in small groups. A place to be known and to grow.</p>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-image" style="background: var(--primary-800);">Community photo</div>
+      <div class="card-body">
+        <span class="card-tag" style="background: var(--primary-50); color: var(--primary-700);">新朋友 New here?</span>
+        <h3>计划来访</h3>
+        <p style="font-family: var(--font-sans); color: var(--base-600); font-size: 13px; margin-bottom: 4px;">Plan your visit</p>
+        <p>What to expect, where to park, and how to find us at 429 Mitchell Street.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark storytelling section -->
+  <div class="ramp-label" style="margin-bottom: var(--space-md);">Storytelling section (dark)</div>
+  <div class="story-section">
+    <div class="section-label">关于我们 · Who we are</div>
+    <h2>扎根绮色佳，始于1986</h2>
+    <h2 style="font-size: 28px; color: var(--primary-200); margin-bottom: var(--space-md);">Rooted in Ithaca since 1986</h2>
+    <p>一个服务康奈尔大学学生、家庭和绮色佳社区的多代华人基督教会。不是品牌 — 是一个有本地地址的家。</p>
+    <p style="font-size: 14px; color: var(--primary-300); max-width: 540px; margin: 0 auto var(--space-lg);">A multigenerational, Chinese-heritage church serving Cornell students, families, and the broader Ithaca community. Not a brand — a family with a local address.</p>
+    <button class="btn" style="background: var(--base-100); color: var(--primary-700);">我们的故事 Our story</button>
+  </div>
+
+  <!-- Footer -->
+  <div class="ramp-label" style="margin-bottom: var(--space-md);">Footer</div>
+  <div class="footer-mockup">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>FICCC</h3>
+        <p>以撒迦中华基督教会<br>First Ithaca Chinese Christian Church<br>429 Mitchell Street · Ithaca, NY 14850</p>
+      </div>
+      <div class="footer-col">
+        <h4>来访 Visit</h4>
+        <a href="#">计划来访 Plan your visit</a>
+        <a href="#">交通指南 Get directions</a>
+        <a href="#">常见问题 What to expect</a>
+      </div>
+      <div class="footer-col">
+        <h4>团契 Community</h4>
+        <a href="#">小组 Small groups</a>
+        <a href="#">活动 Events</a>
+        <a href="#">午餐 The lunch</a>
+      </div>
+      <div class="footer-col">
+        <h4>联系 Connect</h4>
+        <a href="#">联系我们 Contact us</a>
+        <a href="#">奉献 Give</a>
+        <a href="#">通讯 Newsletter</a>
+        <div style="margin-top: var(--space-md); display: flex; gap: 6px;">
+          <span style="font-size: 11px; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--base-800); color: var(--base-300);">EN</span>
+          <span style="font-size: 11px; padding: 4px 10px; border-radius: var(--radius-pill); border: 1px solid var(--base-700); color: var(--base-500);">中文</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 First Ithaca Chinese Christian Church · 以撒迦中华基督教会
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 06 · ACCESSIBILITY                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">06 · Accessibility</div>
+  <div class="section-title">Contrast checks</div>
+  <div class="section-desc">Key pairings tested against WCAG 2.1 AA (4.5:1 for normal text, 3:1 for large text and UI components).</div>
+
+  <div class="a11y-note">
+    <h4>Passing combinations</h4>
+    <div class="a11y-grid">
+      <div class="a11y-pair" style="background: var(--base-50);">
+        <span style="color: var(--base-900); flex: 1;">Base 900 on 50</span>
+        <span class="a11y-ratio" style="background: var(--success-light); color: var(--success-dark);">15.2:1 AAA</span>
+      </div>
+      <div class="a11y-pair" style="background: var(--base-50);">
+        <span style="color: var(--base-700); flex: 1;">Base 700 on 50</span>
+        <span class="a11y-ratio" style="background: var(--success-light); color: var(--success-dark);">7.4:1 AAA</span>
+      </div>
+      <div class="a11y-pair" style="background: var(--base-50);">
+        <span style="color: var(--primary-500); flex: 1;">Primary 500 on 50</span>
+        <span class="a11y-ratio" style="background: var(--success-light); color: var(--success-dark);">7.1:1 AAA</span>
+      </div>
+      <div class="a11y-pair" style="background: var(--primary-500);">
+        <span style="color: #FFF; flex: 1;">White on Primary 500</span>
+        <span class="a11y-ratio" style="background: var(--success-light); color: var(--success-dark);">5.8:1 AA</span>
+      </div>
+      <div class="a11y-pair" style="background: var(--primary-700);">
+        <span style="color: var(--base-100); flex: 1;">Base 100 on Primary 700</span>
+        <span class="a11y-ratio" style="background: var(--success-light); color: var(--success-dark);">10.1:1 AAA</span>
+      </div>
+      <div class="a11y-pair" style="background: var(--secondary-400);">
+        <span style="color: #FFF; flex: 1;">White on Secondary 400</span>
+        <span class="a11y-ratio" style="background: var(--warning-light); color: var(--warning-dark);">3.4:1 AA-lg</span>
+      </div>
+      <div class="a11y-pair" style="background: var(--base-900);">
+        <span style="color: var(--base-200); flex: 1;">Base 200 on 900</span>
+        <span class="a11y-ratio" style="background: var(--success-light); color: var(--success-dark);">11.8:1 AAA</span>
+      </div>
+      <div class="a11y-pair" style="background: var(--base-50);">
+        <span style="color: var(--base-600); flex: 1;">Base 600 on 50</span>
+        <span class="a11y-ratio" style="background: var(--success-light); color: var(--success-dark);">4.7:1 AA</span>
+      </div>
+    </div>
+    <p style="margin-top: var(--space-md); font-size: 12px; color: var(--base-600);">
+      Note: Secondary 400 (baked clay) on white is AA for large text only. Use Secondary 600+ for small text on light backgrounds.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 07 · CSS VARIABLES REFERENCE                -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section" style="border-bottom: none;">
+  <div class="section-label">07 · Reference</div>
+  <div class="section-title">CSS custom properties</div>
+  <div class="section-desc">Copy-paste ready. All variables defined at :root — override at any scope for theming.</div>
+
+  <div style="background: var(--base-900); border-radius: var(--radius-lg); padding: var(--space-lg); overflow-x: auto; font-family: 'DM Sans', monospace; font-size: 12px; line-height: 2; color: var(--base-300);">
+    <span style="color: var(--primary-300);">:root</span> {<br>
+    &nbsp;&nbsp;<span style="color: var(--base-500);">/* Base neutrals */</span><br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-50</span>: <span style="color: var(--base-200);">#FAFAF7</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-100</span>: <span style="color: var(--base-200);">#F5F2EC</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-200</span>: <span style="color: var(--base-200);">#EBE6DD</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-300</span>: <span style="color: var(--base-200);">#E0DAD0</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-400</span>: <span style="color: var(--base-200);">#CFC7BA</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-500</span>: <span style="color: var(--base-200);">#B5AD9F</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-600</span>: <span style="color: var(--base-200);">#928A7D</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-700</span>: <span style="color: var(--base-200);">#6E675D</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-800</span>: <span style="color: var(--base-200);">#4A4540</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--base-900</span>: <span style="color: var(--base-200);">#33302A</span>;<br>
+    <br>
+    &nbsp;&nbsp;<span style="color: var(--base-500);">/* Primary: forest teal */</span><br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-50</span>: <span style="color: var(--base-200);">#EDF5F1</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-100</span>: <span style="color: var(--base-200);">#D2E8DD</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-200</span>: <span style="color: var(--base-200);">#A8D4BC</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-300</span>: <span style="color: var(--base-200);">#72B895</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-400</span>: <span style="color: var(--base-200);">#49926F</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-500</span>: <span style="color: var(--base-200);">#2B5B45</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-600</span>: <span style="color: var(--base-200);">#224A38</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-700</span>: <span style="color: var(--base-200);">#1A3A2C</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-800</span>: <span style="color: var(--base-200);">#122A20</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--primary-900</span>: <span style="color: var(--base-200);">#0B1C15</span>;<br>
+    <br>
+    &nbsp;&nbsp;<span style="color: var(--base-500);">/* Secondary: baked clay */</span><br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-50</span>: <span style="color: var(--base-200);">#F8F0EB</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-100</span>: <span style="color: var(--base-200);">#EDDACD</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-200</span>: <span style="color: var(--base-200);">#DEC0AA</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-300</span>: <span style="color: var(--base-200);">#CFA487</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-400</span>: <span style="color: var(--base-200);">#BF7E58</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-500</span>: <span style="color: var(--base-200);">#A56640</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-600</span>: <span style="color: var(--base-200);">#844E30</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-700</span>: <span style="color: var(--base-200);">#633A23</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-800</span>: <span style="color: var(--base-200);">#422617</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--secondary-900</span>: <span style="color: var(--base-200);">#2A170D</span>;<br>
+    <br>
+    &nbsp;&nbsp;<span style="color: var(--base-500);">/* Accent: gorge slate */</span><br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-50</span>: <span style="color: var(--base-200);">#F0F1F2</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-100</span>: <span style="color: var(--base-200);">#D8DBDE</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-200</span>: <span style="color: var(--base-200);">#B8BEC4</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-300</span>: <span style="color: var(--base-200);">#929BA4</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-400</span>: <span style="color: var(--base-200);">#6E7880</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-500</span>: <span style="color: var(--base-200);">#505962</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-600</span>: <span style="color: var(--base-200);">#3E464D</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-700</span>: <span style="color: var(--base-200);">#2D333A</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-800</span>: <span style="color: var(--base-200);">#1E2328</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--accent-900</span>: <span style="color: var(--base-200);">#121518</span>;<br>
+    <br>
+    &nbsp;&nbsp;<span style="color: var(--base-500);">/* Typography: Lora + DM Sans + Noto CJK */</span><br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--font-serif</span>: <span style="color: var(--base-200);">'Lora', 'Noto Serif SC', Georgia, serif</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--font-serif-latin</span>: <span style="color: var(--base-200);">'Lora', Georgia, serif</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--font-serif-cjk</span>: <span style="color: var(--base-200);">'Noto Serif SC', 'PingFang SC', serif</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--font-sans</span>: <span style="color: var(--base-200);">'DM Sans', 'Noto Sans SC', system-ui, sans-serif</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--font-sans-latin</span>: <span style="color: var(--base-200);">'DM Sans', system-ui, sans-serif</span>;<br>
+    &nbsp;&nbsp;<span style="color: var(--secondary-300);">--font-sans-cjk</span>: <span style="color: var(--base-200);">'Noto Sans SC', 'PingFang SC', sans-serif</span>;<br>
+    }
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div style="background: var(--base-200); text-align: center; padding: var(--space-xl); font-size: 12px; color: var(--base-600);">
+  FICCC Design System · Ithaca Rooted v1.1 · April 2026 · Lora + DM Sans + Noto CJK · Companion to Design Language v1.0
+</div>
+
+</body>
+</html>

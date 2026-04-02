@@ -21,31 +21,37 @@ const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
 const fallbackGroups = [
   {
     name: 'Discipleship Groups',
+    image: '/images/church/midweek-bible-study.webp',
     meetingTime: 'Sundays 11:00 AM',
     description: 'Small groups for deeper Bible study and mutual encouragement after the Sunday gathering.',
   },
   {
     name: 'Midweek Bible Study',
+    image: '/images/ministries/bible-study.jpg',
     meetingTime: 'Thursdays 7:00 PM',
     description: 'A weekly evening study open to everyone — come dig into Scripture with us.',
   },
   {
     name: 'Youth Group',
+    image: '/images/church/youth-ministry-12.jpg',
     meetingTime: 'Fridays 7:30 PM',
     description: 'Fellowship and fun for middle and high school students.',
   },
   {
     name: 'Monthly Prayer Meeting',
+    image: '/images/church/2023-retreat-praying.webp',
     meetingTime: '1st Wednesday 7:30 PM',
     description: 'A monthly gathering to pray together for our church, community, and world.',
   },
   {
     name: 'Children\'s Sunday School',
+    image: '/images/church/img-1594.webp',
     meetingTime: 'Sundays 11:15 AM',
     description: 'Age-appropriate Bible teaching and activities for kids during the Sunday School hour.',
   },
   {
     name: 'Adult Sunday School',
+    image: '/images/ministries/campus.jpg',
     meetingTime: 'Sundays 11:15 AM',
     description: 'Topical and book-by-book studies for adults of all backgrounds.',
   },
@@ -57,7 +63,7 @@ const fallbackGroups = [
     <Hero
       title="Community & Ministries"
       subtitle="Get connected through our church ministries"
-      backgroundImage="/images/hero-placeholder.svg"
+      backgroundImage="/images/hero/community.webp"
     />
 
     {ministriesWithSlug.length > 0 ? (
@@ -84,6 +90,12 @@ const fallbackGroups = [
           <div class="ministries-grid">
             {fallbackGroups.map((group) => (
               <div class="group-card">
+                <img
+                  src={group.image}
+                  alt=""
+                  class="group-card__img"
+                  loading="lazy"
+                />
                 <h3 class="group-card__name">{group.name}</h3>
                 {group.meetingTime && (
                   <p class="group-card__time">{group.meetingTime}</p>
@@ -130,6 +142,14 @@ const fallbackGroups = [
     background-color: var(--color-stone);
     border-radius: var(--radius-md);
     padding: var(--space-8) var(--space-6);
+  }
+
+  .group-card__img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    margin-block-end: var(--space-4);
   }
 
   .group-card__name {
