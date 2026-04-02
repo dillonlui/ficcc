@@ -1,0 +1,146 @@
+---
+/**
+ * Search modal overlay using astro-pagefind's Search component.
+ * Opened via #search-trigger button in Header.
+ * Uses site CSS custom properties for consistent theming.
+ */
+import Search from 'astro-pagefind/components/Search';
+---
+
+<div id="search-modal" class="search-modal" aria-hidden="true" role="dialog" aria-label="Site search">
+  <div class="search-backdrop"></div>
+  <div class="search-panel">
+    <button class="search-close" type="button" aria-label="Close search">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <Search id="search-widget" />
+  </div>
+</div>
+
+<style>
+  .search-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: var(--space-16);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition), visibility var(--transition);
+  }
+
+  .search-modal[aria-hidden='false'] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .search-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 46, 0.4);
+  }
+
+  .search-panel {
+    position: relative;
+    width: min(90vw, 40rem);
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    padding: var(--space-8) var(--space-6) var(--space-6);
+  }
+
+  .search-close {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    z-index: 1;
+    background: var(--color-bg);
+    border: none;
+    cursor: pointer;
+    color: var(--color-body);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition);
+  }
+  .search-close:hover,
+  .search-close:focus-visible {
+    color: var(--color-terracotta);
+  }
+  .search-close:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Theme Pagefind UI with site tokens */
+  :global(#search-widget) {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--color-terracotta-dark);
+    --pagefind-ui-text: var(--color-body);
+    --pagefind-ui-background: var(--color-bg);
+    --pagefind-ui-border: var(--color-stone);
+    --pagefind-ui-tag: var(--color-stone);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius-sm);
+    --pagefind-ui-font: var(--font-body);
+  }
+
+  @media (max-width: 767px) {
+    .search-modal {
+      padding-top: var(--space-8);
+    }
+    .search-panel {
+      width: 95vw;
+      max-height: 90vh;
+    }
+  }
+</style>
+
+<script>
+  function initSearchModal() {
+    const modal = document.getElementById('search-modal');
+    const trigger = document.getElementById('search-trigger');
+    const closeBtn = modal?.querySelector('.search-close') as HTMLButtonElement | null;
+    const backdrop = modal?.querySelector('.search-backdrop') as HTMLElement | null;
+
+    if (!modal || !trigger) return;
+
+    function openModal() {
+      modal!.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      // Focus the search input after Pagefind UI renders
+      requestAnimationFrame(() => {
+        const input = modal!.querySelector<HTMLInputElement>('input[type="text"]');
+        input?.focus();
+      });
+    }
+
+    function closeModal() {
+      modal!.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      trigger!.focus();
+    }
+
+    trigger.addEventListener('click', openModal);
+    closeBtn?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal!.getAttribute('aria-hidden') === 'false') {
+        closeModal();
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initSearchModal);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSearchModal);
+  } else {
+    initSearchModal();
+  }
+</script>

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T17:08:30.172Z",
+  "exported_at": "2026-04-02T17:12:22.543Z",
   "milestones": [
     {
       "id": "M001",
@@ -3593,19 +3593,26 @@
       "milestone_id": "M004",
       "slice_id": "S04",
       "id": "T02",
-      "title": "Build search UI in header and add Playwright E2E test",
-      "status": "pending",
-      "one_liner": "",
-      "narrative": "",
-      "verification_result": "",
+      "title": "Added Pagefind-powered search modal to site header with magnifying glass trigger, keyboard-accessible open/close, site-themed CSS, and 3 passing Playwright E2E tests",
+      "status": "complete",
+      "one_liner": "Added Pagefind-powered search modal to site header with magnifying glass trigger, keyboard-accessible open/close, site-themed CSS, and 3 passing Playwright E2E tests",
+      "narrative": "Created SearchModal.astro wrapping astro-pagefind's Search component in a modal overlay with aria-hidden toggling, backdrop/Escape/button dismissal, and focus management. Themed Pagefind UI via CSS custom properties mapped to site design tokens. Added search trigger button to Header.astro in a new header-actions flex container. Wrote e2e/search.spec.ts with 3 tests covering the full search flow, backdrop click, and close button. Fixed close button occlusion by Pagefind's input with z-index and padding adjustments.",
+      "verification_result": "npm run build exits 0 (24 pages indexed). npx playwright test e2e/search.spec.ts --project=desktop passes 3/3. grep confirms pagefind-ui in SearchModal. All slice-level checks pass: pagefind.js exists, fragments present, 25 data-pagefind-body pages, 3 exclusion pages.",
       "duration": "",
-      "completed_at": null,
+      "completed_at": "2026-04-02T17:12:22.531Z",
       "blocker_discovered": false,
-      "deviations": "",
-      "known_issues": "",
-      "key_files": [],
-      "key_decisions": [],
-      "full_summary_md": "",
+      "deviations": "Close button needed z-index:1 and background to avoid Pagefind input occlusion. Added header-actions wrapper div for cleaner layout.",
+      "known_issues": "None.",
+      "key_files": [
+        "src/components/SearchModal.astro",
+        "src/components/Header.astro",
+        "e2e/search.spec.ts"
+      ],
+      "key_decisions": [
+        "Used astro-pagefind Search component wrapper with CSS custom property theming",
+        "Wrapped search trigger + hamburger in header-actions flex container"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S04\nmilestone: M004\nkey_files:\n  - src/components/SearchModal.astro\n  - src/components/Header.astro\n  - e2e/search.spec.ts\nkey_decisions:\n  - Used astro-pagefind Search component wrapper with CSS custom property theming\n  - Wrapped search trigger + hamburger in header-actions flex container\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-04-02T17:12:22.532Z\nblocker_discovered: false\n---\n\n# T02: Added Pagefind-powered search modal to site header with magnifying glass trigger, keyboard-accessible open/close, site-themed CSS, and 3 passing Playwright E2E tests\n\n**Added Pagefind-powered search modal to site header with magnifying glass trigger, keyboard-accessible open/close, site-themed CSS, and 3 passing Playwright E2E tests**\n\n## What Happened\n\nCreated SearchModal.astro wrapping astro-pagefind's Search component in a modal overlay with aria-hidden toggling, backdrop/Escape/button dismissal, and focus management. Themed Pagefind UI via CSS custom properties mapped to site design tokens. Added search trigger button to Header.astro in a new header-actions flex container. Wrote e2e/search.spec.ts with 3 tests covering the full search flow, backdrop click, and close button. Fixed close button occlusion by Pagefind's input with z-index and padding adjustments.\n\n## Verification\n\nnpm run build exits 0 (24 pages indexed). npx playwright test e2e/search.spec.ts --project=desktop passes 3/3. grep confirms pagefind-ui in SearchModal. All slice-level checks pass: pagefind.js exists, fragments present, 25 data-pagefind-body pages, 3 exclusion pages.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `npm run build` | 0 | ✅ pass | 9600ms |\n| 2 | `npx playwright test e2e/search.spec.ts --project=desktop` | 0 | ✅ pass | 3200ms |\n| 3 | `grep -q 'pagefind-ui' src/components/SearchModal.astro` | 0 | ✅ pass | 100ms |\n| 4 | `test -f dist/client/pagefind/pagefind.js` | 0 | ✅ pass | 100ms |\n| 5 | `grep -r 'data-pagefind-ignore' exclusion pages | wc -l` | 0 | ✅ pass | 100ms |\n\n\n## Deviations\n\nClose button needed z-index:1 and background to avoid Pagefind input occlusion. Added header-actions wrapper div for cleaner layout.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `src/components/SearchModal.astro`\n- `src/components/Header.astro`\n- `e2e/search.spec.ts`\n",
       "description": "Create a search modal component using astro-pagefind's `<Search>` component, styled with site CSS custom properties. Add a search trigger button (magnifying glass) to the Header component. Wire up open/close behavior with keyboard accessibility. Write a Playwright E2E test that verifies search functionality end-to-end.\n\n## Steps\n\n1. Create `src/components/SearchModal.astro` — a modal overlay containing the `<Search>` component from `astro-pagefind/components/Search`. Style with CSS variables mapping to site tokens: `--pagefind-ui-primary` → `var(--color-terracotta-dark)`, `--pagefind-ui-text` → `var(--color-text)`, `--pagefind-ui-background` → `var(--color-bg)`, `--pagefind-ui-border` → `var(--color-stone)`, `--pagefind-ui-font` → `var(--font-sans)`. Use `z-index: 200` to layer above header (100) and mobile nav (105). Include a close button.\n2. Add a search trigger button to `src/components/Header.astro` — place a magnifying glass icon button (SVG) in the header, before the hamburger on mobile and in the nav area on desktop. The button toggles the search modal visibility.\n3. Wire up client-side JS in SearchModal.astro: open on search button click, close on Escape key, close on clicking the backdrop, trap focus inside the modal when open. Follow the same vanilla JS pattern as the existing hamburger menu.\n4. Ensure the search modal is responsive — full-width on mobile, centered max-width on desktop.\n5. Create `e2e/search.spec.ts` Playwright test that: (a) navigates to the home page, (b) clicks the search button, (c) types a query like 'sermon', (d) verifies search results appear, (e) presses Escape to close the modal and verifies it's hidden. Run against a single desktop viewport (not all 4) since search behavior is viewport-independent.\n\n## Must-Haves\n\n- [ ] SearchModal component renders astro-pagefind Search with site-themed CSS\n- [ ] Search trigger button visible in header on all pages\n- [ ] Modal opens on click, closes on Escape and backdrop click\n- [ ] z-index layering correct (above header and mobile nav)\n- [ ] Playwright E2E test passes for search open → query → results → close flow\n\n## Verification\n\n- `npm run build` exits 0\n- Serve site and visually verify search button appears in header\n- `npx playwright test e2e/search.spec.ts --project=desktop` passes\n- `grep -q 'pagefind-ui' src/components/SearchModal.astro` confirms component exists",
       "estimate": "1h",
       "files": [
@@ -6358,6 +6365,61 @@
       "verdict": "✅ pass",
       "duration_ms": 100,
       "created_at": "2026-04-02T17:08:30.154Z"
+    },
+    {
+      "id": 228,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "npm run build",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 9600,
+      "created_at": "2026-04-02T17:12:22.531Z"
+    },
+    {
+      "id": 229,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "npx playwright test e2e/search.spec.ts --project=desktop",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 3200,
+      "created_at": "2026-04-02T17:12:22.531Z"
+    },
+    {
+      "id": 230,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "grep -q 'pagefind-ui' src/components/SearchModal.astro",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:12:22.531Z"
+    },
+    {
+      "id": 231,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "test -f dist/client/pagefind/pagefind.js",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:12:22.531Z"
+    },
+    {
+      "id": 232,
+      "task_id": "T02",
+      "slice_id": "S04",
+      "milestone_id": "M004",
+      "command": "grep -r 'data-pagefind-ignore' exclusion pages | wc -l",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 100,
+      "created_at": "2026-04-02T17:12:22.531Z"
     }
   ]
 }

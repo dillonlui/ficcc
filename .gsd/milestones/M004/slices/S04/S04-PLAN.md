@@ -31,7 +31,7 @@
   - Estimate: 45m
   - Files: package.json, astro.config.mjs, src/pages/index.astro, src/pages/about/index.astro, src/pages/sermons/index.astro, src/pages/events.astro, src/pages/contact.astro, src/pages/visit.astro, src/pages/give.astro, src/pages/resources.astro, src/pages/styleguide.astro, src/pages/404.astro, src/pages/admin/index.astro
   - Verify: npm run build && test -f dist/client/pagefind/pagefind.js && ls dist/client/pagefind/fragment/ | head -5
-- [ ] **T02: Build search UI in header and add Playwright E2E test** — Create a search modal component using astro-pagefind's `<Search>` component, styled with site CSS custom properties. Add a search trigger button (magnifying glass) to the Header component. Wire up open/close behavior with keyboard accessibility. Write a Playwright E2E test that verifies search functionality end-to-end.
+- [x] **T02: Added Pagefind-powered search modal to site header with magnifying glass trigger, keyboard-accessible open/close, site-themed CSS, and 3 passing Playwright E2E tests** — Create a search modal component using astro-pagefind's `<Search>` component, styled with site CSS custom properties. Add a search trigger button (magnifying glass) to the Header component. Wire up open/close behavior with keyboard accessibility. Write a Playwright E2E test that verifies search functionality end-to-end.
 
 ## Steps
 
