@@ -68,3 +68,8 @@
 **Context:** `--color-terracotta` (#C4745A) has only 3.31:1 contrast ratio against `--color-bg`, failing WCAG AA for normal text (4.5:1 required). `--color-terracotta-dark` (#A85E42) achieves 4.56:1.
 **Rule:** Use `--color-terracotta-dark` for all text-color and interactive element usages. `--color-terracotta` is still fine for background-color on buttons (where the text is white/light) or decorative accents. Site-wide audit is ongoing — check contrast when touching any component that uses terracotta for text.
 **Files:** `src/styles/global.css`, `src/pages/contact.astro`, `src/components/Hero.astro`
+
+## K014: Vitest picks up Playwright e2e specs — use vitest.config.ts to exclude
+**Context:** Without explicit config, Vitest discovers and tries to run Playwright e2e specs (`e2e/**/*.spec.ts`), which use `test.describe` from `@playwright/test` instead of Vitest's API. This causes `npm test` to fail.
+**Rule:** Use `vitest.config.ts` with Astro's `getViteConfig` and set `test.exclude` to include `e2e/` and `.gsd/` directories. This keeps unit tests (src/**/*.test.ts) working while excluding Playwright specs.
+**Files:** `vitest.config.ts`
