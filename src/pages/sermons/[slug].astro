@@ -40,7 +40,7 @@ const title = `${sermon.title} | Sermons | FICCC`;
 
 const sermonDescription = [sermon.speaker, sermon.scripture]
   .filter(Boolean)
-  .join(' — ') || `Sermon: ${sermon.title}`;
+  .join(' · ') || `Sermon: ${sermon.title}`;
 
 const sermonJsonLd = sermon.videoId
   ? buildVideoObjectJsonLd({

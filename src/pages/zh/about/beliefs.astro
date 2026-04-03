@@ -5,7 +5,7 @@ import { getAboutPage, portableTextToHtml } from '../../../lib/sanity';
 
 const title = '我們的信仰 | 伊的家華人基督教會';
 const description =
-  '伊的家華人基督教會的核心信仰——美國播道會（EFCA）十一條信仰宣言。';
+  '伊的家華人基督教會的核心信仰，美國播道會（EFCA）十一條信仰宣言。';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
@@ -21,12 +21,12 @@ const fallbackBeliefs = [
   {
     title: '一、神',
     content:
-      '<p>我們相信獨一的真神，祂是永恆存在的三個位格——聖父、聖子、聖靈——每一位都完全是神，各有位格之分，卻在本質和目的上合而為一。祂是萬物的創造者、維持者和統治者。</p>',
+      '<p>我們相信獨一的真神，祂是永恆存在的三個位格：聖父、聖子、聖靈。每一位都完全是神，各有位格之分，卻在本質和目的上合而為一。祂是萬物的創造者、維持者和統治者。</p>',
   },
   {
     title: '二、聖經',
     content:
-      '<p>我們相信聖經——舊約和新約——是神所默示的話語，在原稿中完全無誤。聖經是信仰和生活的最高和最終權威，是神啟示的完整記錄。</p>',
+      '<p>我們相信聖經（舊約和新約）是神所默示的話語，在原稿中完全無誤。聖經是信仰和生活的最高和最終權威，是神啟示的完整記錄。</p>',
   },
   {
     title: '三、人的境況',
@@ -91,8 +91,8 @@ const beliefs =
   <main id="main-content" data-pagefind-body class="beliefs">
     <section class="beliefs__hero" aria-label="我們的信仰">
       <div class="beliefs__inner">
-        <h1 class="beliefs__heading">我們的信仰</h1>
-        <p class="beliefs__intro">
+        <h1 class="beliefs__heading" data-reveal>我們的信仰</h1>
+        <p class="beliefs__intro" data-reveal>
           以下核心信念根植於聖經，塑造了我們教會的身份，也指引我們作為耶穌基督跟隨者的共同生活。本信仰宣言遵循美國播道會（EFCA）十一條信仰宣言。
         </p>
         <Accordion items={beliefs} />

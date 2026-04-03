@@ -225,7 +225,7 @@ for (const era of eras) {
     transition: background 0.4s ease, box-shadow 0.4s ease;
   }
 
-  .timeline__entry.is-active .timeline__dot {
+  .timeline__dot.is-filled {
     background: var(--primary-500);
     box-shadow: 0 0 0 2px var(--primary-400);
   }
@@ -271,6 +271,11 @@ for (const era of eras) {
 
     .timeline__entry {
       grid-template-columns: 28px 1fr;
+      align-items: start;
+    }
+
+    .timeline__node {
+      padding-top: 2px;
     }
 
     .timeline__empty { display: none; }
@@ -313,6 +318,7 @@ for (const era of eras) {
     .timeline__dot {
       background: var(--primary-500);
       box-shadow: 0 0 0 2px var(--primary-400);
+      transition: none;
     }
   }
 </style>
@@ -321,37 +327,57 @@ for (const era of eras) {
   function initTimeline() {
     const timeline = document.getElementById('interactive-timeline');
     const fill = document.getElementById('timeline-fill');
-    if (!timeline || !fill) return;
+    const track = timeline?.querySelector('.timeline__track') as HTMLElement | null;
+    if (!timeline || !fill || !track) return;
 
-    const entries = timeline.querySelectorAll('.timeline__entry');
-    if (!entries.length) return;
+    const dots = Array.from(timeline.querySelectorAll('.timeline__dot')) as HTMLElement[];
+    const entries = Array.from(timeline.querySelectorAll('.timeline__entry')) as HTMLElement[];
+    if (!dots.length) return;
 
-    const entryObserver = new IntersectionObserver(
-      (items) => {
-        items.forEach((item) => {
-          if (item.isIntersecting) {
-            (item.target as HTMLElement).classList.add('is-active');
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-    entries.forEach((el) => entryObserver.observe(el));
+    // Position the track line to span from first dot to last dot
+    function updateTrackBounds() {
+      const timelineRect = timeline!.getBoundingClientRect();
+      const firstDot = dots[0].getBoundingClientRect();
+      const lastDot = dots[dots.length - 1].getBoundingClientRect();
+
+      const topOffset = firstDot.top + firstDot.height / 2 - timelineRect.top;
+      const bottomOffset = lastDot.top + lastDot.height / 2 - timelineRect.top;
+
+      track!.style.top = `${topOffset}px`;
+      track!.style.bottom = `${timelineRect.height - bottomOffset}px`;
+    }
 
     function updateFill() {
-      const rect = timeline!.getBoundingClientRect();
-      const viewMid = window.innerHeight * 0.6;
-      const timelineTop = rect.top;
-      const timelineHeight = rect.height;
+      updateTrackBounds();
 
-      if (timelineTop >= viewMid) {
-        fill!.style.transform = 'scaleY(0)';
-      } else if (timelineTop + timelineHeight <= viewMid) {
-        fill!.style.transform = 'scaleY(1)';
+      const trackRect = track!.getBoundingClientRect();
+      const viewMid = window.innerHeight * 0.6;
+      const trackTop = trackRect.top;
+      const trackHeight = trackRect.height;
+
+      let progress: number;
+      if (trackTop >= viewMid) {
+        progress = 0;
+      } else if (trackTop + trackHeight <= viewMid) {
+        progress = 1;
       } else {
-        const progress = (viewMid - timelineTop) / timelineHeight;
-        fill!.style.transform = `scaleY(${Math.min(1, Math.max(0, progress))})`;
+        progress = (viewMid - trackTop) / trackHeight;
       }
+      progress = Math.min(1, Math.max(0, progress));
+      fill!.style.transform = `scaleY(${progress})`;
+
+      // Fill dots when the line reaches them
+      const fillY = trackRect.top + trackHeight * progress;
+      dots.forEach((dot, i) => {
+        const dotRect = dot.getBoundingClientRect();
+        const dotCenter = dotRect.top + dotRect.height / 2;
+        const entry = entries[i];
+        if (fillY >= dotCenter) {
+          dot.classList.add('is-filled');
+          entry?.classList.add('is-active');
+        }
+      });
+
       requestAnimationFrame(updateFill);
     }
     requestAnimationFrame(updateFill);

@@ -59,6 +59,73 @@ test.describe('Responsive layout', () => {
       await expect(hamburger).toHaveAttribute('aria-expanded', 'false');
       await expect(nav).not.toHaveClass(/is-open/);
     });
+
+    test('Escape key closes mobile nav', async ({ page }) => {
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      const hamburger = page.locator('.hamburger');
+      const nav = page.locator('#nav-menu');
+
+      await hamburger.click();
+      await expect(nav).toHaveClass(/is-open/);
+
+      await page.keyboard.press('Escape');
+      await expect(nav).not.toHaveClass(/is-open/);
+      await expect(hamburger).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    test('About shows as label with indented sub-links', async ({ page }) => {
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      const hamburger = page.locator('.hamburger');
+      await hamburger.click();
+
+      // About label should be visible as a non-interactive heading
+      const aboutLabel = page.locator('.nav-dropdown-trigger');
+      await expect(aboutLabel).toBeVisible();
+      // Chevron should be hidden on mobile
+      const chevron = page.locator('.nav-dropdown-chevron');
+      await expect(chevron).toBeHidden();
+
+      // Sub-links should be visible and indented
+      const whoWeAre = page.locator('.nav-dropdown-link', { hasText: 'Who We Are' });
+      const beliefs = page.locator('.nav-dropdown-link', { hasText: 'Beliefs' });
+      const visitUs = page.locator('.nav-dropdown-link', { hasText: 'Visit Us' });
+      await expect(whoWeAre).toBeVisible();
+      await expect(beliefs).toBeVisible();
+      await expect(visitUs).toBeVisible();
+    });
+
+    test('all nav links are visible when menu is open', async ({ page }) => {
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.locator('.hamburger').click();
+
+      // Check that the core navigation links are present and visible
+      const navLinks = page.locator('#nav-menu .nav-link');
+      const count = await navLinks.count();
+      expect(count).toBeGreaterThanOrEqual(5); // Home, About sub-links, Ministries, Sermons, Contact
+
+      for (let i = 0; i < count; i++) {
+        await expect(navLinks.nth(i)).toBeVisible();
+      }
+    });
+
+    test('mobile nav links navigate correctly', async ({ page }) => {
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.locator('.hamburger').click();
+
+      // Click "Who We Are" sub-link
+      const aboutLink = page.locator('.nav-dropdown-link', { hasText: 'Who We Are' });
+      await aboutLink.click();
+      await page.waitForURL('**/about');
+      expect(page.url()).toContain('/about');
+    });
+
+    test('language toggle is visible in mobile menu', async ({ page }) => {
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.locator('.hamburger').click();
+
+      const langToggle = page.locator('.lang-toggle');
+      await expect(langToggle).toBeVisible();
+    });
   });
 
   test.describe('Tablet (768px)', () => {

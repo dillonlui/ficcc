@@ -82,7 +82,7 @@ const eventsJsonLd = {
       title: event.title,
       date: event.date,
       location: event.location,
-      description: event.time ? `${event.title} — ${event.time}` : undefined,
+      description: event.time ? `${event.title} · ${event.time}` : undefined,
     }),
   })),
 };
@@ -99,9 +99,9 @@ const eventsJsonLd = {
     <!-- Upcoming Events -->
     <section class="events-section" aria-label="Upcoming Events">
       <div class="events-section__inner">
-        <h2 class="section-heading">Upcoming Events</h2>
+        <h2 class="section-heading" data-reveal>Upcoming Events</h2>
         {upcomingEvents.length > 0 ? (
-          <div class="events-grid">
+          <div class="events-grid" data-reveal>
             {upcomingEvents.map((event) => (
               <EventCard
                 title={event.title}
@@ -125,8 +125,8 @@ const eventsJsonLd = {
     {pastEvents.length > 0 && (
       <section class="events-section events-section--past" aria-label="Past Events">
         <div class="events-section__inner">
-          <h2 class="section-heading">Past Events</h2>
-          <div class="events-grid">
+          <h2 class="section-heading" data-reveal>Past Events</h2>
+          <div class="events-grid" data-reveal>
             {pastEvents.map((event) => (
               <EventCard
                 title={event.title}

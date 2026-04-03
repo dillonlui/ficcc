@@ -20,15 +20,15 @@ try {
 const fallbackHeading = '我們是誰';
 const fallbackBody = `
 <p>伊的家華人基督教會（FICCC）於1968年由一群在康奈爾大學的華人研究生和學者創立。他們渴望建立一個以基督為中心的社區，在這裡可以用母語敬拜，同時歡迎伊薩卡更廣大的社區。</p>
-<p>經過數十年的成長，教會已發展為一個多世代、多文化的會眾，連結華人傳統與美國生活。每週日我們在429 Mitchell Street聚集敬拜、教導和團契——以英語和普通話進行——服務手指湖地區的學生、家庭和鄰舍。</p>
+<p>經過數十年的成長，教會連結華人傳統與美國生活。每週日我們在429 Mitchell Street以英語和普通話聚集敬拜、教導和團契，服務手指湖地區的學生、家庭和鄰舍。</p>
 <p>我們的使命是榮耀神，培養愛神、彼此相愛、向世界傳福音的耶穌基督門徒。我們相信地方教會是神推進祂國度的首要器皿，致力於裝備每位成員過忠心服事的生活。</p>
-<p>無論您是伊薩卡的長期居民、訪問學者，還是遠離家鄉的學生，在FICCC都有您的位置。我們邀請您來到這裡，體驗基督之愛的溫暖社區。</p>
+<p>不管您是伊薩卡的長期居民、訪問學者，還是遠離家鄉的學生，在FICCC都有您的位置。歡迎您來到這裡。</p>
 `.trim();
 
 const fallbackVisionHeading = '我們的異象';
 const fallbackVisionHtml = `
-<p><strong>培養謙卑的僕人，愛主、愛失喪的人、愛地方教會——一生之久。</strong></p>
-<p>大多數走進我們教會的學生和學者只會在伊薩卡待幾年。但我們相信，這幾年中所發生的——敬拜的習慣、社區的深度、與聖經的相遇——能夠塑造一生的軌跡。</p>
+<p><strong>培養謙卑的僕人，愛主、愛失喪的人、愛地方教會，一生之久。</strong></p>
+<p>大多數走進我們教會的學生和學者只會在伊薩卡待幾年。但我們相信，這幾年中所發生的能夠塑造一生：敬拜的習慣、社區的深度、與聖經的相遇。</p>
 <p>我們的異象是培養基督的跟隨者，不僅在此期間「參加教會」，而是帶著門徒訓練的印記走向各處：進入職場、家庭、教會和世界各地的社區。</p>
 `.trim();
 
@@ -63,9 +63,9 @@ const stats =
   <main id="main-content" data-pagefind-body class="about">
     <section class="about__hero" aria-label="我們是誰">
       <div class="about__inner">
-        <h1 class="about__heading">{heading}</h1>
+        <h1 class="about__heading" data-reveal>{heading}</h1>
         <div class="about__content">
-          <div class="about__body" set:html={bodyHtml} />
+          <div class="about__body" data-reveal set:html={bodyHtml} />
           {imageUrl && (
             <div class="about__image-wrap">
               <img
@@ -85,8 +85,8 @@ const stats =
     <!-- Vision Statement -->
     <section class="vision" aria-label="我們的異象">
       <div class="vision__inner">
-        <h2 class="vision__heading">{visionHeading}</h2>
-        <div class="vision__body" set:html={visionHtml} />
+        <h2 class="vision__heading" data-reveal>{visionHeading}</h2>
+        <div class="vision__body" data-reveal set:html={visionHtml} />
       </div>
     </section>
 
@@ -135,8 +135,8 @@ const stats =
     <!-- Church Stats -->
     <section class="stats" aria-label="教會數據">
       <div class="stats__inner">
-        <h2 class="stats__heading">數據一覽</h2>
-        <div class="stats__grid">
+        <h2 class="stats__heading" data-reveal>數據一覽</h2>
+        <div class="stats__grid" data-reveal>
           {stats.map((stat) => (
             <div class="stats__item">
               <span class="stats__value">{stat.value}</span>

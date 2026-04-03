@@ -25,7 +25,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       <div class="contact-section__inner">
         <div class="contact-layout">
           <!-- Tabbed forms -->
-          <div class="contact-tabs">
+          <div class="contact-tabs" data-reveal>
             <div class="contact-tabs__list" role="tablist" aria-label="Contact form options">
               <button
                 class="contact-tabs__tab contact-tabs__tab--active"
@@ -114,7 +114,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
           </div>
 
           <!-- Church info sidebar -->
-          <div class="contact-info" role="region" aria-label="Church contact information">
+          <div class="contact-info" role="region" aria-label="Church contact information" data-reveal>
             <h2 class="contact-info__heading">Church Information</h2>
 
             <div class="contact-info__block">

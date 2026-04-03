@@ -51,11 +51,6 @@ const homeJsonLd = {
         <div class="hero-home__content">
           <h1 class="hero-home__title" data-reveal>{heroTitle}</h1>
           <p class="hero-home__subtitle" data-reveal>{heroSubtitle}</p>
-          <a class="hero-home__cta" href="/visit" data-reveal>
-            Plan Your Visit
-            <svg class="hero-home__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-
           <!-- Service info — two-column: times left, location right -->
           <div class="hero-info" data-reveal>
             <div class="hero-info__times">
@@ -85,6 +80,11 @@ const homeJsonLd = {
               </div>
             </div>
           </div>
+
+          <a class="hero-home__cta" href="/visit" data-reveal>
+            Plan Your Visit
+            <svg class="hero-home__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
         </div>
       </div>
     </section>
@@ -98,8 +98,8 @@ const homeJsonLd = {
         <div class="split__content" data-reveal>
           <h2 class="split__heading">Go Deeper at FICCC</h2>
           <p class="split__body">
-            Whether you're a longtime resident of Ithaca, a visiting scholar,
-            or a student far from home, there is a place for you here.
+            If you've lived in Ithaca for years, just arrived as a visiting scholar,
+            or are a student far from home, there is a place for you here.
           </p>
           <a href="/about" class="split__link">Learn more about us <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
@@ -239,10 +239,11 @@ const homeJsonLd = {
     color: var(--color-stone);
     max-width: 32rem;
     margin-inline: auto;
-    margin-block-end: var(--space-8);
+    margin-block-end: var(--space-6);
   }
 
   .hero-home__cta {
+    margin-top: var(--space-8);
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -282,7 +283,7 @@ const homeJsonLd = {
     display: flex;
     align-items: center;
     gap: var(--space-6);
-    margin-top: var(--space-10);
+    margin-top: var(--space-6);
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -528,9 +529,22 @@ const homeJsonLd = {
       text-align: left;
     }
 
+    .hero-info__times {
+      flex-direction: row;
+      gap: var(--space-6);
+    }
+
     .hero-info__divider {
       width: 100%;
       height: 1px;
+    }
+
+    .hero-info__value br {
+      display: none;
+    }
+
+    .hero-info__location .hero-info__value {
+      white-space: nowrap;
     }
 
     .split__inner {

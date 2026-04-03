@@ -29,7 +29,7 @@ const fallbackGroups = [
     name: 'Midweek Bible Study',
     image: '/images/ministries/bible-study.jpg',
     meetingTime: 'Thursdays 7:00 PM',
-    description: 'A weekly evening study open to everyone — come dig into Scripture with us.',
+    description: 'A weekly evening study open to everyone. Come dig into Scripture with us.',
   },
   {
     name: 'Youth Group',
@@ -69,7 +69,7 @@ const fallbackGroups = [
     {ministriesWithSlug.length > 0 ? (
       <section class="ministries-listing" aria-label="Ministries">
         <div class="ministries-listing__inner">
-          <div class="ministries-grid">
+          <div class="ministries-grid" data-reveal>
             {ministriesWithSlug.map((ministry) => (
               <MinistryCard
                 name={ministry.name}
@@ -84,10 +84,10 @@ const fallbackGroups = [
     ) : (
       <section class="ministries-listing" aria-label="Ministries and Groups">
         <div class="ministries-listing__inner">
-          <p class="ministries-listing__intro">
+          <p class="ministries-listing__intro" data-reveal>
             There are many ways to get connected at FICCC. Here are some of our regular gatherings and groups.
           </p>
-          <div class="ministries-grid">
+          <div class="ministries-grid" data-reveal>
             {fallbackGroups.map((group) => (
               <div class="group-card">
                 <img

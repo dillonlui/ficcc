@@ -21,7 +21,7 @@ const fallbackCategories = [
   {
     title: 'Spiritual Growth',
     description:
-      'Articles and guides to help you grow in your walk with Christ — whether you\'re exploring faith for the first time or have been following Jesus for years.',
+      'Articles and guides to help you grow in your walk with Christ, whether you\'re exploring faith for the first time or have been following Jesus for years.',
     resources: [
       {
         title: 'What Does Baptism Mean and How Do I Get Baptized?',
@@ -30,7 +30,7 @@ const fallbackCategories = [
         type: 'article' as const,
       },
       {
-        title: 'Church Membership — Why It Matters',
+        title: 'Church Membership: Why It Matters',
         description:
           'Learn about the purpose and value of committing to a local church through membership.',
         type: 'article' as const,
@@ -44,7 +44,7 @@ const fallbackCategories = [
       {
         title: 'Building Community as a Believer',
         description:
-          'Why Christian community matters and how to find and foster it — especially in a college town like Ithaca.',
+          'Why Christian community matters and how to build it, especially in a college town like Ithaca.',
         type: 'article' as const,
       },
     ],
@@ -52,13 +52,13 @@ const fallbackCategories = [
   {
     title: 'Bible Readathon',
     description:
-      'Join our community Bible reading plan. Download the reading plan and journey through Scripture together.',
+      'Join our community Bible reading plan. Download the reading plan and read through Scripture together.',
     resources: [
       {
         title: 'Bible Readathon Reading Plan (PDF)',
         url: '/readathon4.pdf',
         description:
-          'Download the Bible Readathon reading plan — a structured guide to reading through the Bible together as a church community.',
+          'Download the Bible Readathon reading plan, a guide to reading through the Bible together as a church.',
         type: 'pdf' as const,
       },
     ],
@@ -66,7 +66,7 @@ const fallbackCategories = [
   {
     title: 'Newcomer Recommendations',
     description:
-      'Resources to help new believers and newcomers to our church get started on their spiritual journey.',
+      'Resources to help new believers and newcomers to our church get started.',
     resources: [
       {
         title: 'Newcomer Recommendations (PDF)',
@@ -169,13 +169,13 @@ function typeLabel(type?: string): string {
         aria-label={category.title}
       >
         <div class="resource-section__inner">
-          <h2 class="section-heading">{category.title}</h2>
+          <h2 class="section-heading" data-reveal>{category.title}</h2>
           {category.description && (
-            <p class="resource-section__desc">{category.description}</p>
+            <p class="resource-section__desc" data-reveal>{category.description}</p>
           )}
 
           {category.resources && category.resources.length > 0 && (
-            <div class="resource-grid">
+            <div class="resource-grid" data-reveal>
               {category.resources.map((resource) => (
                 <div class="resource-card">
                   <div class="resource-card__header">

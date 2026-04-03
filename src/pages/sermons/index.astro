@@ -44,7 +44,7 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
             </nav>
           )}
 
-          <div class="sermons-grid">
+          <div class="sermons-grid" data-reveal>
             {sermons.map((sermon) => (
               <div class="sermons-grid__item" data-series={sermon.series ?? ''}>
                 <SermonCard
@@ -65,8 +65,8 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
         {/* Latest Sermon */}
         <section class="latest-sermon" aria-label="Latest sermon">
           <div class="latest-sermon__inner">
-            <h2 class="latest-sermon__heading">Latest Sermon</h2>
-            <div class="latest-sermon__embed">
+            <h2 class="latest-sermon__heading" data-reveal>Latest Sermon</h2>
+            <div class="latest-sermon__embed" data-reveal>
               <div class="video-wrapper">
                 <iframe
                   src="https://www.youtube.com/embed/xAh3wAHd8y0"
@@ -87,8 +87,8 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
         {/* Recent Sermons Grid */}
         <section class="sermons-listing" aria-label="Recent sermons">
           <div class="sermons-listing__inner">
-            <h2 class="sermons-listing__heading">Recent Sermons</h2>
-            <div class="sermons-grid">
+            <h2 class="sermons-listing__heading" data-reveal>Recent Sermons</h2>
+            <div class="sermons-grid" data-reveal>
               {[
                 { id: 'LjKFcXFS5j4', title: 'Staying True to Our First Love', date: 'March 15, 2026' },
                 { id: 'leZx7Tce3m8', title: 'Wholehearted Leaders', date: 'March 8, 2026' },

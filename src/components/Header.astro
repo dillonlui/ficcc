@@ -1,6 +1,5 @@
 ---
 import { getNavLinks, type Lang } from '../lib/navigation';
-import Search from 'astro-pagefind/components/Search';
 
 interface Props {
   lang?: Lang;
@@ -11,7 +10,7 @@ const { lang = 'en', langToggleHref: langToggleHrefProp } = Astro.props;
 const navLinks = getNavLinks(lang);
 const logoHref = lang === 'zh' ? '/zh' : '/';
 const logoText = lang === 'zh' ? '伊的家' : 'FICCC';
-const logoLabel = lang === 'zh' ? '伊的家 — 首頁' : 'FICCC — Home';
+const logoLabel = lang === 'zh' ? '伊的家' : 'FICCC Home';
 const langToggleLabel = lang === 'zh' ? '中文 / EN' : 'EN / 中文';
 const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
 const currentPath = Astro.url.pathname;
@@ -29,28 +28,10 @@ const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
 
 <header class="site-header">
   <div class="header-inner">
-    <!-- Logo + search grouped together -->
     <div class="header-left">
       <a href={logoHref} class="logo" aria-label={logoLabel}>
         <img src={logoSrc} alt={logoLabel} class="logo-img" width="220" height="44" />
       </a>
-      <div class="search-inline" id="search-inline">
-        <button
-          id="search-trigger"
-          class="search-trigger"
-          type="button"
-          aria-label="Search"
-          aria-expanded="false"
-        >
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2"/>
-            <path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
-        <div class="search-expand" id="search-expand" hidden>
-          <Search id="search-widget" />
-        </div>
-      </div>
     </div>
 
     <div class="header-actions">
@@ -164,111 +145,6 @@ const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
     width: auto;
   }
 
-  /* Inline expanding search */
-  .search-inline {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .search-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--base-500);
-    padding: var(--space-2);
-    border-radius: var(--radius-sm);
-    transition: color var(--transition);
-  }
-  .search-trigger:hover,
-  .search-trigger:focus-visible {
-    color: var(--base-700);
-  }
-  .search-trigger:focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: 2px;
-  }
-
-  /* When open, hide the icon button */
-  .search-inline.is-open .search-trigger {
-    display: none;
-  }
-
-  .search-expand {
-    display: none;
-  }
-
-  .search-expand.is-open {
-    display: block;
-    width: 16rem;
-  }
-
-  /* Theme Pagefind UI — compact inline, tight height */
-  :global(#search-widget) {
-    --pagefind-ui-scale: 0.65;
-    --pagefind-ui-primary: var(--base-700);
-    --pagefind-ui-text: var(--base-800);
-    --pagefind-ui-background: var(--base-100);
-    --pagefind-ui-border: var(--base-300);
-    --pagefind-ui-tag: var(--base-200);
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: var(--radius-sm);
-    --pagefind-ui-font: var(--font-body);
-  }
-
-  /* Tighten the input height */
-  :global(#search-widget .pagefind-ui__search-input) {
-    padding: 5px 8px 5px 28px !important;
-    font-size: 13px !important;
-    height: auto !important;
-  }
-
-  :global(#search-widget .pagefind-ui__search-clear) {
-    padding: 2px 6px !important;
-    right: 2px !important;
-  }
-
-  :global(#search-widget .pagefind-ui__form::before) {
-    top: 7px !important;
-    left: 8px !important;
-    width: 14px !important;
-    height: 14px !important;
-  }
-
-  /* Pagefind results dropdown — tighter padding */
-  :global(#search-widget .pagefind-ui__results-area) {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    min-width: 22rem;
-    background: var(--color-bg);
-    border: 1px solid var(--base-300);
-    border-radius: var(--radius-md);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    margin-top: var(--space-1);
-    padding: var(--space-2);
-    z-index: 200;
-    max-height: 50vh;
-    overflow-y: auto;
-  }
-
-  :global(#search-widget .pagefind-ui__result) {
-    padding: var(--space-2) !important;
-  }
-
-  :global(#search-widget .pagefind-ui__result-title) {
-    font-size: 13px !important;
-  }
-
-  :global(#search-widget .pagefind-ui__result-excerpt) {
-    font-size: 12px !important;
-    line-height: 1.4 !important;
-  }
-
   /* Desktop nav */
   .nav {
     display: flex;
@@ -309,6 +185,8 @@ const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
   /* About dropdown */
   .nav-dropdown {
     position: relative;
+    display: flex;
+    align-items: center;
   }
   .nav-dropdown-trigger {
     display: inline-flex;
@@ -319,13 +197,17 @@ const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
     border-bottom: 2px solid transparent;
     cursor: pointer;
     padding: var(--space-1) 0;
+    line-height: normal;
+    vertical-align: baseline;
   }
   .nav-dropdown-chevron {
     transition: transform var(--transition);
   }
-  .nav-dropdown:hover .nav-dropdown-chevron,
-  .nav-dropdown:focus-within .nav-dropdown-chevron {
-    transform: rotate(180deg);
+  @media (min-width: 768px) {
+    .nav-dropdown:hover .nav-dropdown-chevron,
+    .nav-dropdown:focus-within .nav-dropdown-chevron {
+      transform: rotate(180deg);
+    }
   }
   .nav-dropdown-panel {
     display: none;
@@ -351,9 +233,11 @@ const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
     right: 0;
     height: 12px;
   }
-  .nav-dropdown:hover .nav-dropdown-panel,
-  .nav-dropdown:focus-within .nav-dropdown-panel {
-    display: block;
+  @media (min-width: 768px) {
+    .nav-dropdown:hover .nav-dropdown-panel,
+    .nav-dropdown:focus-within .nav-dropdown-panel {
+      display: block;
+    }
   }
   .nav-dropdown-link {
     display: block;
@@ -466,28 +350,50 @@ const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
       font-size: var(--text-base);
     }
 
-    /* Mobile: flatten dropdown into normal list */
+    /* Mobile: About as label with indented sub-links */
+    .nav-dropdown {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
     .nav-dropdown-trigger {
+      display: flex;
+      pointer-events: none;
+      font-size: var(--text-base);
+      border-bottom: none;
+    }
+    .nav-dropdown-chevron {
       display: none;
     }
     .nav-dropdown-panel {
-      display: contents;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
       position: static;
       transform: none;
       background: none;
       border: none;
       border-radius: 0;
       box-shadow: none;
-      padding: 0;
+      padding: var(--space-2) 0 0 var(--space-4);
       margin: 0;
       min-width: 0;
     }
-    .nav-dropdown-link {
-      padding: var(--space-1) 0;
-      border-radius: 0;
+    .nav-dropdown-panel::before {
+      display: none;
     }
-    .nav-dropdown-link:hover {
-      background: none;
+    .nav-link {
+      border-bottom: none;
+    }
+    .nav-link:hover {
+      border-bottom-color: transparent;
+    }
+    .nav-dropdown-link {
+      padding: 0;
+      border-radius: 0;
+      font-size: var(--text-sm);
+      color: var(--base-600);
     }
   }
 </style>
@@ -512,40 +418,4 @@ const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
     });
   }
 
-  // Inline search toggle
-  const searchTrigger = document.getElementById('search-trigger') as HTMLButtonElement;
-  const searchExpand = document.getElementById('search-expand') as HTMLElement;
-  const searchInline = document.getElementById('search-inline') as HTMLElement;
-
-  if (searchTrigger && searchExpand && searchInline) {
-    searchTrigger.addEventListener('click', () => {
-      searchInline.classList.add('is-open');
-      searchExpand.classList.add('is-open');
-      searchTrigger.setAttribute('aria-expanded', 'true');
-      requestAnimationFrame(() => {
-        const input = searchExpand.querySelector<HTMLInputElement>('input[type="text"]');
-        input?.focus();
-      });
-    });
-
-    function closeSearch() {
-      searchInline.classList.remove('is-open');
-      searchExpand.classList.remove('is-open');
-      searchTrigger.setAttribute('aria-expanded', 'false');
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && searchInline.classList.contains('is-open')) {
-        closeSearch();
-        searchTrigger.focus();
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (searchInline.classList.contains('is-open')
-        && !searchInline.contains(e.target as Node)) {
-        closeSearch();
-      }
-    });
-  }
 </script>

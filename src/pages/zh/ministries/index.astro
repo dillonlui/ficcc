@@ -82,7 +82,7 @@ const fallbackPrograms = [
     {ministriesWithSlug.length > 0 ? (
       <section class="ministries-listing" aria-label="事工">
         <div class="ministries-listing__inner">
-          <div class="ministries-grid">
+          <div class="ministries-grid" data-reveal>
             {ministriesWithSlug.map((ministry) => (
               <MinistryCard
                 name={ministry.name}
@@ -98,12 +98,12 @@ const fallbackPrograms = [
     ) : (
       <section class="ministries-listing" aria-label="團契與事工">
         <div class="ministries-listing__inner">
-          <p class="ministries-listing__intro">
+          <p class="ministries-listing__intro" data-reveal>
             教會有許多團契與事工，歡迎您找到適合的小組，一起追求信仰、彼此扶持。
           </p>
 
           <h2 class="ministries-listing__heading">團契小組</h2>
-          <div class="ministries-grid">
+          <div class="ministries-grid" data-reveal>
             {fallbackGroups.map((group) => (
               <div class="group-card">
                 <h3 class="group-card__name">{group.name}</h3>
@@ -116,7 +116,7 @@ const fallbackPrograms = [
           </div>
 
           <h2 class="ministries-listing__heading">事工課程</h2>
-          <div class="ministries-grid">
+          <div class="ministries-grid" data-reveal>
             {fallbackPrograms.map((program) => (
               <div class="group-card">
                 <h3 class="group-card__name">{program.name}</h3>

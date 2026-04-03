@@ -7,7 +7,7 @@ import { getVisitPage, urlForImage, portableTextToHtml } from '../lib/sanity';
 
 const title = 'Plan Your Visit | First Ithaca Chinese Christian Church';
 const description =
-  'Everything you need to know for your first Sunday with us — service times, directions, parking, and what to expect.';
+  'Everything you need to know for your first Sunday with us. Service times, directions, parking, and what to expect.';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let visitPage: Awaited<ReturnType<typeof getVisitPage>> = null;
@@ -36,7 +36,7 @@ const fallbackSchedule = [
 
 const fallbackWhatToExpectHtml = `
 <p>Whether it's your first time at church or you've been part of a community before, you're welcome here just as you are.</p>
-<p><strong>Dress code:</strong> Come as you are — most people dress casually. You'll see everything from jeans to button-downs.</p>
+<p><strong>Dress code:</strong> Come as you are. Most people dress casually. You'll see everything from jeans to button-downs.</p>
 <p><strong>What happens on Sunday:</strong> Our gathering includes worship through singing, prayer, Scripture reading, and a sermon. Services are primarily in English with occasional bilingual elements.</p>
 <p><strong>Kids are welcome:</strong> Children are always welcome in the main service. We also offer age-appropriate Sunday School classes after the gathering.</p>
 <p><strong>How long is the service?</strong> The Sunday gathering typically lasts about 75 minutes.</p>
@@ -45,7 +45,7 @@ const fallbackWhatToExpectHtml = `
 const fallbackTransportationHtml = `
 <p><strong>Address:</strong> 429 Mitchell Street, Ithaca, NY 14850</p>
 <p><strong>Parking:</strong> Free parking is available in our lot adjacent to the building. Street parking is also available on Mitchell Street and nearby side streets.</p>
-<p><strong>Near Cornell:</strong> We're a short drive from Cornell University's campus. If you're a student without a car, we'd be happy to help arrange a ride — just ask!</p>
+<p><strong>Near Cornell:</strong> We're a short drive from Cornell University's campus. If you're a student without a car, we'd be happy to help arrange a ride. Just ask!</p>
 <p><strong>Public transit:</strong> TCAT bus routes serve the area. Check <a href="https://tcatbus.com">tcatbus.com</a> for schedules.</p>
 `;
 
@@ -53,7 +53,7 @@ const fallbackFaqItems = [
   {
     question: 'What should I wear?',
     answer:
-      `There's no dress code — come as you are. Most people dress casually.`,
+      `There's no dress code. Come as you are. Most people dress casually.`,
   },
   {
     question: 'Are children welcome?',
@@ -68,7 +68,7 @@ const fallbackFaqItems = [
   {
     question: 'Is there parking available?',
     answer:
-      'Yes — free parking is available in our lot next to the building, and street parking is available nearby.',
+      'Yes! Free parking is available in our lot next to the building, and street parking is available nearby.',
   },
   {
     question: 'How long is the service?',
@@ -131,10 +131,10 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- Schedule -->
     <section class="schedule" aria-label="Sunday Schedule">
       <div class="schedule__inner">
-        <h2 class="section-heading">Sunday Schedule</h2>
-        <div class="schedule__grid">
+        <h2 class="section-heading" data-reveal>Sunday Schedule</h2>
+        <div class="schedule__grid" data-reveal-stagger>
           {schedule.map((item) => (
-            <div class="schedule__card">
+            <div class="schedule__card" data-reveal>
               <span class="schedule__time">{item.time}</span>
               <h3 class="schedule__label">{item.label}</h3>
               {item.description && (
@@ -149,16 +149,16 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- What to Expect -->
     <section class="expect" aria-label="What to Expect">
       <div class="expect__inner">
-        <h2 class="section-heading">What to Expect</h2>
-        <div class="expect__body" set:html={whatToExpectHtml} />
+        <h2 class="section-heading" data-reveal>What to Expect</h2>
+        <div class="expect__body" data-reveal set:html={whatToExpectHtml} />
       </div>
     </section>
 
     <!-- Transportation & Directions -->
     <section class="directions" aria-label="Transportation and Directions">
       <div class="directions__inner">
-        <h2 class="section-heading">Getting Here</h2>
-        <div class="directions__columns">
+        <h2 class="section-heading" data-reveal>Getting Here</h2>
+        <div class="directions__columns" data-reveal>
           <div class="directions__body" set:html={transportationHtml} />
           <div class="directions__map">
             <iframe
@@ -179,8 +179,8 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- FAQ -->
     <section class="faq" aria-label="Frequently Asked Questions">
       <div class="faq__inner">
-        <h2 class="section-heading">Frequently Asked Questions</h2>
-        <Accordion items={accordionItems} />
+        <h2 class="section-heading" data-reveal>Frequently Asked Questions</h2>
+        <div data-reveal><Accordion items={accordionItems} /></div>
       </div>
     </section>
 
@@ -188,9 +188,9 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     {showRideRequest && (
       <section class="ride-request" aria-label="Request a Ride">
         <div class="ride-request__inner">
-          <h2 class="section-heading">Need a Ride?</h2>
-          <p class="ride-request__intro">
-            Don't have a car? No problem — we'd love to pick you up! Fill out the form below and someone from our team will reach out to arrange a ride.
+          <h2 class="section-heading" data-reveal>Need a Ride?</h2>
+          <p class="ride-request__intro" data-reveal>
+            Don't have a car? No problem. We'd love to pick you up! Fill out the form below and someone from our team will reach out to arrange a ride.
           </p>
           <RideRequestForm />
         </div>

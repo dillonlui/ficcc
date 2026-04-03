@@ -7,7 +7,7 @@ import { getVisitPage, urlForImage, portableTextToHtml } from '../../lib/sanity'
 
 const title = '主日聚會 | 伊的家華人基督教會';
 const description =
-  '您第一次來教會需要知道的一切——聚會時間、交通方式、停車資訊及注意事項。';
+  '您第一次來教會需要知道的一切：聚會時間、交通方式、停車資訊及注意事項。';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let visitPage: Awaited<ReturnType<typeof getVisitPage>> = null;
@@ -28,13 +28,13 @@ const fallbackSchedule = [
   {
     label: '主日學',
     time: '11:15 AM',
-    description: '按年齡分班——兒童、青少年和成人',
+    description: '按年齡分班：兒童、青少年和成人',
   },
 ];
 
 const fallbackWhatToExpectHtml = `
 <p>無論您是第一次來教會，還是曾經參加過其他教會，都歡迎您如實地來到這裡。</p>
-<p><strong>穿著：</strong>隨意穿著即可——大多數人穿休閒服裝。</p>
+<p><strong>穿著：</strong>隨意穿著即可，大多數人穿休閒服裝。</p>
 <p><strong>主日流程：</strong>聚會包括詩歌敬拜、禱告、讀經和講道。崇拜以中文為主，部分環節為雙語。</p>
 <p><strong>歡迎孩子：</strong>兒童隨時歡迎參加主堂崇拜。崇拜後我們也提供按年齡分組的主日學課程。</p>
 <p><strong>聚會多長時間？</strong>主日崇拜通常約75分鐘。</p>
@@ -43,7 +43,7 @@ const fallbackWhatToExpectHtml = `
 const fallbackTransportationHtml = `
 <p><strong>地址：</strong>429 Mitchell Street, Ithaca, NY 14850</p>
 <p><strong>停車：</strong>教會旁設有免費停車場。Mitchell Street 及附近街道也有路邊停車位。</p>
-<p><strong>靠近康奈爾：</strong>我們距離康奈爾大學校園很近。如果您是沒有車的學生，我們很樂意安排接送——請與我們聯繫！</p>
+<p><strong>靠近康奈爾：</strong>我們距離康奈爾大學校園很近。如果您是沒有車的學生，我們很樂意安排接送，請與我們聯繫！</p>
 <p><strong>公共交通：</strong>TCAT公車可到達附近地區。請查詢 <a href="https://tcatbus.com">tcatbus.com</a> 了解時刻表。</p>
 `;
 
@@ -61,7 +61,7 @@ const busRoute = [
 const fallbackFaqItems = [
   {
     question: '應該穿什麼？',
-    answer: '沒有穿著要求——隨意穿著即可。大多數人穿休閒服裝。',
+    answer: '沒有穿著要求，隨意穿著即可。大多數人穿休閒服裝。',
   },
   {
     question: '歡迎兒童嗎？',
@@ -76,7 +76,7 @@ const fallbackFaqItems = [
   {
     question: '有停車位嗎？',
     answer:
-      '有——教會旁設有免費停車場，附近街道也有路邊停車位。',
+      '有！教會旁設有免費停車場，附近街道也有路邊停車位。',
   },
   {
     question: '聚會多長時間？',
@@ -138,10 +138,10 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- Schedule -->
     <section class="schedule" aria-label="主日時間表">
       <div class="schedule__inner">
-        <h2 class="section-heading">主日時間表</h2>
-        <div class="schedule__grid">
+        <h2 class="section-heading" data-reveal>主日時間表</h2>
+        <div class="schedule__grid" data-reveal-stagger>
           {schedule.map((item) => (
-            <div class="schedule__card">
+            <div class="schedule__card" data-reveal>
               <span class="schedule__time">{item.time}</span>
               <h3 class="schedule__label">{item.label}</h3>
               {item.description && (
@@ -156,16 +156,16 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- What to Expect -->
     <section class="expect" aria-label="注意事項">
       <div class="expect__inner">
-        <h2 class="section-heading">注意事項</h2>
-        <div class="expect__body" set:html={whatToExpectHtml} />
+        <h2 class="section-heading" data-reveal>注意事項</h2>
+        <div class="expect__body" data-reveal set:html={whatToExpectHtml} />
       </div>
     </section>
 
     <!-- Transportation & Directions -->
     <section class="directions" aria-label="交通指引">
       <div class="directions__inner">
-        <h2 class="section-heading">如何到達</h2>
-        <div class="directions__columns">
+        <h2 class="section-heading" data-reveal>如何到達</h2>
+        <div class="directions__columns" data-reveal>
           <div class="directions__body" set:html={transportationHtml} />
           <div class="directions__map">
             <iframe
@@ -186,7 +186,7 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- Sunday Bus Route (ZH-specific) -->
     <section class="bus-route" aria-label="主日接送路線">
       <div class="bus-route__inner">
-        <h2 class="section-heading">主日接送巴士路線</h2>
+        <h2 class="section-heading" data-reveal>主日接送巴士路線</h2>
         <p class="bus-route__intro">
           每週日早上，教會提供免費接送巴士服務。以下為七站路線及預計到達時間：
         </p>
@@ -207,8 +207,10 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- FAQ -->
     <section class="faq" aria-label="常見問題">
       <div class="faq__inner">
-        <h2 class="section-heading">常見問題</h2>
-        <Accordion items={accordionItems} />
+        <h2 class="section-heading" data-reveal>常見問題</h2>
+        <div data-reveal>
+          <Accordion items={accordionItems} />
+        </div>
       </div>
     </section>
 
@@ -216,9 +218,9 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     {showRideRequest && (
       <section class="ride-request" aria-label="申請接送">
         <div class="ride-request__inner">
-          <h2 class="section-heading">需要接送嗎？</h2>
-          <p class="ride-request__intro">
-            沒有車？沒問題——我們很樂意接送您！請填寫以下表格，我們的同工會與您聯繫安排接送。
+          <h2 class="section-heading" data-reveal>需要接送嗎？</h2>
+          <p class="ride-request__intro" data-reveal>
+            沒有車？沒問題，我們很樂意接送您！請填寫以下表格，我們的同工會與您聯繫安排接送。
           </p>
           <RideRequestForm />
         </div>

@@ -82,9 +82,9 @@ const pastEvents = displayEvents.filter((e) => {
     <!-- Upcoming Events -->
     <section class="events-section" aria-label="即將舉行的活動">
       <div class="events-section__inner">
-        <h2 class="section-heading">即將舉行的活動</h2>
+        <h2 class="section-heading" data-reveal>即將舉行的活動</h2>
         {upcomingEvents.length > 0 ? (
-          <div class="events-grid">
+          <div class="events-grid" data-reveal>
             {upcomingEvents.map((event) => (
               <EventCard
                 title={event.title}
@@ -108,8 +108,8 @@ const pastEvents = displayEvents.filter((e) => {
     {pastEvents.length > 0 && (
       <section class="events-section events-section--past" aria-label="過往活動">
         <div class="events-section__inner">
-          <h2 class="section-heading">過往活動</h2>
-          <div class="events-grid">
+          <h2 class="section-heading" data-reveal>過往活動</h2>
+          <div class="events-grid" data-reveal>
             {pastEvents.map((event) => (
               <EventCard
                 title={event.title}

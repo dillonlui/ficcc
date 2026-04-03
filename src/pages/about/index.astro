@@ -6,7 +6,7 @@ import { buildOrganizationJsonLd } from '../../lib/structured-data';
 
 const title = 'Who We Are | FICCC';
 const description =
-  'Learn about First Ithaca Chinese Christian Church — our history, mission, and community.';
+  'Learn about First Ithaca Chinese Christian Church, our history, mission, and community.';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
@@ -21,16 +21,9 @@ try {
 const fallbackHeading = 'Who We Are';
 const fallbackBody = `
 <p>First Ithaca Chinese Christian Church (FICCC) was founded in 1968 by a small group of Chinese graduate students and scholars at Cornell University who longed for a Christ-centered community where they could worship in their heart language while welcoming the broader Ithaca community.</p>
-<p>Over the decades the church has grown into a multigenerational, multicultural congregation that bridges Chinese heritage and American life. We gather every Sunday at 429 Mitchell Street for worship, teaching, and fellowship — in English and Mandarin — serving students, families, and neighbors throughout the Finger Lakes region.</p>
+<p>Over the decades the church has grown from that small group into a congregation that bridges Chinese heritage and American life. We gather every Sunday at 429 Mitchell Street for worship, teaching, and fellowship in English and Mandarin, serving students, families, and neighbors throughout the Finger Lakes region.</p>
 <p>Our mission is to glorify God by making disciples of Jesus Christ who love God wholeheartedly, love one another sacrificially, and reach out to the world with the Gospel. We believe the local church is God's primary instrument for advancing His kingdom, and we are committed to equipping every member for a life of faithful service.</p>
-<p>Whether you are a longtime resident of Ithaca, a visiting scholar, or a student far from home, there is a place for you at FICCC. We invite you to come as you are and experience the warmth of Christ's love in community.</p>
-`.trim();
-
-const fallbackVisionHeading = 'Our Vision';
-const fallbackVisionHtml = `
-<p><strong>Develop Humble Servants Who Love the Lord, Love the Lost, Love the Local Church — For the Rest of Their Lives.</strong></p>
-<p>Most of the students and scholars who walk through our doors will only be in Ithaca for a few years. But we believe that what happens during those years — the habits of worship, the depth of community, the encounters with Scripture — can shape the trajectory of an entire life.</p>
-<p>Our vision is to nurture Christ-followers who don't just "do church" while they're here, but who carry the marks of discipleship wherever they go: into careers, families, churches, and communities around the world.</p>
+<p>If you've lived in Ithaca for years, just arrived as a visiting scholar, or are a student far from home, there is a place for you at FICCC. Come as you are.</p>
 `.trim();
 
 // ---------- Resolved data (CMS ▸ fallback) ----------
@@ -40,12 +33,7 @@ const bodyHtml = aboutPage?.whoWeAreBody?.length
   : fallbackBody;
 const imageUrl = aboutPage?.whoWeAreImage
   ? urlForImage(aboutPage.whoWeAreImage, { width: 800 })
-  : '/images/hero/campus-wide.webp';
-
-const visionHeading = aboutPage?.visionHeading || fallbackVisionHeading;
-const visionHtml = aboutPage?.visionBody?.length
-  ? portableTextToHtml(aboutPage.visionBody)
-  : fallbackVisionHtml;
+  : '/images/hero/cornell-arts-quad.webp';
 ---
 
 <BaseLayout title={title} description={description} jsonLd={buildOrganizationJsonLd()}>
@@ -53,15 +41,15 @@ const visionHtml = aboutPage?.visionBody?.length
     <section class="about__hero" aria-label="Who We Are">
       <div class="about__split">
         <div class="about__text">
-          <h1 class="about__heading">{heading}</h1>
-          <div class="about__body" set:html={bodyHtml} />
+          <h1 class="about__heading" data-reveal>{heading}</h1>
+          <div class="about__body" data-reveal set:html={bodyHtml} />
         </div>
         {imageUrl && (
           <div class="about__image-col">
             <img
               class="about__image"
               src={imageUrl}
-              alt="Cornell University campus"
+              alt="Cornell University Arts Quad with Goldwin Smith Hall, Baker Lab, and Olin Library"
               loading="eager"
             />
           </div>
@@ -70,19 +58,19 @@ const visionHtml = aboutPage?.visionBody?.length
     </section>
 
     <!-- Snapshots -->
-    <section class="snapshots" aria-label="Snapshots of God's Faithfulness">
+    <section class="snapshots snapshots--tinted" aria-label="Snapshots of God's Faithfulness">
       <div class="snapshots__inner">
-        <h2 class="snapshots__heading">Snapshots of God's Faithfulness</h2>
-        <div class="snapshots__grid">
-          <div class="snapshots__item">
+        <h2 class="snapshots__heading" data-reveal>Snapshots of God's Faithfulness</h2>
+        <div class="snapshots__grid" data-reveal-stagger>
+          <div class="snapshots__item" data-reveal>
             <span class="snapshots__accent">40+ years in Ithaca</span>
             <p class="snapshots__body">Worshiping, studying Scripture, and sharing life together at Cornell and throughout Ithaca.</p>
           </div>
-          <div class="snapshots__item">
+          <div class="snapshots__item" data-reveal>
             <span class="snapshots__accent">A church family of ~100</span>
             <p class="snapshots__body">Students, scholars, and longtime Ithaca residents walking with Christ together.</p>
           </div>
-          <div class="snapshots__item">
+          <div class="snapshots__item" data-reveal>
             <span class="snapshots__accent">Countless alumni</span>
             <p class="snapshots__body">Now serving in churches and communities across the US, Canada, and Asia - carrying what they learned here into the rest of their lives.</p>
           </div>
@@ -90,20 +78,12 @@ const visionHtml = aboutPage?.visionBody?.length
       </div>
     </section>
 
-    <!-- Vision Statement -->
-    <section class="vision" aria-label="Our Vision">
-      <div class="vision__inner">
-        <h2 class="vision__heading">{visionHeading}</h2>
-        <div class="vision__body" set:html={visionHtml} />
-      </div>
-    </section>
-
     <!-- Our Pastors -->
     <section class="pastors" aria-label="Our Pastors">
       <div class="pastors__inner">
-        <h2 class="pastors__heading">Our Pastors</h2>
-        <div class="pastors__grid">
-          <div class="pastors__card">
+        <h2 class="pastors__heading" data-reveal>Our Pastors</h2>
+        <div class="pastors__grid" data-reveal-stagger>
+          <div class="pastors__card" data-reveal>
             <div class="pastors__photo">
               <img src="/images/church/zhida-zhu.webp" alt="Pastor Zhida Zhu" loading="lazy" width="400" height="533" />
             </div>
@@ -117,13 +97,9 @@ const visionHtml = aboutPage?.visionBody?.length
                 mechanical engineer for 6 years before answering the call to full-time ministry.
                 Zhida is married to Ngun, whom he met at Dallas Theological Seminary.
               </p>
-              <p class="pastors__contact">
-                <a href="mailto:zhida7zhu@gmail.com">zhida7zhu@gmail.com</a>
-                · (832) 582-9179
-              </p>
             </div>
           </div>
-          <div class="pastors__card">
+          <div class="pastors__card" data-reveal>
             <div class="pastors__photo pastors__photo--placeholder">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
@@ -136,10 +112,6 @@ const visionHtml = aboutPage?.visionBody?.length
               <p class="pastors__bio">
                 Pastor Simon leads the Chinese-speaking congregation, shepherding
                 families, fellowship groups, and community ministries.
-              </p>
-              <p class="pastors__contact">
-                <a href="mailto:simwnos@gmail.com">simwnos@gmail.com</a>
-                · (224) 406-1826
               </p>
             </div>
           </div>
@@ -187,6 +159,20 @@ const visionHtml = aboutPage?.visionBody?.length
         ],
       },
     ]} />
+
+    <!-- Beliefs callout -->
+    <section class="beliefs-callout" aria-label="Beliefs and Vision">
+      <div class="beliefs-callout__inner">
+        <h2 class="beliefs-callout__heading" data-reveal>What do we believe?</h2>
+        <p class="beliefs-callout__body" data-reveal>
+          The Bible shapes everything we do. See what we hold to and where we're headed.
+        </p>
+        <a href="/about/beliefs" class="beliefs-callout__cta" data-reveal>
+          Beliefs &amp; Vision
+          <svg class="beliefs-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </section>
   </main>
 </BaseLayout>
 
@@ -243,11 +229,13 @@ const visionHtml = aboutPage?.visionBody?.length
     text-decoration: underline;
   }
 
-  /* Image column — fills full height, zooms to cover */
+  /* Image column — rounded container, stretches to match text height */
   .about__image-col {
     position: relative;
     overflow: hidden;
-    border-radius: 0 0 0 var(--radius-xl);
+    border-radius: var(--radius-xl);
+    align-self: stretch;
+    margin: var(--space-16) var(--space-6) var(--space-16) 0;
   }
 
   .about__image {
@@ -256,54 +244,17 @@ const visionHtml = aboutPage?.visionBody?.length
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
-  }
-  }
-
-  /* ---------- Vision ---------- */
-  .vision {
-    padding: var(--space-16) var(--space-6);
-    background-color: var(--color-stone);
-  }
-
-  .vision__inner {
-    max-width: var(--max-width);
-    margin-inline: auto;
-  }
-
-  .vision__heading {
-    font-family: var(--font-heading);
-    font-size: var(--text-3xl);
-    color: var(--color-ink);
-    text-align: center;
-    margin-block-end: var(--space-8);
-  }
-
-  .vision__body {
-    max-width: 48rem;
-    margin-inline: auto;
-    font-family: var(--font-body);
-    font-size: var(--text-lg);
-    line-height: var(--leading-relaxed);
-    color: var(--color-body);
-  }
-
-  .vision__body :global(p) {
-    margin-block-end: var(--space-4);
-  }
-
-  .vision__body :global(p:last-child) {
-    margin-block-end: 0;
-  }
-
-  .vision__body :global(strong) {
-    color: var(--color-ink);
+    object-position: center 40%;
   }
 
   /* ---------- Snapshots ---------- */
   .snapshots {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-bg);
+  }
+
+  .snapshots--tinted {
+    background-color: var(--color-stone);
   }
 
   /* ---------- Pastors ---------- */
@@ -329,7 +280,7 @@ const visionHtml = aboutPage?.visionBody?.length
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-8);
-    max-width: 40rem;
+    max-width: 56rem;
     margin-inline: auto;
   }
 
@@ -337,7 +288,7 @@ const visionHtml = aboutPage?.visionBody?.length
     background-color: var(--color-stone);
     border-radius: var(--radius-xl);
     padding: var(--space-8);
-    text-align: center;
+    text-align: left;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -366,11 +317,16 @@ const visionHtml = aboutPage?.visionBody?.length
     color: var(--base-500);
   }
 
+  .pastors__info {
+    width: 100%;
+  }
+
   .pastors__name {
     font-family: var(--font-heading);
     font-size: var(--text-xl);
     color: var(--color-ink);
     margin-block-end: var(--space-2);
+    text-align: center;
   }
 
   .pastors__role {
@@ -378,6 +334,7 @@ const visionHtml = aboutPage?.visionBody?.length
     font-size: var(--text-base);
     color: var(--color-body);
     margin-block-end: var(--space-3);
+    text-align: center;
   }
 
   .pastors__bio {
@@ -385,19 +342,6 @@ const visionHtml = aboutPage?.visionBody?.length
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
     color: var(--color-body);
-    margin-block-end: var(--space-3);
-  }
-
-  .pastors__contact {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: var(--color-body);
-    line-height: var(--leading-relaxed);
-  }
-
-  .pastors__contact a {
-    color: var(--color-terracotta-dark);
-    text-decoration: underline;
   }
 
   .snapshots__inner {
@@ -440,8 +384,64 @@ const visionHtml = aboutPage?.visionBody?.length
     color: var(--base-700);
   }
 
-  @media (min-width: 768px) {
-    /* desktop: text+image side by side already via grid */
+  /* ---------- Beliefs Callout ---------- */
+  .beliefs-callout {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--base-800);
+  }
+
+  .beliefs-callout__inner {
+    max-width: 36rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .beliefs-callout__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    color: var(--base-50);
+    margin-block-end: var(--space-3);
+  }
+
+  .beliefs-callout__body {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--base-300);
+    margin-block-end: var(--space-6);
+  }
+
+  .beliefs-callout__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--base-50);
+    background-color: var(--primary-500);
+    padding: var(--space-3) var(--space-8);
+    border-radius: 100vw;
+    text-decoration: none;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .beliefs-callout__cta-arrow {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .beliefs-callout__cta:hover {
+    background-color: var(--primary-400);
+    transform: translateY(-1px);
+  }
+
+  .beliefs-callout__cta:hover .beliefs-callout__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  .beliefs-callout__cta:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
   }
 
   @media (max-width: 767px) {
@@ -452,9 +452,11 @@ const visionHtml = aboutPage?.visionBody?.length
 
     .about__image-col {
       order: -1;
-      height: 14rem;
+      height: 16rem;
       position: relative;
-      border-radius: 0;
+      border-radius: var(--radius-lg);
+      margin: var(--space-6) var(--space-4) 0;
+      min-height: auto;
     }
 
     .about__text {
@@ -469,11 +471,11 @@ const visionHtml = aboutPage?.visionBody?.length
       font-size: var(--text-base);
     }
 
-    .vision__heading {
-      font-size: var(--text-2xl);
+    .snapshots__grid {
+      grid-template-columns: 1fr;
     }
 
-    .snapshots__grid {
+    .pastors__grid {
       grid-template-columns: 1fr;
     }
   }
