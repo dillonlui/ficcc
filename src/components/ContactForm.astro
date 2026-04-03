@@ -272,16 +272,17 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     font-size: var(--text-base);
     font-weight: 600;
     color: var(--color-bg);
-    background-color: var(--color-terracotta);
+    background-color: var(--primary-500);
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 100vw;
     padding: var(--space-3) var(--space-8);
     cursor: pointer;
-    transition: background-color var(--transition), box-shadow var(--transition), opacity var(--transition);
+    transition: background-color var(--transition), transform var(--transition), opacity var(--transition);
   }
 
   .contact-form__submit:hover:not(:disabled) {
-    background-color: color-mix(in srgb, var(--color-terracotta) 85%, black);
+    background-color: var(--primary-400);
+    transform: translateY(-1px);
   }
 
   .contact-form__submit:focus-visible {

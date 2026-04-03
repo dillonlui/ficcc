@@ -5,6 +5,7 @@ import Hero from '../../components/Hero.astro';
 const title = '聯繫我們 | 伊薩卡華人基督教會';
 const description =
   '聯繫伊薩卡華人基督教會。透過微信或表單與我們取得聯繫。';
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
 <BaseLayout title={title} description={description} lang="zh">
@@ -12,7 +13,7 @@ const description =
     <Hero
       title="聯繫我們"
       subtitle="我們期待與您聯繫"
-      backgroundImage="/images/hero/prayer.webp"
+      backgroundImage="/images/hero/friends-golden.webp"
     />
 
     <section class="contact-section" aria-label="聯繫方式">
@@ -92,6 +93,9 @@ const description =
                   <span class="zh-contact-form__error" data-field="message" aria-live="polite"></span>
                 </div>
 
+                <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+                <span class="zh-contact-form__error" data-field="turnstileToken" aria-live="polite"></span>
+
                 <button class="zh-contact-form__submit" type="submit">
                   <span class="zh-contact-form__submit-text">發送</span>
                   <span class="zh-contact-form__spinner" aria-hidden="true"></span>
@@ -118,8 +122,9 @@ const description =
             <div class="contact-info__block">
               <h3 class="contact-info__label">主日崇拜</h3>
               <p class="contact-info__value">
-                英文崇拜：上午 11:00<br />
-                中文崇拜：上午 11:00
+                英文崇拜：上午 9:45<br />
+                門徒小組：上午 11:00<br />
+                中文崇拜：上午 11:15
               </p>
             </div>
 
@@ -142,6 +147,33 @@ const description =
     </section>
   </main>
 </BaseLayout>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+
+<script is:inline>
+(function () {
+  /* Init Turnstile widget */
+  function initTurnstile() {
+    if (typeof turnstile === 'undefined') return;
+    var container = document.querySelector('.cf-turnstile');
+    if (!container) return;
+    var siteKey = container.getAttribute('data-sitekey') || '';
+    if (!siteKey) return;
+    while (container.firstChild) container.removeChild(container.firstChild);
+    turnstile.render(container, { sitekey: siteKey, theme: 'light' });
+  }
+  if (typeof turnstile !== 'undefined') {
+    initTurnstile();
+  } else {
+    var tAttempts = 0;
+    var tInterval = setInterval(function () {
+      tAttempts++;
+      if (typeof turnstile !== 'undefined') { clearInterval(tInterval); initTurnstile(); }
+      else if (tAttempts > 50) { clearInterval(tInterval); }
+    }, 100);
+  }
+})();
+</script>
 
 <script is:inline>
 (function () {
@@ -209,30 +241,65 @@ const description =
     var banner = form.querySelector('.zh-contact-form__banner');
     if (banner) banner.hidden = true;
 
-    /* Placeholder submission — replace with real endpoint when ready */
-    setTimeout(function () {
+    var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
+    var turnstileToken = turnstileInput ? turnstileInput.value : '';
+    if (!turnstileToken) {
+      showError('turnstileToken', '請完成驗證');
       setLoading(false);
-      showBanner('感謝您的訊息！我們會盡快回覆您。', 'success');
-      form.reset();
-    }, 800);
+      return;
+    }
+
+    var payload = {
+      name: data.name.trim(),
+      email: data.email.trim(),
+      message: data.message.trim(),
+      turnstileToken: turnstileToken
+    };
+
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+      .then(function (result) {
+        setLoading(false);
+        if (!result.ok) {
+          if (result.data.fields) {
+            for (var i = 0; i < result.data.fields.length; i++) {
+              showError(result.data.fields[i].field, result.data.fields[i].message);
+            }
+          }
+          showBanner(result.data.error || '發送失敗，請稍後再試。', 'error');
+          if (typeof turnstile !== 'undefined') turnstile.reset();
+          return;
+        }
+        showBanner('感謝您的訊息！我們會盡快回覆您。', 'success');
+        form.reset();
+        if (typeof turnstile !== 'undefined') turnstile.reset();
+      })
+      .catch(function () {
+        setLoading(false);
+        showBanner('網路錯誤，請檢查您的連接後再試。', 'error');
+      });
   });
 })();
 </script>
 
 <style>
   .contact-section {
-    padding: var(--space-20) var(--space-6);
+    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
     background-color: var(--color-bg);
   }
 
   .contact-section__inner {
-    max-width: var(--max-width, 72rem);
-    margin: 0 auto;
+    max-width: var(--max-width);
+    margin-inline: auto;
   }
 
   .contact-layout {
     display: grid;
-    grid-template-columns: 1fr 20rem;
+    grid-template-columns: 1fr 22rem;
     gap: var(--space-16);
     align-items: start;
   }
@@ -240,8 +307,8 @@ const description =
   /* ---------- WeChat section ---------- */
 
   .wechat-section {
-    background-color: var(--color-cream);
-    border-radius: var(--radius-md, 0.5rem);
+    background-color: var(--base-100);
+    border-radius: var(--radius-md);
     padding: var(--space-8);
     margin-bottom: var(--space-12);
   }
@@ -361,8 +428,8 @@ const description =
 
   .zh-contact-form__input:focus {
     outline: none;
-    border-color: var(--color-terracotta);
-    box-shadow: 0 0 0 3px rgba(196, 107, 72, 0.15);
+    border-color: var(--color-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 25%, transparent);
   }
 
   .zh-contact-form__input--error {
@@ -387,9 +454,9 @@ const description =
     font-size: var(--text-base);
     font-weight: 600;
     color: var(--color-bg);
-    background-color: var(--color-terracotta);
+    background-color: var(--primary-500);
     border: none;
-    border-radius: var(--radius-md, 0.5rem);
+    border-radius: 100vw;
     padding: var(--space-3) var(--space-8);
     cursor: pointer;
     position: relative;
@@ -397,7 +464,7 @@ const description =
   }
 
   .zh-contact-form__submit:hover:not(:disabled) {
-    background-color: #b3654b;
+    background-color: var(--primary-400);
     transform: translateY(-1px);
   }
 
@@ -463,8 +530,8 @@ const description =
   /* ---------- Church info sidebar ---------- */
 
   .contact-info {
-    background-color: var(--color-cream);
-    border-radius: var(--radius-md, 0.5rem);
+    background-color: var(--base-100);
+    border-radius: var(--radius-md);
     padding: var(--space-8);
   }
 
@@ -496,18 +563,19 @@ const description =
     font-family: var(--font-body);
     font-size: var(--text-sm);
     color: var(--color-body);
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
     margin: 0;
     font-style: normal;
   }
 
   .contact-info__link {
-    color: var(--color-terracotta);
+    color: var(--primary-500);
     text-decoration: none;
     transition: color var(--transition);
   }
 
   .contact-info__link:hover {
+    color: var(--primary-400);
     text-decoration: underline;
   }
 
@@ -523,6 +591,10 @@ const description =
     .contact-layout {
       grid-template-columns: 1fr;
       gap: var(--space-10);
+    }
+
+    .contact-section {
+      padding: var(--space-10) var(--space-4) calc(var(--space-10) + 2rem);
     }
 
     .wechat-section__qr-placeholder {

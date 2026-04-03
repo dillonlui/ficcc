@@ -21,36 +21,43 @@ const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
 const fallbackGroups = [
   {
     name: '福音組',
+    image: '/images/ministries/bible-study.jpg',
     meetingTime: '週日 11:00 AM',
     description: '以福音為核心的小組，歡迎慕道友與初信者一同認識信仰。',
   },
   {
     name: '家庭組',
+    image: '/images/ministries/canaan.jpg',
     meetingTime: '週六 7:00 PM',
     description: '以家庭為單位的團契，增進夫妻與親子間的信仰交流。',
   },
   {
     name: '長青組',
+    image: '/images/ministries/seniors.jpg',
     meetingTime: '週三 10:00 AM',
     description: '為年長弟兄姊妹預備的團契，一同查經、分享與代禱。',
   },
   {
     name: '校園組',
+    image: '/images/ministries/campus.jpg',
     meetingTime: '週五 7:30 PM',
     description: '大學生與研究生團契，在校園生活中彼此扶持、一起成長。',
   },
   {
     name: '職青組',
+    image: '/images/ministries/highland.jpg',
     meetingTime: '週五 7:30 PM',
     description: '為職場青年預備的團契，在工作與信仰中找到平衡與方向。',
   },
   {
     name: '兒童主日學',
+    image: '/images/church/ev-weekend-12.jpg',
     meetingTime: '週日 11:15 AM',
     description: '為孩子們預備的聖經教導與活動，幫助他們從小認識神。',
   },
   {
     name: '青少年組',
+    image: '/images/church/youth-ministry-12.jpg',
     meetingTime: '週五 7:30 PM',
     description: '國中及高中生團契，在歡樂中學習信仰、建立友誼。',
   },
@@ -60,11 +67,13 @@ const fallbackGroups = [
 const fallbackPrograms = [
   {
     name: '主日學 Sunday School',
+    image: '/images/church/midweek-bible-study.webp',
     meetingTime: '週日 11:15 AM',
     description: '成人主日學提供各類聖經課程與專題研討，適合不同程度的弟兄姊妹。',
   },
   {
     name: '門徒訓練 Discipleship',
+    image: '/images/church/img-0316.webp',
     meetingTime: '週日 11:00 AM',
     description: '有系統的門徒訓練課程，幫助信徒在信仰上扎根成長。',
   },
@@ -106,11 +115,18 @@ const fallbackPrograms = [
           <div class="ministries-grid" data-reveal>
             {fallbackGroups.map((group) => (
               <div class="group-card">
-                <h3 class="group-card__name">{group.name}</h3>
-                {group.meetingTime && (
-                  <p class="group-card__time">{group.meetingTime}</p>
+                {group.image && (
+                  <div class="group-card__image">
+                    <img src={group.image} alt={group.name} loading="lazy" />
+                  </div>
                 )}
-                <p class="group-card__desc">{group.description}</p>
+                <div class="group-card__body">
+                  <h3 class="group-card__name">{group.name}</h3>
+                  {group.meetingTime && (
+                    <p class="group-card__time">{group.meetingTime}</p>
+                  )}
+                  <p class="group-card__desc">{group.description}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -119,11 +135,18 @@ const fallbackPrograms = [
           <div class="ministries-grid" data-reveal>
             {fallbackPrograms.map((program) => (
               <div class="group-card">
-                <h3 class="group-card__name">{program.name}</h3>
-                {program.meetingTime && (
-                  <p class="group-card__time">{program.meetingTime}</p>
+                {program.image && (
+                  <div class="group-card__image">
+                    <img src={program.image} alt={program.name} loading="lazy" />
+                  </div>
                 )}
-                <p class="group-card__desc">{program.description}</p>
+                <div class="group-card__body">
+                  <h3 class="group-card__name">{program.name}</h3>
+                  {program.meetingTime && (
+                    <p class="group-card__time">{program.meetingTime}</p>
+                  )}
+                  <p class="group-card__desc">{program.description}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -135,7 +158,7 @@ const fallbackPrograms = [
 
 <style>
   .ministries-listing {
-    padding: var(--space-16) var(--space-6);
+    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
     background-color: var(--color-bg);
   }
 
@@ -176,7 +199,23 @@ const fallbackPrograms = [
   .group-card {
     background-color: var(--color-stone);
     border-radius: var(--radius-md);
-    padding: var(--space-8) var(--space-6);
+    overflow: hidden;
+  }
+
+  .group-card__image {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  .group-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .group-card__body {
+    padding: var(--space-6);
   }
 
   .group-card__name {
@@ -215,7 +254,7 @@ const fallbackPrograms = [
     }
 
     .ministries-listing {
-      padding: var(--space-10) var(--space-4);
+      padding: var(--space-10) var(--space-4) calc(var(--space-10) + 2rem);
     }
   }
 </style>

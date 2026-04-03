@@ -86,7 +86,9 @@ const visionItems = [
           These core convictions, rooted in Scripture, shape who we are as a
           church and how we live together as followers of Jesus Christ.
         </p>
-        <Accordion items={beliefs} />
+        <div data-reveal>
+          <Accordion items={beliefs} />
+        </div>
       </div>
     </section>
 
@@ -103,7 +105,23 @@ const visionItems = [
           that they will be equipped to be good managers of the bountiful
           blessings that God has given them.
         </p>
-        <Accordion items={visionItems} />
+        <div data-reveal>
+          <Accordion items={visionItems} />
+        </div>
+      </div>
+    </section>
+
+    <!-- Ministries callout -->
+    <section class="ministries-callout" aria-label="Explore Our Ministries">
+      <div class="ministries-callout__inner">
+        <h2 class="ministries-callout__heading" data-reveal>See our faith in action</h2>
+        <p class="ministries-callout__body" data-reveal>
+          From worship gatherings to small groups, discover how we live out these beliefs together.
+        </p>
+        <a href="/ministries" class="ministries-callout__cta" data-reveal>
+          Explore Ministries
+          <svg class="ministries-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
     </section>
   </main>
@@ -111,7 +129,7 @@ const visionItems = [
 
 <style>
   .beliefs-vision {
-    padding-block: var(--space-16);
+    padding-block-start: var(--space-16);
   }
 
   .section__inner {
@@ -155,7 +173,7 @@ const visionItems = [
 
   @media (max-width: 767px) {
     .beliefs-vision {
-      padding-block: var(--space-10);
+      padding-block-start: var(--space-10);
     }
 
     .section--alt {
@@ -171,5 +189,65 @@ const visionItems = [
     .vision__intro {
       font-size: var(--text-base);
     }
+  }
+
+  /* Ministries callout banner */
+  .ministries-callout {
+    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
+    background-color: var(--base-800);
+  }
+
+  .ministries-callout__inner {
+    max-width: 36rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .ministries-callout__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    color: var(--base-50);
+    margin-block-end: var(--space-3);
+  }
+
+  .ministries-callout__body {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--base-300);
+    margin-block-end: var(--space-6);
+  }
+
+  .ministries-callout__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--base-50);
+    background-color: var(--primary-500);
+    padding: var(--space-3) var(--space-8);
+    border-radius: 100vw;
+    text-decoration: none;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .ministries-callout__cta-arrow {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .ministries-callout__cta:hover {
+    background-color: var(--primary-400);
+    transform: translateY(-1px);
+  }
+
+  .ministries-callout__cta:hover .ministries-callout__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  .ministries-callout__cta:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
   }
 </style>

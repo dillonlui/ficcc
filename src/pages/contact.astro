@@ -2,15 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import ContactForm from '../components/ContactForm.astro';
-import PrayerRequestForm from '../components/PrayerRequestForm.astro';
-import RideRequestForm from '../components/RideRequestForm.astro';
-import ConnectForm from '../components/ConnectForm.astro';
 
 const title = 'Contact | First Ithaca Chinese Christian Church';
 const description =
-  'Get in touch with First Ithaca Chinese Christian Church. Send a message, submit a prayer request, request a ride, or connect with us.';
-
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+  'Get in touch with First Ithaca Chinese Christian Church. Send us a message — we would love to hear from you.';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -18,99 +13,19 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     <Hero
       title="Contact Us"
       subtitle="We'd love to hear from you"
-      backgroundImage="/images/hero/prayer.webp"
+      backgroundImage="/images/hero/friends-golden.webp"
     />
 
     <section class="contact-section" aria-label="Contact">
       <div class="contact-section__inner">
         <div class="contact-layout">
-          <!-- Tabbed forms -->
-          <div class="contact-tabs" data-reveal>
-            <div class="contact-tabs__list" role="tablist" aria-label="Contact form options">
-              <button
-                class="contact-tabs__tab contact-tabs__tab--active"
-                role="tab"
-                aria-selected="true"
-                aria-controls="panel-contact"
-                id="tab-contact"
-                tabindex="0"
-              >
-                General Contact
-              </button>
-              <button
-                class="contact-tabs__tab"
-                role="tab"
-                aria-selected="false"
-                aria-controls="panel-prayer"
-                id="tab-prayer"
-                tabindex="-1"
-              >
-                Prayer Request
-              </button>
-              <button
-                class="contact-tabs__tab"
-                role="tab"
-                aria-selected="false"
-                aria-controls="panel-ride"
-                id="tab-ride"
-                tabindex="-1"
-              >
-                Ride Request
-              </button>
-              <button
-                class="contact-tabs__tab"
-                role="tab"
-                aria-selected="false"
-                aria-controls="panel-connect"
-                id="tab-connect"
-                tabindex="-1"
-              >
-                Connect With Us
-              </button>
-            </div>
-
-            <div
-              class="contact-tabs__panel contact-tabs__panel--active"
-              role="tabpanel"
-              id="panel-contact"
-              aria-labelledby="tab-contact"
-              tabindex="0"
-            >
-              <ContactForm />
-            </div>
-
-            <div
-              class="contact-tabs__panel"
-              role="tabpanel"
-              id="panel-prayer"
-              aria-labelledby="tab-prayer"
-              tabindex="0"
-              hidden
-            >
-              <PrayerRequestForm />
-            </div>
-
-            <div
-              class="contact-tabs__panel"
-              role="tabpanel"
-              id="panel-ride"
-              aria-labelledby="tab-ride"
-              tabindex="0"
-              hidden
-            >
-              <RideRequestForm />
-            </div>
-
-            <div
-              class="contact-tabs__panel"
-              role="tabpanel"
-              id="panel-connect"
-              aria-labelledby="tab-connect"
-              tabindex="0"
-              hidden
-            >
-              <ConnectForm />
-            </div>
+          <!-- Contact form -->
+          <div class="contact-form-wrap" data-reveal>
+            <h2 class="contact-form-wrap__heading">Send Us a Message</h2>
+            <p class="contact-form-wrap__intro">
+              Questions about our church, ministries, prayer requests, or anything else. We're here for you.
+            </p>
+            <ContactForm />
           </div>
 
           <!-- Church info sidebar -->
@@ -127,10 +42,11 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
             </div>
 
             <div class="contact-info__block">
-              <h3 class="contact-info__label">Sunday Service</h3>
+              <h3 class="contact-info__label">Sunday Services</h3>
               <p class="contact-info__value">
-                English Worship: 11:00 AM<br />
-                Chinese Worship: 11:00 AM
+                English Worship: 9:45 AM<br />
+                Discipleship Groups: 11:00 AM<br />
+                Chinese Worship: 11:15 AM
               </p>
             </div>
 
@@ -154,121 +70,21 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   </main>
 </BaseLayout>
 
-<!-- Turnstile loaded in explicit mode — only one widget renders at a time -->
+<!-- Turnstile loaded in explicit mode -->
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 
 <script is:inline>
 (function () {
-  var tablist = document.querySelector('.contact-tabs__list');
-  if (!tablist) return;
-
-  var tabs = Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
-  var panels = tabs.map(function (tab) {
-    return document.getElementById(tab.getAttribute('aria-controls'));
-  });
-
-  /* Turnstile site key — read from first cf-turnstile div in active panel */
-  var siteKey = '';
-  var firstWidget = document.querySelector('.cf-turnstile[data-sitekey]');
-  if (firstWidget) {
-    siteKey = firstWidget.getAttribute('data-sitekey') || '';
-  }
-
-  /* Track current Turnstile widget ID so we can remove it on switch */
-  var currentWidgetId = null;
-
-  function renderTurnstile(panel) {
-    /* Remove previous widget if any */
-    if (currentWidgetId !== null && typeof turnstile !== 'undefined') {
-      try { turnstile.remove(currentWidgetId); } catch (_) {}
-      currentWidgetId = null;
-    }
-
-    if (typeof turnstile === 'undefined' || !siteKey) return;
-
-    var container = panel.querySelector('.cf-turnstile');
-    if (!container) return;
-
-    /* Clear any stale children from previous renders */
-    container.innerHTML = '';
-
-    currentWidgetId = turnstile.render(container, {
-      sitekey: siteKey,
-      theme: 'light',
-    });
-  }
-
-  function switchTab(newTab) {
-    var newIndex = tabs.indexOf(newTab);
-    if (newIndex === -1) return;
-
-    /* Deactivate all */
-    tabs.forEach(function (tab, i) {
-      tab.classList.remove('contact-tabs__tab--active');
-      tab.setAttribute('aria-selected', 'false');
-      tab.setAttribute('tabindex', '-1');
-      panels[i].hidden = true;
-      panels[i].classList.remove('contact-tabs__panel--active');
-    });
-
-    /* Activate new */
-    newTab.classList.add('contact-tabs__tab--active');
-    newTab.setAttribute('aria-selected', 'true');
-    newTab.setAttribute('tabindex', '0');
-    newTab.focus();
-    panels[newIndex].hidden = false;
-    panels[newIndex].classList.add('contact-tabs__panel--active');
-
-    /* Render Turnstile for newly visible panel */
-    renderTurnstile(panels[newIndex]);
-  }
-
-  /* Click handler */
-  tabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      switchTab(tab);
-    });
-  });
-
-  /* Keyboard navigation — arrow keys between tabs, Home/End */
-  tablist.addEventListener('keydown', function (e) {
-    var currentIndex = tabs.indexOf(document.activeElement);
-    if (currentIndex === -1) return;
-
-    var newIndex;
-
-    switch (e.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-        newIndex = (currentIndex + 1) % tabs.length;
-        break;
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        newIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-        break;
-      case 'Home':
-        newIndex = 0;
-        break;
-      case 'End':
-        newIndex = tabs.length - 1;
-        break;
-      default:
-        return;
-    }
-
-    e.preventDefault();
-    switchTab(tabs[newIndex]);
-  });
-
-  /* Initial Turnstile render for the default active panel */
   function initTurnstile() {
-    if (typeof turnstile !== 'undefined') {
-      var activePanel = document.querySelector('.contact-tabs__panel--active');
-      if (activePanel) renderTurnstile(activePanel);
-    }
+    if (typeof turnstile === 'undefined') return;
+    var container = document.querySelector('.cf-turnstile');
+    if (!container) return;
+    var siteKey = container.getAttribute('data-sitekey') || '';
+    if (!siteKey) return;
+    while (container.firstChild) container.removeChild(container.firstChild);
+    turnstile.render(container, { sitekey: siteKey, theme: 'light' });
   }
 
-  /* Turnstile script may load after this script — poll briefly */
   if (typeof turnstile !== 'undefined') {
     initTurnstile();
   } else {
@@ -279,7 +95,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
         clearInterval(interval);
         initTurnstile();
       } else if (attempts > 50) {
-        clearInterval(interval); /* give up after ~5s */
+        clearInterval(interval);
       }
     }, 100);
   }
@@ -288,82 +104,44 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
 <style>
   .contact-section {
-    padding: var(--space-20) var(--space-6);
+    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
     background-color: var(--color-bg);
   }
 
   .contact-section__inner {
-    max-width: var(--max-width, 72rem);
-    margin: 0 auto;
+    max-width: var(--max-width);
+    margin-inline: auto;
   }
 
-  /* Layout: forms + sidebar */
+  /* Layout: form + sidebar */
   .contact-layout {
     display: grid;
-    grid-template-columns: 1fr 20rem;
+    grid-template-columns: 1fr 22rem;
     gap: var(--space-16);
     align-items: start;
   }
 
-  /* ---------- Tabs ---------- */
-
-  .contact-tabs__list {
-    display: flex;
-    gap: var(--space-1);
-    border-bottom: 2px solid var(--color-stone);
-    margin-bottom: var(--space-8);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .contact-tabs__tab {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--color-body);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    padding: var(--space-3) var(--space-4);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: color var(--transition), border-color var(--transition);
-  }
-
-  .contact-tabs__tab:hover {
+  /* Form wrapper */
+  .contact-form-wrap__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
     color: var(--color-ink);
+    margin-block-end: var(--space-2);
   }
 
-  .contact-tabs__tab--active {
-    color: var(--color-terracotta-dark);
-    border-bottom-color: var(--color-terracotta-dark);
-  }
-
-  .contact-tabs__tab:focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: -2px;
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  }
-
-  .contact-tabs__panel {
-    animation: contact-fadeIn 0.2s ease;
-  }
-
-  .contact-tabs__panel[hidden] {
-    display: none;
-  }
-
-  @keyframes contact-fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+  .contact-form-wrap__intro {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+    margin-block-end: var(--space-8);
   }
 
   /* ---------- Church info sidebar ---------- */
 
   .contact-info {
-    background-color: var(--color-cream);
-    border-radius: var(--radius-md, 0.5rem);
+    background-color: var(--base-100);
+    border-radius: var(--radius-md);
     padding: var(--space-8);
   }
 
@@ -395,18 +173,19 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     font-family: var(--font-body);
     font-size: var(--text-sm);
     color: var(--color-body);
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
     margin: 0;
     font-style: normal;
   }
 
   .contact-info__link {
-    color: var(--color-terracotta-dark);
+    color: var(--primary-500);
     text-decoration: none;
     transition: color var(--transition);
   }
 
   .contact-info__link:hover {
+    color: var(--primary-400);
     text-decoration: underline;
   }
 
@@ -424,13 +203,8 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       gap: var(--space-10);
     }
 
-    .contact-tabs__list {
-      gap: 0;
-    }
-
-    .contact-tabs__tab {
-      font-size: var(--text-xs, 0.75rem);
-      padding: var(--space-2) var(--space-3);
+    .contact-section {
+      padding: var(--space-10) var(--space-4) calc(var(--space-10) + 2rem);
     }
   }
 </style>

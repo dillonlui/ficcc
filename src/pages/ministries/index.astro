@@ -21,13 +21,13 @@ const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
 const fallbackGroups = [
   {
     name: 'Discipleship Groups',
-    image: '/images/church/midweek-bible-study.webp',
+    image: '/images/church/img-0316.webp',
     meetingTime: 'Sundays 11:00 AM',
     description: 'Small groups for deeper Bible study and mutual encouragement after the Sunday gathering.',
   },
   {
     name: 'Midweek Bible Study',
-    image: '/images/ministries/bible-study.jpg',
+    image: '/images/church/midweek-bible-study.webp',
     meetingTime: 'Thursdays 7:00 PM',
     description: 'A weekly evening study open to everyone. Come dig into Scripture with us.',
   },
@@ -90,23 +90,36 @@ const fallbackGroups = [
           <div class="ministries-grid" data-reveal>
             {fallbackGroups.map((group) => (
               <div class="group-card">
-                <img
-                  src={group.image}
-                  alt=""
-                  class="group-card__img"
-                  loading="lazy"
-                />
-                <h3 class="group-card__name">{group.name}</h3>
-                {group.meetingTime && (
-                  <p class="group-card__time">{group.meetingTime}</p>
-                )}
-                <p class="group-card__desc">{group.description}</p>
+                <div class="group-card__image">
+                  <img src={group.image} alt="" loading="lazy" />
+                </div>
+                <div class="group-card__body">
+                  <h3 class="group-card__name">{group.name}</h3>
+                  {group.meetingTime && (
+                    <p class="group-card__time">{group.meetingTime}</p>
+                  )}
+                  <p class="group-card__desc">{group.description}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
     )}
+
+    <!-- Sermons callout -->
+    <section class="sermons-callout" aria-label="Watch Sermons">
+      <div class="sermons-callout__inner">
+        <h2 class="sermons-callout__heading" data-reveal>Hear what we're learning</h2>
+        <p class="sermons-callout__body" data-reveal>
+          Catch up on recent messages or explore past teaching series from our Sunday gatherings.
+        </p>
+        <a href="/sermons" class="sermons-callout__cta" data-reveal>
+          Watch Sermons
+          <svg class="sermons-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </section>
   </main>
 </BaseLayout>
 
@@ -141,15 +154,23 @@ const fallbackGroups = [
   .group-card {
     background-color: var(--color-stone);
     border-radius: var(--radius-md);
-    padding: var(--space-8) var(--space-6);
+    overflow: hidden;
   }
 
-  .group-card__img {
+  .group-card__image {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  .group-card__image img {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     object-fit: cover;
-    border-radius: var(--radius-lg);
-    margin-block-end: var(--space-4);
+    display: block;
+  }
+
+  .group-card__body {
+    padding: var(--space-6);
   }
 
   .group-card__name {
@@ -190,5 +211,65 @@ const fallbackGroups = [
     .ministries-listing {
       padding: var(--space-10) var(--space-4);
     }
+  }
+
+  /* Sermons callout banner */
+  .sermons-callout {
+    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
+    background-color: var(--base-800);
+  }
+
+  .sermons-callout__inner {
+    max-width: 36rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .sermons-callout__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    color: var(--base-50);
+    margin-block-end: var(--space-3);
+  }
+
+  .sermons-callout__body {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--base-300);
+    margin-block-end: var(--space-6);
+  }
+
+  .sermons-callout__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--base-50);
+    background-color: var(--primary-500);
+    padding: var(--space-3) var(--space-8);
+    border-radius: 100vw;
+    text-decoration: none;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .sermons-callout__cta-arrow {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sermons-callout__cta:hover {
+    background-color: var(--primary-400);
+    transform: translateY(-1px);
+  }
+
+  .sermons-callout__cta:hover .sermons-callout__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  .sermons-callout__cta:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
   }
 </style>
