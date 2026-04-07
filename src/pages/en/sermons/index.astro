@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/Hero.astro';
-import { getSermons } from '../../lib/sanity';
-import { getLatestVideos, type YouTubeVideo } from '../../lib/youtube';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
+import { getSermons } from '../../../lib/sanity';
+import { getLatestVideos, type YouTubeVideo } from '../../../lib/youtube';
 
 export const prerender = false;
 
@@ -192,7 +192,7 @@ function formatDate(dateStr: string): string {
         <p class="visit-callout__body" data-reveal>
           We'd love to meet you in person. Find service times, directions, and what to expect on a Sunday morning.
         </p>
-        <a href="/visit" class="visit-callout__cta" data-reveal>
+        <a href="/en/visit" class="visit-callout__cta" data-reveal>
           Plan Your Visit
           <svg class="visit-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>

@@ -1,6 +1,6 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/Hero.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
 import {
   getMinistries,
   getMinistryBySlug,
@@ -8,7 +8,7 @@ import {
   portableTextToHtml,
   type Ministry,
   type MinistryDetail,
-} from '../../lib/sanity';
+} from '../../../lib/sanity';
 
 export async function getStaticPaths() {
   let ministries: Ministry[] = [];
@@ -56,7 +56,7 @@ const leaderPhoto = ministry.leader?.photo
 
     <article class="ministry-detail">
       <div class="ministry-detail__inner">
-        <a class="ministry-detail__back" href="/ministries">← Back to Ministries</a>
+        <a class="ministry-detail__back" href="/en/ministries">← Back to Ministries</a>
 
         {ministry.leader?.name && (
           <section class="ministry-detail__leader" aria-label="Ministry leader">

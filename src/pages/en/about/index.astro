@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Timeline from '../../components/Timeline.astro';
-import { getAboutPage, portableTextToHtml, urlForImage } from '../../lib/sanity';
-import { buildOrganizationJsonLd } from '../../lib/structured-data';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Timeline from '../../../components/Timeline.astro';
+import { getAboutPage, portableTextToHtml, urlForImage } from '../../../lib/sanity';
+import { buildOrganizationJsonLd } from '../../../lib/structured-data';
 
 const title = 'Who We Are | FICCC';
 const description =
@@ -167,7 +167,7 @@ const imageUrl = aboutPage?.whoWeAreImage
         <p class="beliefs-callout__body" data-reveal>
           The Bible shapes everything we do. See what we hold to and where we're headed.
         </p>
-        <a href="/about/beliefs" class="beliefs-callout__cta" data-reveal>
+        <a href="/en/about/beliefs" class="beliefs-callout__cta" data-reveal>
           Beliefs &amp; Vision
           <svg class="beliefs-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>

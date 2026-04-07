@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/Hero.astro';
-import MinistryCard from '../../components/MinistryCard.astro';
-import { getMinistries, urlForImage, type Ministry } from '../../lib/sanity';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
+import MinistryCard from '../../../components/MinistryCard.astro';
+import { getMinistries, urlForImage, type Ministry } from '../../../lib/sanity';
 
 const title = 'Community & Ministries | FICCC';
 const description = 'Explore the ministries and community groups at First Ithaca Chinese Christian Church.';
@@ -114,7 +114,7 @@ const fallbackGroups = [
         <p class="sermons-callout__body" data-reveal>
           Catch up on recent messages or explore past teaching series from our Sunday gatherings.
         </p>
-        <a href="/sermons" class="sermons-callout__cta" data-reveal>
+        <a href="/en/sermons" class="sermons-callout__cta" data-reveal>
           Watch Sermons
           <svg class="sermons-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>

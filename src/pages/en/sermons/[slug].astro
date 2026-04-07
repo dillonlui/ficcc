@@ -1,9 +1,9 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/Hero.astro';
-import YouTubeEmbed from '../../components/YouTubeEmbed.astro';
-import { getSermons, type Sermon } from '../../lib/sanity';
-import { buildVideoObjectJsonLd } from '../../lib/structured-data';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
+import YouTubeEmbed from '../../../components/YouTubeEmbed.astro';
+import { getSermons, type Sermon } from '../../../lib/sanity';
+import { buildVideoObjectJsonLd } from '../../../lib/structured-data';
 
 export async function getStaticPaths() {
   let sermons: Sermon[] = [];
@@ -63,7 +63,7 @@ const sermonJsonLd = sermon.videoId
 
     <article class="sermon-detail">
       <div class="sermon-detail__inner">
-        <a class="sermon-detail__back" href="/sermons">← Back to Sermons</a>
+        <a class="sermon-detail__back" href="/en/sermons">← Back to Sermons</a>
 
         <div class="sermon-detail__meta">
           {sermon.speaker && (
