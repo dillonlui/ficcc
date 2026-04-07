@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Search', () => {
   test('opens search modal, queries, shows results, and closes on Escape', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/', { waitUntil: 'domcontentloaded' });
 
     // Search trigger button should be visible
     const trigger = page.locator('#search-trigger');
@@ -29,7 +29,7 @@ test.describe('Search', () => {
   });
 
   test('closes search modal on backdrop click', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/', { waitUntil: 'domcontentloaded' });
 
     await page.locator('#search-trigger').click();
     const modal = page.locator('#search-modal');
@@ -41,7 +41,7 @@ test.describe('Search', () => {
   });
 
   test('close button dismisses modal', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/', { waitUntil: 'domcontentloaded' });
 
     await page.locator('#search-trigger').click();
     const modal = page.locator('#search-modal');

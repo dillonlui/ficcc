@@ -13,6 +13,7 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [
     sitemap({
+      filter: (page) => page !== 'https://ficcc.org/',
       i18n: {
         defaultLocale: 'en',
         locales: {

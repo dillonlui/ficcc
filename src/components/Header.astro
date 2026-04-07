@@ -12,7 +12,7 @@ const logoHref = lang === 'zh' ? '/zh' : '/en/';
 const logoText = lang === 'zh' ? '伊的家' : 'FICCC';
 const logoLabel = lang === 'zh' ? '伊的家' : 'FICCC Home';
 const langToggleLabel = lang === 'zh' ? '中文 / EN' : 'EN / 中文';
-const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/' : '/zh');
+const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/en/' : '/zh');
 const currentPath = Astro.url.pathname;
 const logoSrc = lang === 'zh' ? '/logo/logo-zh-light.svg' : '/logo/logo-en-light.svg';
 
