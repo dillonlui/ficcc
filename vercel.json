@@ -26,49 +26,49 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/",
+      "destination": "https://ficcc.org/en/",
       "permanent": true
     },
     {
       "source": "/home/about/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/about",
+      "destination": "https://ficcc.org/en/about",
       "permanent": true
     },
     {
       "source": "/home/faith/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/about/beliefs",
+      "destination": "https://ficcc.org/en/about/beliefs",
       "permanent": true
     },
     {
       "source": "/home/sermons/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/sermons",
+      "destination": "https://ficcc.org/en/sermons",
       "permanent": true
     },
     {
       "source": "/home/worship/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/visit",
+      "destination": "https://ficcc.org/en/visit",
       "permanent": true
     },
     {
       "source": "/home/fellowships/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/ministries",
+      "destination": "https://ficcc.org/en/ministries",
       "permanent": true
     },
     {
       "source": "/home/contact/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/contact",
+      "destination": "https://ficcc.org/en/contact",
       "permanent": true
     },
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/",
+      "destination": "https://ficcc.org/en/",
       "permanent": true
     },
     {
