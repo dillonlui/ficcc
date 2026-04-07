@@ -51,20 +51,15 @@ const homeJsonLd = {
         <div class="hero-home__content">
           <h1 class="hero-home__title" data-reveal>{heroTitle}</h1>
           <p class="hero-home__subtitle" data-reveal>{heroSubtitle}</p>
-          <a class="hero-home__cta" href="/zh/sundays" data-reveal>
-            規劃你的來訪
-            <svg class="hero-home__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-
           <!-- Service info — two-column: times left, location right -->
           <div class="hero-info" data-reveal>
             <div class="hero-info__times">
               <div class="hero-info__item">
                 <span class="hero-info__label">
                   <svg class="hero-info__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L3 9v11a2 2 0 002 2h4v-7h6v7h4a2 2 0 002-2V9l-9-7z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2v4h6V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  主日聚會
+                  華語崇拜
                 </span>
-                <span class="hero-info__value">9:45 AM</span>
+                <span class="hero-info__value">11:15 AM</span>
               </div>
               <div class="hero-info__item">
                 <span class="hero-info__label">
@@ -85,6 +80,11 @@ const homeJsonLd = {
               </div>
             </div>
           </div>
+
+          <a class="hero-home__cta" href="/zh/sundays" data-reveal>
+            規劃你的來訪
+            <svg class="hero-home__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
         </div>
       </div>
     </section>
@@ -107,7 +107,8 @@ const homeJsonLd = {
     </section>
 
     <!-- ============ SECTION 2: 主日早晨 ============ -->
-    <section class="split split--reversed split--tinted" aria-label="主日體驗">
+    <section class="split split--reversed split--tinted split--textured" aria-label="主日體驗">
+      <div class="split__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="split__inner">
         <div class="split__media" data-reveal>
           <img src="/images/church/pxl-20250813-130502778.webp" alt="FICCC教會位於429 Mitchell Street" loading="lazy" />
@@ -115,7 +116,7 @@ const homeJsonLd = {
         <div class="split__content" data-reveal>
           <h2 class="split__heading">主日早晨</h2>
           <p class="split__body">
-            上午9:45我們一起唱詩、聽聖經講道、守主餐。上午11:00進入門徒小組，
+            上午11:15我們一起唱詩、聯聖經講道、守主餐。上午11:00進入門徒小組，
             進行討論和禱告。之後我們一起吃午餐-通常是中餐。
           </p>
           <a href="/zh/sundays" class="split__link">規劃你的首次來訪 <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -141,7 +142,8 @@ const homeJsonLd = {
     </section>
 
     <!-- ============ SECTION 4: 觀看講道 ============ -->
-    <section class="split split--reversed split--tinted" aria-label="講道">
+    <section class="split split--reversed split--tinted split--textured" aria-label="講道">
+      <div class="split__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="split__inner">
         <div class="split__media" data-reveal>
           <img src="/images/church/img-0316.webp" alt="FICCC主日崇拜" loading="lazy" />
@@ -240,6 +242,7 @@ const homeJsonLd = {
   }
 
   .hero-home__cta {
+    margin-top: var(--space-8);
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -349,6 +352,23 @@ const homeJsonLd = {
   .split {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .split--textured .split__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.35;
+    z-index: 0;
+  }
+
+  .split--textured .split__inner {
+    position: relative;
+    z-index: 1;
   }
 
   .split--tinted {
