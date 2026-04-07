@@ -3,56 +3,60 @@ import { getAlternateUrl } from './navigation';
 
 describe('getAlternateUrl', () => {
   describe('standard prefix swap', () => {
-    it('EN /about → ZH /zh/about', () => {
-      expect(getAlternateUrl('/about', 'en')).toBe('/zh/about');
+    it('EN /en/about → ZH /zh/about', () => {
+      expect(getAlternateUrl('/en/about', 'en')).toBe('/zh/about');
     });
 
-    it('ZH /zh/about → EN /about', () => {
-      expect(getAlternateUrl('/zh/about', 'zh')).toBe('/about');
+    it('ZH /zh/about → EN /en/about', () => {
+      expect(getAlternateUrl('/zh/about', 'zh')).toBe('/en/about');
     });
 
-    it('EN /contact → ZH /zh/contact', () => {
-      expect(getAlternateUrl('/contact', 'en')).toBe('/zh/contact');
+    it('EN /en/contact → ZH /zh/contact', () => {
+      expect(getAlternateUrl('/en/contact', 'en')).toBe('/zh/contact');
     });
 
-    it('ZH /zh/sermons → EN /sermons', () => {
-      expect(getAlternateUrl('/zh/sermons', 'zh')).toBe('/sermons');
+    it('ZH /zh/sermons → EN /en/sermons', () => {
+      expect(getAlternateUrl('/zh/sermons', 'zh')).toBe('/en/sermons');
     });
   });
 
   describe('nested paths', () => {
-    it('EN /about/beliefs → ZH /zh/about/beliefs', () => {
-      expect(getAlternateUrl('/about/beliefs', 'en')).toBe('/zh/about/beliefs');
+    it('EN /en/about/beliefs → ZH /zh/about/beliefs', () => {
+      expect(getAlternateUrl('/en/about/beliefs', 'en')).toBe('/zh/about/beliefs');
     });
 
-    it('ZH /zh/about/staff → EN /about/staff', () => {
-      expect(getAlternateUrl('/zh/about/staff', 'zh')).toBe('/about/staff');
+    it('ZH /zh/about/staff → EN /en/about/staff', () => {
+      expect(getAlternateUrl('/zh/about/staff', 'zh')).toBe('/en/about/staff');
     });
   });
 
   describe('asymmetric routes', () => {
-    it('EN /visit → ZH /zh/sundays', () => {
-      expect(getAlternateUrl('/visit', 'en')).toBe('/zh/sundays');
+    it('EN /en/visit → ZH /zh/sundays', () => {
+      expect(getAlternateUrl('/en/visit', 'en')).toBe('/zh/sundays');
     });
 
-    it('ZH /zh/sundays → EN /visit', () => {
-      expect(getAlternateUrl('/zh/sundays', 'zh')).toBe('/visit');
+    it('ZH /zh/sundays → EN /en/visit', () => {
+      expect(getAlternateUrl('/zh/sundays', 'zh')).toBe('/en/visit');
     });
   });
 
   describe('root paths', () => {
-    it('EN / → ZH /zh', () => {
-      expect(getAlternateUrl('/', 'en')).toBe('/zh');
+    it('EN /en → ZH /zh', () => {
+      expect(getAlternateUrl('/en', 'en')).toBe('/zh');
     });
 
-    it('ZH /zh → EN /', () => {
-      expect(getAlternateUrl('/zh', 'zh')).toBe('/');
+    it('EN /en/ → ZH /zh', () => {
+      expect(getAlternateUrl('/en/', 'en')).toBe('/zh');
+    });
+
+    it('ZH /zh → EN /en/', () => {
+      expect(getAlternateUrl('/zh', 'zh')).toBe('/en/');
     });
   });
 
   describe('fallback to homepage for pages with no counterpart', () => {
-    it('EN /resources → ZH /zh', () => {
-      expect(getAlternateUrl('/resources', 'en')).toBe('/zh');
+    it('EN /en/resources → ZH /zh', () => {
+      expect(getAlternateUrl('/en/resources', 'en')).toBe('/zh');
     });
 
     it('EN /styleguide → ZH /zh', () => {
@@ -69,30 +73,30 @@ describe('getAlternateUrl', () => {
   });
 
   describe('trailing slash normalization', () => {
-    it('EN /about/ → ZH /zh/about (strip trailing slash)', () => {
-      expect(getAlternateUrl('/about/', 'en')).toBe('/zh/about');
+    it('EN /en/about/ → ZH /zh/about', () => {
+      expect(getAlternateUrl('/en/about/', 'en')).toBe('/zh/about');
     });
 
-    it('ZH /zh/about/ → EN /about (strip trailing slash)', () => {
-      expect(getAlternateUrl('/zh/about/', 'zh')).toBe('/about');
+    it('ZH /zh/about/ → EN /en/about', () => {
+      expect(getAlternateUrl('/zh/about/', 'zh')).toBe('/en/about');
     });
 
-    it('EN /visit/ → ZH /zh/sundays (asymmetric with trailing slash)', () => {
-      expect(getAlternateUrl('/visit/', 'en')).toBe('/zh/sundays');
+    it('EN /en/visit/ → ZH /zh/sundays (asymmetric with trailing slash)', () => {
+      expect(getAlternateUrl('/en/visit/', 'en')).toBe('/zh/sundays');
     });
   });
 
   describe('dynamic routes', () => {
-    it('EN /sermons/some-slug → ZH /zh/sermons/some-slug', () => {
-      expect(getAlternateUrl('/sermons/some-slug', 'en')).toBe('/zh/sermons/some-slug');
+    it('EN /en/sermons/some-slug → ZH /zh/sermons/some-slug', () => {
+      expect(getAlternateUrl('/en/sermons/some-slug', 'en')).toBe('/zh/sermons/some-slug');
     });
 
-    it('ZH /zh/sermons/some-slug → EN /sermons/some-slug', () => {
-      expect(getAlternateUrl('/zh/sermons/some-slug', 'zh')).toBe('/sermons/some-slug');
+    it('ZH /zh/sermons/some-slug → EN /en/sermons/some-slug', () => {
+      expect(getAlternateUrl('/zh/sermons/some-slug', 'zh')).toBe('/en/sermons/some-slug');
     });
 
-    it('EN /ministries/youth → ZH /zh/ministries/youth', () => {
-      expect(getAlternateUrl('/ministries/youth', 'en')).toBe('/zh/ministries/youth');
+    it('EN /en/ministries/youth → ZH /zh/ministries/youth', () => {
+      expect(getAlternateUrl('/en/ministries/youth', 'en')).toBe('/zh/ministries/youth');
     });
   });
 });
