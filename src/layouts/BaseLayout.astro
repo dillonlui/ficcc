@@ -98,7 +98,7 @@ const showAnnouncementBar =
         const toggle = (e.target as HTMLElement).closest('.lang-toggle') as HTMLAnchorElement | null;
         if (toggle) {
           const targetLang = toggle.href.includes('/zh') ? 'zh' : 'en';
-          document.cookie = 'lang-pref=' + targetLang + ';path=/;max-age=31536000;SameSite=Lax';
+          document.cookie = 'lang-pref=' + targetLang + ';path=/;max-age=31536000;SameSite=Lax;Secure';
         }
       });
     </script>

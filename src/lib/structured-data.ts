@@ -16,7 +16,7 @@ export function buildChurchJsonLd(): Record<string, unknown> {
     name: 'First Ithaca Chinese Christian Church',
     description:
       'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY.',
-    url: 'https://ficcc.org',
+    url: 'https://ficcc.org/en/',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '429 Mitchell Street',
@@ -116,7 +116,7 @@ export function buildOrganizationJsonLd(): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'First Ithaca Chinese Christian Church',
-    url: 'https://ficcc.org',
+    url: 'https://ficcc.org/en/',
     foundingDate: '1968',
     address: {
       '@type': 'PostalAddress',

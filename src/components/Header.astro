@@ -8,7 +8,7 @@ interface Props {
 
 const { lang = 'en', langToggleHref: langToggleHrefProp } = Astro.props;
 const navLinks = getNavLinks(lang);
-const logoHref = lang === 'zh' ? '/zh' : '/';
+const logoHref = lang === 'zh' ? '/zh' : '/en/';
 const logoText = lang === 'zh' ? '伊的家' : 'FICCC';
 const logoLabel = lang === 'zh' ? '伊的家' : 'FICCC Home';
 const langToggleLabel = lang === 'zh' ? '中文 / EN' : 'EN / 中文';
@@ -17,13 +17,13 @@ const currentPath = Astro.url.pathname;
 const logoSrc = lang === 'zh' ? '/logo/logo-zh-light.svg' : '/logo/logo-en-light.svg';
 
 // About dropdown sub-links
-const aboutPrefix = lang === 'zh' ? '/zh/about' : '/about';
+const aboutPrefix = lang === 'zh' ? '/zh/about' : '/en/about';
 const aboutDropdown = [
   { label: lang === 'zh' ? '關於我們' : 'Who We Are', href: aboutPrefix },
   { label: lang === 'zh' ? '信仰與願景' : 'Beliefs & Vision', href: `${aboutPrefix}/beliefs` },
-  { label: lang === 'zh' ? '來訪我們' : 'Visit Us', href: lang === 'zh' ? '/zh/sundays' : '/visit' },
+  { label: lang === 'zh' ? '來訪我們' : 'Visit Us', href: lang === 'zh' ? '/zh/sundays' : '/en/visit' },
 ];
-const isAboutHref = (href: string) => href === '/about' || href === '/zh/about';
+const isAboutHref = (href: string) => href === '/en/about' || href === '/zh/about';
 ---
 
 <header class="site-header">

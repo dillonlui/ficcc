@@ -11,11 +11,11 @@ export interface NavLink {
 }
 
 const navLinksEN: NavLink[] = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
-  { label: 'Ministries', href: '/ministries' },
-  { label: 'Sermons', href: '/sermons' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Home', href: '/en/' },
+  { label: 'About', href: '/en/about' },
+  { label: 'Ministries', href: '/en/ministries' },
+  { label: 'Sermons', href: '/en/sermons' },
+  { label: 'Contact', href: '/en/contact' },
 ];
 
 const navLinksZH: NavLink[] = [
@@ -31,11 +31,11 @@ export function getNavLinks(lang: Lang = 'en'): NavLink[] {
 }
 
 const footerNavEN: NavLink[] = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
-  { label: 'Ministries', href: '/ministries' },
-  { label: 'Sermons', href: '/sermons' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Home', href: '/en/' },
+  { label: 'About', href: '/en/about' },
+  { label: 'Ministries', href: '/en/ministries' },
+  { label: 'Sermons', href: '/en/sermons' },
+  { label: 'Contact', href: '/en/contact' },
 ];
 
 const footerNavZH: NavLink[] = [
@@ -81,48 +81,36 @@ export function getServiceTimes(lang: Lang = 'en'): { heading: string; items: Se
  * Key = source path, Value = counterpart path.
  */
 const ASYMMETRIC_ROUTES: Record<string, string> = {
-  '/visit': '/zh/sundays',
-  '/zh/sundays': '/visit',
+  '/en/visit': '/zh/sundays',
+  '/zh/sundays': '/en/visit',
 };
 
-/**
- * Pages that exist only in one language and have no counterpart.
- * These fall back to the other language's homepage.
- */
-const NO_COUNTERPART = ['/resources', '/styleguide', '/admin', '/404'];
+const NO_COUNTERPART = ['/en/resources', '/styleguide', '/admin', '/404'];
 
-/**
- * Given a pathname and current language, return the URL for the same page
- * in the other language. Handles asymmetric routes, prefix swapping,
- * trailing-slash normalization, and falls back to the other-language homepage
- * when no counterpart exists.
- */
 export function getAlternateUrl(pathname: string, currentLang: Lang): string {
-  // Normalize: strip trailing slash (but keep "/" as-is)
   const normalized = pathname.length > 1 && pathname.endsWith('/')
     ? pathname.slice(0, -1)
     : pathname;
 
-  // Check asymmetric routes first
   if (ASYMMETRIC_ROUTES[normalized]) {
     return ASYMMETRIC_ROUTES[normalized];
   }
 
-  // Check if this page has no counterpart → fall back to other-language homepage
   if (NO_COUNTERPART.some((p) => normalized === p || normalized.startsWith(p + '/'))) {
-    return currentLang === 'en' ? '/zh' : '/';
+    return currentLang === 'en' ? '/zh' : '/en/';
   }
 
   if (currentLang === 'en') {
-    // EN → ZH: prepend /zh
-    return normalized === '/' ? '/zh' : `/zh${normalized}`;
+    if (normalized === '/en') {
+      return '/zh';
+    }
+    return normalized.replace(/^\/en/, '/zh');
   }
 
-  // ZH → EN: strip /zh prefix
   if (normalized === '/zh') {
-    return '/';
+    return '/en/';
   }
-  return normalized.replace(/^\/zh/, '');
+  return normalized.replace(/^\/zh/, '/en');
 }
 
 /** Church name by language for copyright, logos, etc. */

@@ -50,7 +50,7 @@ const structuredData = jsonLd ?? defaultJsonLd;
   <>
     <link rel="alternate" hreflang="en" href={lang === 'en' ? canonical : alternateUrl} />
     <link rel="alternate" hreflang="zh" href={lang === 'zh' ? canonical : alternateUrl} />
-    <link rel="alternate" hreflang="x-default" href={lang === 'en' ? canonical : alternateUrl} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', siteUrl).href} />
   </>
 )}
 
