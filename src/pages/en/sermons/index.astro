@@ -187,6 +187,7 @@ function formatDate(dateStr: string): string {
 
     <!-- Visit callout -->
     <section class="visit-callout" aria-label="Plan Your Visit">
+      <div class="visit-callout__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
       <div class="visit-callout__inner">
         <h2 class="visit-callout__heading" data-reveal>Come worship with us</h2>
         <p class="visit-callout__body" data-reveal>
@@ -462,12 +463,27 @@ function formatDate(dateStr: string): string {
   .visit-callout {
     padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
     background-color: var(--base-800);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visit-callout__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.25;
+    mix-blend-mode: soft-light;
+    z-index: 0;
   }
 
   .visit-callout__inner {
     max-width: 36rem;
     margin-inline: auto;
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
 
   .visit-callout__heading {

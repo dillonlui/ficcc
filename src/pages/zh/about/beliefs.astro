@@ -125,6 +125,40 @@ const beliefs =
       </div>
     </section>
 
+    <!-- Vision -->
+    <section class="section section--alt" aria-labelledby="vision-heading">
+      <div class="section__inner">
+        <h2 class="section__heading" id="vision-heading" data-reveal>我們的異象</h2>
+        <p class="section__intro" data-reveal>
+          伊的家華人基督教會的使命是「培養謙卑的僕人，一生愛主、愛失喪的人、愛地方教會」。
+          這個異象根植於聖經中反覆強調的三個標準，我們盼望在每位弟兄姊妹的生命中培育這些品格，
+          使他們能忠心地管理神所賜的豐盛恩典。
+        </p>
+        <div data-reveal>
+          <Accordion items={[
+            {
+              title: '培養謙卑的僕人',
+              content:
+                '<p>腓立比書 2:3-4說：「凡事不可結黨，不可貪圖虛浮的榮耀；只要存心謙卑，各人看別人比自己強。各人不要單顧自己的事，也要顧別人的事。」我們教會渴望在每個人的生命中培養僕人的心志，而非特權的心態。</p>' +
+                '<p>我們鼓勵每位弟兄姊妹在伊薩卡生活期間參與服事——可能是在教會中服事，可能是擔任難民的導師，也可能是參與校園事工。我們的願望是，當他們離開伊薩卡時，他們的生命已被僕人的精神所塑造。</p>',
+            },
+            {
+              title: '愛主、愛失喪的人、愛地方教會',
+              content:
+                '<p>哥林多前書 13:3說：「我若將所有的賙濟窮人，又捨己身叫人焚燒，卻沒有愛，仍然與我無益。」我們渴望培養出於愛的動機，而非出於自利。</p>' +
+                '<p>我們盼望在三個方面成長：第一，對主的愛——裝備弟兄姊妹在每週有與主獨處的時間，讀經禱告。第二，對失喪之人的愛——建立與非基督徒的友誼，向他們傳講福音。第三，對地方教會的愛——積極參與禱告會、查經班、團契活動，彼此實踐聖經中的「彼此」命令。</p>',
+            },
+            {
+              title: '一生之久',
+              content:
+                '<p>馬太福音 13:20-23描述了不同土壤的比喻。我們渴望培養長期的靈命成長，而非短暫的熱情。</p>' +
+                '<p>我們盼望每位弟兄姊妹在伊薩卡期間，能培養出如此堅強的僕人心志，以致他們對主、對失喪之人、對地方教會的愛能持續一生成長。我們的責任是警告他們前方可能的陷阱，並裝備他們避免跌入其中。</p>',
+            },
+          ]} />
+        </div>
+      </div>
+    </section>
+
     <!-- Ministries Callout -->
     <section class="ministries-callout ministries-callout--textured" aria-label="探索事工">
       <div class="ministries-callout__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
@@ -209,6 +243,10 @@ const beliefs =
     padding-block: var(--space-16);
     position: relative;
     overflow: hidden;
+  }
+
+  .section--alt {
+    background-color: var(--base-100);
   }
 
   .section__inner {

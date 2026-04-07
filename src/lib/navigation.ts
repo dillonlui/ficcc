@@ -15,6 +15,7 @@ const navLinksEN: NavLink[] = [
   { label: 'About', href: '/en/about' },
   { label: 'Ministries', href: '/en/ministries' },
   { label: 'Sermons', href: '/en/sermons' },
+  { label: 'Give', href: '/en/give' },
   { label: 'Contact', href: '/en/contact' },
 ];
 
@@ -23,6 +24,7 @@ const navLinksZH: NavLink[] = [
   { label: '關於我們', href: '/zh/about' },
   { label: '團契', href: '/zh/ministries' },
   { label: '講道', href: '/zh/sermons' },
+  { label: '奉獻', href: '/zh/give' },
   { label: '聯絡我們', href: '/zh/contact' },
 ];
 
@@ -35,6 +37,7 @@ const footerNavEN: NavLink[] = [
   { label: 'About', href: '/en/about' },
   { label: 'Ministries', href: '/en/ministries' },
   { label: 'Sermons', href: '/en/sermons' },
+  { label: 'Give', href: '/en/give' },
   { label: 'Contact', href: '/en/contact' },
 ];
 
@@ -43,6 +46,7 @@ const footerNavZH: NavLink[] = [
   { label: '關於我們', href: '/zh/about' },
   { label: '團契', href: '/zh/ministries' },
   { label: '講道', href: '/zh/sermons' },
+  { label: '奉獻', href: '/zh/give' },
   { label: '聯絡我們', href: '/zh/contact' },
 ];
 

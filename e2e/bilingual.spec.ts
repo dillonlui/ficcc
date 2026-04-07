@@ -41,7 +41,7 @@ test.describe('Bilingual — Chinese pages', () => {
 
 test.describe('Bilingual — language toggle', () => {
   test('EN home has lang toggle pointing to /zh', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/', { waitUntil: 'domcontentloaded' });
 
     const langToggle = page.locator('.lang-toggle');
     await expect(langToggle).toBeVisible();
@@ -50,18 +50,18 @@ test.describe('Bilingual — language toggle', () => {
     expect(href).toBe('/zh');
   });
 
-  test('ZH home has lang toggle pointing to /', async ({ page }) => {
+  test('ZH home has lang toggle pointing to /en/', async ({ page }) => {
     await page.goto('/zh/', { waitUntil: 'domcontentloaded' });
 
     const langToggle = page.locator('.lang-toggle');
     await expect(langToggle).toBeVisible();
 
     const href = await langToggle.getAttribute('href');
-    expect(href).toBe('/');
+    expect(href).toBe('/en/');
   });
 
-  test('EN /about has lang toggle pointing to /zh/about', async ({ page }) => {
-    await page.goto('/about/', { waitUntil: 'domcontentloaded' });
+  test('EN /en/about has lang toggle pointing to /zh/about', async ({ page }) => {
+    await page.goto('/en/about/', { waitUntil: 'domcontentloaded' });
 
     const langToggle = page.locator('.lang-toggle');
     const href = await langToggle.getAttribute('href');
@@ -73,13 +73,13 @@ test.describe('Bilingual — language toggle', () => {
 
     const langToggle = page.locator('.lang-toggle');
     const href = await langToggle.getAttribute('href');
-    expect(href).toBe('/contact');
+    expect(href).toBe('/en/contact');
   });
 });
 
 test.describe('Bilingual — hreflang tags', () => {
   test('EN home page has hreflang tags', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/', { waitUntil: 'domcontentloaded' });
 
     const enTag = page.locator('link[hreflang="en"]');
     const zhTag = page.locator('link[hreflang="zh"]');
@@ -101,13 +101,13 @@ test.describe('Bilingual — hreflang tags', () => {
   });
 
   test('hreflang en points to EN URL, zh points to ZH URL', async ({ page }) => {
-    await page.goto('/about/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/about/', { waitUntil: 'domcontentloaded' });
 
     const enHref = await page.locator('link[hreflang="en"]').getAttribute('href');
     const zhHref = await page.locator('link[hreflang="zh"]').getAttribute('href');
 
     // EN hreflang should contain the EN canonical
-    expect(enHref).toContain('/about');
+    expect(enHref).toContain('/en/about');
     expect(enHref).not.toContain('/zh');
 
     // ZH hreflang should point to the ZH version

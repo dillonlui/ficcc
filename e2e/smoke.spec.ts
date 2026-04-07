@@ -5,13 +5,14 @@ import { test, expect, type Page } from '@playwright/test';
  * Each entry: [url, description].
  */
 const CRITICAL_PAGES: [string, string][] = [
-  ['/', 'Home'],
-  ['/about/', 'About'],
-  ['/sermons/', 'Sermons'],
-  ['/contact/', 'Contact'],
-  ['/events/', 'Events'],
-  ['/visit/', 'Visit'],
-  ['/give/', 'Give'],
+  ['/', 'Splash'],
+  ['/en/', 'Home (English)'],
+  ['/en/about/', 'About'],
+  ['/en/sermons/', 'Sermons'],
+  ['/en/contact/', 'Contact'],
+  ['/en/events/', 'Events'],
+  ['/en/visit/', 'Visit'],
+  ['/en/give/', 'Give'],
   ['/zh/', 'Home (Chinese)'],
   ['/zh/contact/', 'Contact (Chinese)'],
   ['/zh/about/', 'About (Chinese)'],

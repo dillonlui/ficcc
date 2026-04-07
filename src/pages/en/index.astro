@@ -107,7 +107,8 @@ const homeJsonLd = {
     </section>
 
     <!-- ============ SECTION 2: Sundays ============ -->
-    <section class="split split--reversed split--tinted" aria-label="Sunday Experience">
+    <section class="split split--reversed split--tinted split--textured" aria-label="Sunday Experience">
+      <div class="split__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="split__inner">
         <div class="split__media" data-reveal>
           <img src="/images/church/pxl-20250813-130502778.webp" alt="FICCC church building at 429 Mitchell Street" loading="lazy" />
@@ -143,7 +144,8 @@ const homeJsonLd = {
     </section>
 
     <!-- ============ SECTION 4: Sermons ============ -->
-    <section class="split split--reversed split--tinted" aria-label="Sermons">
+    <section class="split split--reversed split--tinted split--textured" aria-label="Sermons">
+      <div class="split__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="split__inner">
         <div class="split__media" data-reveal>
           <img src="/images/church/img-0316.webp" alt="FICCC service" loading="lazy" />
@@ -353,6 +355,23 @@ const homeJsonLd = {
   .split {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .split--textured .split__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.35;
+    z-index: 0;
+  }
+
+  .split--textured .split__inner {
+    position: relative;
+    z-index: 1;
   }
 
   .split--tinted {

@@ -58,7 +58,8 @@ const imageUrl = aboutPage?.whoWeAreImage
     </section>
 
     <!-- Snapshots -->
-    <section class="snapshots snapshots--tinted" aria-label="Snapshots of God's Faithfulness">
+    <section class="snapshots snapshots--tinted snapshots--textured" aria-label="Snapshots of God's Faithfulness">
+      <div class="snapshots__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="snapshots__inner">
         <h2 class="snapshots__heading" data-reveal>Snapshots of God's Faithfulness</h2>
         <div class="snapshots__grid" data-reveal-stagger>
@@ -162,6 +163,7 @@ const imageUrl = aboutPage?.whoWeAreImage
 
     <!-- Beliefs callout -->
     <section class="beliefs-callout" aria-label="Beliefs and Vision">
+      <div class="beliefs-callout__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
       <div class="beliefs-callout__inner">
         <h2 class="beliefs-callout__heading" data-reveal>What do we believe?</h2>
         <p class="beliefs-callout__body" data-reveal>
@@ -251,10 +253,27 @@ const imageUrl = aboutPage?.whoWeAreImage
   .snapshots {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-bg);
+    position: relative;
+    overflow: hidden;
   }
 
   .snapshots--tinted {
     background-color: var(--color-stone);
+  }
+
+  .snapshots--textured .snapshots__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.35;
+    z-index: 0;
+  }
+
+  .snapshots--textured .snapshots__inner {
+    position: relative;
+    z-index: 1;
   }
 
   /* ---------- Pastors ---------- */
@@ -384,16 +403,48 @@ const imageUrl = aboutPage?.whoWeAreImage
     color: var(--base-700);
   }
 
+  /* ---------- Timeline texture wrapper ---------- */
+  .timeline-texture {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-texture__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    z-index: 0;
+  }
+
   /* ---------- Beliefs Callout ---------- */
   .beliefs-callout {
     padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
     background-color: var(--base-800);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .beliefs-callout__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.25;
+    mix-blend-mode: soft-light;
+    z-index: 0;
   }
 
   .beliefs-callout__inner {
     max-width: 36rem;
     margin-inline: auto;
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
 
   .beliefs-callout__heading {

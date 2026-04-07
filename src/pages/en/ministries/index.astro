@@ -109,6 +109,7 @@ const fallbackGroups = [
 
     <!-- Sermons callout -->
     <section class="sermons-callout" aria-label="Watch Sermons">
+      <div class="sermons-callout__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
       <div class="sermons-callout__inner">
         <h2 class="sermons-callout__heading" data-reveal>Hear what we're learning</h2>
         <p class="sermons-callout__body" data-reveal>
@@ -184,7 +185,7 @@ const fallbackGroups = [
     font-family: var(--font-body);
     font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--color-terracotta);
+    color: var(--primary-500);
     margin-block-end: var(--space-3);
   }
 
@@ -217,12 +218,27 @@ const fallbackGroups = [
   .sermons-callout {
     padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
     background-color: var(--base-800);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sermons-callout__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.25;
+    mix-blend-mode: soft-light;
+    z-index: 0;
   }
 
   .sermons-callout__inner {
     max-width: 36rem;
     margin-inline: auto;
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
 
   .sermons-callout__heading {

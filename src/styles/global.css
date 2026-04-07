@@ -262,3 +262,54 @@ a.announcement-bar:focus-visible {
     animation: none !important;
   }
 }
+
+/* ==========================================================================
+   Section Texture Utilities
+   "Ithaca Rooted" — rolling hills from the logo + paper grain
+   Apply to any section via class. Sections need position: relative.
+   ========================================================================== */
+
+/* --- Grain overlay (paper texture) --- */
+.texture-grain {
+  position: relative;
+}
+.texture-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Light backgrounds: multiply blend */
+.texture-grain--light::after {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+/* Dark backgrounds: soft-light blend */
+.texture-grain--dark::after {
+  opacity: 0.35;
+  mix-blend-mode: soft-light;
+}
+
+/* --- Rolling hills SVG (positioned via component markup) --- */
+.texture-hills {
+  position: relative;
+  overflow: hidden;
+}
+.texture-hills > * {
+  position: relative;
+  z-index: 1;
+}
+.texture-hills__svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  pointer-events: none;
+  z-index: 0;
+}

@@ -52,10 +52,11 @@ const isAboutHref = (href: string) => href === '/en/about' || href === '/zh/abou
       <ul class="nav-list" role="list">
         {navLinks.map((link) => {
           const isActive = currentPath === link.href
-            || (link.href !== '/' && link.href !== '/zh' && currentPath.startsWith(link.href));
+            || (link.href !== '/' && link.href !== '/zh' && link.href !== '/en/' && currentPath.startsWith(link.href));
 
           if (isAboutHref(link.href)) {
-            const aboutActive = currentPath.startsWith(aboutPrefix);
+            const visitHref = lang === 'zh' ? '/zh/sundays' : '/en/visit';
+            const aboutActive = currentPath.startsWith(aboutPrefix) || currentPath.startsWith(visitHref);
             return (
               <li class="nav-dropdown">
                 <button
@@ -200,6 +201,12 @@ const isAboutHref = (href: string) => href === '/en/about' || href === '/zh/abou
     line-height: normal;
     vertical-align: baseline;
   }
+  .nav-dropdown-trigger.nav-link--active {
+    color: var(--primary-600);
+    border-bottom-color: var(--primary-500);
+    font-weight: 600;
+  }
+
   .nav-dropdown-chevron {
     transition: transform var(--transition);
   }

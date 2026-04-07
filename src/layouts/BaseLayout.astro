@@ -125,6 +125,17 @@ const showAnnouncementBar =
 </html>
 
 <style is:global>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  body > main,
+  body > [data-pagefind-body] {
+    flex: 1;
+  }
+
   .skip-to-content {
     position: absolute;
     left: -9999px;
