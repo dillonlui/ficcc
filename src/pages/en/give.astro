@@ -1,44 +1,105 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import { getGivePage, urlForImage, portableTextToHtml } from '../../lib/sanity';
 
 const title = 'Give | First Ithaca Chinese Christian Church';
 const description =
   'Support the mission of First Ithaca Chinese Christian Church through your generous giving.';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let givePage: Awaited<ReturnType<typeof getGivePage>> = null;
+try {
+  givePage = await getGivePage('en');
+} catch {}
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heroImage = givePage?.heroImage
+  ? urlForImage(givePage.heroImage, { width: 1600 })
+  : '/images/textures/adam-vradenburg-_gu7E90QChU-unsplash.jpg';
+const heroTitle = givePage?.heroTitle || 'Give';
+const heroSubtitle = givePage?.heroSubtitle || 'Your generosity makes a difference';
+
+const whyWeGiveHeading = givePage?.whyWeGiveHeading || 'Why We Give';
+const whyWeGiveBodyHtml =
+  givePage?.whyWeGiveBody && givePage.whyWeGiveBody.length > 0
+    ? portableTextToHtml(givePage.whyWeGiveBody)
+    : null;
+
+const scriptureQuote = givePage?.scriptureQuote || 'Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.';
+const scriptureCitation = givePage?.scriptureCitation || '2 Corinthians 9:7 (NIV)';
+
+const fallbackGivingMethods = [
+  {
+    title: 'Online via PayPal',
+    description: 'Give securely online using PayPal. You can use a PayPal account, debit card, or credit card.',
+    icon: 'globe' as const,
+    link: 'https://www.paypal.com/donate/?cmd=_donations&business=ficccfinance1%40gmail.com&item_name=First+Ithaca+Chinese+Christian+Church+Offering&currency_code=USD&source=url',
+    linkText: 'Give with PayPal',
+  },
+  {
+    title: 'By Check',
+    description: 'Make checks payable to First Ithaca Chinese Christian Church and mail to:',
+    icon: 'envelope' as const,
+    address: 'First Ithaca Chinese Christian Church\n429 Mitchell Street\nIthaca, NY 14850',
+  },
+  {
+    title: 'In Person',
+    description: 'Offering envelopes are available at our Sunday service. You can place your gift in the offering box located in the sanctuary.',
+    icon: 'people' as const,
+    note: 'Sundays at 9:45 AM · 429 Mitchell Street',
+  },
+];
+
+const givingMethods =
+  givePage?.givingMethods && givePage.givingMethods.length > 0
+    ? givePage.givingMethods
+    : fallbackGivingMethods;
+
+const questionsHeading = givePage?.questionsHeading || 'Questions?';
+const questionsBody = givePage?.questionsBody || "If you have questions about giving, tax-deductible receipts, or other ways to support our church, please don't hesitate to reach out.";
+
+const iconSvgs: Record<string, string> = {
+  globe: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>',
+  envelope: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  people: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>',
+};
 ---
 
 <BaseLayout title={title} description={description}>
   <main id="main-content" data-pagefind-body>
     <Hero
-      title="Give"
-      subtitle="Your generosity makes a difference"
-      backgroundImage="/images/textures/adam-vradenburg-_gu7E90QChU-unsplash.jpg"
+      title={heroTitle}
+      subtitle={heroSubtitle}
+      backgroundImage={heroImage}
     />
 
     <!-- Why We Give -->
     <section class="give-section" aria-label="Why We Give">
       <div class="give-section__inner">
-        <h2 class="section-heading" data-reveal>Why We Give</h2>
-        <div class="give-prose" data-reveal>
-          <p>
-            Giving is an act of worship and trust. When we give generously, we
-            participate in God's work: supporting our church community, caring
-            for those in need, and sharing the good news of Jesus Christ.
-          </p>
-          <blockquote class="give-verse">
+        <h2 class="section-heading" data-reveal>{whyWeGiveHeading}</h2>
+        {whyWeGiveBodyHtml ? (
+          <div class="give-prose" data-reveal set:html={whyWeGiveBodyHtml} />
+        ) : (
+          <div class="give-prose" data-reveal>
             <p>
-              "Each of you should give what you have decided in your heart to
-              give, not reluctantly or under compulsion, for God loves a
-              cheerful giver."
+              Giving is an act of worship and trust. When we give generously, we
+              participate in God's work: supporting our church community, caring
+              for those in need, and sharing the good news of Jesus Christ.
             </p>
-            <cite>2 Corinthians 9:7 (NIV)</cite>
-          </blockquote>
-          <p>
-            Whether it's your first time giving or you've been supporting our
-            church for years, every gift helps us continue serving our community
-            in Ithaca and beyond. Thank you for your faithfulness.
-          </p>
-        </div>
+            <blockquote class="give-verse">
+              <p>
+                "{scriptureQuote}"
+              </p>
+              <cite>{scriptureCitation}</cite>
+            </blockquote>
+            <p>
+              Whether it's your first time giving or you've been supporting our
+              church for years, every gift helps us continue serving our community
+              in Ithaca and beyond. Thank you for your faithfulness.
+            </p>
+          </div>
+        )}
       </div>
     </section>
 
@@ -47,60 +108,34 @@ const description =
       <div class="give-section__inner">
         <h2 class="section-heading" data-reveal>Ways to Give</h2>
         <div class="give-methods" data-reveal-stagger>
-
-          <!-- Online via PayPal -->
-          <div class="give-method" data-reveal>
-            <div class="give-method__icon" aria-hidden="true">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          {givingMethods.map((method) => (
+            <div class="give-method" data-reveal>
+              {method.icon && iconSvgs[method.icon] && (
+                <div class="give-method__icon" aria-hidden="true" set:html={iconSvgs[method.icon]} />
+              )}
+              <h3 class="give-method__title">{method.title}</h3>
+              {method.description && (
+                <p class="give-method__desc" set:html={method.description} />
+              )}
+              {method.link && method.linkText && (
+                <a
+                  class="give-method__link"
+                  href={method.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {method.linkText}
+                  <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+              )}
+              {method.address && (
+                <address class="give-method__address" set:html={method.address.replace(/\n/g, '<br />')} />
+              )}
+              {method.note && (
+                <p class="give-method__note">{method.note}</p>
+              )}
             </div>
-            <h3 class="give-method__title">Online via PayPal</h3>
-            <p class="give-method__desc">
-              Give securely online using PayPal. You can use a PayPal account,
-              debit card, or credit card.
-            </p>
-            <a
-              class="give-method__link"
-              href="https://www.paypal.com/donate/?cmd=_donations&amp;business=ficccfinance1%40gmail.com&amp;item_name=First+Ithaca+Chinese+Christian+Church+Offering&amp;currency_code=USD&amp;source=url"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Give with PayPal
-              <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-          </div>
-
-          <!-- By Check -->
-          <div class="give-method" data-reveal>
-            <div class="give-method__icon" aria-hidden="true">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </div>
-            <h3 class="give-method__title">By Check</h3>
-            <p class="give-method__desc">
-              Make checks payable to <strong>First Ithaca Chinese Christian
-              Church</strong> and mail to:
-            </p>
-            <address class="give-method__address">
-              First Ithaca Chinese Christian Church<br />
-              429 Mitchell Street<br />
-              Ithaca, NY 14850
-            </address>
-          </div>
-
-          <!-- In Person -->
-          <div class="give-method" data-reveal>
-            <div class="give-method__icon" aria-hidden="true">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-            </div>
-            <h3 class="give-method__title">In Person</h3>
-            <p class="give-method__desc">
-              Offering envelopes are available at our Sunday service. You can
-              place your gift in the offering box located in the sanctuary.
-            </p>
-            <p class="give-method__note">
-              Sundays at 9:45 AM · 429 Mitchell Street
-            </p>
-          </div>
-
+          ))}
         </div>
       </div>
     </section>
@@ -109,10 +144,9 @@ const description =
     <section class="give-questions" aria-label="Questions about Giving">
       <div class="give-questions__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
       <div class="give-questions__inner">
-        <h2 class="give-questions__heading" data-reveal>Questions?</h2>
+        <h2 class="give-questions__heading" data-reveal>{questionsHeading}</h2>
         <p class="give-questions__body" data-reveal>
-          If you have questions about giving, tax-deductible receipts, or other
-          ways to support our church, please don't hesitate to reach out.
+          {questionsBody}
         </p>
         <a href="/en/contact" class="give-questions__cta" data-reveal>
           Contact Us

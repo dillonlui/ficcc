@@ -1,19 +1,48 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import { getContactPage, getSiteSettings, urlForImage } from '../../lib/sanity';
 
 const title = '聯繫我們 | 伊薩卡華人基督教會';
 const description =
   '聯繫伊薩卡華人基督教會。透過微信或表單與我們取得聯繫。';
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let contactPage: Awaited<ReturnType<typeof getContactPage>> = null;
+let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
+try {
+  [contactPage, siteSettings] = await Promise.all([
+    getContactPage('zh'),
+    getSiteSettings('zh'),
+  ]);
+} catch {}
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heroImage = contactPage?.heroImage
+  ? urlForImage(contactPage.heroImage, { width: 1600 })
+  : '/images/hero/friends-golden.webp';
+const heroTitle = contactPage?.heroTitle || '聯繫我們';
+const heroSubtitle = contactPage?.heroSubtitle || '我們期待與您聯繫';
+
+const address = siteSettings?.address || '429 Mitchell Street';
+const city = siteSettings?.city || 'Ithaca, NY 14850';
+const phone = siteSettings?.phone || '(607) 273-1223';
+const email = siteSettings?.email || 'info@ficcc.org';
+
+const serviceTimes = siteSettings?.serviceTimes || [
+  { label: '英文崇拜', time: '上午 9:45' },
+  { label: '門徒小組', time: '上午 11:00' },
+  { label: '中文崇拜', time: '上午 11:15' },
+];
 ---
 
 <BaseLayout title={title} description={description} lang="zh">
   <main id="main-content" data-pagefind-body>
     <Hero
-      title="聯繫我們"
-      subtitle="我們期待與您聯繫"
-      backgroundImage="/images/hero/friends-golden.webp"
+      title={heroTitle}
+      subtitle={heroSubtitle}
+      backgroundImage={heroImage}
     />
 
     <section class="contact-section" aria-label="聯繫方式">
@@ -114,31 +143,31 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
               <h3 class="contact-info__label">教會地址</h3>
               <address class="contact-info__value">
                 伊薩卡華人基督教會<br />
-                429 Mitchell Street<br />
-                Ithaca, NY 14850
+                {address}<br />
+                {city}
               </address>
             </div>
 
             <div class="contact-info__block">
               <h3 class="contact-info__label">主日崇拜</h3>
               <p class="contact-info__value">
-                英文崇拜：上午 9:45<br />
-                門徒小組：上午 11:00<br />
-                中文崇拜：上午 11:15
+                {serviceTimes.map((st, i) => (
+                  <>{i > 0 && <br />}{st.label}：{st.time}</>
+                ))}
               </p>
             </div>
 
             <div class="contact-info__block">
               <h3 class="contact-info__label">電子郵件</h3>
               <p class="contact-info__value">
-                <a href="mailto:info@ficcc.org" class="contact-info__link">info@ficcc.org</a>
+                <a href={`mailto:${email}`} class="contact-info__link">{email}</a>
               </p>
             </div>
 
             <div class="contact-info__block">
               <h3 class="contact-info__label">電話</h3>
               <p class="contact-info__value">
-                <a href="tel:+16072731223" class="contact-info__link">(607) 273-1223</a>
+                <a href={`tel:${phone.replace(/[^+\d]/g, '')}`} class="contact-info__link">{phone}</a>
               </p>
             </div>
           </aside>

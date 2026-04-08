@@ -118,6 +118,9 @@ const accordionItems = faqItems.map((item) => ({
 }));
 
 const showRideRequest = visitPage?.rideRequestEnabled !== false;
+
+const rideRequestHeading = visitPage?.rideRequestHeading || 'Need a Ride?';
+const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No problem. We'd love to pick you up! Fill out the form below and someone from our team will reach out to arrange a ride.";
 ---
 
 <BaseLayout title={title} description={description}>
@@ -191,9 +194,9 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
       <section class="ride-request" aria-label="Request a Ride">
         <div class="ride-request__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
         <div class="ride-request__inner">
-          <h2 class="ride-request__heading" data-reveal>Need a Ride?</h2>
+          <h2 class="ride-request__heading" data-reveal>{rideRequestHeading}</h2>
           <p class="ride-request__intro" data-reveal>
-            Don't have a car? No problem. We'd love to pick you up! Fill out the form below and someone from our team will reach out to arrange a ride.
+            {rideRequestIntro}
           </p>
           <RideRequestForm />
         </div>

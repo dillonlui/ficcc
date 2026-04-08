@@ -2,18 +2,47 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import ContactForm from '../../components/ContactForm.astro';
+import { getContactPage, getSiteSettings, urlForImage } from '../../lib/sanity';
 
 const title = 'Contact | First Ithaca Chinese Christian Church';
 const description =
   'Get in touch with First Ithaca Chinese Christian Church. Send us a message — we would love to hear from you.';
+
+// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
+let contactPage: Awaited<ReturnType<typeof getContactPage>> = null;
+let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
+try {
+  [contactPage, siteSettings] = await Promise.all([
+    getContactPage('en'),
+    getSiteSettings('en'),
+  ]);
+} catch {}
+
+// ---------- Resolved data (CMS ▸ fallback) ----------
+const heroImage = contactPage?.heroImage
+  ? urlForImage(contactPage.heroImage, { width: 1600 })
+  : '/images/hero/friends-golden.webp';
+const heroTitle = contactPage?.heroTitle || 'Contact Us';
+const heroSubtitle = contactPage?.heroSubtitle || "We'd love to hear from you";
+
+const address = siteSettings?.address || '429 Mitchell Street';
+const city = siteSettings?.city || 'Ithaca, NY 14850';
+const phone = siteSettings?.phone || '(607) 273-1223';
+const email = siteSettings?.email || 'info@ficcc.org';
+
+const serviceTimes = siteSettings?.serviceTimes || [
+  { label: 'English Worship', time: '9:45 AM' },
+  { label: 'Discipleship Groups', time: '11:00 AM' },
+  { label: 'Chinese Worship', time: '11:15 AM' },
+];
 ---
 
 <BaseLayout title={title} description={description}>
   <main id="main-content" data-pagefind-body>
     <Hero
-      title="Contact Us"
-      subtitle="We'd love to hear from you"
-      backgroundImage="/images/hero/friends-golden.webp"
+      title={heroTitle}
+      subtitle={heroSubtitle}
+      backgroundImage={heroImage}
     />
 
     <section class="contact-section" aria-label="Contact">
@@ -36,31 +65,31 @@ const description =
               <h3 class="contact-info__label">Address</h3>
               <address class="contact-info__value">
                 First Ithaca Chinese Christian Church<br />
-                429 Mitchell Street<br />
-                Ithaca, NY 14850
+                {address}<br />
+                {city}
               </address>
             </div>
 
             <div class="contact-info__block">
               <h3 class="contact-info__label">Sunday Services</h3>
               <p class="contact-info__value">
-                English Worship: 9:45 AM<br />
-                Discipleship Groups: 11:00 AM<br />
-                Chinese Worship: 11:15 AM
+                {serviceTimes.map((st, i) => (
+                  <>{i > 0 && <br />}{st.label}: {st.time}</>
+                ))}
               </p>
             </div>
 
             <div class="contact-info__block">
               <h3 class="contact-info__label">Email</h3>
               <p class="contact-info__value">
-                <a href="mailto:info@ficcc.org" class="contact-info__link">info@ficcc.org</a>
+                <a href={`mailto:${email}`} class="contact-info__link">{email}</a>
               </p>
             </div>
 
             <div class="contact-info__block">
               <h3 class="contact-info__label">Phone</h3>
               <p class="contact-info__value">
-                <a href="tel:+16072731223" class="contact-info__link">(607) 273-1223</a>
+                <a href={`tel:${phone.replace(/[^+\d]/g, '')}`} class="contact-info__link">{phone}</a>
               </p>
             </div>
           </div>

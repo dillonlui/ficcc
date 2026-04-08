@@ -48,15 +48,19 @@ const fallbackTransportationHtml = `
 `;
 
 // ---------- Bus Route (ZH-specific bespoke content) ----------
-const busRoute = [
-  { stop: '教會（429 Mitchell St）', time: '9:00 AM' },
-  { stop: 'Hasbrouck Apartments', time: '9:10 AM' },
-  { stop: 'Collegetown（College Ave & Dryden）', time: '9:15 AM' },
-  { stop: 'North Campus（Robert Purcell）', time: '9:22 AM' },
-  { stop: 'Ithaca Commons', time: '9:30 AM' },
-  { stop: 'East Hill Plaza', time: '9:35 AM' },
-  { stop: '返回教會（429 Mitchell St）', time: '9:40 AM' },
-];
+const busRouteHeading = visitPage?.busRouteHeading || '主日接送巴士路線';
+const busRouteIntro = visitPage?.busRouteIntro || '每週日早上，教會提供免費接送巴士服務。以下為七站路線及預計到達時間：';
+const busRoute = visitPage?.busRoute?.length
+  ? visitPage.busRoute
+  : [
+      { stop: '教會（429 Mitchell St）', time: '9:00 AM' },
+      { stop: 'Hasbrouck Apartments', time: '9:10 AM' },
+      { stop: 'Collegetown（College Ave & Dryden）', time: '9:15 AM' },
+      { stop: 'North Campus（Robert Purcell）', time: '9:22 AM' },
+      { stop: 'Ithaca Commons', time: '9:30 AM' },
+      { stop: 'East Hill Plaza', time: '9:35 AM' },
+      { stop: '返回教會（429 Mitchell St）', time: '9:40 AM' },
+    ];
 
 const fallbackFaqItems = [
   {
@@ -125,6 +129,9 @@ const accordionItems = faqItems.map((item) => ({
 }));
 
 const showRideRequest = visitPage?.rideRequestEnabled !== false;
+
+const rideRequestHeading = visitPage?.rideRequestHeading || '需要接送嗎？';
+const rideRequestIntro = visitPage?.rideRequestIntro || '沒有車？沒問題，我們很樂意接送您！請填寫以下表格，我們的同工會與您聯繫安排接送。';
 ---
 
 <BaseLayout title={title} description={description} lang="zh">
@@ -187,9 +194,9 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- Sunday Bus Route (ZH-specific) -->
     <section class="bus-route" aria-label="主日接送路線">
       <div class="bus-route__inner">
-        <h2 class="section-heading" data-reveal>主日接送巴士路線</h2>
+        <h2 class="section-heading" data-reveal>{busRouteHeading}</h2>
         <p class="bus-route__intro">
-          每週日早上，教會提供免費接送巴士服務。以下為七站路線及預計到達時間：
+          {busRouteIntro}
         </p>
         <ol class="bus-route__list">
           {busRoute.map((stop, i) => (
@@ -221,9 +228,9 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
       <section class="ride-request" aria-label="申請接送">
         <div class="ride-request__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
         <div class="ride-request__inner">
-          <h2 class="ride-request__heading" data-reveal>需要接送嗎？</h2>
+          <h2 class="ride-request__heading" data-reveal>{rideRequestHeading}</h2>
           <p class="ride-request__intro" data-reveal>
-            沒有車？沒問題，我們很樂意接送您！請填寫以下表格，我們的同工會與您聯繫安排接送。
+            {rideRequestIntro}
           </p>
           <RideRequestForm lang="zh" />
         </div>
