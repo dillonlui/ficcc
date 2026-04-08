@@ -1,291 +1,836 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import Card from '../components/Card.astro';
-import ImageMosaic from '../components/ImageMosaic.astro';
-import Accordion from '../components/Accordion.astro';
-import ContactForm from '../components/ContactForm.astro';
-import AudioPlayer from '../components/AudioPlayer.astro';
 
-/* Design-token definitions for rendering in the page */
-const colors = [
-  { name: '--color-bg',         hex: '#FAF8F5', label: 'Background' },
-  { name: '--color-stone',      hex: '#E8E0D8', label: 'Stone' },
-  { name: '--color-terracotta', hex: '#C4745A', label: 'Terracotta' },
-  { name: '--color-ink',        hex: '#1A1A2E', label: 'Deep Ink' },
-  { name: '--color-body',       hex: '#2D2D2D', label: 'Body Text' },
+/* ── Color ramps from global.css ── */
+const primaryRamp = [
+  { step: '50',  hex: '#EDF5F1' },
+  { step: '100', hex: '#D2E8DD' },
+  { step: '200', hex: '#A8D4BC' },
+  { step: '300', hex: '#72B895' },
+  { step: '400', hex: '#49926F' },
+  { step: '500', hex: '#2B5B45' },
+  { step: '600', hex: '#224A38' },
+  { step: '700', hex: '#1A3A2C' },
+  { step: '800', hex: '#122A20' },
+  { step: '900', hex: '#0B1C15' },
 ];
 
+const secondaryRamp = [
+  { step: '50',  hex: '#F8F0EB' },
+  { step: '100', hex: '#EDDACD' },
+  { step: '200', hex: '#DEC0AA' },
+  { step: '300', hex: '#CFA487' },
+  { step: '400', hex: '#BF7E58' },
+  { step: '500', hex: '#A56640' },
+  { step: '600', hex: '#844E30' },
+  { step: '700', hex: '#633A23' },
+  { step: '800', hex: '#422617' },
+  { step: '900', hex: '#2A170D' },
+];
+
+const baseRamp = [
+  { step: '50',  hex: '#FAFAF7' },
+  { step: '100', hex: '#F5F2EC' },
+  { step: '200', hex: '#EBE6DD' },
+  { step: '300', hex: '#E0DAD0' },
+  { step: '400', hex: '#CFC7BA' },
+  { step: '500', hex: '#B5AD9F' },
+  { step: '600', hex: '#928A7D' },
+  { step: '700', hex: '#6E675D' },
+  { step: '800', hex: '#4A4540' },
+  { step: '900', hex: '#33302A' },
+];
+
+const accentRamp = [
+  { step: '500', hex: '#505962' },
+  { step: '700', hex: '#2D333A' },
+];
+
+const semanticColors = [
+  { name: '--danger',         hex: '#B8453A', label: 'Danger' },
+  { name: '--danger-text',    hex: '#991b1b', label: 'Danger Text' },
+  { name: '--danger-bg',      hex: '#fef2f2', label: 'Danger BG' },
+  { name: '--danger-border',  hex: '#fecaca', label: 'Danger Border' },
+  { name: '--success-text',   hex: '#166534', label: 'Success Text' },
+  { name: '--success-bg',     hex: '#f0fdf4', label: 'Success BG' },
+  { name: '--success-border', hex: '#bbf7d0', label: 'Success Border' },
+  { name: '--color-focus',    hex: 'var(--primary-400)', label: 'Focus Ring' },
+];
+
+/* ── Type scales ── */
 const enTypeScale = [
-  { tag: 'h1', size: 'var(--text-4xl)',  sizePx: '48px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading One' },
-  { tag: 'h2', size: 'var(--text-3xl)',  sizePx: '40px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Two' },
-  { tag: 'h3', size: 'var(--text-2xl)',  sizePx: '32px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Three' },
-  { tag: 'h4', size: 'var(--text-xl)',   sizePx: '24px', lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Four' },
-  { tag: 'p',  size: 'var(--text-base)', sizePx: '16px', lh: 'var(--leading-normal)', font: 'var(--font-body)',    text: 'Body text in Inter — The quick brown fox jumps over the lazy dog. Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+  { tag: 'h1', size: 'var(--text-4xl)',  sizePx: '48px (3rem)',    lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading One' },
+  { tag: 'h2', size: 'var(--text-3xl)',  sizePx: '40px (2.5rem)',  lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Two' },
+  { tag: 'h3', size: 'var(--text-2xl)',  sizePx: '32px (2rem)',    lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Three' },
+  { tag: 'h4', size: 'var(--text-xl)',   sizePx: '24px (1.5rem)',  lh: 'var(--leading-tight)',  font: 'var(--font-heading)', text: 'Heading Four' },
+  { tag: 'p',  size: 'var(--text-base)', sizePx: '16px (1rem)',    lh: 'var(--leading-normal)', font: 'var(--font-body)',    text: 'Body text in DM Sans Variable — The quick brown fox jumps over the lazy dog. Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+  { tag: 'small', size: 'var(--text-sm)', sizePx: '14px (0.875rem)', lh: 'var(--leading-normal)', font: 'var(--font-body)', text: 'Small text for captions, metadata, and secondary information.' },
 ];
 
 const zhTypeScale = [
-  { tag: 'h1', size: 'var(--text-zh-3xl)', sizePx: '42px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
-  { tag: 'h2', size: 'var(--text-zh-2xl)', sizePx: '34px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
-  { tag: 'h3', size: 'var(--text-zh-xl)',  sizePx: '26px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
-  { tag: 'h4', size: 'var(--text-zh-lg)',  sizePx: '22px', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '伊的家華人基督教會' },
-  { tag: 'p',  size: 'var(--text-zh-base)', sizePx: '18px', lh: 'var(--leading-cjk)', font: 'var(--font-cjk)', text: '我們是一個以華人為主的基督教社區，位於紐約州伊薩卡市。我們歡迎來自不同背景的人，一起敬拜、學習和成長。無論你是學生、學者還是社區居民，這裡都是你的家。' },
+  { tag: 'h1', size: 'var(--text-zh-3xl)', sizePx: '42px (2.625rem)', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '以撒迦中华基督教会' },
+  { tag: 'h2', size: 'var(--text-zh-2xl)', sizePx: '34px (2.125rem)', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '以撒迦中华基督教会' },
+  { tag: 'h3', size: 'var(--text-zh-xl)',  sizePx: '26px (1.625rem)', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '以撒迦中华基督教会' },
+  { tag: 'h4', size: 'var(--text-zh-lg)',  sizePx: '22px (1.375rem)', lh: 'var(--leading-tight)', font: 'var(--font-cjk)', text: '以撒迦中华基督教会' },
+  { tag: 'p',  size: 'var(--text-zh-base)', sizePx: '18px (1.125rem)', lh: 'var(--leading-cjk)', font: 'var(--font-cjk)', text: '我們是一個以華人為主的基督教社區，位於紐約州伊薩卡市。我們歡迎來自不同背景的人，一起敬拜、學習和成長。無論你是學生、學者還是社區居民，這裡都是你的家。' },
 ];
 
+/* ── Spacing tokens ── */
 const spacingTokens = [
   { name: '--space-1',  value: '4px' },
   { name: '--space-2',  value: '8px' },
   { name: '--space-3',  value: '12px' },
   { name: '--space-4',  value: '16px' },
+  { name: '--space-5',  value: '20px' },
   { name: '--space-6',  value: '24px' },
   { name: '--space-8',  value: '32px' },
+  { name: '--space-10', value: '40px' },
   { name: '--space-12', value: '48px' },
   { name: '--space-16', value: '64px' },
+  { name: '--space-20', value: '80px' },
   { name: '--space-24', value: '96px' },
   { name: '--space-32', value: '128px' },
 ];
+
+/* ── Radius tokens ── */
+const radiusTokens = [
+  { name: '--radius-sm',   value: '6px' },
+  { name: '--radius-md',   value: '12px' },
+  { name: '--radius-lg',   value: '20px' },
+  { name: '--radius-xl',   value: '32px' },
+  { name: '--radius-pill', value: '999px' },
+];
+
+/* ── Components ── */
+const components = [
+  { name: 'Header', file: 'Header.astro', desc: 'Sticky, responsive navigation bar. Desktop shows inline nav with dropdowns for About and Grow sections; mobile shows hamburger with a slide-out drawer. Includes logo wordmark, language toggle, and aria-expanded toggling.' },
+  { name: 'Footer', file: 'Footer.astro', desc: 'Dark background footer with service times pulled from Sanity CMS, responsive grid layout, church name in EN + ZH, address, navigation links, and copyright with dynamic year.' },
+  { name: 'Hero', file: 'Hero.astro', desc: 'Full-width background image section with dark overlay for text readability, headline, optional subtitle, and call-to-action button. Supports background images or gradient fallbacks.' },
+  { name: 'Card', file: 'Card.astro', desc: 'Versatile content card with optional image and optional link wrapping. Works at various widths inside grid layouts. Uses border-radius and subtle shadow.' },
+  { name: 'Accordion', file: 'Accordion.astro', desc: 'FAQ-style accordion using native <details>/<summary> elements — zero JavaScript, accessible by default. Custom chevron rotates on open.' },
+  { name: 'Timeline', file: 'Timeline.astro', desc: 'Scroll-filling vertical timeline with era groupings. Each era has a heading and a set of entries. Uses IntersectionObserver for the filling line effect.' },
+  { name: 'ContactForm', file: 'ContactForm.astro', desc: 'Styled HTML form with Cloudflare Turnstile spam protection and Resend email delivery. Includes validation attributes, proper label associations, and accessible error states.' },
+  { name: 'RideRequestForm', file: 'RideRequestForm.astro', desc: 'Specialized form for ride requests with date/time pickers. Also uses Turnstile + Resend for spam protection and delivery.' },
+];
 ---
 
-<BaseLayout title="Styleguide — FICCC Design Tokens">
-  <main id="main-content" data-pagefind-ignore="all" style={`max-width: 72rem; margin-inline: auto; padding: var(--space-8) var(--space-6);`}>
-    <header style={`margin-block-end: var(--space-12);`}>
-      <h1 style={`font-size: var(--text-4xl); margin-block-end: var(--space-4);`}>Design Tokens</h1>
-      <p style={`font-size: var(--text-lg); color: var(--color-body); max-width: 48rem;`}>
-        Living reference for the Gathered Warmth design system. Every value on this page comes from CSS custom properties defined in <code>global.css</code>.
-      </p>
-    </header>
+<BaseLayout title="FICCC Design System">
+  <main id="main-content" data-pagefind-ignore="all">
 
     <!-- ================================================================
-         COLOR PALETTE
+         HERO / INTRO
          ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Color Palette</h2>
-      <div style={`display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: var(--space-6);`}>
-        {colors.map((c) => (
-          <figure style={`display: flex; flex-direction: column; gap: var(--space-2);`}>
-            <div
-              style={`width: 100%; aspect-ratio: 1; border-radius: var(--radius-md); background-color: var(${c.name}); border: 1px solid var(--color-stone);`}
-              role="img"
-              aria-label={`${c.label} color swatch: ${c.hex}`}
-            />
-            <figcaption>
-              <strong style={`display: block; font-size: var(--text-sm);`}>{c.label}</strong>
-              <code style={`font-size: var(--text-xs); color: var(--color-body);`}>{c.name}</code>
-              <span style={`display: block; font-size: var(--text-xs); color: var(--color-body);`}>{c.hex}</span>
-            </figcaption>
+    <section class="sg-hero">
+      <div class="sg-hero__inner">
+        <p class="sg-label">Design System</p>
+        <h1 class="sg-hero__title">FICCC Design System</h1>
+        <p class="sg-hero__subtitle">
+          <strong>"Gathered Warmth"</strong> — Unhurried, Rooted, Textured, Legible, Familiar, Honest.
+        </p>
+        <p class="sg-hero__body">
+          The "Ithaca Rooted" palette draws from the Finger Lakes landscape: forest canopy greens, gorge stone greys, baked clay trail reds, and warm parchment tones. Every token on this page is defined in <code>src/styles/global.css</code> and used throughout the site.
+        </p>
+      </div>
+    </section>
+
+    <div class="sg-container">
+
+      <!-- ================================================================
+           COLOR PALETTE
+           ================================================================ -->
+      <section class="sg-section">
+        <h2 class="sg-section__title">Color Palette — "Ithaca Rooted"</h2>
+
+        <!-- Primary: Forest Teal -->
+        <h3 class="sg-ramp-title">Primary: Forest Teal</h3>
+        <p class="sg-ramp-desc">Used for CTAs, links, active states, and dark backgrounds. The core brand color.</p>
+        <div class="sg-swatch-grid">
+          {primaryRamp.map((c) => (
+            <figure class="sg-swatch">
+              <div
+                class="sg-swatch__color"
+                style={`background-color: var(--primary-${c.step});`}
+                role="img"
+                aria-label={`Primary ${c.step}: ${c.hex}`}
+              />
+              <figcaption class="sg-swatch__info">
+                <code class="sg-swatch__token">--primary-{c.step}</code>
+                <span class="sg-swatch__hex">{c.hex}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <!-- Secondary: Baked Clay -->
+        <h3 class="sg-ramp-title">Secondary: Baked Clay</h3>
+        <p class="sg-ramp-desc">Warm accents, secondary CTAs, decorative elements. Fine for button backgrounds with light text; use darker values for text to meet WCAG AA.</p>
+        <div class="sg-swatch-grid">
+          {secondaryRamp.map((c) => (
+            <figure class="sg-swatch">
+              <div
+                class="sg-swatch__color"
+                style={`background-color: var(--secondary-${c.step});`}
+                role="img"
+                aria-label={`Secondary ${c.step}: ${c.hex}`}
+              />
+              <figcaption class="sg-swatch__info">
+                <code class="sg-swatch__token">--secondary-{c.step}</code>
+                <span class="sg-swatch__hex">{c.hex}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <!-- Base: Warm Parchment -->
+        <h3 class="sg-ramp-title">Base: Warm Parchment</h3>
+        <p class="sg-ramp-desc">Page backgrounds, text colors, borders, and neutral surfaces. The 50-200 range serves as backgrounds; 700-900 for text.</p>
+        <div class="sg-swatch-grid">
+          {baseRamp.map((c) => (
+            <figure class="sg-swatch">
+              <div
+                class="sg-swatch__color"
+                style={`background-color: var(--base-${c.step});`}
+                role="img"
+                aria-label={`Base ${c.step}: ${c.hex}`}
+              />
+              <figcaption class="sg-swatch__info">
+                <code class="sg-swatch__token">--base-{c.step}</code>
+                <span class="sg-swatch__hex">{c.hex}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <!-- Accent: Gorge Slate -->
+        <h3 class="sg-ramp-title">Accent: Gorge Slate</h3>
+        <p class="sg-ramp-desc">Metadata, subtle UI elements, and secondary text. Only two values defined.</p>
+        <div class="sg-swatch-grid sg-swatch-grid--narrow">
+          {accentRamp.map((c) => (
+            <figure class="sg-swatch">
+              <div
+                class="sg-swatch__color"
+                style={`background-color: var(--accent-${c.step});`}
+                role="img"
+                aria-label={`Accent ${c.step}: ${c.hex}`}
+              />
+              <figcaption class="sg-swatch__info">
+                <code class="sg-swatch__token">--accent-{c.step}</code>
+                <span class="sg-swatch__hex">{c.hex}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <!-- Semantic -->
+        <h3 class="sg-ramp-title">Semantic Colors</h3>
+        <p class="sg-ramp-desc">Used for form validation, alerts, and focus indicators.</p>
+        <div class="sg-swatch-grid">
+          {semanticColors.map((c) => (
+            <figure class="sg-swatch">
+              <div
+                class="sg-swatch__color"
+                style={`background-color: var(${c.name});`}
+                role="img"
+                aria-label={`${c.label}: ${c.hex}`}
+              />
+              <figcaption class="sg-swatch__info">
+                <code class="sg-swatch__token">{c.name}</code>
+                <span class="sg-swatch__hex">{c.hex}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      <!-- ================================================================
+           TYPOGRAPHY — ENGLISH
+           ================================================================ -->
+      <section class="sg-section">
+        <h2 class="sg-section__title">Typography Scale — English</h2>
+
+        <div class="sg-font-stacks">
+          <div class="sg-font-stack">
+            <strong>Headings:</strong> <code>--font-heading</code>
+            <span class="sg-font-stack__value">'Lora Variable', 'Noto Serif SC', Georgia, serif</span>
+          </div>
+          <div class="sg-font-stack">
+            <strong>Body:</strong> <code>--font-body</code>
+            <span class="sg-font-stack__value">'DM Sans Variable', 'Inter Variable', 'Noto Sans SC', system-ui, sans-serif</span>
+          </div>
+        </div>
+
+        <dl class="sg-type-scale">
+          {enTypeScale.map((item) => (
+            <div class="sg-type-scale__entry">
+              <dt class="sg-type-scale__meta">
+                &lt;{item.tag}&gt; &middot; {item.sizePx} &middot; {item.lh}
+              </dt>
+              <dd>
+                {item.tag === 'h1' && <h1 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h1>}
+                {item.tag === 'h2' && <h2 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h2>}
+                {item.tag === 'h3' && <h3 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h3>}
+                {item.tag === 'h4' && <h4 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h4>}
+                {item.tag === 'p'  && <p  style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; max-width: 48rem;`}>{item.text}</p>}
+                {item.tag === 'small' && <p style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; max-width: 48rem;`}>{item.text}</p>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <!-- ================================================================
+           TYPOGRAPHY — CHINESE
+           ================================================================ -->
+      <section class="sg-section" lang="zh">
+        <h2 class="sg-section__title" lang="en">Typography Scale — Chinese (ZH)</h2>
+
+        <div class="sg-font-stacks" lang="en">
+          <div class="sg-font-stack">
+            <strong>CJK Font:</strong> <code>--font-cjk</code>
+            <span class="sg-font-stack__value">'Noto Serif SC', 'Lora Variable', serif</span>
+          </div>
+          <div class="sg-font-stack">
+            <strong>Base size:</strong> <code>--text-zh-base: 1.125rem</code> (slightly larger than EN for CJK legibility)
+          </div>
+          <div class="sg-font-stack">
+            <strong>Line height:</strong> <code>--leading-cjk: 1.8</code> (wider than EN for dense glyph forms)
+          </div>
+        </div>
+
+        <dl class="sg-type-scale">
+          {zhTypeScale.map((item) => (
+            <div class="sg-type-scale__entry">
+              <dt class="sg-type-scale__meta" lang="en">
+                &lt;{item.tag}&gt; &middot; {item.sizePx} &middot; {item.lh}
+              </dt>
+              <dd>
+                {item.tag === 'h1' && <h1 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h1>}
+                {item.tag === 'h2' && <h2 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h2>}
+                {item.tag === 'h3' && <h3 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h3>}
+                {item.tag === 'h4' && <h4 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; margin: 0;`}>{item.text}</h4>}
+                {item.tag === 'p'  && <p  style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; max-width: 48rem;`}>{item.text}</p>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <!-- ================================================================
+           SPACING SCALE
+           ================================================================ -->
+      <section class="sg-section">
+        <h2 class="sg-section__title">Spacing Scale</h2>
+        <p class="sg-section__desc">4px base scale. All spacing uses <code>--space-*</code> tokens. Values range from 4px to 128px.</p>
+        <div class="sg-spacing-list">
+          {spacingTokens.map((token) => (
+            <div class="sg-spacing-row">
+              <code class="sg-spacing-row__token">{token.name}</code>
+              <div
+                class="sg-spacing-row__bar"
+                style={`width: var(${token.name});`}
+                role="img"
+                aria-label={`${token.name}: ${token.value}`}
+              />
+              <span class="sg-spacing-row__value">{token.value}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- ================================================================
+           RADIUS SCALE
+           ================================================================ -->
+      <section class="sg-section">
+        <h2 class="sg-section__title">Radius Scale</h2>
+        <p class="sg-section__desc">Soft, rounded shapes. Applied to cards, buttons, inputs, and containers.</p>
+        <div class="sg-radius-grid">
+          {radiusTokens.map((token) => (
+            <figure class="sg-radius-item">
+              <div
+                class="sg-radius-item__box"
+                style={`border-radius: var(${token.name});`}
+                role="img"
+                aria-label={`${token.name}: ${token.value}`}
+              />
+              <figcaption class="sg-radius-item__info">
+                <code>{token.name}</code>
+                <span>{token.value}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      <!-- ================================================================
+           LOGO SYSTEM
+           ================================================================ -->
+      <section class="sg-section">
+        <h2 class="sg-section__title">Logo System</h2>
+        <p class="sg-section__desc">
+          The FICCC logo features a cross-in-circle icon mark with rolling Finger Lakes hills, rendered in the Ithaca Rooted palette. The system includes <strong>46 SVG variants</strong> across 5 name configurations (abbreviation, full name, abbr + full, Chinese only, bilingual), 4 layouts, and 2 color modes plus monochrome.
+        </p>
+
+        <div class="sg-logo-grid">
+          <!-- Light variant -->
+          <figure class="sg-logo-card sg-logo-card--light">
+            <svg viewBox="0 0 220 220" width="160" aria-label="FICCC icon mark — light background">
+              <circle cx="110" cy="110" r="92" fill="none" stroke="#BF7E58" stroke-width="1.5"/>
+              <clipPath id="sg-icon-light">
+                <circle cx="110" cy="110" r="90"/>
+              </clipPath>
+              <g clip-path="url(#sg-icon-light)">
+                <path d="M18 137 C38 107 62 94 88 100 C110 105 128 120 150 110 C170 101 188 106 202 114 L202 202 L18 202 Z" fill="#2B5B45"/>
+                <path d="M18 150 C45 132 65 144 90 138 C115 132 140 150 165 144 C185 139 195 132 202 127 L202 202 L18 202 Z" fill="#BF7E58"/>
+                <path d="M18 172 C38 160 58 167 82 162 C108 157 135 170 162 166 C180 163 195 157 202 152 L202 202 L18 202 Z" fill="#E0DAD0"/>
+              </g>
+              <line x1="110" y1="36" x2="110" y2="128" stroke="#4A4540" stroke-width="7.5" stroke-linecap="round"/>
+              <line x1="88" y1="61" x2="132" y2="61" stroke="#4A4540" stroke-width="7.5" stroke-linecap="round"/>
+            </svg>
+            <figcaption>Icon mark — light background</figcaption>
           </figure>
-        ))}
-      </div>
-    </section>
 
-    <!-- ================================================================
-         TYPOGRAPHY SCALE (EN)
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Typography Scale — English</h2>
-      <dl style={`display: flex; flex-direction: column; gap: var(--space-8);`}>
-        {enTypeScale.map((item) => (
-          <div style={`padding-block-end: var(--space-6); border-bottom: 1px solid var(--color-stone);`}>
-            <dt style={`font-size: var(--text-xs); font-family: var(--font-body); color: var(--primary-500); margin-block-end: var(--space-2); text-transform: uppercase; letter-spacing: 0.05em;`}>
-              &lt;{item.tag}&gt; · {item.sizePx} / {item.lh} · {item.font}
-            </dt>
-            <dd>
-              {item.tag === 'h1' && <h1 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h1>}
-              {item.tag === 'h2' && <h2 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h2>}
-              {item.tag === 'h3' && <h3 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h3>}
-              {item.tag === 'h4' && <h4 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h4>}
-              {item.tag === 'p'  && <p  style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; max-width: 48rem;`}>{item.text}</p>}
-            </dd>
+          <!-- Dark variant -->
+          <figure class="sg-logo-card sg-logo-card--dark">
+            <svg viewBox="0 0 220 220" width="160" aria-label="FICCC icon mark — dark background">
+              <circle cx="110" cy="110" r="92" fill="none" stroke="#BF7E58" stroke-width="1.5"/>
+              <clipPath id="sg-icon-dark">
+                <circle cx="110" cy="110" r="90"/>
+              </clipPath>
+              <g clip-path="url(#sg-icon-dark)">
+                <path d="M18 137 C38 107 62 94 88 100 C110 105 128 120 150 110 C170 101 188 106 202 114 L202 202 L18 202 Z" fill="#A8D4BC"/>
+                <path d="M18 150 C45 132 65 144 90 138 C115 132 140 150 165 144 C185 139 195 132 202 127 L202 202 L18 202 Z" fill="#BF7E58"/>
+                <path d="M18 172 C38 160 58 167 82 162 C108 157 135 170 162 166 C180 163 195 157 202 152 L202 202 L18 202 Z" fill="#E0DAD0"/>
+              </g>
+              <line x1="110" y1="36" x2="110" y2="128" stroke="#F5F2EC" stroke-width="7.5" stroke-linecap="round"/>
+              <line x1="88" y1="61" x2="132" y2="61" stroke="#F5F2EC" stroke-width="7.5" stroke-linecap="round"/>
+            </svg>
+            <figcaption>Icon mark — dark background</figcaption>
+          </figure>
+        </div>
+
+        <div class="sg-info-box">
+          <strong>File location:</strong> <code>design-system/logo svg/</code><br/>
+          <strong>Brand guide:</strong> <code>design-system/ficcc-logo-brand-guide.html</code><br/>
+          <strong>Variants:</strong> 5 name configs (abbreviation, full name, abbr + full, Chinese only, bilingual) across vertical and horizontal layouts, light and dark modes, plus monochrome.
+        </div>
+      </section>
+
+      <!-- ================================================================
+           TEXTURES
+           ================================================================ -->
+      <section class="sg-section">
+        <h2 class="sg-section__title">Textures</h2>
+        <p class="sg-section__desc">
+          Four texture images add tactile warmth to sections. They are applied as background images with blend modes and low opacity to maintain legibility.
+        </p>
+
+        <div class="sg-texture-list">
+          <div class="sg-texture-item">
+            <strong>Kraft paper</strong> (<code>paper-light.jpg</code>) — Used on tinted sections with <code>mix-blend-mode: multiply</code>. Adds subtle paper grain to warm backgrounds.
           </div>
-        ))}
-      </dl>
-    </section>
-
-    <!-- ================================================================
-         TYPOGRAPHY SCALE (ZH)
-         ================================================================ -->
-    <section lang="zh" style={`margin-block-end: var(--space-16);`}>
-      <h2 lang="en" style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Typography Scale — 中文</h2>
-      <dl style={`display: flex; flex-direction: column; gap: var(--space-8);`}>
-        {zhTypeScale.map((item) => (
-          <div style={`padding-block-end: var(--space-6); border-bottom: 1px solid var(--color-stone);`}>
-            <dt style={`font-size: var(--text-xs); font-family: var(--font-body); color: var(--primary-500); margin-block-end: var(--space-2); text-transform: uppercase; letter-spacing: 0.05em;`}>
-              &lt;{item.tag}&gt; · {item.sizePx} / {item.lh} · {item.font}
-            </dt>
-            <dd>
-              {item.tag === 'h1' && <h1 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h1>}
-              {item.tag === 'h2' && <h2 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h2>}
-              {item.tag === 'h3' && <h3 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h3>}
-              {item.tag === 'h4' && <h4 style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font};`}>{item.text}</h4>}
-              {item.tag === 'p'  && <p  style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.font}; max-width: 48rem;`}>{item.text}</p>}
-            </dd>
+          <div class="sg-texture-item">
+            <strong>Crumpled paper</strong> (<code>kiwihug-qv05FvdE26k-unsplash.jpg</code>) — Heavier texture for accent areas. Used sparingly.
           </div>
-        ))}
-      </dl>
-    </section>
-
-    <!-- ================================================================
-         SPACING SCALE
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Spacing Scale</h2>
-      <div style={`display: flex; flex-direction: column; gap: var(--space-4);`}>
-        {spacingTokens.map((token) => (
-          <div style={`display: flex; align-items: center; gap: var(--space-4);`}>
-            <code style={`font-size: var(--text-xs); width: 8rem; flex-shrink: 0; text-align: right; color: var(--color-body);`}>{token.name}</code>
-            <div
-              style={`height: var(--space-6); width: var(${token.name}); background-color: var(--color-terracotta); border-radius: var(--radius-sm);`}
-              role="img"
-              aria-label={`Spacing token ${token.name}: ${token.value}`}
-            />
-            <span style={`font-size: var(--text-xs); color: var(--color-body);`}>{token.value}</span>
+          <div class="sg-texture-item">
+            <strong>Forest canopy</strong> (<code>adam-vradenburg-_gu7E90QChU-unsplash.jpg</code>) — Nature photograph used for hero or background imagery evoking the Finger Lakes.
           </div>
-        ))}
-      </div>
-    </section>
+          <div class="sg-texture-item">
+            <strong>Painted canvas</strong> (<code>valentin-beauvais-4YrVF0gVdjk-unsplash.jpg</code>) — Used on dark callouts with <code>mix-blend-mode: soft-light</code> for an artistic, textured feel.
+          </div>
+        </div>
 
-    <!-- ================================================================
-         HEADER COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Header</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        The site header is rendered above via <code>BaseLayout</code>. It includes a responsive nav bar with a logo wordmark, navigation links, language toggle, and a mobile hamburger menu with <code>aria-expanded</code> toggling. Resize the browser below 768px to see the mobile drawer.
-      </p>
-      <div style={`padding: var(--space-4); border: 1px dashed var(--color-stone); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-body);`}>
-        <strong>Component:</strong> <code>src/components/Header.astro</code><br />
-        <strong>Behavior:</strong> Sticky, responsive. Desktop shows inline nav; mobile shows hamburger → slide-out drawer.<br />
-        <strong>Tokens used:</strong> <code>--color-bg</code>, <code>--color-ink</code>, <code>--color-stone</code>, <code>--color-terracotta</code>, <code>--color-focus</code>, <code>--max-width</code>, <code>--font-heading</code>, <code>--font-body</code>
-      </div>
-    </section>
+        <div class="sg-info-box">
+          <strong>File location:</strong> <code>public/images/textures/</code><br/>
+          <strong>CSS utilities:</strong> <code>.texture-grain--light</code> (multiply blend, 50% opacity) and <code>.texture-grain--dark</code> (soft-light blend, 35% opacity) are defined in <code>global.css</code>.
+        </div>
+      </section>
 
-    <!-- ================================================================
-         FOOTER COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Footer</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        The site footer is rendered below via <code>BaseLayout</code>. It contains the church name (EN + ZH), address, service times, navigation links, and a copyright line with dynamic year. Multi-column grid on desktop, stacked on mobile.
-      </p>
-      <div style={`padding: var(--space-4); border: 1px dashed var(--color-stone); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-body);`}>
-        <strong>Component:</strong> <code>src/components/Footer.astro</code><br />
-        <strong>Behavior:</strong> Dark background (<code>--color-bg-dark</code>), responsive grid layout.<br />
-        <strong>Tokens used:</strong> <code>--color-bg-dark</code>, <code>--color-bg</code>, <code>--color-stone</code>, <code>--color-terracotta</code>, <code>--color-focus</code>, <code>--max-width</code>, <code>--font-heading</code>, <code>--font-cjk</code>
-      </div>
-    </section>
+      <!-- ================================================================
+           COMPONENT REFERENCE
+           ================================================================ -->
+      <section class="sg-section">
+        <h2 class="sg-section__title">Component Reference</h2>
+        <p class="sg-section__desc">Key Astro components used across the site. All live in <code>src/components/</code>.</p>
 
-    <!-- ================================================================
-         HERO COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Hero</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        Full-width hero section with background image (or gradient), dark overlay for text readability, headline, optional subtitle, and call-to-action button.
-      </p>
-    </section>
+        <div class="sg-component-list">
+          {components.map((comp) => (
+            <div class="sg-component-card">
+              <h3 class="sg-component-card__name">{comp.name}</h3>
+              <code class="sg-component-card__file">src/components/{comp.file}</code>
+              <p class="sg-component-card__desc">{comp.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-    <Hero
-      title="Welcome Home"
-      subtitle="A warm community rooted in faith, gathering in Ithaca."
-      ctaText="Join Us This Sunday"
-      ctaHref="/about"
-      backgroundImage="linear-gradient(135deg, #C4745A 0%, #1A1A2E 100%)"
-    />
-
-    <!-- ================================================================
-         CARD COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16); margin-block-start: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Card</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        Versatile content card with optional image and optional link wrapping. Works at various widths inside grid layouts.
-      </p>
-      <div style={`display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: var(--space-6);`}>
-        <Card
-          title="Sunday Worship"
-          body="Join us every Sunday at 10:00 AM for bilingual worship, fellowship, and community."
-          image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23C4745A' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='24'%3EWorship%3C/text%3E%3C/svg%3E"
-          href="/en/about"
-        />
-        <Card
-          title="Bible Study"
-          body="Midweek Bible study groups in English and Chinese — deepening our understanding together."
-          image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%231A1A2E' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='24'%3EBible Study%3C/text%3E%3C/svg%3E"
-        />
-        <Card
-          title="Community Events"
-          body="From potlucks to outreach, there's always something happening at FICCC."
-        />
-      </div>
-    </section>
-
-    <!-- ================================================================
-         IMAGE MOSAIC COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Image Mosaic</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        CSS Grid image gallery with varying cell sizes. Responsive: 3 columns on desktop, 2 on tablet, 1 on mobile. Uses <code>object-fit: cover</code> and <code>aspect-ratio</code> to prevent layout shifts.
-      </p>
-      <ImageMosaic images={[
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect fill='%23C4745A' width='600' height='600'/%3E%3Ctext x='300' y='310' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E1%3C/text%3E%3C/svg%3E", alt: "Placeholder 1" },
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%231A1A2E' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E2%3C/text%3E%3C/svg%3E", alt: "Placeholder 2" },
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23E8E0D8' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%231A1A2E' font-size='20'%3E3%3C/text%3E%3C/svg%3E", alt: "Placeholder 3" },
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Crect fill='%232D2D2D' width='600' height='300'/%3E%3Ctext x='300' y='160' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E4%3C/text%3E%3C/svg%3E", alt: "Placeholder 4" },
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23b3654b' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%23FAF8F5' font-size='20'%3E5%3C/text%3E%3C/svg%3E", alt: "Placeholder 5" },
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23FAF8F5' width='600' height='400'/%3E%3Ctext x='300' y='210' text-anchor='middle' fill='%231A1A2E' font-size='20'%3E6%3C/text%3E%3C/svg%3E", alt: "Placeholder 6" },
-      ]} />
-    </section>
-
-    <!-- ================================================================
-         ACCORDION COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Accordion</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        FAQ-style accordion using native <code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code> elements — zero JavaScript, accessible by default. Custom chevron rotates on open.
-      </p>
-      <Accordion items={[
-        { title: "What time are Sunday services?", content: "We gather every Sunday at 10:00 AM for bilingual worship in English and Chinese. The service typically lasts about 90 minutes, followed by fellowship and refreshments." },
-        { title: "Where is the church located?", content: "FICCC meets at our gathering space in Ithaca, NY. Please visit our Contact page for the full address and a map with directions." },
-        { title: "Is childcare available during services?", content: "Yes! We offer supervised childcare and a children's program during the main worship service for kids ages 2–10." },
-        { title: "How can I get involved?", content: "We'd love to have you join us! You can participate in Sunday worship, midweek Bible study groups, community outreach events, or our music ministry. Reach out through our contact form to learn more." },
-      ]} />
-    </section>
-
-    <!-- ================================================================
-         CONTACT FORM COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Contact Form</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        Styled HTML form with validation attributes (<code>required</code>, <code>type="email"</code>, <code>minlength</code>). Labels properly associated via <code>for</code>/<code>id</code>. Submission handling is wired in a later slice.
-      </p>
-      <ContactForm />
-    </section>
-
-    <!-- ================================================================
-         AUDIO PLAYER COMPONENT
-         ================================================================ -->
-    <section style={`margin-block-end: var(--space-16);`}>
-      <h2 style={`font-size: var(--text-2xl); margin-block-end: var(--space-6); padding-block-end: var(--space-3); border-bottom: 2px solid var(--color-stone);`}>Audio Player</h2>
-      <p style={`font-size: var(--text-sm); color: var(--color-body); margin-block-end: var(--space-6); max-width: 48rem;`}>
-        Styled wrapper around the native <code>&lt;audio controls&gt;</code> element. Displays title and optional speaker metadata. Placeholder source shown below (no audio loaded).
-      </p>
-      <div style={`display: flex; flex-direction: column; gap: var(--space-4); max-width: 36rem;`}>
-        <AudioPlayer
-          src=""
-          title="Sunday Sermon: The Good Shepherd"
-          speaker="Pastor David Chen"
-        />
-        <AudioPlayer
-          src=""
-          title="Hymn: Amazing Grace (Traditional)"
-        />
-      </div>
-    </section>
+    </div><!-- .sg-container -->
   </main>
 </BaseLayout>
 
-<!-- Cloudflare Turnstile — loaded async for form spam protection -->
-<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+  /* ── Layout ── */
+  .sg-container {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: 0 var(--space-6) var(--space-16);
+  }
+
+  /* ── Hero ── */
+  .sg-hero {
+    background-color: var(--primary-700);
+    padding: var(--space-20) var(--space-6) var(--space-16);
+  }
+  .sg-hero__inner {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+  .sg-hero__title {
+    font-size: var(--text-4xl);
+    font-family: var(--font-heading);
+    color: var(--base-100);
+    margin-block-end: var(--space-4);
+    line-height: var(--leading-tight);
+  }
+  .sg-hero__subtitle {
+    font-size: var(--text-lg);
+    color: var(--primary-200);
+    margin-block-end: var(--space-4);
+    line-height: var(--leading-relaxed);
+  }
+  .sg-hero__body {
+    font-size: var(--text-base);
+    color: var(--primary-200);
+    line-height: var(--leading-relaxed);
+    max-width: 42rem;
+  }
+  .sg-hero__body code {
+    background-color: var(--primary-800);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+  }
+
+  /* ── Shared label ── */
+  .sg-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary-300);
+    margin-block-end: var(--space-3);
+  }
+
+  /* ── Sections ── */
+  .sg-section {
+    padding-block: var(--space-16);
+    border-bottom: 1px solid var(--base-300);
+  }
+  .sg-section:last-child {
+    border-bottom: none;
+  }
+  .sg-section__title {
+    font-size: var(--text-2xl);
+    margin-block-end: var(--space-3);
+    padding-block-end: var(--space-3);
+    border-bottom: 2px solid var(--base-300);
+  }
+  .sg-section__desc {
+    font-size: var(--text-base);
+    color: var(--base-700);
+    max-width: 48rem;
+    line-height: var(--leading-relaxed);
+    margin-block-end: var(--space-8);
+  }
+  .sg-section__desc code {
+    font-size: var(--text-sm);
+    background-color: var(--base-200);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── Color ramp headings ── */
+  .sg-ramp-title {
+    font-size: var(--text-lg);
+    font-family: var(--font-heading);
+    margin-block-start: var(--space-10);
+    margin-block-end: var(--space-2);
+  }
+  .sg-ramp-desc {
+    font-size: var(--text-sm);
+    color: var(--base-700);
+    margin-block-end: var(--space-6);
+    max-width: 48rem;
+    line-height: var(--leading-relaxed);
+  }
+
+  /* ── Swatch grid ── */
+  .sg-swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    gap: var(--space-4);
+    margin-block-end: var(--space-4);
+  }
+  .sg-swatch-grid--narrow {
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 10rem));
+  }
+  .sg-swatch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .sg-swatch__color {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--base-300);
+  }
+  .sg-swatch__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sg-swatch__token {
+    font-size: 0.6875rem;
+    color: var(--base-800);
+    word-break: break-all;
+  }
+  .sg-swatch__hex {
+    font-size: var(--text-xs);
+    color: var(--base-600);
+  }
+
+  /* ── Typography ── */
+  .sg-font-stacks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-block-end: var(--space-8);
+    padding: var(--space-4);
+    background-color: var(--base-100);
+    border-radius: var(--radius-md);
+  }
+  .sg-font-stack {
+    font-size: var(--text-sm);
+    color: var(--base-700);
+  }
+  .sg-font-stack code {
+    font-size: var(--text-sm);
+    background-color: var(--base-200);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .sg-font-stack__value {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--base-600);
+    margin-block-start: 2px;
+    font-family: monospace;
+  }
+
+  .sg-type-scale {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+  .sg-type-scale__entry {
+    padding-block-end: var(--space-6);
+    border-bottom: 1px solid var(--base-200);
+  }
+  .sg-type-scale__meta {
+    font-size: var(--text-xs);
+    font-family: var(--font-body);
+    color: var(--primary-500);
+    margin-block-end: var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Spacing ── */
+  .sg-spacing-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .sg-spacing-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .sg-spacing-row__token {
+    font-size: var(--text-xs);
+    width: 8rem;
+    flex-shrink: 0;
+    text-align: right;
+    color: var(--base-700);
+  }
+  .sg-spacing-row__bar {
+    height: var(--space-6);
+    background-color: var(--primary-500);
+    border-radius: var(--radius-sm);
+    min-width: 4px;
+  }
+  .sg-spacing-row__value {
+    font-size: var(--text-xs);
+    color: var(--base-600);
+    flex-shrink: 0;
+  }
+
+  /* ── Radius ── */
+  .sg-radius-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: var(--space-6);
+  }
+  .sg-radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .sg-radius-item__box {
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--primary-100);
+    border: 2px solid var(--primary-500);
+  }
+  .sg-radius-item__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+  }
+  .sg-radius-item__info code {
+    font-size: var(--text-xs);
+    color: var(--base-800);
+  }
+  .sg-radius-item__info span {
+    font-size: var(--text-xs);
+    color: var(--base-600);
+  }
+
+  /* ── Logo ── */
+  .sg-logo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: var(--space-6);
+    margin-block-end: var(--space-8);
+  }
+  .sg-logo-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-8);
+    border-radius: var(--radius-lg);
+  }
+  .sg-logo-card--light {
+    background-color: var(--base-100);
+    border: 1px solid var(--base-300);
+  }
+  .sg-logo-card--light figcaption {
+    font-size: var(--text-sm);
+    color: var(--base-700);
+  }
+  .sg-logo-card--dark {
+    background-color: var(--primary-800);
+    border: 1px solid var(--primary-700);
+  }
+  .sg-logo-card--dark figcaption {
+    font-size: var(--text-sm);
+    color: var(--primary-200);
+  }
+  .sg-logo-card svg {
+    display: block;
+  }
+
+  /* ── Info boxes ── */
+  .sg-info-box {
+    padding: var(--space-4);
+    border: 1px dashed var(--base-400);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--base-700);
+    line-height: var(--leading-relaxed);
+  }
+  .sg-info-box code {
+    font-size: var(--text-sm);
+    background-color: var(--base-200);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── Textures ── */
+  .sg-texture-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-block-end: var(--space-8);
+  }
+  .sg-texture-item {
+    padding: var(--space-4);
+    background-color: var(--base-100);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--base-700);
+    line-height: var(--leading-relaxed);
+  }
+  .sg-texture-item strong {
+    color: var(--base-900);
+  }
+  .sg-texture-item code {
+    font-size: var(--text-xs);
+    background-color: var(--base-200);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── Component reference ── */
+  .sg-component-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: var(--space-6);
+  }
+  .sg-component-card {
+    padding: var(--space-6);
+    background-color: var(--base-100);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--base-300);
+  }
+  .sg-component-card__name {
+    font-size: var(--text-lg);
+    font-family: var(--font-heading);
+    margin-block-end: var(--space-2);
+  }
+  .sg-component-card__file {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--primary-500);
+    margin-block-end: var(--space-3);
+  }
+  .sg-component-card__desc {
+    font-size: var(--text-sm);
+    color: var(--base-700);
+    line-height: var(--leading-relaxed);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .sg-hero {
+      padding: var(--space-12) var(--space-4) var(--space-10);
+    }
+    .sg-hero__title {
+      font-size: var(--text-3xl);
+    }
+    .sg-swatch-grid {
+      grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    }
+    .sg-spacing-row__token {
+      width: 6rem;
+      font-size: 0.625rem;
+    }
+    .sg-component-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
