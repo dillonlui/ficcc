@@ -72,15 +72,6 @@ export interface Ministry {
   language: 'en' | 'zh';
 }
 
-/** Ministry with leader reference resolved inline (for detail pages). */
-export interface MinistryDetail extends Omit<Ministry, 'leader'> {
-  leader?: {
-    name: string;
-    role?: string;
-    photo?: SanityImage;
-  } | null;
-}
-
 export interface SocialLink {
   platform: string;
   url: string;
@@ -335,19 +326,6 @@ export async function getSermons(language: Language = 'en'): Promise<Sermon[]> {
 }
 
 /**
- * Fetch a single sermon by its slug and language.
- */
-export async function getSermonBySlug(
-  slug: string,
-  language: Language = 'en',
-): Promise<Sermon | null> {
-  return client.fetch<Sermon | null>(
-    `*[_type == "sermon" && slug.current == $slug && language == $language][0]`,
-    { slug, language },
-  );
-}
-
-/**
  * Fetch upcoming events for a language, soonest first.
  */
 export async function getEvents(language: Language = 'en'): Promise<Event[]> {
@@ -368,22 +346,6 @@ export async function getMinistries(
   return client.fetch<Ministry[]>(
     `*[_type == "ministry" && language == $language] | order(name asc)`,
     { language },
-  );
-}
-
-/**
- * Fetch a single ministry by slug with leader reference resolved.
- */
-export async function getMinistryBySlug(
-  slug: string,
-  language: Language = 'en',
-): Promise<MinistryDetail | null> {
-  return client.fetch<MinistryDetail | null>(
-    `*[_type == "ministry" && slug.current == $slug && language == $language][0]{
-      _id, _type, name, slug, image, description, meetingTime, language,
-      leader->{name, role, photo}
-    }`,
-    { slug, language },
   );
 }
 

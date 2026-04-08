@@ -5,15 +5,13 @@ interface Props {
   name: string;
   image?: string;
   meetingTime?: string;
-  slug: string;
-  basePath?: string;
 }
 
-const { name, image, meetingTime, slug, basePath = '/ministries' } = Astro.props;
+const { name, image, meetingTime } = Astro.props;
 ---
 
 <div class="ministry-card">
-  <Card title={name} image={image} href={`${basePath}/${slug}`} />
+  <Card title={name} image={image} />
   {meetingTime && (
     <p class="ministry-card__time">{meetingTime}</p>
   )}

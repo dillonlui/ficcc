@@ -15,7 +15,7 @@ try {
   // Sanity unreachable — continue with empty array
 }
 
-const ministriesWithSlug = ministries.filter((m) => m.slug?.current);
+// Use all ministries (no slug filter needed — no detail pages)
 
 // ---------- Fallback fellowship groups ----------
 const fallbackGroups = [
@@ -88,17 +88,15 @@ const fallbackPrograms = [
       backgroundImage="/images/hero/community.webp"
     />
 
-    {ministriesWithSlug.length > 0 ? (
+    {ministries.length > 0 ? (
       <section class="ministries-listing" aria-label="事工">
         <div class="ministries-listing__inner">
           <div class="ministries-grid" data-reveal>
-            {ministriesWithSlug.map((ministry) => (
+            {ministries.map((ministry) => (
               <MinistryCard
                 name={ministry.name}
                 image={urlForImage(ministry.image, { width: 600 }) || undefined}
                 meetingTime={ministry.meetingTime}
-                slug={ministry.slug!.current}
-                basePath="/zh/ministries"
               />
             ))}
           </div>

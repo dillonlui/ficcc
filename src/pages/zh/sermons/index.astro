@@ -53,7 +53,7 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
                   date={sermon.date}
                   series={sermon.series}
                   scripture={sermon.scripture}
-                  href={sermon.slug?.current ? `/zh/sermons/${sermon.slug.current}` : '#'}
+                  href={sermon.videoId ? `https://www.youtube.com/watch?v=${sermon.videoId}` : '#'}
                 />
               </div>
             ))}
