@@ -249,7 +249,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   }
 
   .connect-form__label span {
-    color: var(--color-terracotta, #c0392b);
+    color: var(--danger, #B8453A);
   }
 
   .connect-form__input {
@@ -274,7 +274,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   }
 
   .connect-form__input--error {
-    border-color: var(--color-terracotta, #c0392b);
+    border-color: var(--danger, #B8453A);
   }
 
   .connect-form__textarea {
@@ -285,7 +285,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   .connect-form__error {
     font-family: var(--font-body);
     font-size: var(--text-sm);
-    color: var(--color-terracotta, #c0392b);
+    color: var(--danger, #B8453A);
     min-height: 0;
   }
 
@@ -312,7 +312,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   }
 
   .connect-form__submit:hover:not(:disabled) {
-    background-color: color-mix(in srgb, var(--color-terracotta) 85%, black);
+    background-color: var(--primary-600);
   }
 
   .connect-form__submit:focus-visible {

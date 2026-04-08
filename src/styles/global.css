@@ -116,6 +116,9 @@
   --radius-xl:  32px;
   --radius-pill: 999px;
 
+  /* --- Semantic --- */
+  --danger: #B8453A;
+
   /* --- Misc --- */
   --transition: 200ms ease;
   --color-focus: var(--primary-400);
@@ -178,7 +181,7 @@ p {
 }
 
 a {
-  color: var(--color-terracotta);
+  color: var(--primary-500);
   text-decoration-skip-ink: auto;
 }
 
