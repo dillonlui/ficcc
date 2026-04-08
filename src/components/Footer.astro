@@ -4,6 +4,7 @@
  * Uses CSS custom properties only.
  */
 import { getFooterNav, getServiceTimes, getChurchName, type Lang } from '../lib/navigation';
+import { getSiteSettings } from '../lib/sanity';
 
 interface Props {
   lang?: Lang;
@@ -14,6 +15,20 @@ const currentYear = new Date().getFullYear();
 const footerNav = getFooterNav(lang);
 const serviceTimes = getServiceTimes(lang);
 const churchName = getChurchName(lang);
+
+let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
+try {
+  siteSettings = await getSiteSettings(lang);
+} catch {}
+
+// Use CMS service times if available, otherwise fall back to navigation.ts
+const resolvedServiceTimes = siteSettings?.serviceTimes?.length
+  ? { heading: serviceTimes.heading, items: siteSettings.serviceTimes.map((st: any) => ({ label: `${st.label}: ${st.time}` })) }
+  : serviceTimes;
+
+// Use CMS contact info if available
+const resolvedAddress = siteSettings?.address || '429 Mitchell Street';
+const resolvedCity = siteSettings?.city || 'Ithaca, NY 14850';
 ---
 
 <footer class="site-footer">
@@ -24,16 +39,16 @@ const churchName = getChurchName(lang);
         <img src="/logo/logo-bilingual-dark.svg" alt="FICCC" class="footer-logo" width="280" height="52" />
       </a>
       <address class="footer-address">
-        429 Mitchell Street<br />
-        Ithaca, NY 14850
+        {resolvedAddress}<br />
+        {resolvedCity}
       </address>
     </div>
 
     <!-- Service times -->
     <div class="footer-col footer-services">
-      <h2 class="footer-heading">{serviceTimes.heading}</h2>
+      <h2 class="footer-heading">{resolvedServiceTimes.heading}</h2>
       <ul class="footer-list" role="list">
-        {serviceTimes.items.map((item) => (
+        {resolvedServiceTimes.items.map((item) => (
           <li>{item.label}</li>
         ))}
       </ul>

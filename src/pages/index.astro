@@ -10,6 +10,21 @@
  */
 import '../styles/global.css';
 import cjkFontsHref from '../styles/cjk-fonts.css?url';
+import { getSplashPage, urlForImage } from '../lib/sanity';
+
+let splashData: Awaited<ReturnType<typeof getSplashPage>> = null;
+try {
+  splashData = await getSplashPage();
+} catch {}
+
+const churchNameEn = splashData?.churchNameEn || 'First Ithaca Chinese Christian Church';
+const churchNameZh = splashData?.churchNameZh || '以撒迦中华基督教会';
+const bgDesktop = splashData?.backgroundImage
+  ? urlForImage(splashData.backgroundImage, { width: 1600 })
+  : '/images/hero/waterfall-landing-1600.jpg';
+const bgMobile = splashData?.backgroundImage
+  ? urlForImage(splashData.backgroundImage, { width: 600 })
+  : '/images/hero/waterfall-landing-600.jpg';
 ---
 
 <!doctype html>
@@ -25,8 +40,8 @@ import cjkFontsHref from '../styles/cjk-fonts.css?url';
     <link rel="alternate" hreflang="zh" href="https://ficcc.org/zh/" />
     <link rel="alternate" hreflang="x-default" href="https://ficcc.org/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" as="image" href="/images/hero/waterfall-landing-1600.jpg" media="(min-width: 769px)" />
-    <link rel="preload" as="image" href="/images/hero/waterfall-landing-600.jpg" media="(max-width: 768px)" />
+    <link rel="preload" as="image" href={bgDesktop} media="(min-width: 769px)" />
+    <link rel="preload" as="image" href={bgMobile} media="(max-width: 768px)" />
     <link rel="stylesheet" href={cjkFontsHref} media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href={cjkFontsHref} /></noscript>
   </head>
@@ -46,8 +61,8 @@ import cjkFontsHref from '../styles/cjk-fonts.css?url';
             <line x1="88" y1="59" x2="132" y2="59" stroke="#F5F2EC" stroke-width="7.5" stroke-linecap="round"/>
           </svg>
         </div>
-        <h1 class="splash__name">First Ithaca Chinese Christian Church</h1>
-        <p class="splash__name-zh"><span lang="zh">以撒迦中华基督教会</span></p>
+        <h1 class="splash__name">{churchNameEn}</h1>
+        <p class="splash__name-zh"><span lang="zh">{churchNameZh}</span></p>
         <div class="splash__buttons">
           <a href="/en/" class="splash__btn" aria-label="Enter English site" data-lang="en">English</a>
           <a href="/zh/" class="splash__btn" aria-label="进入中文网站" data-lang="zh">中文</a>
@@ -56,9 +71,9 @@ import cjkFontsHref from '../styles/cjk-fonts.css?url';
     </main>
 
     <picture class="splash__bg">
-      <source media="(max-width: 768px)" srcset="/images/hero/waterfall-landing-600.jpg" />
+      <source media="(max-width: 768px)" srcset={bgMobile} />
       <img
-        src="/images/hero/waterfall-landing-1600.jpg"
+        src={bgDesktop}
         alt=""
         class="splash__bg-img"
         fetchpriority="high"
