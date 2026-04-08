@@ -23,7 +23,12 @@ const {
 
 const siteUrl = Astro.site ?? new URL('https://ficcc.org');
 const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
-const absoluteOgImage = new URL(ogImage, siteUrl).href;
+// Use site URL for OG image so it resolves to the correct domain in production
+// On Vercel preview deploys, Astro.site is still ficcc.org — override with VERCEL_URL if available
+const ogBaseUrl = import.meta.env.VERCEL_URL
+  ? new URL(`https://${import.meta.env.VERCEL_URL}`)
+  : siteUrl;
+const absoluteOgImage = new URL(ogImage, ogBaseUrl).href;
 
 const localeMap: Record<string, string> = {
   en: 'en_US',
