@@ -26,6 +26,11 @@ const bgDesktop = splashData?.backgroundImage
 const bgMobile = splashData?.backgroundImage
   ? urlForImage(splashData.backgroundImage, { width: 600 })
   : '/images/hero/waterfall-landing-600.jpg';
+
+const ogBaseUrl = import.meta.env.VERCEL_URL
+  ? `https://${import.meta.env.VERCEL_URL}`
+  : 'https://ficcc.org';
+const ogImage = `${ogBaseUrl}/og-default.png`;
 ---
 
 <!doctype html>
@@ -40,6 +45,18 @@ const bgMobile = splashData?.backgroundImage
     <link rel="alternate" hreflang="en" href="https://ficcc.org/en/" />
     <link rel="alternate" hreflang="zh" href="https://ficcc.org/zh/" />
     <link rel="alternate" hreflang="x-default" href="https://ficcc.org/" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="First Ithaca Chinese Christian Church | 以撒迦中华基督教会" />
+    <meta property="og:description" content="A Chinese-heritage, university-adjacent Christian community in Ithaca, NY." />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="First Ithaca Chinese Christian Church | 以撒迦中华基督教会" />
+    <meta name="twitter:description" content="A Chinese-heritage, university-adjacent Christian community in Ithaca, NY." />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preload" as="image" href={bgDesktop} media="(min-width: 769px)" />
     <link rel="preload" as="image" href={bgMobile} media="(max-width: 768px)" />
