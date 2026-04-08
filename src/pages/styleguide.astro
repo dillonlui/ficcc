@@ -424,24 +424,59 @@ const components = [
           Four texture images add tactile warmth to sections. They are applied as background images with blend modes and low opacity to maintain legibility.
         </p>
 
-        <div class="sg-texture-list">
-          <div class="sg-texture-item">
-            <strong>Kraft paper</strong> (<code>paper-light.jpg</code>) — Used on tinted sections with <code>mix-blend-mode: multiply</code>. Adds subtle paper grain to warm backgrounds.
+        <div class="sg-texture-grid">
+          <div class="sg-texture-card">
+            <div class="sg-texture-preview sg-texture-preview--light">
+              <div class="sg-texture-overlay" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg'); opacity: 0.35;"></div>
+              <span class="sg-texture-label">Kraft Paper on Light</span>
+            </div>
+            <div class="sg-texture-meta">
+              <strong>Kraft Paper</strong>
+              <code>kiwihug-qv05FvdE26k-unsplash.jpg</code>
+              <p>Used on tinted sections (homepage, about snapshots). Opacity 0.35, over <code>--color-stone</code> background.</p>
+            </div>
           </div>
-          <div class="sg-texture-item">
-            <strong>Crumpled paper</strong> (<code>kiwihug-qv05FvdE26k-unsplash.jpg</code>) — Heavier texture for accent areas. Used sparingly.
+
+          <div class="sg-texture-card">
+            <div class="sg-texture-preview sg-texture-preview--light">
+              <div class="sg-texture-overlay" style="background-image: url('/images/textures/paper-light.jpg'); opacity: 0.5; mix-blend-mode: multiply;"></div>
+              <span class="sg-texture-label">Crumpled Paper on Light</span>
+            </div>
+            <div class="sg-texture-meta">
+              <strong>Crumpled Paper</strong>
+              <code>paper-light.jpg</code>
+              <p>Subtle fold creases for light sections. Multiply blend at 0.5 opacity.</p>
+            </div>
           </div>
-          <div class="sg-texture-item">
-            <strong>Forest canopy</strong> (<code>adam-vradenburg-_gu7E90QChU-unsplash.jpg</code>) — Nature photograph used for hero or background imagery evoking the Finger Lakes.
+
+          <div class="sg-texture-card">
+            <div class="sg-texture-preview sg-texture-preview--dark">
+              <div class="sg-texture-overlay" style="background-image: url('/images/textures/adam-vradenburg-_gu7E90QChU-unsplash.jpg'); opacity: 0.2; mix-blend-mode: screen;"></div>
+              <span class="sg-texture-label">Forest Canopy on Dark</span>
+            </div>
+            <div class="sg-texture-meta">
+              <strong>Forest Canopy</strong>
+              <code>adam-vradenburg-_gu7E90QChU-unsplash.jpg</code>
+              <p>Aerial tree photo on deep teal base. Screen blend at 0.2 opacity. Used on give page hero.</p>
+            </div>
           </div>
-          <div class="sg-texture-item">
-            <strong>Painted canvas</strong> (<code>valentin-beauvais-4YrVF0gVdjk-unsplash.jpg</code>) — Used on dark callouts with <code>mix-blend-mode: soft-light</code> for an artistic, textured feel.
+
+          <div class="sg-texture-card">
+            <div class="sg-texture-preview sg-texture-preview--dark sg-texture-preview--base800">
+              <div class="sg-texture-overlay" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg'); opacity: 0.25; mix-blend-mode: soft-light;"></div>
+              <span class="sg-texture-label">Painted Canvas on Dark</span>
+            </div>
+            <div class="sg-texture-meta">
+              <strong>Painted Canvas</strong>
+              <code>valentin-beauvais-4YrVF0gVdjk-unsplash.jpg</code>
+              <p>Teal-grey brushstrokes on <code>--base-800</code> callouts. Soft-light blend at 0.25 opacity.</p>
+            </div>
           </div>
         </div>
 
         <div class="sg-info-box">
           <strong>File location:</strong> <code>public/images/textures/</code><br/>
-          <strong>CSS utilities:</strong> <code>.texture-grain--light</code> (multiply blend, 50% opacity) and <code>.texture-grain--dark</code> (soft-light blend, 35% opacity) are defined in <code>global.css</code>.
+          <strong>Usage:</strong> Applied as absolutely-positioned overlay divs with <code>background-size: cover</code>, <code>pointer-events: none</code>, and <code>mix-blend-mode</code> set per texture.
         </div>
       </section>
 
@@ -481,7 +516,7 @@ const components = [
     padding: var(--space-20) var(--space-6) var(--space-16);
   }
   .sg-hero__inner {
-    max-width: 48rem;
+    max-width: 72rem;
     margin-inline: auto;
   }
   .sg-hero__title {
@@ -761,28 +796,81 @@ const components = [
   }
 
   /* ── Textures ── */
-  .sg-texture-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
+  .sg-texture-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
     margin-block-end: var(--space-8);
   }
-  .sg-texture-item {
-    padding: var(--space-4);
-    background-color: var(--base-100);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    color: var(--base-700);
-    line-height: var(--leading-relaxed);
+  .sg-texture-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--base-300);
   }
-  .sg-texture-item strong {
+  .sg-texture-preview {
+    position: relative;
+    height: 12rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sg-texture-preview--light {
+    background-color: var(--color-stone);
+  }
+  .sg-texture-preview--dark {
+    background-color: var(--primary-700);
+  }
+  .sg-texture-preview--base800 {
+    background-color: var(--base-800);
+  }
+  .sg-texture-overlay {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+  }
+  .sg-texture-label {
+    position: relative;
+    z-index: 1;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.85);
     color: var(--base-900);
   }
-  .sg-texture-item code {
+  .sg-texture-preview--dark .sg-texture-label {
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--base-100);
+  }
+  .sg-texture-meta {
+    padding: var(--space-4);
+    background-color: var(--base-50);
+  }
+  .sg-texture-meta strong {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--base-900);
+    margin-block-end: var(--space-1);
+  }
+  .sg-texture-meta code {
+    display: block;
     font-size: var(--text-xs);
+    color: var(--base-600);
+    margin-block-end: var(--space-2);
+  }
+  .sg-texture-meta p {
+    font-size: var(--text-xs);
+    color: var(--base-700);
+    line-height: var(--leading-relaxed);
+    margin: 0;
+  }
+  .sg-texture-meta p code {
+    display: inline;
     background-color: var(--base-200);
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 1px 4px;
+    border-radius: 3px;
   }
 
   /* ── Component reference ── */
@@ -830,6 +918,9 @@ const components = [
       font-size: 0.625rem;
     }
     .sg-component-list {
+      grid-template-columns: 1fr;
+    }
+    .sg-texture-grid {
       grid-template-columns: 1fr;
     }
   }
