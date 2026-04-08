@@ -115,6 +115,45 @@ export const visitPage = defineType({
       initialValue: true,
     }),
 
+    // ── Bus Route (primarily Chinese version) ───────────────────────
+    defineField({
+      name: 'busRouteHeading',
+      title: 'Bus Route Heading',
+      type: 'string',
+      description: 'Heading for the bus route section (primarily used on Chinese version)',
+    }),
+    defineField({
+      name: 'busRouteIntro',
+      title: 'Bus Route Intro',
+      type: 'text',
+      rows: 2,
+    }),
+    defineField({
+      name: 'busRoute',
+      title: 'Bus Route Stops',
+      type: 'array',
+      of: [{
+        type: 'object', name: 'busStop', title: 'Bus Stop',
+        fields: [
+          defineField({ name: 'stop', title: 'Stop Name', type: 'string', validation: (rule) => rule.required() }),
+          defineField({ name: 'time', title: 'Time', type: 'string', validation: (rule) => rule.required() }),
+        ],
+        preview: { select: { title: 'stop', subtitle: 'time' } },
+      }],
+    }),
+    defineField({
+      name: 'rideRequestHeading',
+      title: 'Ride Request Heading',
+      type: 'string',
+      initialValue: 'Need a Ride?',
+    }),
+    defineField({
+      name: 'rideRequestIntro',
+      title: 'Ride Request Intro',
+      type: 'text',
+      rows: 2,
+    }),
+
     // ── Language ──────────────────────────────────────────────────────
     defineField({
       name: 'language',

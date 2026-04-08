@@ -34,127 +34,42 @@ export const homePage = defineType({
       type: 'string',
     }),
 
-    // ── Service Times ────────────────────────────────────────────────
+    // ── Content Sections (Go Deeper, Sunday Mornings, Find Community, Watch Sermons) ──
     defineField({
-      name: 'serviceTimes',
-      title: 'Service Times',
+      name: 'sections',
+      title: 'Content Sections',
       type: 'array',
       of: [
         {
           type: 'object',
-          name: 'serviceTime',
-          title: 'Service Time',
+          name: 'homeSection',
+          title: 'Section',
           fields: [
+            defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required() }),
+            defineField({ name: 'body', title: 'Body', type: 'array', of: [{ type: 'block' }] }),
+            defineField({ name: 'image', title: 'Image', type: 'image', options: { hotspot: true } }),
+            defineField({ name: 'ctaText', title: 'CTA Text', type: 'string' }),
+            defineField({ name: 'ctaHref', title: 'CTA Link', type: 'string' }),
             defineField({
-              name: 'label',
-              title: 'Label',
+              name: 'layout',
+              title: 'Layout',
               type: 'string',
-              validation: (rule) => rule.required(),
+              options: { list: ['default', 'reversed'] },
+              initialValue: 'default',
             }),
-            defineField({
-              name: 'time',
-              title: 'Time',
-              type: 'string',
-              validation: (rule) => rule.required(),
-            }),
+            defineField({ name: 'tinted', title: 'Tinted Background', type: 'boolean', initialValue: false }),
           ],
-          preview: {
-            select: { title: 'label', subtitle: 'time' },
-          },
+          preview: { select: { title: 'heading', subtitle: 'layout' } },
         },
       ],
     }),
 
-    // ── Photo Mosaic ─────────────────────────────────────────────────
-    defineField({
-      name: 'mosaicImages',
-      title: 'Mosaic Images',
-      type: 'array',
-      of: [
-        {
-          type: 'image',
-          options: { hotspot: true },
-          fields: [
-            defineField({
-              name: 'alt',
-              title: 'Alt Text',
-              type: 'string',
-            }),
-          ],
-        },
-      ],
-    }),
-
-    // ── Pillars ──────────────────────────────────────────────────────
-    defineField({
-      name: 'pillars',
-      title: 'Pillars',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          name: 'pillar',
-          title: 'Pillar',
-          fields: [
-            defineField({
-              name: 'title',
-              title: 'Title',
-              type: 'string',
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: 'description',
-              title: 'Description',
-              type: 'text',
-            }),
-          ],
-          preview: {
-            select: { title: 'title' },
-          },
-        },
-      ],
-    }),
-
-    // ── Next Steps ───────────────────────────────────────────────────
-    defineField({
-      name: 'nextSteps',
-      title: 'Next Steps',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          name: 'nextStep',
-          title: 'Next Step',
-          fields: [
-            defineField({
-              name: 'title',
-              title: 'Title',
-              type: 'string',
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: 'body',
-              title: 'Body',
-              type: 'string',
-            }),
-            defineField({
-              name: 'href',
-              title: 'Link',
-              type: 'string',
-            }),
-            defineField({
-              name: 'image',
-              title: 'Image',
-              type: 'image',
-              options: { hotspot: true },
-            }),
-          ],
-          preview: {
-            select: { title: 'title', subtitle: 'href' },
-          },
-        },
-      ],
-    }),
+    // ── Bridging Cultures Banner ─────────────────────────────────────
+    defineField({ name: 'bannerHeading', title: 'Banner Heading', type: 'string' }),
+    defineField({ name: 'bannerBody', title: 'Banner Body', type: 'array', of: [{ type: 'block' }] }),
+    defineField({ name: 'bannerImage', title: 'Banner Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'bannerCtaText', title: 'Banner CTA Text', type: 'string' }),
+    defineField({ name: 'bannerCtaHref', title: 'Banner CTA Link', type: 'string' }),
 
     // ── Language ──────────────────────────────────────────────────────
     defineField({

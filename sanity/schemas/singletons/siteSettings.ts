@@ -27,6 +27,30 @@ export const siteSettings = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'city',
+      title: 'City, State ZIP',
+      type: 'string',
+      description: 'e.g. "Ithaca, NY 14850"',
+    }),
+    defineField({
+      name: 'serviceTimes',
+      title: 'Service Times',
+      type: 'array',
+      description: 'Centralized service times — pulled by footer, homepage, contact page, and visit page',
+      of: [
+        {
+          type: 'object',
+          name: 'serviceTime',
+          title: 'Service Time',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required() }),
+            defineField({ name: 'time', title: 'Time', type: 'string', validation: (rule) => rule.required() }),
+          ],
+          preview: { select: { title: 'label', subtitle: 'time' } },
+        },
+      ],
+    }),
+    defineField({
       name: 'socialLinks',
       title: 'Social Links',
       type: 'array',
