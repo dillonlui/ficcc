@@ -33,15 +33,6 @@ export interface SanityImage {
   asset: { _ref: string; _type: 'reference' };
 }
 
-export interface Page {
-  _id: string;
-  _type: 'page';
-  title: string;
-  slug: SanitySlug;
-  body: PortableTextBlock[];
-  language: 'en' | 'zh';
-}
-
 export interface Sermon {
   _id: string;
   _type: 'sermon';
@@ -109,43 +100,9 @@ export interface SiteSettings {
   announcementBarLink?: string;
 }
 
-export interface NavChild {
-  label: string;
-  href?: string;
-}
-
-export interface NavItem {
-  label: string;
-  href?: string;
-  children?: NavChild[];
-}
-
-export interface Navigation {
-  _id: string;
-  _type: 'navigation';
-  navItems: NavItem[];
-  language: 'en' | 'zh';
-}
-
 export interface ServiceTime {
   label: string;
   time: string;
-}
-
-export interface Pillar {
-  title: string;
-  description?: string;
-}
-
-export interface NextStep {
-  title: string;
-  body?: string;
-  href?: string;
-  image?: SanityImage;
-}
-
-export interface MosaicImage extends SanityImage {
-  alt?: string;
 }
 
 export interface HomePage {
@@ -248,19 +205,6 @@ export interface Person {
 type Language = 'en' | 'zh';
 
 /**
- * Fetch a page by its slug and language.
- */
-export async function getPageBySlug(
-  slug: string,
-  language: Language = 'en',
-): Promise<Page | null> {
-  return client.fetch<Page | null>(
-    `*[_type == "page" && slug.current == $slug && language == $language][0]`,
-    { slug, language },
-  );
-}
-
-/**
  * Fetch all sermons for a language, newest first.
  */
 export async function getSermons(language: Language = 'en'): Promise<Sermon[]> {
@@ -334,18 +278,6 @@ export async function getSiteSettings(
 ): Promise<SiteSettings | null> {
   return client.fetch<SiteSettings | null>(
     `*[_type == "siteSettings" && language == $language][0]`,
-    { language },
-  );
-}
-
-/**
- * Fetch the singleton navigation document for a language.
- */
-export async function getNavigation(
-  language: Language = 'en',
-): Promise<Navigation | null> {
-  return client.fetch<Navigation | null>(
-    `*[_type == "navigation" && language == $language][0]`,
     { language },
   );
 }
