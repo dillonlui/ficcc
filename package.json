@@ -25,12 +25,14 @@
     "@sanity/astro": "^3.3.1",
     "@sanity/client": "^7.3.0",
     "@sanity/vision": "^5.18.0",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^5.5.5",
     "astro-pagefind": "^1.8.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "resend": "^6.10.0",
-    "sanity": "^5.18.0"
+    "sanity": "^5.18.0",
+    "styled-components": "^6.3.12"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.11.1",

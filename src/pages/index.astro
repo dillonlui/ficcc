@@ -10,6 +10,7 @@
  */
 import '../styles/global.css';
 import cjkFontsHref from '../styles/cjk-fonts.css?url';
+import Analytics from '@vercel/analytics/astro';
 import { getSplashPage, urlForImage } from '../lib/sanity';
 
 let splashData: Awaited<ReturnType<typeof getSplashPage>> = null;
@@ -90,6 +91,7 @@ const bgMobile = splashData?.backgroundImage
         });
       });
     </script>
+    <Analytics />
   </body>
 </html>
 

@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
 import { getSiteSettings } from '../lib/sanity';
 import { VisualEditing } from '@sanity/astro/visual-editing';
+import Analytics from '@vercel/analytics/astro';
 import { getAlternateUrl, type Lang } from '../lib/navigation';
 
 interface Props {
@@ -121,6 +122,7 @@ const showAnnouncementBar =
         }
       }
     </script>
+    <Analytics />
   </body>
 </html>
 
