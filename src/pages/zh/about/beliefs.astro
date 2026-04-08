@@ -1,90 +1,138 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Accordion from '../../../components/Accordion.astro';
-import { getAboutPage, portableTextToHtml } from '../../../lib/sanity';
+import { getBeliefsPage, urlForImage, portableTextToHtml } from '../../../lib/sanity';
 
 const title = '我們的信仰 | 伊的家華人基督教會';
 const description =
   '伊的家華人基督教會的核心信仰，美國播道會（EFCA）十一條信仰宣言。';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
-let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
-
+let beliefsPage: Awaited<ReturnType<typeof getBeliefsPage>> = null;
 try {
-  aboutPage = await getAboutPage('zh');
+  beliefsPage = await getBeliefsPage('zh');
 } catch {
   // Sanity unreachable — continue with fallbacks
 }
 
-// ---------- EFCA 11-point Statement of Faith in Chinese ----------
-const fallbackBeliefs = [
-  {
-    title: '一、神',
-    content:
-      '<p>我們相信獨一的真神，祂是永恆存在的三個位格：聖父、聖子、聖靈。每一位都完全是神，各有位格之分，卻在本質和目的上合而為一。祂是萬物的創造者、維持者和統治者。</p>',
-  },
-  {
-    title: '二、聖經',
-    content:
-      '<p>我們相信聖經（舊約和新約）是神所默示的話語，在原稿中完全無誤。聖經是信仰和生活的最高和最終權威，是神啟示的完整記錄。</p>',
-  },
-  {
-    title: '三、人的境況',
-    content:
-      '<p>我們相信神按自己的形像造人，但人因悖逆而墮落。全人類生來就有罪性，與神隔絕，處於神公義的審判之下。人無法靠自己的努力恢復與神的關係。</p>',
-  },
-  {
-    title: '四、耶穌基督',
-    content:
-      '<p>我們相信耶穌基督是完全的神，也是完全的人。祂由童貞女馬利亞所生，過無罪的生活，行了神蹟，被釘在十字架上為罪人代死，第三天從死裡復活，升天坐在父神的右邊。</p>',
-  },
-  {
-    title: '五、基督十架的救贖',
-    content:
-      '<p>我們相信主耶穌基督為我們的罪而死，作為替代的贖罪祭。凡相信祂的人，都因祂所流的寶血而被稱為義。祂的死是完全的、充分的，足以贖一切人的罪。</p>',
-  },
-  {
-    title: '六、聖靈',
-    content:
-      '<p>我們相信聖靈叫世人知罪，使信徒重生，從得救的那一刻起內住在他們裡面，賜能力使他們過敬虔的生活並事奉。聖靈光照聖經，分賜屬靈恩賜，建造教會。</p>',
-  },
-  {
-    title: '七、教會',
-    content:
-      '<p>我們相信普世教會是基督的身體，由一切重生的信徒組成，基督是教會的元首。地方教會是受洗信徒的群體，為敬拜、教導、團契和傳福音而組織，遵行洗禮和聖餐。</p>',
-  },
-  {
-    title: '八、基督徒的生活',
-    content:
-      '<p>我們相信神稱義的恩典不可與祂成聖的能力和目的分開。神命令我們至高地愛祂，犧牲地愛人，藉著禱告、服事、奉獻和順服祂的話語來活出信仰。</p>',
-  },
-  {
-    title: '九、基督的再來',
-    content:
-      '<p>我們相信主耶穌基督將親自、有形地再來。祂的再來是教會有福的盼望，激勵我們過聖潔的生活和忠心的事奉。</p>',
-  },
-  {
-    title: '十、回應與永恆的歸宿',
-    content:
-      '<p>我們相信神命令所有人悔改相信主耶穌基督。凡拒絕福音的人將面對永遠的刑罰；凡接受的人將享受與神同在的永生福樂。</p>',
-  },
-  {
-    title: '十一、末後的事',
-    content:
-      '<p>我們相信身體的復活、義人的永恆福樂和惡人的永遠受苦。我們盼望新天新地，在那裡有義居住，神將擦去一切的眼淚。</p>',
-  },
-];
+// Hero
+const heroTitle = beliefsPage?.heroTitle || '信仰與願景';
+const heroSubtitle = beliefsPage?.heroSubtitle || '扎根聖經，靠恩典塑造，活出使命。';
+const heroImageUrl = beliefsPage?.heroImage
+  ? urlForImage(beliefsPage.heroImage, { width: 1600 })
+  : '/images/hero/bible.webp';
 
-// ---------- Resolved beliefs (CMS ▸ fallback) ----------
-const beliefs =
-  aboutPage?.beliefs && aboutPage.beliefs.length > 0
-    ? aboutPage.beliefs.map((b) => ({
-        title: b.title,
-        content: b.content?.length
-          ? portableTextToHtml(b.content)
-          : `<p>${b.title}</p>`,
-      }))
-    : fallbackBeliefs;
+// Beliefs section
+const beliefsHeading = beliefsPage?.beliefsHeading || '我們的信仰';
+const beliefsIntro = beliefsPage?.beliefsIntro || '以下核心信念根植於聖經，塑造了我們教會的身份，也指引我們作為耶穌基督跟隨者的共同生活。本信仰宣言遵循美國播道會（EFCA）十一條信仰宣言。';
+
+// Beliefs items
+const beliefs = beliefsPage?.beliefs?.length
+  ? beliefsPage.beliefs.map((b: any) => ({
+      title: b.title,
+      content: b.content?.length ? portableTextToHtml(b.content) : `<p>${b.title}</p>`,
+    }))
+  : [
+      {
+        title: '一、神',
+        content:
+          '<p>我們相信獨一的真神，祂是永恆存在的三個位格：聖父、聖子、聖靈。每一位都完全是神，各有位格之分，卻在本質和目的上合而為一。祂是萬物的創造者、維持者和統治者。</p>',
+      },
+      {
+        title: '二、聖經',
+        content:
+          '<p>我們相信聖經（舊約和新約）是神所默示的話語，在原稿中完全無誤。聖經是信仰和生活的最高和最終權威，是神啟示的完整記錄。</p>',
+      },
+      {
+        title: '三、人的境況',
+        content:
+          '<p>我們相信神按自己的形像造人，但人因悖逆而墮落。全人類生來就有罪性，與神隔絕，處於神公義的審判之下。人無法靠自己的努力恢復與神的關係。</p>',
+      },
+      {
+        title: '四、耶穌基督',
+        content:
+          '<p>我們相信耶穌基督是完全的神，也是完全的人。祂由童貞女馬利亞所生，過無罪的生活，行了神蹟，被釘在十字架上為罪人代死，第三天從死裡復活，升天坐在父神的右邊。</p>',
+      },
+      {
+        title: '五、基督十架的救贖',
+        content:
+          '<p>我們相信主耶穌基督為我們的罪而死，作為替代的贖罪祭。凡相信祂的人，都因祂所流的寶血而被稱為義。祂的死是完全的、充分的，足以贖一切人的罪。</p>',
+      },
+      {
+        title: '六、聖靈',
+        content:
+          '<p>我們相信聖靈叫世人知罪，使信徒重生，從得救的那一刻起內住在他們裡面，賜能力使他們過敬虔的生活並事奉。聖靈光照聖經，分賜屬靈恩賜，建造教會。</p>',
+      },
+      {
+        title: '七、教會',
+        content:
+          '<p>我們相信普世教會是基督的身體，由一切重生的信徒組成，基督是教會的元首。地方教會是受洗信徒的群體，為敬拜、教導、團契和傳福音而組織，遵行洗禮和聖餐。</p>',
+      },
+      {
+        title: '八、基督徒的生活',
+        content:
+          '<p>我們相信神稱義的恩典不可與祂成聖的能力和目的分開。神命令我們至高地愛祂，犧牲地愛人，藉著禱告、服事、奉獻和順服祂的話語來活出信仰。</p>',
+      },
+      {
+        title: '九、基督的再來',
+        content:
+          '<p>我們相信主耶穌基督將親自、有形地再來。祂的再來是教會有福的盼望，激勵我們過聖潔的生活和忠心的事奉。</p>',
+      },
+      {
+        title: '十、回應與永恆的歸宿',
+        content:
+          '<p>我們相信神命令所有人悔改相信主耶穌基督。凡拒絕福音的人將面對永遠的刑罰；凡接受的人將享受與神同在的永生福樂。</p>',
+      },
+      {
+        title: '十一、末後的事',
+        content:
+          '<p>我們相信身體的復活、義人的永恆福樂和惡人的永遠受苦。我們盼望新天新地，在那裡有義居住，神將擦去一切的眼淚。</p>',
+      },
+    ];
+
+// Scripture banner
+const scriptureQuote = beliefsPage?.scriptureQuote || '「聖經都是神所默示的，於教訓、督責、使人歸正、教導人學義都是有益的，叫屬神的人得以完全，預備行各樣的善事。」';
+const scriptureCitation = beliefsPage?.scriptureCitation || '提摩太後書 3:16-17';
+const scriptureImageUrl = beliefsPage?.scriptureImage
+  ? urlForImage(beliefsPage.scriptureImage, { width: 1600 })
+  : '/images/church/2023-retreat-praying.webp';
+
+// Vision section
+const visionHeading = beliefsPage?.visionHeading || '我們的異象';
+const visionIntroHtml = beliefsPage?.visionIntro?.length
+  ? portableTextToHtml(beliefsPage.visionIntro)
+  : null;
+
+// Vision items
+const visionItems = beliefsPage?.visionItems?.length
+  ? beliefsPage.visionItems.map((v: any) => ({
+      title: v.title,
+      content: v.content?.length ? portableTextToHtml(v.content) : `<p>${v.title}</p>`,
+    }))
+  : [
+      {
+        title: '培養謙卑的僕人',
+        content:
+          '<p>腓立比書 2:3-4說：「凡事不可結黨，不可貪圖虛浮的榮耀；只要存心謙卑，各人看別人比自己強。各人不要單顧自己的事，也要顧別人的事。」我們教會渴望在每個人的生命中培養僕人的心志，而非特權的心態。</p>' +
+          '<p>我們鼓勵每位弟兄姊妹在伊薩卡生活期間參與服事——可能是在教會中服事，可能是擔任難民的導師，也可能是參與校園事工。我們的願望是，當他們離開伊薩卡時，他們的生命已被僕人的精神所塑造。</p>',
+      },
+      {
+        title: '愛主、愛失喪的人、愛地方教會',
+        content:
+          '<p>哥林多前書 13:3說：「我若將所有的賙濟窮人，又捨己身叫人焚燒，卻沒有愛，仍然與我無益。」我們渴望培養出於愛的動機，而非出於自利。</p>' +
+          '<p>我們盼望在三個方面成長：第一，對主的愛——裝備弟兄姊妹在每週有與主獨處的時間，讀經禱告。第二，對失喪之人的愛——建立與非基督徒的友誼，向他們傳講福音。第三，對地方教會的愛——積極參與禱告會、查經班、團契活動，彼此實踐聖經中的「彼此」命令。</p>',
+      },
+      {
+        title: '一生之久',
+        content:
+          '<p>馬太福音 13:20-23描述了不同土壤的比喻。我們渴望培養長期的靈命成長，而非短暫的熱情。</p>' +
+          '<p>我們盼望每位弟兄姊妹在伊薩卡期間，能培養出如此堅強的僕人心志，以致他們對主、對失喪之人、對地方教會的愛能持續一生成長。我們的責任是警告他們前方可能的陷阱，並裝備他們避免跌入其中。</p>',
+      },
+    ];
+
+// Callout
+const calloutHeading = beliefsPage?.calloutHeading || '看見信仰的行動';
+const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契，一起探索我們如何活出信仰。';
 ---
 
 <BaseLayout title={title} description={description} lang="zh">
@@ -92,11 +140,11 @@ const beliefs =
 
     <!-- Hero Banner -->
     <section class="beliefs-hero">
-      <img class="beliefs-hero__img" src="/images/hero/bible.webp" alt="" fetchpriority="high" loading="eager" decoding="async" />
+      <img class="beliefs-hero__img" src={heroImageUrl} alt="" fetchpriority="high" loading="eager" decoding="async" />
       <div class="beliefs-hero__overlay">
         <div class="beliefs-hero__content">
-          <h1 class="beliefs-hero__title" data-reveal>信仰與願景</h1>
-          <p class="beliefs-hero__subtitle" data-reveal>扎根聖經，靠恩典塑造，活出使命。</p>
+          <h1 class="beliefs-hero__title" data-reveal>{heroTitle}</h1>
+          <p class="beliefs-hero__subtitle" data-reveal>{heroSubtitle}</p>
         </div>
       </div>
     </section>
@@ -104,9 +152,9 @@ const beliefs =
     <!-- Beliefs -->
     <section class="section" aria-labelledby="beliefs-heading">
       <div class="section__inner">
-        <h2 class="section__heading" id="beliefs-heading" data-reveal>我們的信仰</h2>
+        <h2 class="section__heading" id="beliefs-heading" data-reveal>{beliefsHeading}</h2>
         <p class="section__intro" data-reveal>
-          以下核心信念根植於聖經，塑造了我們教會的身份，也指引我們作為耶穌基督跟隨者的共同生活。本信仰宣言遵循美國播道會（EFCA）十一條信仰宣言。
+          {beliefsIntro}
         </p>
         <div data-reveal>
           <Accordion items={beliefs} />
@@ -116,11 +164,11 @@ const beliefs =
 
     <!-- Scripture Banner -->
     <section class="scripture-banner" aria-label="經文">
-      <img class="scripture-banner__img" src="/images/church/2023-retreat-praying.webp" alt="教會成員一同禱告" loading="lazy" />
+      <img class="scripture-banner__img" src={scriptureImageUrl} alt="教會成員一同禱告" loading="lazy" />
       <div class="scripture-banner__overlay">
         <blockquote class="scripture-banner__quote" data-reveal>
-          <p>「聖經都是神所默示的，於教訓、督責、使人歸正、教導人學義都是有益的，叫屬神的人得以完全，預備行各樣的善事。」</p>
-          <cite>提摩太後書 3:16-17</cite>
+          <p>{scriptureQuote}</p>
+          <cite>{scriptureCitation}</cite>
         </blockquote>
       </div>
     </section>
@@ -128,33 +176,18 @@ const beliefs =
     <!-- Vision -->
     <section class="section section--alt" aria-labelledby="vision-heading">
       <div class="section__inner">
-        <h2 class="section__heading" id="vision-heading" data-reveal>我們的異象</h2>
-        <p class="section__intro" data-reveal>
-          伊的家華人基督教會的使命是「培養謙卑的僕人，一生愛主、愛失喪的人、愛地方教會」。
-          這個異象根植於聖經中反覆強調的三個標準，我們盼望在每位弟兄姊妹的生命中培育這些品格，
-          使他們能忠心地管理神所賜的豐盛恩典。
-        </p>
+        <h2 class="section__heading" id="vision-heading" data-reveal>{visionHeading}</h2>
+        {visionIntroHtml ? (
+          <div class="section__intro" data-reveal set:html={visionIntroHtml} />
+        ) : (
+          <p class="section__intro" data-reveal>
+            伊的家華人基督教會的使命是「培養謙卑的僕人，一生愛主、愛失喪的人、愛地方教會」。
+            這個異象根植於聖經中反覆強調的三個標準，我們盼望在每位弟兄姊妹的生命中培育這些品格，
+            使他們能忠心地管理神所賜的豐盛恩典。
+          </p>
+        )}
         <div data-reveal>
-          <Accordion items={[
-            {
-              title: '培養謙卑的僕人',
-              content:
-                '<p>腓立比書 2:3-4說：「凡事不可結黨，不可貪圖虛浮的榮耀；只要存心謙卑，各人看別人比自己強。各人不要單顧自己的事，也要顧別人的事。」我們教會渴望在每個人的生命中培養僕人的心志，而非特權的心態。</p>' +
-                '<p>我們鼓勵每位弟兄姊妹在伊薩卡生活期間參與服事——可能是在教會中服事，可能是擔任難民的導師，也可能是參與校園事工。我們的願望是，當他們離開伊薩卡時，他們的生命已被僕人的精神所塑造。</p>',
-            },
-            {
-              title: '愛主、愛失喪的人、愛地方教會',
-              content:
-                '<p>哥林多前書 13:3說：「我若將所有的賙濟窮人，又捨己身叫人焚燒，卻沒有愛，仍然與我無益。」我們渴望培養出於愛的動機，而非出於自利。</p>' +
-                '<p>我們盼望在三個方面成長：第一，對主的愛——裝備弟兄姊妹在每週有與主獨處的時間，讀經禱告。第二，對失喪之人的愛——建立與非基督徒的友誼，向他們傳講福音。第三，對地方教會的愛——積極參與禱告會、查經班、團契活動，彼此實踐聖經中的「彼此」命令。</p>',
-            },
-            {
-              title: '一生之久',
-              content:
-                '<p>馬太福音 13:20-23描述了不同土壤的比喻。我們渴望培養長期的靈命成長，而非短暫的熱情。</p>' +
-                '<p>我們盼望每位弟兄姊妹在伊薩卡期間，能培養出如此堅強的僕人心志，以致他們對主、對失喪之人、對地方教會的愛能持續一生成長。我們的責任是警告他們前方可能的陷阱，並裝備他們避免跌入其中。</p>',
-            },
-          ]} />
+          <Accordion items={visionItems} />
         </div>
       </div>
     </section>
@@ -163,8 +196,8 @@ const beliefs =
     <section class="ministries-callout ministries-callout--textured" aria-label="探索事工">
       <div class="ministries-callout__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
       <div class="ministries-callout__inner">
-        <h2 class="ministries-callout__heading" data-reveal>看見信仰的行動</h2>
-        <p class="ministries-callout__body" data-reveal>從敬拜聚會到小組團契，一起探索我們如何活出信仰。</p>
+        <h2 class="ministries-callout__heading" data-reveal>{calloutHeading}</h2>
+        <p class="ministries-callout__body" data-reveal>{calloutBody}</p>
         <a href="/zh/ministries" class="ministries-callout__cta" data-reveal>
           探索事工
           <svg class="ministries-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
