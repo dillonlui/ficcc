@@ -12,8 +12,9 @@ export interface NavLink {
 
 const navLinksEN: NavLink[] = [
   { label: 'Home', href: '/en/' },
+  { label: 'Visit', href: '/en/visit' },
   { label: 'About', href: '/en/about' },
-  { label: 'Ministries', href: '/en/ministries' },
+  { label: 'Grow', href: '/en/ministries' },
   { label: 'Sermons', href: '/en/sermons' },
   { label: 'Give', href: '/en/give' },
   { label: 'Contact', href: '/en/contact' },
@@ -21,8 +22,9 @@ const navLinksEN: NavLink[] = [
 
 const navLinksZH: NavLink[] = [
   { label: '首頁', href: '/zh' },
+  { label: '來訪', href: '/zh/sundays' },
   { label: '關於我們', href: '/zh/about' },
-  { label: '團契', href: '/zh/ministries' },
+  { label: '成長', href: '/zh/ministries' },
   { label: '講道', href: '/zh/sermons' },
   { label: '奉獻', href: '/zh/give' },
   { label: '聯絡我們', href: '/zh/contact' },
@@ -34,8 +36,10 @@ export function getNavLinks(lang: Lang = 'en'): NavLink[] {
 
 const footerNavEN: NavLink[] = [
   { label: 'Home', href: '/en/' },
+  { label: 'Visit', href: '/en/visit' },
   { label: 'About', href: '/en/about' },
   { label: 'Ministries', href: '/en/ministries' },
+  { label: 'Resources', href: '/en/resources' },
   { label: 'Sermons', href: '/en/sermons' },
   { label: 'Give', href: '/en/give' },
   { label: 'Contact', href: '/en/contact' },
@@ -43,6 +47,7 @@ const footerNavEN: NavLink[] = [
 
 const footerNavZH: NavLink[] = [
   { label: '首頁', href: '/zh' },
+  { label: '來訪', href: '/zh/sundays' },
   { label: '關於我們', href: '/zh/about' },
   { label: '團契', href: '/zh/ministries' },
   { label: '講道', href: '/zh/sermons' },

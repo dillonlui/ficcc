@@ -10,7 +10,6 @@ const CRITICAL_PAGES: [string, string][] = [
   ['/en/about/', 'About'],
   ['/en/sermons/', 'Sermons'],
   ['/en/contact/', 'Contact'],
-  ['/en/events/', 'Events'],
   ['/en/visit/', 'Visit'],
   ['/en/give/', 'Give'],
   ['/zh/', 'Home (Chinese)'],

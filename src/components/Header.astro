@@ -16,14 +16,32 @@ const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/en/' : '/zh');
 const currentPath = Astro.url.pathname;
 const logoSrc = lang === 'zh' ? '/logo/logo-zh-light.svg' : '/logo/logo-en-light.svg';
 
-// About dropdown sub-links
+// Dropdown configurations — keyed by the nav link href that triggers the dropdown
+interface DropdownConfig {
+  subLinks: { label: string; href: string }[];
+  activePrefixes: string[]; // paths that make this dropdown show as active
+}
+
 const aboutPrefix = lang === 'zh' ? '/zh/about' : '/en/about';
-const aboutDropdown = [
-  { label: lang === 'zh' ? '關於我們' : 'Who We Are', href: aboutPrefix },
-  { label: lang === 'zh' ? '信仰與願景' : 'Beliefs & Vision', href: `${aboutPrefix}/beliefs` },
-  { label: lang === 'zh' ? '來訪我們' : 'Visit Us', href: lang === 'zh' ? '/zh/sundays' : '/en/visit' },
-];
-const isAboutHref = (href: string) => href === '/en/about' || href === '/zh/about';
+const growPrefix = lang === 'zh' ? '/zh/ministries' : '/en/ministries';
+const resourcesHref = lang === 'zh' ? '/zh/resources' : '/en/resources';
+
+const dropdowns: Record<string, DropdownConfig> = {
+  [aboutPrefix]: {
+    subLinks: [
+      { label: lang === 'zh' ? '關於我們' : 'Who We Are', href: aboutPrefix },
+      { label: lang === 'zh' ? '信仰與願景' : 'Beliefs & Vision', href: `${aboutPrefix}/beliefs` },
+    ],
+    activePrefixes: [aboutPrefix],
+  },
+  [growPrefix]: {
+    subLinks: [
+      { label: lang === 'zh' ? '團契' : 'Ministries', href: growPrefix },
+      { label: lang === 'zh' ? '資源' : 'Resources', href: resourcesHref },
+    ],
+    activePrefixes: [growPrefix, resourcesHref],
+  },
+};
 ---
 
 <header class="site-header">
@@ -51,17 +69,18 @@ const isAboutHref = (href: string) => href === '/en/about' || href === '/zh/abou
     <nav id="nav-menu" class="nav" aria-label="Main navigation">
       <ul class="nav-list" role="list">
         {navLinks.map((link) => {
-          const isActive = currentPath === link.href
-            || (link.href !== '/' && link.href !== '/zh' && link.href !== '/en/' && currentPath.startsWith(link.href));
+          const dropdown = dropdowns[link.href];
 
-          if (isAboutHref(link.href)) {
-            const visitHref = lang === 'zh' ? '/zh/sundays' : '/en/visit';
-            const aboutActive = currentPath.startsWith(aboutPrefix) || currentPath.startsWith(visitHref);
+          if (dropdown) {
+            // Dropdown nav item (About, Grow)
+            const dropdownActive = dropdown.activePrefixes.some(
+              (prefix) => currentPath.startsWith(prefix)
+            );
             return (
               <li class="nav-dropdown">
                 <button
                   type="button"
-                  class:list={['nav-link', 'nav-dropdown-trigger', { 'nav-link--active': aboutActive }]}
+                  class:list={['nav-link', 'nav-dropdown-trigger', { 'nav-link--active': dropdownActive }]}
                   aria-expanded="false"
                   aria-haspopup="true"
                 >
@@ -71,7 +90,7 @@ const isAboutHref = (href: string) => href === '/en/about' || href === '/zh/abou
                   </svg>
                 </button>
                 <ul class="nav-dropdown-panel" role="list">
-                  {aboutDropdown.map((sub) => {
+                  {dropdown.subLinks.map((sub) => {
                     const subActive = currentPath === sub.href || currentPath === sub.href + '/';
                     return (
                       <li>
@@ -89,6 +108,10 @@ const isAboutHref = (href: string) => href === '/en/about' || href === '/zh/abou
               </li>
             );
           }
+
+          // Regular nav item
+          const isActive = currentPath === link.href
+            || (link.href !== '/' && link.href !== '/zh' && link.href !== '/en/' && currentPath.startsWith(link.href));
 
           return (
             <li>

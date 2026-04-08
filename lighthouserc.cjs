@@ -9,7 +9,6 @@ module.exports = {
         'http://localhost:4321/en/about/',
         'http://localhost:4321/en/sermons/',
         'http://localhost:4321/en/contact/',
-        'http://localhost:4321/en/events/',
         'http://localhost:4321/en/visit/',
         'http://localhost:4321/en/give/',
         'http://localhost:4321/zh/',
