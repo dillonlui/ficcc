@@ -2,13 +2,48 @@
 /* RideRequestForm — ride request form with Cloudflare Turnstile spam
    protection and client-side fetch submission to /api/ride-request.
    Adapted from ContactForm pattern. */
+interface Props {
+  lang?: 'en' | 'zh';
+}
+
+const { lang = 'en' } = Astro.props;
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+
+const t = lang === 'zh' ? {
+  name: '姓名 Name',
+  email: '電郵 Email',
+  phone: '電話 Phone',
+  date: '希望日期 Preferred Date',
+  pickup: '接送地點 Pickup Location',
+  notes: '備註 Notes',
+  namePlaceholder: '您的姓名',
+  emailPlaceholder: 'you@example.com',
+  phonePlaceholder: '（選填）',
+  pickupPlaceholder: '例如：宿舍名稱或街道地址',
+  notesPlaceholder: '其他需要我們知道的事情？（選填）',
+  submit: '申請接送',
+  captcha: '請完成驗證',
+} : {
+  name: 'Name',
+  email: 'Email',
+  phone: 'Phone',
+  date: 'Preferred Date',
+  pickup: 'Pickup Location',
+  notes: 'Notes',
+  namePlaceholder: 'Your name',
+  emailPlaceholder: 'you@example.com',
+  phonePlaceholder: '(optional)',
+  pickupPlaceholder: 'e.g. campus dorm name or street address',
+  notesPlaceholder: 'Anything else we should know? (optional)',
+  submit: 'Request a Ride',
+  captcha: 'Please complete the captcha verification',
+};
 ---
 
 <form class="ride-form" novalidate>
   <div class="ride-form__row">
     <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-name">Name <span aria-hidden="true">*</span></label>
+      <label class="ride-form__label" for="ride-name">{t.name} <span aria-hidden="true">*</span></label>
       <input
         class="ride-form__input"
         type="text"
@@ -17,13 +52,13 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
         required
         minlength="2"
         autocomplete="name"
-        placeholder="Your name"
+        placeholder={t.namePlaceholder}
       />
       <span class="ride-form__error" data-field="name"></span>
     </div>
 
     <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-email">Email <span aria-hidden="true">*</span></label>
+      <label class="ride-form__label" for="ride-email">{t.email} <span aria-hidden="true">*</span></label>
       <input
         class="ride-form__input"
         type="email"
@@ -31,7 +66,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
         name="email"
         required
         autocomplete="email"
-        placeholder="you@example.com"
+        placeholder={t.emailPlaceholder}
       />
       <span class="ride-form__error" data-field="email"></span>
     </div>
@@ -39,20 +74,20 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   <div class="ride-form__row">
     <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-phone">Phone</label>
+      <label class="ride-form__label" for="ride-phone">{t.phone}</label>
       <input
         class="ride-form__input"
         type="tel"
         id="ride-phone"
         name="phone"
         autocomplete="tel"
-        placeholder="(optional)"
+        placeholder={t.phonePlaceholder}
       />
       <span class="ride-form__error" data-field="phone"></span>
     </div>
 
     <div class="ride-form__field">
-      <label class="ride-form__label" for="ride-date">Preferred Date</label>
+      <label class="ride-form__label" for="ride-date">{t.date}</label>
       <input
         class="ride-form__input"
         type="date"
@@ -64,7 +99,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   </div>
 
   <div class="ride-form__field">
-    <label class="ride-form__label" for="ride-pickup">Pickup Location <span aria-hidden="true">*</span></label>
+    <label class="ride-form__label" for="ride-pickup">{t.pickup} <span aria-hidden="true">*</span></label>
     <input
       class="ride-form__input"
       type="text"
@@ -72,19 +107,19 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       name="pickupLocation"
       required
       minlength="5"
-      placeholder="e.g. campus dorm name or street address"
+      placeholder={t.pickupPlaceholder}
     />
     <span class="ride-form__error" data-field="pickupLocation"></span>
   </div>
 
   <div class="ride-form__field">
-    <label class="ride-form__label" for="ride-notes">Notes</label>
+    <label class="ride-form__label" for="ride-notes">{t.notes}</label>
     <textarea
       class="ride-form__input ride-form__textarea"
       id="ride-notes"
       name="notes"
       rows="3"
-      placeholder="Anything else we should know? (optional)"
+      placeholder={t.notesPlaceholder}
     ></textarea>
     <span class="ride-form__error" data-field="notes"></span>
   </div>
@@ -94,7 +129,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   <span class="ride-form__error" data-field="turnstileToken"></span>
 
   <button class="ride-form__submit" type="submit">
-    <span class="ride-form__submit-text">Request a Ride</span>
+    <span class="ride-form__submit-text">{t.submit}</span>
     <span class="ride-form__spinner" aria-hidden="true"></span>
   </button>
 
@@ -250,6 +285,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     flex-direction: column;
     gap: var(--space-6);
     max-width: 36rem;
+    margin-inline: auto;
   }
 
   .ride-form__row {
@@ -268,20 +304,20 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     font-family: var(--font-body);
     font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--color-ink);
+    color: var(--base-200);
   }
 
   .ride-form__label span {
-    color: var(--color-terracotta, #c0392b);
+    color: var(--danger, #B8453A);
   }
 
   .ride-form__input {
     font-family: var(--font-body);
     font-size: var(--text-base);
-    color: var(--color-body);
-    background-color: var(--color-bg);
-    border: 1px solid var(--color-stone);
-    border-radius: var(--radius-sm);
+    color: var(--color-ink);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--base-400);
+    border-radius: var(--radius-md);
     padding: var(--space-3) var(--space-4);
     transition: border-color var(--transition), box-shadow var(--transition);
   }
@@ -297,7 +333,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   }
 
   .ride-form__input--error {
-    border-color: var(--color-terracotta, #c0392b);
+    border-color: var(--danger, #B8453A);
   }
 
   .ride-form__textarea {
@@ -308,7 +344,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   .ride-form__error {
     font-family: var(--font-body);
     font-size: var(--text-sm);
-    color: var(--color-terracotta, #c0392b);
+    color: var(--danger, #B8453A);
     min-height: 0;
   }
 
@@ -318,24 +354,25 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   }
 
   .ride-form__submit {
-    align-self: flex-start;
+    align-self: center;
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     font-family: var(--font-body);
     font-size: var(--text-base);
     font-weight: 600;
-    color: var(--color-bg);
-    background-color: var(--color-terracotta);
+    color: var(--base-50);
+    background-color: var(--primary-500);
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 100vw;
     padding: var(--space-3) var(--space-8);
     cursor: pointer;
-    transition: background-color var(--transition), box-shadow var(--transition), opacity var(--transition);
+    transition: background-color var(--transition), transform var(--transition), opacity var(--transition);
   }
 
   .ride-form__submit:hover:not(:disabled) {
-    background-color: color-mix(in srgb, var(--color-terracotta) 85%, black);
+    background-color: var(--primary-600);
+    transform: translateY(-1px);
   }
 
   .ride-form__submit:focus-visible {

@@ -21,14 +21,14 @@ try {
 // ---------- Fallback defaults ----------
 const fallbackSchedule = [
   {
-    label: '主日崇拜',
-    time: '9:45 AM',
+    label: '華語崇拜',
+    time: '11:15 AM',
     description: '包含詩歌敬拜、禱告和聖經信息的崇拜聚會',
   },
   {
-    label: '主日學',
-    time: '11:15 AM',
-    description: '按年齡分班：兒童、青少年和成人',
+    label: '門徒小組',
+    time: '11:00 AM',
+    description: '討論和禱告的小組時間',
   },
 ];
 
@@ -93,7 +93,7 @@ const fallbackFaqItems = [
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heroImage = visitPage?.heroImage
   ? urlForImage(visitPage.heroImage, { width: 1600 })
-  : '/images/hero/worship.webp';
+  : '/images/church/picnic-sunmi-lordina-tiffany-linnea.webp';
 const heroTitle = visitPage?.heroTitle || '主日聚會';
 const heroSubtitle =
   visitPage?.heroSubtitle ||
@@ -154,7 +154,8 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     </section>
 
     <!-- What to Expect -->
-    <section class="expect" aria-label="注意事項">
+    <section class="expect expect--textured" aria-label="注意事項">
+      <div class="expect__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="expect__inner">
         <h2 class="section-heading" data-reveal>注意事項</h2>
         <div class="expect__body" data-reveal set:html={whatToExpectHtml} />
@@ -205,7 +206,8 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     </section>
 
     <!-- FAQ -->
-    <section class="faq" aria-label="常見問題">
+    <section class="faq faq--textured" aria-label="常見問題">
+      <div class="faq__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="faq__inner">
         <h2 class="section-heading" data-reveal>常見問題</h2>
         <div data-reveal>
@@ -217,12 +219,13 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- Ride Request -->
     {showRideRequest && (
       <section class="ride-request" aria-label="申請接送">
+        <div class="ride-request__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
         <div class="ride-request__inner">
-          <h2 class="section-heading" data-reveal>需要接送嗎？</h2>
+          <h2 class="ride-request__heading" data-reveal>需要接送嗎？</h2>
           <p class="ride-request__intro" data-reveal>
             沒有車？沒問題，我們很樂意接送您！請填寫以下表格，我們的同工會與您聯繫安排接送。
           </p>
-          <RideRequestForm />
+          <RideRequestForm lang="zh" />
         </div>
       </section>
     )}
@@ -233,6 +236,10 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
+  :global(.hero__img) {
+    object-position: center 25%;
+  }
+
   .section-heading {
     font-family: var(--font-heading);
     font-size: var(--text-3xl);
@@ -257,7 +264,7 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
 
   .schedule__card {
     background-color: var(--color-stone);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
     padding: var(--space-8) var(--space-6);
     text-align: center;
   }
@@ -289,9 +296,21 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
   .expect {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-stone);
+    position: relative;
+    overflow: hidden;
   }
 
-  .expect__inner { max-width: var(--max-width); margin-inline: auto; }
+  .expect--textured .expect__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.35;
+    z-index: 0;
+  }
+
+  .expect__inner { max-width: var(--max-width); margin-inline: auto; position: relative; z-index: 1; }
 
   .expect__body {
     max-width: 48rem;
@@ -331,9 +350,9 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
   .directions__body :global(p) { margin-block-end: var(--space-4); }
   .directions__body :global(p:last-child) { margin-block-end: 0; }
   .directions__body :global(strong) { color: var(--color-ink); }
-  .directions__body :global(a) { color: var(--color-terracotta); text-decoration: underline; }
+  .directions__body :global(a) { color: var(--primary-500); text-decoration: underline; text-underline-offset: 2px; }
 
-  .directions__map { border-radius: var(--radius-md); overflow: hidden; }
+  .directions__map { border-radius: var(--radius-xl); overflow: hidden; }
   .directions__map iframe { display: block; }
 
   /* ---------- Bus Route ---------- */
@@ -428,27 +447,58 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
   /* ---------- FAQ ---------- */
   .faq {
     padding: var(--space-16) var(--space-6);
-    background-color: var(--color-bg);
-  }
-
-  .faq__inner { max-width: var(--max-width); margin-inline: auto; }
-
-  /* ---------- Ride Request ---------- */
-  .ride-request {
-    padding: var(--space-16) var(--space-6);
     background-color: var(--color-stone);
+    position: relative;
+    overflow: hidden;
   }
 
-  .ride-request__inner { max-width: var(--max-width); margin-inline: auto; }
+  .faq--textured .faq__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.35;
+    z-index: 0;
+  }
+
+  .faq__inner { max-width: var(--max-width); margin-inline: auto; position: relative; z-index: 1; }
+
+  /* ---------- Ride Request — dark callout ---------- */
+  .ride-request {
+    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
+    background-color: var(--base-800);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ride-request__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.25;
+    mix-blend-mode: soft-light;
+    z-index: 0;
+  }
+
+  .ride-request__inner { max-width: 36rem; margin-inline: auto; position: relative; z-index: 1; }
+
+  .ride-request__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--base-50);
+    text-align: center;
+    margin-block-end: var(--space-4);
+  }
 
   .ride-request__intro {
     font-family: var(--font-body);
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
-    color: var(--color-body);
+    color: var(--base-300);
     text-align: center;
-    max-width: 36rem;
-    margin-inline: auto;
     margin-block-end: var(--space-10);
   }
 

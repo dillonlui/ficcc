@@ -85,7 +85,7 @@ const fallbackFaqItems = [
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heroImage = visitPage?.heroImage
   ? urlForImage(visitPage.heroImage, { width: 1600 })
-  : '/images/hero/church-door.webp';
+  : '/images/church/picnic-sunmi-lordina-tiffany-linnea.webp';
 const heroTitle = visitPage?.heroTitle || 'Plan Your Visit';
 const heroSubtitle =
   visitPage?.heroSubtitle ||
@@ -147,7 +147,8 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     </section>
 
     <!-- What to Expect -->
-    <section class="expect" aria-label="What to Expect">
+    <section class="expect expect--textured" aria-label="What to Expect">
+      <div class="expect__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="expect__inner">
         <h2 class="section-heading" data-reveal>What to Expect</h2>
         <div class="expect__body" data-reveal set:html={whatToExpectHtml} />
@@ -177,7 +178,8 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     </section>
 
     <!-- FAQ -->
-    <section class="faq" aria-label="Frequently Asked Questions">
+    <section class="faq faq--textured" aria-label="Frequently Asked Questions">
+      <div class="faq__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="faq__inner">
         <h2 class="section-heading" data-reveal>Frequently Asked Questions</h2>
         <div data-reveal><Accordion items={accordionItems} /></div>
@@ -187,8 +189,9 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     <!-- Ride Request -->
     {showRideRequest && (
       <section class="ride-request" aria-label="Request a Ride">
+        <div class="ride-request__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
         <div class="ride-request__inner">
-          <h2 class="section-heading" data-reveal>Need a Ride?</h2>
+          <h2 class="ride-request__heading" data-reveal>Need a Ride?</h2>
           <p class="ride-request__intro" data-reveal>
             Don't have a car? No problem. We'd love to pick you up! Fill out the form below and someone from our team will reach out to arrange a ride.
           </p>
@@ -203,6 +206,11 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
+  /* ---------- Hero image position override ---------- */
+  :global(.hero__img) {
+    object-position: center 25%;
+  }
+
   /* ---------- Shared ---------- */
   .section-heading {
     font-family: var(--font-heading);
@@ -231,7 +239,7 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
 
   .schedule__card {
     background-color: var(--color-stone);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
     padding: var(--space-8) var(--space-6);
     text-align: center;
   }
@@ -241,7 +249,7 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
     font-family: var(--font-heading);
     font-size: var(--text-2xl);
     font-weight: 700;
-    color: var(--color-terracotta);
+    color: var(--primary-500);
     margin-block-end: var(--space-2);
   }
 
@@ -263,18 +271,32 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
   .expect {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-stone);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .expect--textured .expect__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.35;
+    z-index: 0;
   }
 
   .expect__inner {
     max-width: var(--max-width);
     margin-inline: auto;
+    position: relative;
+    z-index: 1;
   }
 
   .expect__body {
     max-width: 48rem;
     margin-inline: auto;
     font-family: var(--font-body);
-    font-size: var(--text-base);
+    font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
     color: var(--color-body);
   }
@@ -329,12 +351,17 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
   }
 
   .directions__body :global(a) {
-    color: var(--color-terracotta);
+    color: var(--primary-500);
     text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .directions__body :global(a:hover) {
+    color: var(--primary-600);
   }
 
   .directions__map {
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
     overflow: hidden;
   }
 
@@ -346,38 +373,77 @@ const showRideRequest = visitPage?.rideRequestEnabled !== false;
   .faq {
     padding: var(--space-16) var(--space-6);
     background-color: var(--color-stone);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .faq--textured .faq__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.35;
+    z-index: 0;
   }
 
   .faq__inner {
     max-width: var(--max-width);
     margin-inline: auto;
+    position: relative;
+    z-index: 1;
   }
 
-  /* ---------- Ride Request ---------- */
+  /* ---------- Ride Request — dark callout with texture ---------- */
   .ride-request {
-    padding: var(--space-16) var(--space-6);
-    background-color: var(--color-bg);
+    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
+    background-color: var(--base-800);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ride-request__tex {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.25;
+    mix-blend-mode: soft-light;
+    z-index: 0;
   }
 
   .ride-request__inner {
-    max-width: var(--max-width);
+    max-width: 36rem;
     margin-inline: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ride-request__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--base-50);
+    text-align: center;
+    margin-block-end: var(--space-4);
   }
 
   .ride-request__intro {
     font-family: var(--font-body);
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
-    color: var(--color-body);
+    color: var(--base-300);
     text-align: center;
-    max-width: 36rem;
-    margin-inline: auto;
     margin-block-end: var(--space-10);
   }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 768px) {
     .section-heading {
+      font-size: var(--text-2xl);
+    }
+
+    .ride-request__heading {
       font-size: var(--text-2xl);
     }
 
