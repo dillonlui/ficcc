@@ -7,7 +7,7 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion: '2026-03-31',
-  useCdn: true,
+  useCdn: false, // consistent with astro.config.mjs; avoids stale data on SSR routes
 });
 
 export { projectId, dataset };
@@ -588,7 +588,11 @@ export function portableTextToHtml(blocks: PortableTextBlock[] | undefined | nul
               // Check markDefs for link annotations
               const def = markDefs.find((d) => d._key === mark);
               if (def?._type === 'link' && def.href) {
-                text = `<a href="${escapeHtml(def.href)}">${text}</a>`;
+                // Block javascript: URIs to prevent XSS from CMS content
+                const safeHref = /^https?:\/\//i.test(def.href) || def.href.startsWith('/')
+                  ? def.href
+                  : '#';
+                text = `<a href="${escapeHtml(safeHref)}">${text}</a>`;
               }
             }
           }

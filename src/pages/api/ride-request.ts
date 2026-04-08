@@ -8,6 +8,7 @@ import {
   jsonError,
   jsonSuccess,
   isValidEmail,
+  escapeHtml,
 } from '../../lib/form-helpers';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -75,11 +76,3 @@ export const POST: APIRoute = async ({ request }) => {
 
   return jsonSuccess("Your ride request has been submitted! We'll be in touch soon.");
 };
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}

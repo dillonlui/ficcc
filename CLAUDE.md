@@ -61,9 +61,10 @@ src/
 ├── components/     # 22 Astro components (+ Studio.tsx for React)
 ├── layouts/        # BaseLayout.astro — single master layout
 ├── lib/            # sanity.ts, navigation.ts, structured-data.ts, form-helpers.ts
-├── pages/          # Routes: / for EN, /zh/ for Chinese
+├── pages/          # Routes: / splash, /en/ for EN, /zh/ for Chinese
 │   ├── api/        # Form endpoints (contact, connect, prayer-request, ride-request)
-│   └── zh/         # Chinese pages (bespoke, not translations)
+│   ├── en/         # English pages
+│   └── zh/         # Chinese pages
 └── styles/         # global.css (tokens), cjk-fonts.css (async loaded)
 ```
 <!-- GSD:conventions-end -->
@@ -72,13 +73,14 @@ src/
 ## Architecture
 
 ### Bilingual Routing
-- English: `/` (default locale, no prefix)
+- Splash: `/` (language-neutral gateway, redirects returning visitors via Edge Middleware)
+- English: `/en/` (prefixed)
 - Chinese: `/zh/` (path prefix)
-- Astro i18n config: `defaultLocale: 'en'`, `locales: ['en', 'zh']`, `prefixDefaultLocale: false`
+- Astro i18n config: `defaultLocale: 'en'`, `locales: ['en', 'zh']`, `prefixDefaultLocale: true`, `redirectToDefaultLocale: false`
 - Content is **bespoke per ministry** — EN and ZH have separate Sanity documents, not translations.
 - When ZH UX needs differ significantly, build a bespoke page (e.g., `/zh/contact` uses WeChat-first design). (K011)
-- Use `getAlternateUrl(pathname)` from `src/lib/navigation.ts` for all EN<->ZH URL mapping. It handles asymmetric routes like `/visit` <-> `/zh/sundays`. (K010)
-- Language toggle persists preference via cookie.
+- Use `getAlternateUrl(pathname)` from `src/lib/navigation.ts` for all EN<->ZH URL mapping. It handles asymmetric routes like `/en/visit` <-> `/zh/sundays`. (K010)
+- Language toggle persists preference via `lang-pref` cookie. Edge Middleware reads this to redirect returning visitors from `/` to `/en/` or `/zh/`.
 
 ### Sanity CMS
 - **Schema:** `sanity/schemas/` — documents (sermon, event, ministry, page, person), singletons (homePage, aboutPage, visitPage, resourcesPage, navigation, siteSettings), block/object types.

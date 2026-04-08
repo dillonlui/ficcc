@@ -439,16 +439,42 @@ const dropdowns: Record<string, DropdownConfig> = {
   const nav = document.querySelector('#nav-menu') as HTMLElement;
 
   if (btn && nav) {
+    function openNav() {
+      btn.setAttribute('aria-expanded', 'true');
+      nav.classList.add('is-open');
+      // Focus first link in nav for accessibility
+      const firstLink = nav.querySelector('a, button') as HTMLElement | null;
+      firstLink?.focus();
+      document.addEventListener('focusin', trapFocus);
+    }
+
+    function closeNav() {
+      btn.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('is-open');
+      document.removeEventListener('focusin', trapFocus);
+      btn.focus();
+    }
+
+    // Focus trap: keep focus inside nav while open
+    function trapFocus(e: FocusEvent) {
+      if (!nav.classList.contains('is-open')) return;
+      if (!nav.contains(e.target as Node) && e.target !== btn) {
+        const firstLink = nav.querySelector('a, button') as HTMLElement | null;
+        firstLink?.focus();
+      }
+    }
+
     btn.addEventListener('click', () => {
       const expanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!expanded));
-      nav.classList.toggle('is-open', !expanded);
+      if (expanded) {
+        closeNav();
+      } else {
+        openNav();
+      }
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
-        btn.setAttribute('aria-expanded', 'false');
-        nav.classList.remove('is-open');
-        btn.focus();
+        closeNav();
       }
     });
   }

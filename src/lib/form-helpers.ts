@@ -134,3 +134,19 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function isValidEmail(email: string): boolean {
   return EMAIL_RE.test(email);
 }
+
+// ---------------------------------------------------------------------------
+// HTML escaping — shared by all API endpoints for email body construction
+// ---------------------------------------------------------------------------
+
+/**
+ * Escape HTML special characters to prevent injection in email bodies.
+ */
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}

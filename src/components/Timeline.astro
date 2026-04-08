@@ -413,6 +413,11 @@ for (const era of eras) {
         }
       });
 
+      // Stop loop once all dots are activated
+      const allFilled = dots.every((dot) => dot.classList.contains('is-filled'));
+      const allErasActive = eras.every((era) => era.classList.contains('is-active'));
+      if (allFilled && allErasActive) return;
+
       requestAnimationFrame(updateFill);
     }
     // Double-rAF ensures the browser paints the initial hidden state

@@ -6,6 +6,7 @@
 /* --- Font imports (self-hosted via fontsource) --- */
 @import '@fontsource-variable/lora';
 @import '@fontsource-variable/inter';
+@import '@fontsource-variable/dm-sans';
 
 /* ==========================================================================
    CSS Custom Properties
@@ -79,7 +80,7 @@
 
   /* --- Font families --- */
   --font-heading:  'Lora Variable', 'Noto Serif SC', Georgia, serif;
-  --font-body:     'DM Sans', 'Inter Variable', 'Noto Sans SC', system-ui, sans-serif;
+  --font-body:     'DM Sans Variable', 'Inter Variable', 'Noto Sans SC', system-ui, sans-serif;
   --font-cjk:      'Noto Serif SC', 'Lora Variable', serif;
 
   /* --- Type scale --- */
@@ -118,6 +119,12 @@
 
   /* --- Semantic --- */
   --danger: #B8453A;
+  --danger-text:    #991b1b;
+  --danger-bg:      #fef2f2;
+  --danger-border:  #fecaca;
+  --success-text:   #166534;
+  --success-bg:     #f0fdf4;
+  --success-border: #bbf7d0;
 
   /* --- Misc --- */
   --transition: 200ms ease;

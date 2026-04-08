@@ -17,6 +17,7 @@ export function buildChurchJsonLd(): Record<string, unknown> {
     description:
       'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY.',
     url: 'https://ficcc.org/en/',
+    telephone: '(607) 273-1223',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '429 Mitchell Street',
@@ -25,6 +26,17 @@ export function buildChurchJsonLd(): Record<string, unknown> {
       postalCode: '14850',
       addressCountry: 'US',
     },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: 'Sunday',
+        opens: '09:45',
+        closes: '13:00',
+      },
+    ],
+    sameAs: [
+      'https://www.youtube.com/@FICCCenglish',
+    ],
   };
 }
 

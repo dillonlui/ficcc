@@ -11,6 +11,9 @@ export interface YouTubeVideo {
 }
 
 const CHANNEL_ID = 'UCRuUdmxHG2c6OtuKcdH2rSw'; // @FICCCenglish
+// Uploads playlist ID is derived from channel ID (UC → UU prefix). This never
+// changes, so hardcoding it eliminates one API call per request and halves latency.
+const UPLOADS_PLAYLIST_ID = 'UURuUdmxHG2c6OtuKcdH2rSw';
 
 /**
  * Fetches the latest `count` videos from the FICCC English YouTube channel.
@@ -24,30 +27,10 @@ export async function getLatestVideos(count = 6): Promise<YouTubeVideo[]> {
   }
 
   try {
-    // Step 1: Get the uploads playlist ID from the channel
-    const channelUrl = new URL('https://www.googleapis.com/youtube/v3/channels');
-    channelUrl.searchParams.set('part', 'contentDetails');
-    channelUrl.searchParams.set('id', CHANNEL_ID);
-    channelUrl.searchParams.set('key', apiKey);
-
-    const channelRes = await fetch(channelUrl.toString());
-    if (!channelRes.ok) {
-      console.error(`[youtube] Channel fetch failed: ${channelRes.status}`);
-      return [];
-    }
-
-    const channelData = await channelRes.json();
-    const uploadsPlaylistId =
-      channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-    if (!uploadsPlaylistId) {
-      console.error('[youtube] Could not find uploads playlist');
-      return [];
-    }
-
-    // Step 2: Get latest videos from the uploads playlist
+    // Fetch latest videos from the uploads playlist (single API call)
     const playlistUrl = new URL('https://www.googleapis.com/youtube/v3/playlistItems');
     playlistUrl.searchParams.set('part', 'snippet');
-    playlistUrl.searchParams.set('playlistId', uploadsPlaylistId);
+    playlistUrl.searchParams.set('playlistId', UPLOADS_PLAYLIST_ID);
     playlistUrl.searchParams.set('maxResults', String(count));
     playlistUrl.searchParams.set('key', apiKey);
 

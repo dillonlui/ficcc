@@ -61,8 +61,8 @@ const recentSermons = mergedSermons.slice(1);
 // Format date for display
 function formatDate(dateStr: string): string {
   if (!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const d = new Date(dateStr + 'T00:00:00Z'); // force UTC to avoid timezone shifts on edge workers
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 }
 ---
 

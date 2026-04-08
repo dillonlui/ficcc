@@ -7,6 +7,7 @@ import {
   sendEmail,
   jsonError,
   jsonSuccess,
+  escapeHtml,
 } from '../../lib/form-helpers';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -66,11 +67,3 @@ export const POST: APIRoute = async ({ request }) => {
 
   return jsonSuccess('Your prayer request has been submitted. Thank you for sharing.');
 };
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
