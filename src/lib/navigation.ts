@@ -24,7 +24,7 @@ const navLinksZH: NavLink[] = [
   { label: '首頁', href: '/zh' },
   { label: '來訪', href: '/zh/sundays' },
   { label: '關於我們', href: '/zh/about' },
-  { label: '成長', href: '/zh/ministries' },
+  { label: '團契', href: '/zh/ministries' },
   { label: '講道', href: '/zh/sermons' },
   { label: '奉獻', href: '/zh/give' },
   { label: '聯絡我們', href: '/zh/contact' },

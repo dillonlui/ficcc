@@ -23,8 +23,6 @@ interface DropdownConfig {
 }
 
 const aboutPrefix = lang === 'zh' ? '/zh/about' : '/en/about';
-const growPrefix = lang === 'zh' ? '/zh/ministries' : '/en/ministries';
-const resourcesHref = lang === 'zh' ? '/zh/resources' : '/en/resources';
 
 const dropdowns: Record<string, DropdownConfig> = {
   [aboutPrefix]: {
@@ -34,13 +32,16 @@ const dropdowns: Record<string, DropdownConfig> = {
     ],
     activePrefixes: [aboutPrefix],
   },
-  [growPrefix]: {
-    subLinks: [
-      { label: lang === 'zh' ? '團契' : 'Ministries', href: growPrefix },
-      { label: lang === 'zh' ? '資源' : 'Resources', href: resourcesHref },
-    ],
-    activePrefixes: [growPrefix, resourcesHref],
-  },
+  // Grow dropdown — EN only (ZH has no Resources page, so 團契 is a direct link)
+  ...(lang === 'en' ? {
+    '/en/ministries': {
+      subLinks: [
+        { label: 'Ministries', href: '/en/ministries' },
+        { label: 'Resources', href: '/en/resources' },
+      ],
+      activePrefixes: ['/en/ministries', '/en/resources'],
+    },
+  } : {}),
 };
 ---
 
@@ -177,6 +178,7 @@ const dropdowns: Record<string, DropdownConfig> = {
   }
   .nav-list {
     display: flex;
+    align-items: baseline;
     list-style: none;
     gap: var(--space-6);
   }
@@ -206,11 +208,9 @@ const dropdowns: Record<string, DropdownConfig> = {
     border-radius: var(--radius-sm);
   }
 
-  /* About dropdown */
+  /* Dropdowns (About, Grow) */
   .nav-dropdown {
     position: relative;
-    display: flex;
-    align-items: center;
   }
   .nav-dropdown-trigger {
     display: inline-flex;
@@ -221,8 +221,13 @@ const dropdowns: Record<string, DropdownConfig> = {
     border-bottom: 2px solid transparent;
     cursor: pointer;
     padding: var(--space-1) 0;
+    margin: 0;
+    /* Match .nav-link styles exactly — buttons don't inherit these */
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--base-700);
     line-height: normal;
-    vertical-align: baseline;
   }
   .nav-dropdown-trigger.nav-link--active {
     color: var(--primary-600);
