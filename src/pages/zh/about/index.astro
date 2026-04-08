@@ -29,91 +29,50 @@ const bodyHtml = aboutPage?.whoWeAreBody?.length
 const imageUrl = aboutPage?.whoWeAreImage
   ? urlForImage(aboutPage.whoWeAreImage, { width: 800 })
   : '/images/hero/cornell-arts-quad.webp';
----
 
-<BaseLayout title={title} description={description} lang="zh" jsonLd={buildOrganizationJsonLd()}>
-  <main id="main-content" data-pagefind-body class="about">
-    <section class="about__hero" aria-label="我們是誰">
-      <div class="about__split">
-        <div class="about__text">
-          <h1 class="about__heading" data-reveal>{heading}</h1>
-          <div class="about__body" data-reveal set:html={bodyHtml} />
-        </div>
-        {imageUrl && (
-          <div class="about__image-col">
-            <img
-              class="about__image"
-              src={imageUrl}
-              alt="康奈爾大學藝術廣場"
-              loading="eager"
-            />
-          </div>
-        )}
-      </div>
-    </section>
+// ---------- Snapshots ----------
+const snapshots = aboutPage?.snapshots?.length
+  ? aboutPage.snapshots
+  : [
+      { accent: '扎根伊薩卡40餘年', body: '在康奈爾和整個伊薩卡社區一同敬拜、研讀聖經、分享生命。' },
+      { accent: '約100人的教會家庭', body: '學生、學者和伊薩卡長期居民一同與基督同行。' },
+      { accent: '無數的校友', body: '現在服事於美國、加拿大和亞洲的教會和社區，將在這裡學到的帶入他們一生的服事中。' },
+    ];
 
-    <!-- Snapshots -->
-    <section class="snapshots snapshots--tinted snapshots--textured" aria-label="神的信實">
-      <div class="snapshots__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
-      <div class="snapshots__inner">
-        <h2 class="snapshots__heading" data-reveal>神的信實</h2>
-        <div class="snapshots__grid" data-reveal-stagger>
-          <div class="snapshots__item" data-reveal>
-            <span class="snapshots__accent">扎根伊薩卡40餘年</span>
-            <p class="snapshots__body">在康奈爾和整個伊薩卡社區一同敬拜、研讀聖經、分享生命。</p>
-          </div>
-          <div class="snapshots__item" data-reveal>
-            <span class="snapshots__accent">約100人的教會家庭</span>
-            <p class="snapshots__body">學生、學者和伊薩卡長期居民一同與基督同行。</p>
-          </div>
-          <div class="snapshots__item" data-reveal>
-            <span class="snapshots__accent">無數的校友</span>
-            <p class="snapshots__body">現在服事於美國、加拿大和亞洲的教會和社區，將在這裡學到的帶入他們一生的服事中。</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Our Pastors -->
-    <section class="pastors" aria-label="我們的牧者">
-      <div class="pastors__inner">
-        <h2 class="pastors__heading" data-reveal>我們的牧者</h2>
-        <div class="pastors__grid" data-reveal-stagger>
-          <div class="pastors__card" data-reveal>
-            <div class="pastors__photo pastors__photo--placeholder">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M4 21v-1a6 6 0 0112 0v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="pastors__info">
-              <h3 class="pastors__name">葉劍峰傳道 (Simon Ye)</h3>
-              <p class="pastors__role">中文部牧者</p>
-              <p class="pastors__bio">
-                葉傳道帶領中文會眾，牧養家庭、團契小組和社區事工。
-              </p>
-            </div>
-          </div>
-          <div class="pastors__card" data-reveal>
-            <div class="pastors__photo">
-              <img src="/images/church/zhida-zhu.webp" alt="朱志達傳道" loading="lazy" width="400" height="533" />
-            </div>
-            <div class="pastors__info">
-              <h3 class="pastors__name">朱志達傳道 (Zhida Zhu)</h3>
-              <p class="pastors__role">英文部牧者</p>
-              <p class="pastors__bio">
-                志達在德州休士頓的一間華人移民教會長大。高中時自稱無神論者，
+// ---------- Pastors ----------
+const pastors = aboutPage?.pastors?.length
+  ? aboutPage.pastors.map((p: any) => ({
+      name: p.name,
+      role: p.role || '',
+      bioHtml: p.bio?.length ? portableTextToHtml(p.bio) : '',
+      photoUrl: p.photo ? urlForImage(p.photo, { width: 400 }) : null,
+    }))
+  : [
+      {
+        name: '葉劍峰傳道 (Simon Ye)',
+        role: '中文部牧者',
+        bioHtml: `<p>葉傳道帶領中文會眾，牧養家庭、團契小組和社區事工。</p>`,
+        photoUrl: null,
+      },
+      {
+        name: '朱志達傳道 (Zhida Zhu)',
+        role: '英文部牧者',
+        bioHtml: `<p>志達在德州休士頓的一間華人移民教會長大。高中時自稱無神論者，
                 但大學畢業後，神透過三位關鍵人物大大改變了他的心，他將生命獻給了基督。
                 他曾擔任機械工程師六年，之後回應全職事工的呼召。
-                志達與在達拉斯神學院認識的妻子Ngun結婚。
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+                志達與在達拉斯神學院認識的妻子Ngun結婚。</p>`,
+        photoUrl: '/images/church/zhida-zhu.webp',
+      },
+    ];
 
-    <Timeline heading="教會歷史" eras={[
+// ---------- Timeline ----------
+const timelineHeading = aboutPage?.timelineHeading || '教會歷史';
+const timelineEras = aboutPage?.timelineEras?.length
+  ? aboutPage.timelineEras.map((era: any) => ({
+      title: era.title,
+      entries: era.entries || [],
+    }))
+  : [
       {
         title: '起源：從查經班到教會 (1968-1988)',
         entries: [
@@ -152,15 +111,89 @@ const imageUrl = aboutPage?.whoWeAreImage
           { year: '今天', description: 'FICCC繼續門訓學生、學者和家庭；差派會員進入全職事工；並投資於伊薩卡及其他地方的中文和英文會眾。' },
         ],
       },
-    ]} />
+    ];
+
+// ---------- Beliefs callout ----------
+const beliefsCalloutHeading = aboutPage?.beliefsCalloutHeading || '我們相信什麼？';
+const beliefsCalloutBody = aboutPage?.beliefsCalloutBody || '聖經塑造了我們所做的一切。了解我們的信仰立場和異象方向。';
+---
+
+<BaseLayout title={title} description={description} lang="zh" jsonLd={buildOrganizationJsonLd()}>
+  <main id="main-content" data-pagefind-body class="about">
+    <section class="about__hero" aria-label="我們是誰">
+      <div class="about__split">
+        <div class="about__text">
+          <h1 class="about__heading" data-reveal>{heading}</h1>
+          <div class="about__body" data-reveal set:html={bodyHtml} />
+        </div>
+        {imageUrl && (
+          <div class="about__image-col">
+            <img
+              class="about__image"
+              src={imageUrl}
+              alt="康奈爾大學藝術廣場"
+              loading="eager"
+            />
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Snapshots -->
+    <section class="snapshots snapshots--tinted snapshots--textured" aria-label="神的信實">
+      <div class="snapshots__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
+      <div class="snapshots__inner">
+        <h2 class="snapshots__heading" data-reveal>神的信實</h2>
+        <div class="snapshots__grid" data-reveal-stagger>
+          {snapshots.map((snap) => (
+            <div class="snapshots__item" data-reveal>
+              <span class="snapshots__accent">{snap.accent}</span>
+              <p class="snapshots__body">{snap.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Pastors -->
+    <section class="pastors" aria-label="我們的牧者">
+      <div class="pastors__inner">
+        <h2 class="pastors__heading" data-reveal>我們的牧者</h2>
+        <div class="pastors__grid" data-reveal-stagger>
+          {pastors.map((pastor) => (
+            <div class="pastors__card" data-reveal>
+              {pastor.photoUrl ? (
+                <div class="pastors__photo">
+                  <img src={pastor.photoUrl} alt={pastor.name} loading="lazy" width="400" height="533" />
+                </div>
+              ) : (
+                <div class="pastors__photo pastors__photo--placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M4 21v-1a6 6 0 0112 0v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              )}
+              <div class="pastors__info">
+                <h3 class="pastors__name">{pastor.name}</h3>
+                <p class="pastors__role">{pastor.role}</p>
+                <div class="pastors__bio" set:html={pastor.bioHtml} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <Timeline heading={timelineHeading} eras={timelineEras} />
 
     <!-- Beliefs callout -->
     <section class="beliefs-callout" aria-label="我們的信仰">
       <div class="beliefs-callout__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
       <div class="beliefs-callout__inner">
-        <h2 class="beliefs-callout__heading" data-reveal>我們相信什麼？</h2>
+        <h2 class="beliefs-callout__heading" data-reveal>{beliefsCalloutHeading}</h2>
         <p class="beliefs-callout__body" data-reveal>
-          聖經塑造了我們所做的一切。了解我們的信仰立場和異象方向。
+          {beliefsCalloutBody}
         </p>
         <a href="/zh/about/beliefs" class="beliefs-callout__cta" data-reveal>
           信仰與願景

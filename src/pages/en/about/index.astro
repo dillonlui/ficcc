@@ -34,93 +34,52 @@ const bodyHtml = aboutPage?.whoWeAreBody?.length
 const imageUrl = aboutPage?.whoWeAreImage
   ? urlForImage(aboutPage.whoWeAreImage, { width: 800 })
   : '/images/hero/cornell-arts-quad.webp';
----
 
-<BaseLayout title={title} description={description} jsonLd={buildOrganizationJsonLd()}>
-  <main id="main-content" data-pagefind-body class="about">
-    <section class="about__hero" aria-label="Who We Are">
-      <div class="about__split">
-        <div class="about__text">
-          <h1 class="about__heading" data-reveal>{heading}</h1>
-          <div class="about__body" data-reveal set:html={bodyHtml} />
-        </div>
-        {imageUrl && (
-          <div class="about__image-col">
-            <img
-              class="about__image"
-              src={imageUrl}
-              alt="Cornell University Arts Quad with Goldwin Smith Hall, Baker Lab, and Olin Library"
-              loading="eager"
-            />
-          </div>
-        )}
-      </div>
-    </section>
+// ---------- Snapshots ----------
+const snapshots = aboutPage?.snapshots?.length
+  ? aboutPage.snapshots
+  : [
+      { accent: '40+ years in Ithaca', body: 'Worshiping, studying Scripture, and sharing life together at Cornell and throughout Ithaca.' },
+      { accent: 'A church family of ~100', body: 'Students, scholars, and longtime Ithaca residents walking with Christ together.' },
+      { accent: 'Countless alumni', body: 'Now serving in churches and communities across the US, Canada, and Asia - carrying what they learned here into the rest of their lives.' },
+    ];
 
-    <!-- Snapshots -->
-    <section class="snapshots snapshots--tinted snapshots--textured" aria-label="Snapshots of God's Faithfulness">
-      <div class="snapshots__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
-      <div class="snapshots__inner">
-        <h2 class="snapshots__heading" data-reveal>Snapshots of God's Faithfulness</h2>
-        <div class="snapshots__grid" data-reveal-stagger>
-          <div class="snapshots__item" data-reveal>
-            <span class="snapshots__accent">40+ years in Ithaca</span>
-            <p class="snapshots__body">Worshiping, studying Scripture, and sharing life together at Cornell and throughout Ithaca.</p>
-          </div>
-          <div class="snapshots__item" data-reveal>
-            <span class="snapshots__accent">A church family of ~100</span>
-            <p class="snapshots__body">Students, scholars, and longtime Ithaca residents walking with Christ together.</p>
-          </div>
-          <div class="snapshots__item" data-reveal>
-            <span class="snapshots__accent">Countless alumni</span>
-            <p class="snapshots__body">Now serving in churches and communities across the US, Canada, and Asia - carrying what they learned here into the rest of their lives.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Our Pastors -->
-    <section class="pastors" aria-label="Our Pastors">
-      <div class="pastors__inner">
-        <h2 class="pastors__heading" data-reveal>Our Pastors</h2>
-        <div class="pastors__grid" data-reveal-stagger>
-          <div class="pastors__card" data-reveal>
-            <div class="pastors__photo">
-              <img src="/images/church/zhida-zhu.webp" alt="Pastor Zhida Zhu" loading="lazy" width="400" height="533" />
-            </div>
-            <div class="pastors__info">
-              <h3 class="pastors__name">Min. Zhida Zhu (朱志達)</h3>
-              <p class="pastors__role">Pastor of English Ministry</p>
-              <p class="pastors__bio">
-                Zhida grew up in an immigrant church in Houston, Texas. After declaring himself
+// ---------- Pastors ----------
+const pastors = aboutPage?.pastors?.length
+  ? aboutPage.pastors.map((p: any) => ({
+      name: p.name,
+      role: p.role || '',
+      bioHtml: p.bio?.length ? portableTextToHtml(p.bio) : '',
+      photoUrl: p.photo ? urlForImage(p.photo, { width: 400 }) : null,
+    }))
+  : [
+      {
+        name: 'Min. Zhida Zhu (朱志達)',
+        role: 'Pastor of English Ministry',
+        bioHtml: `<p>Zhida grew up in an immigrant church in Houston, Texas. After declaring himself
                 an atheist in high school, God powerfully changed his heart through 3 key
                 individuals after college, and he gave his life to Christ. He served as a
                 mechanical engineer for 6 years before answering the call to full-time ministry.
-                Zhida is married to Ngun, whom he met at Dallas Theological Seminary.
-              </p>
-            </div>
-          </div>
-          <div class="pastors__card" data-reveal>
-            <div class="pastors__photo pastors__photo--placeholder">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M4 21v-1a6 6 0 0112 0v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="pastors__info">
-              <h3 class="pastors__name">Min. Simon Ye (葉劍峰)</h3>
-              <p class="pastors__role">Pastor of Chinese Ministry</p>
-              <p class="pastors__bio">
-                Pastor Simon leads the Chinese-speaking congregation, shepherding
-                families, fellowship groups, and community ministries.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+                Zhida is married to Ngun, whom he met at Dallas Theological Seminary.</p>`,
+        photoUrl: '/images/church/zhida-zhu.webp',
+      },
+      {
+        name: 'Min. Simon Ye (葉劍峰)',
+        role: 'Pastor of Chinese Ministry',
+        bioHtml: `<p>Pastor Simon leads the Chinese-speaking congregation, shepherding
+                families, fellowship groups, and community ministries.</p>`,
+        photoUrl: null,
+      },
+    ];
 
-    <Timeline heading="Our Story" eras={[
+// ---------- Timeline ----------
+const timelineHeading = aboutPage?.timelineHeading || 'Our Story';
+const timelineEras = aboutPage?.timelineEras?.length
+  ? aboutPage.timelineEras.map((era: any) => ({
+      title: era.title,
+      entries: era.entries || [],
+    }))
+  : [
       {
         title: 'Beginnings: Student Fellowship to Church (1968-1988)',
         entries: [
@@ -159,15 +118,89 @@ const imageUrl = aboutPage?.whoWeAreImage
           { year: 'Today', description: 'FICCC continues to disciple students, scholars, and families; send members into full-time ministry; and invest in both Chinese- and English-speaking congregations in Ithaca and beyond.' },
         ],
       },
-    ]} />
+    ];
+
+// ---------- Beliefs callout ----------
+const beliefsCalloutHeading = aboutPage?.beliefsCalloutHeading || 'What do we believe?';
+const beliefsCalloutBody = aboutPage?.beliefsCalloutBody || 'The Bible shapes everything we do. See what we hold to and where we\'re headed.';
+---
+
+<BaseLayout title={title} description={description} jsonLd={buildOrganizationJsonLd()}>
+  <main id="main-content" data-pagefind-body class="about">
+    <section class="about__hero" aria-label="Who We Are">
+      <div class="about__split">
+        <div class="about__text">
+          <h1 class="about__heading" data-reveal>{heading}</h1>
+          <div class="about__body" data-reveal set:html={bodyHtml} />
+        </div>
+        {imageUrl && (
+          <div class="about__image-col">
+            <img
+              class="about__image"
+              src={imageUrl}
+              alt="Cornell University Arts Quad with Goldwin Smith Hall, Baker Lab, and Olin Library"
+              loading="eager"
+            />
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Snapshots -->
+    <section class="snapshots snapshots--tinted snapshots--textured" aria-label="Snapshots of God's Faithfulness">
+      <div class="snapshots__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
+      <div class="snapshots__inner">
+        <h2 class="snapshots__heading" data-reveal>Snapshots of God's Faithfulness</h2>
+        <div class="snapshots__grid" data-reveal-stagger>
+          {snapshots.map((snap) => (
+            <div class="snapshots__item" data-reveal>
+              <span class="snapshots__accent">{snap.accent}</span>
+              <p class="snapshots__body">{snap.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Pastors -->
+    <section class="pastors" aria-label="Our Pastors">
+      <div class="pastors__inner">
+        <h2 class="pastors__heading" data-reveal>Our Pastors</h2>
+        <div class="pastors__grid" data-reveal-stagger>
+          {pastors.map((pastor) => (
+            <div class="pastors__card" data-reveal>
+              {pastor.photoUrl ? (
+                <div class="pastors__photo">
+                  <img src={pastor.photoUrl} alt={pastor.name} loading="lazy" width="400" height="533" />
+                </div>
+              ) : (
+                <div class="pastors__photo pastors__photo--placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M4 21v-1a6 6 0 0112 0v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              )}
+              <div class="pastors__info">
+                <h3 class="pastors__name">{pastor.name}</h3>
+                <p class="pastors__role">{pastor.role}</p>
+                <div class="pastors__bio" set:html={pastor.bioHtml} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <Timeline heading={timelineHeading} eras={timelineEras} />
 
     <!-- Beliefs callout -->
     <section class="beliefs-callout" aria-label="Beliefs and Vision">
       <div class="beliefs-callout__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
       <div class="beliefs-callout__inner">
-        <h2 class="beliefs-callout__heading" data-reveal>What do we believe?</h2>
+        <h2 class="beliefs-callout__heading" data-reveal>{beliefsCalloutHeading}</h2>
         <p class="beliefs-callout__body" data-reveal>
-          The Bible shapes everything we do. See what we hold to and where we're headed.
+          {beliefsCalloutBody}
         </p>
         <a href="/en/about/beliefs" class="beliefs-callout__cta" data-reveal>
           Beliefs &amp; Vision
