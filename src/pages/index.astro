@@ -27,8 +27,8 @@ const bgMobile = splashData?.backgroundImage
   ? urlForImage(splashData.backgroundImage, { width: 600 })
   : '/images/hero/waterfall-landing-600.jpg';
 
-const ogBaseUrl = import.meta.env.VERCEL_URL
-  ? `https://${import.meta.env.VERCEL_URL}`
+const ogBaseUrl = import.meta.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${import.meta.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : 'https://ficcc.org';
 const ogImage = `${ogBaseUrl}/og-default.png`;
 ---

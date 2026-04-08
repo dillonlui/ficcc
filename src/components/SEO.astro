@@ -23,10 +23,11 @@ const {
 
 const siteUrl = Astro.site ?? new URL('https://ficcc.org');
 const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
-// Use site URL for OG image so it resolves to the correct domain in production
-// On Vercel preview deploys, Astro.site is still ficcc.org — override with VERCEL_URL if available
-const ogBaseUrl = import.meta.env.VERCEL_URL
-  ? new URL(`https://${import.meta.env.VERCEL_URL}`)
+// Use stable production URL for OG images so social scrapers can always find them.
+// VERCEL_PROJECT_PRODUCTION_URL is the stable domain (e.g., ficcc.vercel.app),
+// not the per-deploy URL. Once DNS is on ficcc.org, Astro.site handles it.
+const ogBaseUrl = import.meta.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? new URL(`https://${import.meta.env.VERCEL_PROJECT_PRODUCTION_URL}`)
   : siteUrl;
 const absoluteOgImage = new URL(ogImage, ogBaseUrl).href;
 
