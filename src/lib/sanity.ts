@@ -91,8 +91,10 @@ export interface SiteSettings {
   _type: 'siteSettings';
   churchName: string;
   address?: string;
+  city?: string;
   phone?: string;
   email?: string;
+  serviceTimes?: ServiceTime[];
   socialLinks?: SocialLink[];
   language: 'en' | 'zh';
   announcementBarEnabled?: boolean;
@@ -113,10 +115,12 @@ export interface HomePage {
   heroSubtitle?: string;
   heroCtaText?: string;
   heroCtaHref?: string;
-  serviceTimes?: ServiceTime[];
-  mosaicImages?: MosaicImage[];
-  pillars?: Pillar[];
-  nextSteps?: NextStep[];
+  sections?: HomeSection[];
+  bannerHeading?: string;
+  bannerBody?: PortableTextBlock[];
+  bannerImage?: SanityImage;
+  bannerCtaText?: string;
+  bannerCtaHref?: string;
   language: 'en' | 'zh';
 }
 
@@ -132,11 +136,12 @@ export interface AboutPage {
   whoWeAreHeading?: string;
   whoWeAreBody?: PortableTextBlock[];
   whoWeAreImage?: SanityImage;
-  visionHeading?: string;
-  visionBody?: PortableTextBlock[];
-  churchStats?: { value: string; label: string }[];
-  beliefs?: BeliefItem[];
-  staffOrder?: { _ref: string }[];
+  snapshots?: Snapshot[];
+  pastors?: Pastor[];
+  timelineHeading?: string;
+  timelineEras?: TimelineEra[];
+  beliefsCalloutHeading?: string;
+  beliefsCalloutBody?: string;
   language: 'en' | 'zh';
 }
 
@@ -162,6 +167,11 @@ export interface VisitPage {
   transportation?: PortableTextBlock[];
   faqItems?: FaqItem[];
   rideRequestEnabled?: boolean;
+  busRouteHeading?: string;
+  busRouteIntro?: string;
+  busRoute?: BusStop[];
+  rideRequestHeading?: string;
+  rideRequestIntro?: string;
   language: 'en' | 'zh';
 }
 
@@ -196,6 +206,114 @@ export interface Person {
   bio?: PortableTextBlock[];
   photo?: SanityImage;
   language: 'en' | 'zh';
+}
+
+export interface SplashPage {
+  _id: string;
+  _type: 'splashPage';
+  backgroundImage?: SanityImage;
+  churchNameEn?: string;
+  churchNameZh?: string;
+}
+
+export interface HomeSection {
+  _key: string;
+  heading: string;
+  body?: PortableTextBlock[];
+  image?: SanityImage;
+  ctaText?: string;
+  ctaHref?: string;
+  layout?: 'default' | 'reversed';
+  tinted?: boolean;
+}
+
+export interface Pastor {
+  _key: string;
+  name: string;
+  role?: string;
+  bio?: PortableTextBlock[];
+  photo?: SanityImage;
+}
+
+export interface Snapshot {
+  _key: string;
+  accent: string;
+  body?: string;
+}
+
+export interface TimelineEntry {
+  _key: string;
+  year: string;
+  description: string;
+}
+
+export interface TimelineEra {
+  _key: string;
+  title: string;
+  entries?: TimelineEntry[];
+}
+
+export interface BeliefsPage {
+  _id: string;
+  _type: 'beliefsPage';
+  heroImage?: SanityImage;
+  heroTitle: string;
+  heroSubtitle?: string;
+  beliefsHeading?: string;
+  beliefsIntro?: string;
+  beliefs?: BeliefItem[];
+  scriptureQuote?: string;
+  scriptureCitation?: string;
+  scriptureImage?: SanityImage;
+  visionHeading?: string;
+  visionIntro?: PortableTextBlock[];
+  visionItems?: BeliefItem[];
+  calloutHeading?: string;
+  calloutBody?: string;
+  language: 'en' | 'zh';
+}
+
+export interface GivingMethod {
+  _key: string;
+  title: string;
+  description?: string;
+  icon?: 'globe' | 'envelope' | 'people';
+  link?: string;
+  linkText?: string;
+  note?: string;
+  address?: string;
+}
+
+export interface GivePage {
+  _id: string;
+  _type: 'givePage';
+  heroImage?: SanityImage;
+  heroTitle: string;
+  heroSubtitle?: string;
+  whyWeGiveHeading?: string;
+  whyWeGiveBody?: PortableTextBlock[];
+  scriptureQuote?: string;
+  scriptureCitation?: string;
+  givingMethods?: GivingMethod[];
+  questionsHeading?: string;
+  questionsBody?: string;
+  language: 'en' | 'zh';
+}
+
+export interface ContactPage {
+  _id: string;
+  _type: 'contactPage';
+  heroImage?: SanityImage;
+  heroTitle: string;
+  heroSubtitle?: string;
+  formEnabled?: boolean;
+  language: 'en' | 'zh';
+}
+
+export interface BusStop {
+  _key: string;
+  stop: string;
+  time: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -342,6 +460,51 @@ export async function getStaff(
   );
 }
 
+/**
+ * Fetch the splash page document (language-neutral singleton).
+ */
+export async function getSplashPage(): Promise<SplashPage | null> {
+  return client.fetch<SplashPage | null>(
+    `*[_type == "splashPage"][0]`,
+  );
+}
+
+/**
+ * Fetch the beliefs page singleton for a language.
+ */
+export async function getBeliefsPage(
+  language: Language = 'en',
+): Promise<BeliefsPage | null> {
+  return client.fetch<BeliefsPage | null>(
+    `*[_type == "beliefsPage" && language == $language][0]`,
+    { language },
+  );
+}
+
+/**
+ * Fetch the give page singleton for a language.
+ */
+export async function getGivePage(
+  language: Language = 'en',
+): Promise<GivePage | null> {
+  return client.fetch<GivePage | null>(
+    `*[_type == "givePage" && language == $language][0]`,
+    { language },
+  );
+}
+
+/**
+ * Fetch the contact page singleton for a language.
+ */
+export async function getContactPage(
+  language: Language = 'en',
+): Promise<ContactPage | null> {
+  return client.fetch<ContactPage | null>(
+    `*[_type == "contactPage" && language == $language][0]`,
+    { language },
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Image helpers
 // ---------------------------------------------------------------------------
@@ -463,7 +626,7 @@ const isVisualEditingEnabled =
  *
  * When disabled, falls back to published perspective with no token or stega.
  *
- * This is a *parallel* helper — existing getPageBySlug / getSermons / etc.
+ * This is a *parallel* helper — existing getSermons / getHomePage / etc.
  * remain unchanged for static build-time fetching.
  */
 export async function loadQuery<T = unknown>(
