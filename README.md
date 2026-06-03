@@ -31,7 +31,7 @@ ficcc/
 │   ├── components/    # Astro components
 │   ├── layouts/       # Page layouts
 │   ├── lib/           # Utilities (Sanity client, helpers)
-│   ├── pages/         # Routes (/ for EN, /zh/ for Chinese)
+│   ├── pages/         # Routes (/ splash, /en/ for EN, /zh/ for Chinese)
 │   └── styles/        # Global styles, design tokens
 ├── studio/            # Sanity Studio (CMS)
 ├── public/            # Static assets
@@ -46,7 +46,7 @@ ficcc/
 |---|---|---|
 | `SANITY_PROJECT_ID` | Sanity project ID | `.env` + Vercel |
 | `SANITY_DATASET` | Dataset name (`production`) | `.env` + Vercel |
-| `SANITY_API_TOKEN` | Read token for build-time queries | Vercel only |
+| `SANITY_API_READ_TOKEN` | Read token for preview-mode draft queries | Vercel only |
 | `RESEND_API_KEY` | Email delivery for form submissions | Vercel only |
 | `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile spam protection | Vercel only |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Turnstile client-side key | `.env` + Vercel |
@@ -56,7 +56,7 @@ ficcc/
 | Command | Description |
 |---|---|
 | `npm run dev` | Start Astro dev server |
-| `npm run build` | Build static site to `dist/` |
+| `npm run build` | Build static site to `dist/client/` |
 | `npm run preview` | Preview built site locally |
 | `npm run lhci` | Build + run Lighthouse CI audit |
 
@@ -68,7 +68,8 @@ ficcc/
 
 ## Bilingual Architecture
 
-- English: `/` (default locale)
+- Splash: `/` (language-neutral gateway)
+- English: `/en/` (prefixed default locale)
 - Chinese: `/zh/` (path prefix)
 - Content is **bespoke per ministry**, not translations — EN and ZH have separate Sanity documents tagged with a `language` field
 - Language toggle persists preference via cookie

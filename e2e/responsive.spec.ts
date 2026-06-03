@@ -8,7 +8,8 @@ import { test, expect } from '@playwright/test';
  * playwright.config.ts. Assertions branch on the current viewport width.
  */
 
-const PAGES_TO_CHECK = ['/', '/about/', '/sermons/'];
+const PAGES_TO_CHECK = ['/?chooselang', '/en/', '/en/about/', '/en/sermons/'];
+const NAV_PAGE = '/en/';
 
 test.describe('Responsive layout', () => {
   for (const url of PAGES_TO_CHECK) {
@@ -29,13 +30,13 @@ test.describe('Responsive layout', () => {
     }, 'Only runs on mobile viewport');
 
     test('hamburger button is visible', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       const hamburger = page.locator('.hamburger');
       await expect(hamburger).toBeVisible();
     });
 
     test('nav panel starts closed (off-screen)', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       // The nav panel starts off-screen via translateX(100%) — not .is-open
       const nav = page.locator('#nav-menu');
       await expect(nav).not.toHaveClass(/is-open/);
@@ -45,7 +46,7 @@ test.describe('Responsive layout', () => {
     });
 
     test('hamburger toggles mobile nav', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       const hamburger = page.locator('.hamburger');
       const nav = page.locator('#nav-menu');
 
@@ -61,7 +62,7 @@ test.describe('Responsive layout', () => {
     });
 
     test('Escape key closes mobile nav', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       const hamburger = page.locator('.hamburger');
       const nav = page.locator('#nav-menu');
 
@@ -74,28 +75,26 @@ test.describe('Responsive layout', () => {
     });
 
     test('About shows as label with indented sub-links', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       const hamburger = page.locator('.hamburger');
       await hamburger.click();
 
       // About label should be visible as a non-interactive heading
-      const aboutLabel = page.locator('.nav-dropdown-trigger');
+      const aboutLabel = page.getByRole('button', { name: 'About' });
       await expect(aboutLabel).toBeVisible();
       // Chevron should be hidden on mobile
-      const chevron = page.locator('.nav-dropdown-chevron');
+      const chevron = aboutLabel.locator('.nav-dropdown-chevron');
       await expect(chevron).toBeHidden();
 
       // Sub-links should be visible and indented
       const whoWeAre = page.locator('.nav-dropdown-link', { hasText: 'Who We Are' });
       const beliefs = page.locator('.nav-dropdown-link', { hasText: 'Beliefs' });
-      const visitUs = page.locator('.nav-dropdown-link', { hasText: 'Visit Us' });
       await expect(whoWeAre).toBeVisible();
       await expect(beliefs).toBeVisible();
-      await expect(visitUs).toBeVisible();
     });
 
     test('all nav links are visible when menu is open', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       await page.locator('.hamburger').click();
 
       // Check that the core navigation links are present and visible
@@ -109,18 +108,18 @@ test.describe('Responsive layout', () => {
     });
 
     test('mobile nav links navigate correctly', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       await page.locator('.hamburger').click();
 
       // Click "Who We Are" sub-link
       const aboutLink = page.locator('.nav-dropdown-link', { hasText: 'Who We Are' });
       await aboutLink.click();
-      await page.waitForURL('**/about');
-      expect(page.url()).toContain('/about');
+      await page.waitForURL('**/en/about');
+      expect(page.url()).toContain('/en/about');
     });
 
     test('language toggle is visible in mobile menu', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       await page.locator('.hamburger').click();
 
       const langToggle = page.locator('.lang-toggle');
@@ -135,7 +134,7 @@ test.describe('Responsive layout', () => {
     }, 'Only runs on tablet viewport');
 
     test('layout adapts at 768px breakpoint', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
 
       // At exactly 768px, the breakpoint is max-width:767px so desktop nav shows
       const hamburger = page.locator('.hamburger');
@@ -153,7 +152,7 @@ test.describe('Responsive layout', () => {
     }, 'Only runs on desktop+ viewports');
 
     test('desktop nav links visible, hamburger hidden', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
 
       const hamburger = page.locator('.hamburger');
       await expect(hamburger).not.toBeVisible();
@@ -170,7 +169,7 @@ test.describe('Responsive layout', () => {
     }, 'Only runs on wide viewport');
 
     test('page content is contained within max-width', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
 
       // --max-width is 72rem = 1152px at default 16px font-size
       // The header-inner and main content areas should not exceed this
@@ -183,7 +182,7 @@ test.describe('Responsive layout', () => {
     });
 
     test('no horizontal overflow on wide viewport', async ({ page }) => {
-      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await page.goto(NAV_PAGE, { waitUntil: 'domcontentloaded' });
       const overflow = await page.evaluate(() => {
         return document.documentElement.scrollWidth > document.documentElement.clientWidth;
       });

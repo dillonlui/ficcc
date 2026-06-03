@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getHomePage, getSermons, getEvents, urlForImage, getSiteSettings } from '../../lib/sanity';
+import { getHomePage, getSermons, getEvents, urlForImage, urlForFile, portableTextToHtml, getSiteSettings } from '../../lib/sanity';
 import { buildChurchJsonLd, buildWebSiteJsonLd } from '../../lib/structured-data';
 
 const title = 'First Ithaca Chinese Christian Church | 伊的家華人基督教會';
@@ -32,13 +32,93 @@ const serviceTimeItems = siteSettings?.serviceTimes || [
 const churchAddress = siteSettings?.address || '429 Mitchell Street';
 const churchCity = siteSettings?.city || 'Ithaca, NY 14850';
 
+const defaultHeroImage = '/images/hero/ficcc-hero-poster.jpg';
+const defaultHeroVideo = '/videos/ficcc-hero.mp4';
 const heroImage = homePage?.heroImage
   ? urlForImage(homePage.heroImage, { width: 1600 })
-  : '/images/church/picnic-leland-guitar.webp';
+  : defaultHeroImage;
+const heroVideo =
+  homePage?.heroMediaType === 'video'
+    ? urlForFile(homePage.heroVideo)
+    : homePage?.heroMediaType === 'image'
+      ? ''
+      : defaultHeroVideo;
 const heroTitle = homePage?.heroTitle || 'Welcome Home';
 const heroSubtitle =
   homePage?.heroSubtitle ||
   'Go deeper in God\'s Word, in gospel-shaped community, and in everyday discipleship.';
+
+const fallbackSections = [
+  {
+    label: 'Who We Are',
+    heading: 'Go Deeper at FICCC',
+    bodyHtml: '<p>If you\'ve lived in Ithaca for years, just arrived as a visiting scholar, or are a student far from home, there is a place for you here.</p>',
+    image: '/images/church/img-8212.webp',
+    imageAlt: 'FICCC congregation gathered for worship',
+    ctaText: 'Learn more about us',
+    ctaHref: '/en/about',
+    layout: 'default',
+    tinted: false,
+  },
+  {
+    label: 'Sunday Experience',
+    heading: 'Sunday Mornings',
+    bodyHtml: '<p>At 9:45am we gather for singing, preaching from the Bible, and the Lord\'s Supper. At 11:00am we move into Discipleship Groups for discussion and prayer. Then we eat lunch together - usually Chinese food.</p>',
+    image: '/images/church/pxl-20250813-130502778.webp',
+    imageAlt: 'FICCC church building at 429 Mitchell Street',
+    ctaText: 'Plan your first visit',
+    ctaHref: '/en/visit',
+    layout: 'reversed',
+    tinted: true,
+  },
+  {
+    label: 'Community',
+    heading: 'Find Community',
+    bodyHtml: '<p>Bible studies, fellowship groups, mission trips, and shared meals. We challenge people to get involved in serving - in our church, on campus, and in the Ithaca community.</p>',
+    image: '/images/church/2023-retreat-praying.webp',
+    imageAlt: 'Church members praying together at 2023 retreat',
+    ctaText: 'Explore ministries',
+    ctaHref: '/en/ministries',
+    layout: 'default',
+    tinted: false,
+  },
+  {
+    label: 'Sermons',
+    heading: 'Watch Sermons',
+    bodyHtml: '<p>Catch up on recent messages or explore past teaching series. Our English ministry uploads sermons weekly to YouTube.</p>',
+    image: '/images/church/img-0316.webp',
+    imageAlt: 'FICCC service',
+    ctaText: 'Browse sermons',
+    ctaHref: '/en/sermons',
+    layout: 'reversed',
+    tinted: true,
+  },
+];
+
+const homeSections = homePage?.sections?.length
+  ? homePage.sections.map((section, index) => ({
+      label: section.heading,
+      heading: section.heading,
+      bodyHtml: portableTextToHtml(section.body),
+      image: section.image ? urlForImage(section.image, { width: 900 }) : fallbackSections[index]?.image,
+      imageAlt: section.imageAlt || fallbackSections[index]?.imageAlt || '',
+      ctaText: section.ctaText,
+      ctaHref: section.ctaHref,
+      layout: section.layout || fallbackSections[index]?.layout || 'default',
+      tinted: section.tinted ?? fallbackSections[index]?.tinted ?? false,
+    }))
+  : fallbackSections;
+
+const bannerHeading = homePage?.bannerHeading || 'Bridging Cultures & Generations';
+const bannerBodyHtml = homePage?.bannerBody?.length
+  ? portableTextToHtml(homePage.bannerBody)
+  : '<p>We celebrate our Chinese heritage while building a church home that welcomes students, families, and neighbors of every background.</p>';
+const bannerImage = homePage?.bannerImage
+  ? urlForImage(homePage.bannerImage, { width: 1600 })
+  : '/images/church/picnic-sunmi-lordina-tiffany-linnea.webp';
+const bannerImageAlt = homePage?.bannerImageAlt || 'Diverse community members together';
+const bannerCtaText = homePage?.bannerCtaText || 'Get in touch';
+const bannerCtaHref = homePage?.bannerCtaHref || '/en/contact';
 
 const siteUrl = (Astro.site ?? new URL('https://ficcc.org')).href;
 const homeJsonLd = {
@@ -52,14 +132,29 @@ const homeJsonLd = {
 
     <!-- ============ HERO — tall, editorial, people-first ============ -->
     <section class="hero-home">
-      <img
-        class="hero-home__img"
-        src={heroImage}
-        alt=""
-        fetchpriority="high"
-        loading="eager"
-        decoding="async"
-      />
+      {heroVideo ? (
+        <video
+          class="hero-home__media"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster={heroImage}
+          aria-hidden="true"
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+      ) : (
+        <img
+          class="hero-home__media"
+          src={heroImage}
+          alt=""
+          fetchpriority="high"
+          loading="eager"
+          decoding="async"
+        />
+      )}
       <div class="hero-home__overlay">
         <div class="hero-home__content">
           <h1 class="hero-home__title" data-reveal>{heroTitle}</h1>
@@ -100,101 +195,110 @@ const homeJsonLd = {
           </a>
         </div>
       </div>
+      {heroVideo && (
+        <button
+          class="hero-home__media-toggle"
+          type="button"
+          data-hero-video-toggle
+          data-label-pause="Pause background video"
+          data-label-play="Play background video"
+          aria-label="Pause background video"
+        >
+          <svg class="hero-home__toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path data-hero-video-toggle-icon d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" />
+          </svg>
+        </button>
+      )}
     </section>
 
-    <!-- ============ SECTION 1: Go Deeper ============ -->
-    <section class="split" aria-label="Who We Are">
-      <div class="split__inner">
-        <div class="split__media" data-reveal>
-          <img src="/images/church/img-8212.webp" alt="FICCC congregation gathered for worship" loading="lazy" />
+    {homeSections.map((section) => (
+      <section
+        class:list={['split', { 'split--reversed': section.layout === 'reversed', 'split--tinted': section.tinted, 'split--textured': section.tinted }]}
+        aria-label={section.label}
+      >
+        {section.tinted && <div class="split__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>}
+        <div class="split__inner">
+          {section.image && (
+            <div class="split__media" data-reveal>
+              <img src={section.image} alt={section.imageAlt} loading="lazy" />
+            </div>
+          )}
+          <div class="split__content" data-reveal>
+            <h2 class="split__heading">{section.heading}</h2>
+            {section.bodyHtml && <div class="split__body" set:html={section.bodyHtml} />}
+            {section.ctaText && section.ctaHref && (
+              <a href={section.ctaHref} class="split__link">{section.ctaText} <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            )}
+          </div>
         </div>
-        <div class="split__content" data-reveal>
-          <h2 class="split__heading">Go Deeper at FICCC</h2>
-          <p class="split__body">
-            If you've lived in Ithaca for years, just arrived as a visiting scholar,
-            or are a student far from home, there is a place for you here.
-          </p>
-          <a href="/en/about" class="split__link">Learn more about us <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ SECTION 2: Sundays ============ -->
-    <section class="split split--reversed split--tinted split--textured" aria-label="Sunday Experience">
-      <div class="split__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
-      <div class="split__inner">
-        <div class="split__media" data-reveal>
-          <img src="/images/church/pxl-20250813-130502778.webp" alt="FICCC church building at 429 Mitchell Street" loading="lazy" />
-        </div>
-        <div class="split__content" data-reveal>
-          <h2 class="split__heading">Sunday Mornings</h2>
-          <p class="split__body">
-            At 9:45am we gather for singing, preaching from the Bible, and the
-            Lord's Supper. At 11:00am we move into Discipleship Groups for
-            discussion and prayer. Then we eat lunch together - usually Chinese food.
-          </p>
-          <a href="/en/visit" class="split__link">Plan your first visit <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ SECTION 3: Community ============ -->
-    <section class="split" aria-label="Community">
-      <div class="split__inner">
-        <div class="split__media" data-reveal>
-          <img src="/images/church/2023-retreat-praying.webp" alt="Church members praying together at 2023 retreat" loading="lazy" />
-        </div>
-        <div class="split__content" data-reveal>
-          <h2 class="split__heading">Find Community</h2>
-          <p class="split__body">
-            Bible studies, fellowship groups, mission trips, and shared meals.
-            We challenge people to get involved in serving - in our church,
-            on campus, and in the Ithaca community.
-          </p>
-          <a href="/en/ministries" class="split__link">Explore ministries <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ SECTION 4: Sermons ============ -->
-    <section class="split split--reversed split--tinted split--textured" aria-label="Sermons">
-      <div class="split__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
-      <div class="split__inner">
-        <div class="split__media" data-reveal>
-          <img src="/images/church/img-0316.webp" alt="FICCC service" loading="lazy" />
-        </div>
-        <div class="split__content" data-reveal>
-          <h2 class="split__heading">Watch Sermons</h2>
-          <p class="split__body">
-            Catch up on recent messages or explore past teaching series.
-            Our English ministry uploads sermons weekly to YouTube.
-          </p>
-          <a href="/en/sermons" class="split__link">Browse sermons <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        </div>
-      </div>
-    </section>
+      </section>
+    ))}
 
     <!-- ============ SECTION 5: Bridging Cultures banner ============ -->
     <section class="banner" aria-label="Bridging Cultures">
       <img
         class="banner__img"
-        src="/images/church/picnic-sunmi-lordina-tiffany-linnea.webp"
-        alt="Diverse community members together"
+        src={bannerImage}
+        alt={bannerImageAlt}
         loading="lazy"
       />
       <div class="banner__overlay">
         <div class="banner__content" data-reveal>
-          <h2 class="banner__heading">Bridging Cultures &amp; Generations</h2>
-          <p class="banner__body">
-            We celebrate our Chinese heritage while building a church home that
-            welcomes students, families, and neighbors of every background.
-          </p>
-          <a href="/en/contact" class="banner__cta">Get in touch</a>
+          <h2 class="banner__heading">{bannerHeading}</h2>
+          <div class="banner__body" set:html={bannerBodyHtml} />
+          <a href={bannerCtaHref} class="banner__cta">{bannerCtaText}</a>
         </div>
       </div>
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  const videoToggle = document.querySelector<HTMLButtonElement>('[data-hero-video-toggle]');
+  const heroVideo = document.querySelector<HTMLVideoElement>('.hero-home video');
+
+  if (videoToggle && heroVideo) {
+    const iconPath = videoToggle.querySelector<SVGPathElement>('[data-hero-video-toggle-icon]');
+    const pauseLabel = videoToggle.dataset.labelPause || 'Pause background video';
+    const playLabel = videoToggle.dataset.labelPlay || 'Play background video';
+    const pausePath = 'M8 5v14M16 5v14';
+    const playPath = 'M8 5v14l11-7-11-7z';
+
+    const syncVideoToggle = () => {
+      const isPaused = heroVideo.paused;
+      videoToggle.setAttribute('aria-label', isPaused ? playLabel : pauseLabel);
+      iconPath?.setAttribute('d', isPaused ? playPath : pausePath);
+      if (isPaused) {
+        iconPath?.setAttribute('fill', 'currentColor');
+        iconPath?.removeAttribute('stroke');
+        iconPath?.removeAttribute('stroke-width');
+        iconPath?.removeAttribute('stroke-linecap');
+      } else {
+        iconPath?.setAttribute('fill', 'none');
+        iconPath?.setAttribute('stroke', 'currentColor');
+        iconPath?.setAttribute('stroke-width', '2.25');
+        iconPath?.setAttribute('stroke-linecap', 'round');
+      }
+    };
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      heroVideo.pause();
+    }
+
+    videoToggle.addEventListener('click', () => {
+      if (heroVideo.paused) {
+        void heroVideo.play();
+      } else {
+        heroVideo.pause();
+      }
+      syncVideoToggle();
+    });
+
+    heroVideo.addEventListener('play', syncVideoToggle);
+    heroVideo.addEventListener('pause', syncVideoToggle);
+    syncVideoToggle();
+  }
+</script>
 
 <style>
   /* ================================================================
@@ -210,7 +314,7 @@ const homeJsonLd = {
     background-color: var(--color-bg-dark);
   }
 
-  .hero-home__img {
+  .hero-home__media {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -289,6 +393,43 @@ const homeJsonLd = {
   .hero-home__cta:focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
+  }
+
+  .hero-home__media-toggle {
+    position: absolute;
+    right: var(--space-6);
+    bottom: var(--space-6);
+    z-index: 2;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--base-50);
+    background: rgba(26, 58, 44, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    transition:
+      background-color var(--transition),
+      border-color var(--transition),
+      transform var(--transition);
+  }
+
+  .hero-home__media-toggle:hover {
+    background: rgba(26, 58, 44, 0.9);
+    border-color: rgba(255, 255, 255, 0.42);
+    transform: translateY(-1px);
+  }
+
+  .hero-home__media-toggle:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .hero-home__media-toggle svg {
+    flex-shrink: 0;
   }
 
   /* ================================================================
@@ -553,6 +694,13 @@ const homeJsonLd = {
 
     .hero-home__subtitle {
       font-size: var(--text-base);
+    }
+
+    .hero-home__media-toggle {
+      right: var(--space-4);
+      bottom: var(--space-4);
+      width: 2.5rem;
+      height: 2.5rem;
     }
 
     .hero-info {

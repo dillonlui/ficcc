@@ -29,6 +29,9 @@ const {
 
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
 const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const enableVercelAnalytics =
+  import.meta.env.VERCEL === '1' ||
+  import.meta.env.PUBLIC_VERCEL_ANALYTICS_ENABLED === 'true';
 
 const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as Lang);
 const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.org').href;
@@ -55,6 +58,9 @@ const showAnnouncementBar =
     <SEO title={title} description={description} lang={lang} alternateUrl={absoluteAlternateUrl} jsonLd={jsonLd} ogImage={ogImage} ogType={ogType} />
     {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline>
+      document.documentElement.classList.add('reveal-enabled');
+    </script>
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     <link rel="stylesheet" href={cjkFontsHref} media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href={cjkFontsHref} /></noscript>
@@ -122,7 +128,7 @@ const showAnnouncementBar =
         }
       }
     </script>
-    <Analytics />
+    {enableVercelAnalytics && <Analytics />}
   </body>
 </html>
 

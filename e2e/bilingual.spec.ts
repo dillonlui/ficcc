@@ -68,7 +68,7 @@ test.describe('Bilingual — language toggle', () => {
     expect(href).toBe('/zh/about');
   });
 
-  test('ZH /zh/contact/ has lang toggle pointing to /contact', async ({ page }) => {
+  test('ZH /zh/contact/ has lang toggle pointing to /en/contact', async ({ page }) => {
     await page.goto('/zh/contact/', { waitUntil: 'domcontentloaded' });
 
     const langToggle = page.locator('.lang-toggle');

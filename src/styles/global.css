@@ -229,22 +229,20 @@ a.announcement-bar:focus-visible {
 
 @keyframes reveal-up {
   from {
-    opacity: 0;
     transform: translateY(20px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes reveal-fade {
-  from { opacity: 0; }
+  from { opacity: 1; }
   to   { opacity: 1; }
 }
 
-[data-reveal] {
-  opacity: 0;
+.reveal-enabled [data-reveal] {
+  transform: translateY(20px);
 }
 
 [data-reveal].is-visible {

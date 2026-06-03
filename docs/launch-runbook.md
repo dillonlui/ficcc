@@ -2,6 +2,17 @@
 
 This document describes the exact procedure for cutting over ficcc.org, em.ficcc.org, and cm.ficcc.org to the new Vercel-hosted Astro site. It is intended for staff and developers executing the launch.
 
+## Routing Model
+
+The production site uses language-prefixed routes:
+
+- `/` is a language gateway. First-time visitors see the splash screen. Returning visitors with a `lang-pref=en` cookie are redirected to `/en/`; visitors with `lang-pref=zh` are redirected to `/zh/`.
+- `/en/` is the English homepage. English pages live under `/en/...`.
+- `/zh/` is the Chinese homepage. Chinese pages live under `/zh/...`.
+- `/?chooselang` bypasses the cookie redirect and always shows the splash screen.
+
+Legacy English Ministry URLs redirect to `/en/...`; legacy Chinese Ministry URLs redirect to `/zh/...`.
+
 ## Prerequisites
 
 Before starting the cutover, confirm all of the following:
@@ -67,11 +78,15 @@ Run through this checklist after DNS changes have propagated:
 
 ### Site Loading
 
-- [ ] `https://ficcc.org` loads the new Astro site — look for the skip-to-content link or `<main>` landmark
+- [ ] `https://ficcc.org/?chooselang` loads the splash / language gateway
+- [ ] `https://ficcc.org` with no `lang-pref` cookie loads the splash / language gateway
+- [ ] `https://ficcc.org` with `lang-pref=en` redirects to `https://ficcc.org/en/`
+- [ ] `https://ficcc.org` with `lang-pref=zh` redirects to `https://ficcc.org/zh/`
+- [ ] `https://ficcc.org/en/` loads the English homepage
 - [ ] `https://ficcc.org/zh/` loads the Chinese homepage with Chinese navigation text
-- [ ] `https://ficcc.org/about` loads the About page
-- [ ] `https://ficcc.org/sermons` loads the Sermons page
-- [ ] `https://ficcc.org/contact` loads the Contact page with the Turnstile-protected form
+- [ ] `https://ficcc.org/en/about` loads the English About page
+- [ ] `https://ficcc.org/en/sermons` loads the English Sermons page
+- [ ] `https://ficcc.org/en/contact` loads the English Contact page with the Turnstile-protected form
 
 ### em.ficcc.org Redirects (English legacy)
 
@@ -79,14 +94,14 @@ All should return **301 Permanent Redirect**:
 
 | Old URL                            | Redirects To                    |
 |------------------------------------|---------------------------------|
-| `em.ficcc.org/`                    | `https://ficcc.org/`            |
-| `em.ficcc.org/home/about/`         | `https://ficcc.org/about`       |
-| `em.ficcc.org/home/faith/`         | `https://ficcc.org/about/beliefs` |
-| `em.ficcc.org/home/sermons/`       | `https://ficcc.org/sermons`     |
-| `em.ficcc.org/home/worship/`       | `https://ficcc.org/visit`       |
-| `em.ficcc.org/home/fellowships/`   | `https://ficcc.org/ministries`  |
-| `em.ficcc.org/home/contact/`       | `https://ficcc.org/contact`     |
-| `em.ficcc.org/anything-else`       | `https://ficcc.org/`            |
+| `em.ficcc.org/`                    | `https://ficcc.org/en/`         |
+| `em.ficcc.org/home/about/`         | `https://ficcc.org/en/about`    |
+| `em.ficcc.org/home/faith/`         | `https://ficcc.org/en/about/beliefs` |
+| `em.ficcc.org/home/sermons/`       | `https://ficcc.org/en/sermons`  |
+| `em.ficcc.org/home/worship/`       | `https://ficcc.org/en/visit`    |
+| `em.ficcc.org/home/fellowships/`   | `https://ficcc.org/en/ministries` |
+| `em.ficcc.org/home/contact/`       | `https://ficcc.org/en/contact`  |
+| `em.ficcc.org/anything-else`       | `https://ficcc.org/en/`         |
 
 ### cm.ficcc.org Redirects (Chinese legacy)
 
@@ -118,12 +133,19 @@ All should return **301 Permanent Redirect**:
 ### Quick cURL Checks
 
 ```bash
-# Verify ficcc.org serves new site
+# Verify ficcc.org shows splash when no language cookie is set
 curl -sI https://ficcc.org | head -5
+
+# Verify language-cookie redirects from root
+curl -sI --cookie 'lang-pref=en' https://ficcc.org | grep -i 'location'
+# Expected: location: https://ficcc.org/en/
+
+curl -sI --cookie 'lang-pref=zh' https://ficcc.org | grep -i 'location'
+# Expected: location: https://ficcc.org/zh/
 
 # Verify em.ficcc.org redirect
 curl -sI https://em.ficcc.org/home/about/ | grep -i 'location'
-# Expected: location: https://ficcc.org/about
+# Expected: location: https://ficcc.org/en/about
 
 # Verify cm.ficcc.org redirect
 curl -sI https://cm.ficcc.org/home/about/ | grep -i 'location'

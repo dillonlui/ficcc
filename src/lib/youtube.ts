@@ -1,6 +1,7 @@
 /**
  * Fetch latest videos from a YouTube channel via the Data API v3.
- * Used on the sermons page (SSR) so data is always fresh.
+ * Used on the sermons page at build time so the static page can include recent
+ * sermon videos when YOUTUBE_API_KEY is configured.
  */
 
 export interface YouTubeVideo {

@@ -31,6 +31,9 @@ const ogBaseUrl = import.meta.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${import.meta.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : 'https://ficcc.org';
 const ogImage = `${ogBaseUrl}/og-default.png`;
+const enableVercelAnalytics =
+  import.meta.env.VERCEL === '1' ||
+  import.meta.env.PUBLIC_VERCEL_ANALYTICS_ENABLED === 'true';
 ---
 
 <!doctype html>
@@ -108,7 +111,7 @@ const ogImage = `${ogBaseUrl}/og-default.png`;
         });
       });
     </script>
-    <Analytics />
+    {enableVercelAnalytics && <Analytics />}
   </body>
 </html>
 

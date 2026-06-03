@@ -33,6 +33,11 @@ export interface SanityImage {
   asset: { _ref: string; _type: 'reference' };
 }
 
+export interface SanityFile {
+  _type: 'file';
+  asset: { _ref: string; _type: 'reference' };
+}
+
 export interface Sermon {
   _id: string;
   _type: 'sermon';
@@ -101,7 +106,9 @@ export interface ServiceTime {
 export interface HomePage {
   _id: string;
   _type: 'homePage';
+  heroMediaType?: 'image' | 'video';
   heroImage?: SanityImage;
+  heroVideo?: SanityFile;
   heroTitle: string;
   heroSubtitle?: string;
   heroCtaText?: string;
@@ -110,6 +117,7 @@ export interface HomePage {
   bannerHeading?: string;
   bannerBody?: PortableTextBlock[];
   bannerImage?: SanityImage;
+  bannerImageAlt?: string;
   bannerCtaText?: string;
   bannerCtaHref?: string;
   language: 'en' | 'zh';
@@ -212,6 +220,7 @@ export interface HomeSection {
   heading: string;
   body?: PortableTextBlock[];
   image?: SanityImage;
+  imageAlt?: string;
   ctaText?: string;
   ctaHref?: string;
   layout?: 'default' | 'reversed';
@@ -506,6 +515,25 @@ export function urlForImage(
   if (qs) url += `?${qs}`;
 
   return url;
+}
+
+/**
+ * Resolve a Sanity file asset reference to a CDN URL.
+ *
+ * File refs look like `file-<id>-<ext>`, and Sanity serves them from the
+ * files CDN path rather than the images CDN path.
+ */
+export function urlForFile(file: SanityFile | undefined | null): string {
+  if (!file?.asset?._ref) return '';
+
+  const withoutPrefix = file.asset._ref.replace(/^file-/, '');
+  const lastDash = withoutPrefix.lastIndexOf('-');
+  if (lastDash === -1) return '';
+
+  const id = withoutPrefix.slice(0, lastDash);
+  const ext = withoutPrefix.slice(lastDash + 1);
+
+  return `https://cdn.sanity.io/files/${projectId}/${dataset}/${id}.${ext}`;
 }
 
 // ---------------------------------------------------------------------------
