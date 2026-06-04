@@ -102,6 +102,11 @@ export default defineConfig({
     structureTool({ structure }),
     presentationTool({
       previewUrl,
+      allowOrigins: [
+        'http://localhost:*',
+        'https://ficcc.vercel.app',
+        'https://ficcc.org',
+      ],
       resolve: {
         mainDocuments,
       },
