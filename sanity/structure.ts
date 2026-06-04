@@ -104,6 +104,7 @@ function collectionList(S: any, type: string, title: string, language: Lang) {
         .id(`${language}-${type}-list`)
         .title(title)
         .schemaType(type)
+        .apiVersion('2026-03-31')
         .filter('_type == $type && language == $language')
         .params({ type, language })
         .initialValueTemplates([
