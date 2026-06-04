@@ -3,18 +3,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import Accordion from '../../components/Accordion.astro';
 import RideRequestForm from '../../components/RideRequestForm.astro';
-import { getVisitPage, urlForImage, portableTextToHtml } from '../../lib/sanity';
+import { loadQuery, urlForImage, portableTextToHtml, type VisitPage } from '../../lib/sanity';
+
+export const prerender = false;
 
 const title = 'Plan Your Visit | First Ithaca Chinese Christian Church';
 const description =
   'Everything you need to know for your first Sunday with us. Service times, directions, parking, and what to expect.';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
-let visitPage: Awaited<ReturnType<typeof getVisitPage>> = null;
+let visitPage: VisitPage | null = null;
+const isSanityPreviewRequest =
+  new URL(Astro.request.url).searchParams.has('sanity-preview-secret');
 
 try {
-  visitPage = await getVisitPage('en');
-} catch {
+  const result = await loadQuery<VisitPage | null>(
+    `*[_id == $id][0]`,
+    { id: 'visitPage-en' },
+    { request: Astro.request },
+  );
+  visitPage = result.data;
+} catch (error) {
+  if (isSanityPreviewRequest) throw error;
   // Sanity unreachable — continue with fallbacks
 }
 

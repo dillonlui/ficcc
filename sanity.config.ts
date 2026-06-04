@@ -15,9 +15,16 @@ const env = {
 // back to server-side values from process.env.
 const projectId = env.PUBLIC_SANITY_PROJECT_ID || env.SANITY_PROJECT_ID || 'placeholder';
 const dataset = env.PUBLIC_SANITY_DATASET || env.SANITY_DATASET || 'production';
-const previewUrl =
+const previewOrigin =
   env.PUBLIC_SANITY_PREVIEW_URL ||
   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321');
+const previewUrl = {
+  initial: previewOrigin,
+  previewMode: {
+    enable: '/?sanity-preview=1',
+    shareAccess: false,
+  },
+};
 
 const mainDocuments = defineDocuments([
   { route: '/', filter: `_id == "splashPage"` },

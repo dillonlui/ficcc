@@ -1,4 +1,5 @@
-import { createClient } from '@sanity/client';
+import { createClient, type ClientPerspective, type QueryParams } from '@sanity/client';
+import { validatePreviewUrl } from '@sanity/preview-url-secret';
 
 const projectId = import.meta.env.SANITY_PROJECT_ID || 'placeholder';
 const dataset = import.meta.env.SANITY_DATASET || 'production';
@@ -11,6 +12,51 @@ export const client = createClient({
 });
 
 export { projectId, dataset };
+
+type SanityPreviewContext = {
+  enabled: boolean;
+  perspective: ClientPerspective;
+};
+
+const previewSecretParam = 'sanity-preview-secret';
+
+function parsePreviewPerspective(value: string | undefined): ClientPerspective {
+  if (!value || value === 'drafts' || value === 'published') {
+    return (value || 'drafts') as ClientPerspective;
+  }
+
+  return value.split(',').filter(Boolean) as ClientPerspective;
+}
+
+export async function getSanityPreviewContext(
+  request: Request | undefined,
+): Promise<SanityPreviewContext> {
+  if (!request) {
+    return { enabled: false, perspective: 'published' };
+  }
+
+  const requestUrl = new URL(request.url);
+  if (!requestUrl.searchParams.has(previewSecretParam)) {
+    return { enabled: false, perspective: 'published' };
+  }
+
+  const token = import.meta.env.SANITY_API_READ_TOKEN;
+  if (!token) {
+    throw new Error(
+      '[sanity/preview] SANITY_API_READ_TOKEN is required for Sanity Presentation preview.',
+    );
+  }
+
+  const validation = await validatePreviewUrl(client.withConfig({ token }), request.url);
+  if (!validation.isValid) {
+    return { enabled: false, perspective: 'published' };
+  }
+
+  return {
+    enabled: true,
+    perspective: parsePreviewPerspective(validation.studioPreviewPerspective),
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Shared types — lightweight interfaces matching schema shapes.
@@ -698,50 +744,64 @@ function escapeHtml(str: string): string {
 // ---------------------------------------------------------------------------
 
 const isVisualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED !== 'false';
 
 /**
  * Draft-aware query helper for preview/visual-editing contexts.
  *
- * When `PUBLIC_SANITY_VISUAL_EDITING_ENABLED` is `'true'`:
- *   - Uses `perspective: 'previewDrafts'` so editors see unpublished changes
+ * When the request has a valid Sanity Presentation preview secret:
+ *   - Uses the Studio-provided preview perspective so editors see draft changes
  *   - Injects `SANITY_API_READ_TOKEN` (server-only) for authenticated draft access
  *   - Enables stega encoding and result source maps for click-to-edit overlays
  *
- * When disabled, falls back to published perspective with no token or stega.
+ * Normal public requests always fall back to published perspective with no token or stega.
  *
  * This is a *parallel* helper — existing getSermons / getHomePage / etc.
  * remain unchanged for static build-time fetching.
  */
 export async function loadQuery<T = unknown>(
   query: string,
-  params: Record<string, unknown> = {},
-): Promise<{ data: T }> {
-  if (isVisualEditingEnabled) {
+  params: QueryParams = {},
+  options: { request?: Request } = {},
+): Promise<{ data: T; perspective: ClientPerspective; sourceMap?: unknown }> {
+  const previewContext = await getSanityPreviewContext(options.request);
+
+  if (isVisualEditingEnabled && previewContext.enabled) {
     const token = import.meta.env.SANITY_API_READ_TOKEN;
     if (!token) {
       throw new Error(
-        '[sanity/loadQuery] PUBLIC_SANITY_VISUAL_EDITING_ENABLED is true but ' +
+        '[sanity/loadQuery] Sanity Presentation preview is active but ' +
           'SANITY_API_READ_TOKEN is not set. Add the token to your environment ' +
           '(server-only, no PUBLIC_ prefix).',
       );
     }
 
     if (import.meta.env.DEV) {
-      console.debug('[sanity/loadQuery] perspective: previewDrafts (visual editing enabled)');
+      console.debug(`[sanity/loadQuery] perspective: ${previewContext.perspective}`);
     }
 
-    const data = await client.fetch<T>(query, params, {
-      perspective: 'previewDrafts',
-      stega: true,
-      token,
-      resultSourceMap: true,
-    });
-    return { data };
+    const response = await client.fetch<{ result: T; resultSourceMap?: unknown }>(
+      query,
+      params,
+      {
+        filterResponse: false,
+        perspective: previewContext.perspective,
+        stega: true,
+        token,
+        resultSourceMap: 'withKeyArraySelector',
+        useCdn: false,
+      },
+    );
+
+    return {
+      data: response.result,
+      perspective: previewContext.perspective,
+      sourceMap: response.resultSourceMap,
+    };
   }
 
   const data = await client.fetch<T>(query, params, {
     perspective: 'published',
   });
-  return { data };
+  return { data, perspective: 'published' };
 }
