@@ -37,7 +37,7 @@ const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as Lang);
 const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.org').href;
 
 const isVisualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED !== 'false';
 
 let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 try {

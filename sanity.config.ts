@@ -1,6 +1,6 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
-import { defineDocuments, presentationTool } from 'sanity/presentation';
+import { defineDocuments, defineLocations, presentationTool } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
 import { FicccStudioIcon } from './sanity/components/FicccStudioIcon';
 import { structure } from './sanity/structure';
@@ -44,6 +44,75 @@ const mainDocuments = defineDocuments([
   { route: '/zh/grow/youth', filter: `_id == "growPage-zh-youth"` },
   { route: '/zh/grow/children', filter: `_id == "growPage-zh-children"` },
 ]);
+
+const languagePrefix = (language?: string) => (language === 'zh' ? '/zh' : '/en');
+
+const documentLocations = {
+  splashPage: defineLocations({
+    resolve: () => ({
+      locations: [{ title: 'Splash Page', href: '/' }],
+    }),
+  }),
+  homePage: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{ title: 'Homepage', href: languagePrefix(doc?.language) }],
+    }),
+  }),
+  aboutPage: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{ title: 'Who We Are', href: `${languagePrefix(doc?.language)}/about` }],
+    }),
+  }),
+  beliefsPage: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{ title: 'Beliefs & Vision', href: `${languagePrefix(doc?.language)}/about/beliefs` }],
+    }),
+  }),
+  visitPage: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [
+        {
+          title: doc?.language === 'zh' ? '主日聚會' : 'Visit',
+          href: doc?.language === 'zh' ? '/zh/sundays' : '/en/visit',
+        },
+      ],
+    }),
+  }),
+  givePage: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{ title: 'Give', href: `${languagePrefix(doc?.language)}/give` }],
+    }),
+  }),
+  contactPage: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{ title: 'Contact', href: `${languagePrefix(doc?.language)}/contact` }],
+    }),
+  }),
+  resourcesPage: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{ title: 'Resources', href: `${languagePrefix(doc?.language)}/resources` }],
+    }),
+  }),
+  growPage: defineLocations({
+    select: { language: 'language', audience: 'audience' },
+    resolve: (doc) => ({
+      locations: doc?.audience
+        ? [{ title: 'Grow', href: `${languagePrefix(doc?.language)}/grow/${doc.audience}` }]
+        : [],
+    }),
+  }),
+  siteSettings: defineLocations({
+    message: 'Site settings are used across the website.',
+    tone: 'caution',
+  }),
+};
 
 const languageTemplateTypes = [
   'siteSettings',
@@ -109,6 +178,7 @@ export default defineConfig({
       ],
       resolve: {
         mainDocuments,
+        locations: documentLocations,
       },
     }),
     visionTool(),

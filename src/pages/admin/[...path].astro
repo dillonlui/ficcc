@@ -3,7 +3,11 @@
  * Sanity Studio client-side routes under /admin/*.
  * Serves the same shell as /admin so refreshes and auth redirects keep working.
  */
-export const prerender = false;
+export function getStaticPaths() {
+  return ['presentation', 'structure', 'vision'].map((path) => ({
+    params: { path },
+  }));
+}
 
 import Studio from '../../components/Studio';
 ---
