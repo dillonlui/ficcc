@@ -7,6 +7,8 @@ import { getSermons } from '../../../lib/sanity';
 const title = '證道 | FICCC';
 const description = '浏览以萨卡华人基督教会的证道信息。按系列筛选，在线观看讲道。';
 
+return Astro.redirect('/404');
+
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let sermons: Awaited<ReturnType<typeof getSermons>> = [];
 
