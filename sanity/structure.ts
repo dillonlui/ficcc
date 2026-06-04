@@ -82,12 +82,13 @@ function growItem(S: any, page: GrowPage) {
     .child(document);
 }
 
-function growSection(S: any, title: string, pages: GrowPage[]) {
+function growSection(S: any, id: string, title: string, pages: GrowPage[]) {
   return S.listItem()
     .title(title)
-    .id(title.toLowerCase().replace(/\s+/g, '-'))
+    .id(id)
     .child(
       S.list()
+        .id(`${id}-list`)
         .title(title)
         .items(pages.map((page) => growItem(S, page))),
     );
@@ -100,6 +101,7 @@ function collectionList(S: any, type: string, title: string, language: Lang) {
     .schemaType(type)
     .child(
       S.documentList()
+        .id(`${language}-${type}-list`)
         .title(title)
         .schemaType(type)
         .filter('_type == $type && language == $language')
@@ -123,10 +125,11 @@ function languageSection(
     .id(id)
     .child(
       S.list()
+        .id(`${id}-list`)
         .title(title)
         .items([
           ...pages.map((page) => singletonItem(S, page)),
-          growSection(S, language === 'zh' ? '成長 / 事工' : 'Grow', growPages),
+          growSection(S, `${language}-grow`, language === 'zh' ? '成長 / 事工' : 'Grow', growPages),
           S.divider(),
           collectionList(S, 'sermon', language === 'zh' ? '講道' : 'Sermons', language),
           collectionList(S, 'event', language === 'zh' ? '活動' : 'Events', language),
@@ -138,6 +141,7 @@ function languageSection(
 
 export const structure: StructureResolver = (S) =>
   S.list()
+    .id('content')
     .title('Content')
     .items([
       singletonItem(S, { id: 'splashPage', title: 'Splash Page', type: 'splashPage' }),
@@ -154,6 +158,7 @@ export const structure: StructureResolver = (S) =>
         .id('site-settings')
         .child(
           S.list()
+            .id('site-settings-list')
             .title('Site Settings')
             .items([
               singletonItem(S, {

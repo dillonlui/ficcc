@@ -28,14 +28,8 @@ export const homePage = defineType({
       title: 'Hero Image / Video Poster Fallback',
       type: 'image',
       options: { hotspot: true },
-      description: 'Required for image heroes. Also used as the poster/fallback image when the hero uses video.',
-      validation: (rule) =>
-        rule.custom((value, context) => {
-          const parent = context.parent as { heroMediaType?: string } | undefined;
-          return parent?.heroMediaType === 'video' || parent?.heroMediaType === 'image'
-            ? value ? true : 'Add a hero image for the page hero and video poster fallback.'
-            : true;
-        }),
+      description:
+        'Optional. Leave blank to use the built-in FICCC hero poster image. Also used as the poster/fallback image when the hero uses video.',
     }),
     defineField({
       name: 'heroFallbackImage',
@@ -50,18 +44,12 @@ export const homePage = defineType({
       name: 'heroVideo',
       title: 'Hero Video',
       type: 'file',
-      description: 'Upload only an optimized, muted-friendly MP4/WebM hero video. Keep this small for page speed.',
+      description:
+        'Optional. Leave blank to use the built-in FICCC hero video. Upload only an optimized, muted-friendly MP4/WebM if replacing it.',
       hidden: ({ parent }) => parent?.heroMediaType !== 'video',
       options: {
         accept: 'video/mp4,video/webm,video/quicktime',
       },
-      validation: (rule) =>
-        rule.custom((value, context) => {
-          const parent = context.parent as { heroMediaType?: string } | undefined;
-          return parent?.heroMediaType === 'video' && !value
-            ? 'Add an optimized hero video or switch Hero Media Type back to Image.'
-            : true;
-        }),
     }),
     defineField({
       name: 'heroTitle',

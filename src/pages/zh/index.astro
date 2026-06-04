@@ -44,7 +44,7 @@ const heroFallbackImage = homePage?.heroFallbackImage
   : heroImage;
 const heroVideo =
   homePage?.heroMediaType === 'video'
-    ? urlForFile(homePage.heroVideo)
+    ? urlForFile(homePage.heroVideo) || defaultHeroVideo
     : homePage?.heroMediaType === 'image'
       ? ''
       : defaultHeroVideo;
