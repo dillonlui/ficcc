@@ -1,6 +1,6 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
-import { presentationTool } from 'sanity/presentation';
+import { defineDocuments, presentationTool } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
 import { FicccStudioIcon } from './sanity/components/FicccStudioIcon';
 import { structure } from './sanity/structure';
@@ -18,6 +18,32 @@ const dataset = env.PUBLIC_SANITY_DATASET || env.SANITY_DATASET || 'production';
 const previewUrl =
   env.PUBLIC_SANITY_PREVIEW_URL ||
   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321');
+
+const mainDocuments = defineDocuments([
+  { route: '/', filter: `_id == "splashPage"` },
+  { route: '/en', filter: `_id == "homePage-en"` },
+  { route: '/en/about', filter: `_id == "aboutPage-en"` },
+  { route: '/en/about/beliefs', filter: `_id == "beliefsPage-en"` },
+  { route: '/en/visit', filter: `_id == "visitPage-en"` },
+  { route: '/en/give', filter: `_id == "givePage-en"` },
+  { route: '/en/contact', filter: `_id == "contactPage-en"` },
+  { route: '/en/resources', filter: `_id == "resourcesPage-en"` },
+  { route: '/en/grow/english', filter: `_id == "growPage-en-english"` },
+  { route: '/en/grow/chinese', filter: `_id == "growPage-en-chinese"` },
+  { route: '/en/grow/youth', filter: `_id == "growPage-en-youth"` },
+  { route: '/en/grow/children', filter: `_id == "growPage-en-children"` },
+  { route: '/zh', filter: `_id == "homePage-zh"` },
+  { route: '/zh/about', filter: `_id == "aboutPage-zh"` },
+  { route: '/zh/about/beliefs', filter: `_id == "beliefsPage-zh"` },
+  { route: '/zh/sundays', filter: `_id == "visitPage-zh"` },
+  { route: '/zh/give', filter: `_id == "givePage-zh"` },
+  { route: '/zh/contact', filter: `_id == "contactPage-zh"` },
+  { route: '/zh/resources', filter: `_id == "resourcesPage-zh"` },
+  { route: '/zh/grow/english', filter: `_id == "growPage-zh-english"` },
+  { route: '/zh/grow/chinese', filter: `_id == "growPage-zh-chinese"` },
+  { route: '/zh/grow/youth', filter: `_id == "growPage-zh-youth"` },
+  { route: '/zh/grow/children', filter: `_id == "growPage-zh-children"` },
+]);
 
 const languageTemplateTypes = [
   'siteSettings',
@@ -76,6 +102,9 @@ export default defineConfig({
     structureTool({ structure }),
     presentationTool({
       previewUrl,
+      resolve: {
+        mainDocuments,
+      },
     }),
     visionTool(),
   ],
