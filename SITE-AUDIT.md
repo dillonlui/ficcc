@@ -132,7 +132,7 @@ All images also available at 427×284 (responsive variant).
 | `cm.ficcc.org/home/sermons/` | `ficcc.org/zh/sermons` | |
 | `cm.ficcc.org/home/worship/` | `ficcc.org/zh/sundays` | |
 | `cm.ficcc.org/home/fellowships/` | `ficcc.org/zh/community` | |
-| `cm.ficcc.org/home/教會事工/` | `ficcc.org/zh/ministries` | |
+| `cm.ficcc.org/home/教會事工/` | `ficcc.org/zh/grow/chinese` | |
 | `cm.ficcc.org/home/contact/` | `ficcc.org/zh/contact` | |
 
 ---

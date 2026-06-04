@@ -95,8 +95,12 @@ describe('getAlternateUrl', () => {
       expect(getAlternateUrl('/zh/sermons/some-slug', 'zh')).toBe('/en/sermons/some-slug');
     });
 
-    it('EN /en/ministries/youth → ZH /zh/ministries/youth', () => {
-      expect(getAlternateUrl('/en/ministries/youth', 'en')).toBe('/zh/ministries/youth');
+    it('EN /en/grow/youth → ZH /zh/grow/youth', () => {
+      expect(getAlternateUrl('/en/grow/youth', 'en')).toBe('/zh/grow/youth');
+    });
+
+    it('ZH /zh/grow/children → EN /en/grow/children', () => {
+      expect(getAlternateUrl('/zh/grow/children', 'zh')).toBe('/en/grow/children');
     });
   });
 });

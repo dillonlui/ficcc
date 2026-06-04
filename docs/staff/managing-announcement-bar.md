@@ -24,7 +24,7 @@ Scroll down in the Site Settings editor until you see the announcement bar field
 
 1. Set **Announcement Bar Enabled** to **ON** (toggle it so it's checked/active).
 2. Enter the **Announcement Bar Text** — keep it short and clear, e.g. "Christmas Eve Service — Dec 24 at 7 PM".
-3. Optionally enter an **Announcement Bar Link** — a full URL like `https://your-site.com/events` or a relative path like `/events`. The entire bar becomes clickable when a link is set.
+3. Optionally enter an **Announcement Bar Link** — a full URL like `https://ficcc.org/en/` or a relative path like `/en/contact`. The entire bar becomes clickable when a link is set.
 
 ### 4. Publish
 

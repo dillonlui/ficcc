@@ -1,10 +1,13 @@
 import { defineType, defineField } from 'sanity';
+import { pageVisibilityField } from '../fields/visibility';
 
 export const resourcesPage = defineType({
   name: 'resourcesPage',
   title: 'Resources Page',
   type: 'document',
   fields: [
+    pageVisibilityField,
+
     // ── Hero ──────────────────────────────────────────────────────────
     defineField({
       name: 'heroImage',

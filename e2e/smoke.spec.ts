@@ -27,9 +27,13 @@ const CRITICAL_PAGES: [string, string][] = [
   ['/en/contact/', 'Contact'],
   ['/en/visit/', 'Visit'],
   ['/en/give/', 'Give'],
+  ['/en/grow/english/', 'Grow English'],
+  ['/en/grow/youth/', 'Grow Youth'],
   ['/zh/', 'Home (Chinese)'],
   ['/zh/contact/', 'Contact (Chinese)'],
   ['/zh/about/', 'About (Chinese)'],
+  ['/zh/grow/chinese/', 'Grow Chinese'],
+  ['/zh/grow/children/', 'Grow Children (Chinese)'],
 ];
 
 for (const [url, label] of CRITICAL_PAGES) {
@@ -82,5 +86,39 @@ test.describe('Splash language gateway', () => {
 
     const cookies = await context.cookies();
     expect(cookies.find((cookie) => cookie.name === 'lang-pref')?.value).toBe('zh');
+  });
+});
+
+test.describe('Homepage hero video controls', () => {
+  test('English hero video toggle pauses and resumes with one action icon', async ({ page }) => {
+    await page.goto('/en/', { waitUntil: 'domcontentloaded' });
+
+    const toggle = page.getByRole('button', { name: 'Pause background video' });
+    await expect(toggle).toBeVisible();
+    await expect(page.locator('.hero-home__media-toggle svg')).toHaveCount(1);
+
+    await toggle.click();
+    await expect(page.getByRole('button', { name: 'Play background video' })).toBeVisible();
+    await expect
+      .poll(() => page.locator('.hero-home video').evaluate((video) => (video as HTMLVideoElement).paused))
+      .toBe(true);
+    await expect(page.locator('[data-hero-video-toggle-icon]')).toHaveAttribute('d', 'M8 5v14l11-7-11-7z');
+
+    await page.getByRole('button', { name: 'Play background video' }).click();
+    await expect(page.getByRole('button', { name: 'Pause background video' })).toBeVisible();
+  });
+
+  test('Chinese hero video toggle uses localized labels', async ({ page }) => {
+    await page.goto('/zh/', { waitUntil: 'domcontentloaded' });
+
+    const toggle = page.getByRole('button', { name: '暫停背景影片' });
+    await expect(toggle).toBeVisible();
+    await expect(page.locator('.hero-home__media-toggle svg')).toHaveCount(1);
+
+    await toggle.click();
+    await expect(page.getByRole('button', { name: '播放背景影片' })).toBeVisible();
+    await expect
+      .poll(() => page.locator('.hero-home video').evaluate((video) => (video as HTMLVideoElement).paused))
+      .toBe(true);
   });
 });

@@ -25,6 +25,8 @@ try {
   siteSettings = await getSiteSettings('zh');
 } catch {}
 
+if (homePage?.isVisible === false) return Astro.redirect('/404');
+
 const serviceTimeItems = siteSettings?.serviceTimes || [
   { label: '華語崇拜', time: '11:15 AM' },
   { label: '門徒小組', time: '11:00 AM' },
@@ -37,6 +39,9 @@ const defaultHeroVideo = '/videos/ficcc-hero.mp4';
 const heroImage = homePage?.heroImage
   ? urlForImage(homePage.heroImage, { width: 1600 })
   : defaultHeroImage;
+const heroFallbackImage = homePage?.heroFallbackImage
+  ? urlForImage(homePage.heroFallbackImage, { width: 1600 })
+  : heroImage;
 const heroVideo =
   homePage?.heroMediaType === 'video'
     ? urlForFile(homePage.heroVideo)
@@ -53,8 +58,8 @@ const fallbackSections = [
     label: '認識我們',
     heading: '在FICCC更深扎根',
     bodyHtml: '<p>無論你是伊薩卡的長期居民、訪問學者，還是遠離家鄉的學生，這裡都有你的位置。</p>',
-    image: '/images/church/img-8212.webp',
-    imageAlt: 'FICCC會眾一同敬拜',
+    image: '/images/church/bbq-2025-group-wide.webp',
+    imageAlt: '伊的家教會大家庭戶外合影',
     ctaText: '進一步了解我們',
     ctaHref: '/zh/about',
     layout: 'default',
@@ -64,8 +69,8 @@ const fallbackSections = [
     label: '主日體驗',
     heading: '主日早晨',
     bodyHtml: '<p>上午11:15我們一起唱詩、聯聖經講道、守主餐。上午11:00進入門徒小組，進行討論和禱告。之後我們一起吃午餐-通常是中餐。</p>',
-    image: '/images/church/pxl-20250813-130502778.webp',
-    imageAlt: 'FICCC教會位於429 Mitchell Street',
+    image: '/images/church/bbq-2025-outdoor-worship.webp',
+    imageAlt: '伊的家弟兄姊妹在戶外一同唱詩',
     ctaText: '規劃你的首次來訪',
     ctaHref: '/zh/sundays',
     layout: 'reversed',
@@ -75,10 +80,10 @@ const fallbackSections = [
     label: '群體生活',
     heading: '尋找群體',
     bodyHtml: '<p>查經班、團契小組、短宣、共餐。我們鼓勵每個人參與服事-在教會中、在校園裡、在伊薩卡社區裡。</p>',
-    image: '/images/church/2023-retreat-praying.webp',
-    imageAlt: '2023年退修會中弟兄姊妹一同禱告',
+    image: '/images/church/epp-2025-diverse-community.webp',
+    imageAlt: '不同世代的伊的家弟兄姊妹合影',
     ctaText: '探索事工',
-    ctaHref: '/zh/ministries',
+    ctaHref: '/zh/grow/chinese',
     layout: 'default',
     tinted: false,
   },
@@ -86,8 +91,8 @@ const fallbackSections = [
     label: '講道',
     heading: '觀看講道',
     bodyHtml: '<p>回顧近期講道或探索過往的教導系列。我們的講道每週上傳至YouTube。</p>',
-    image: '/images/church/img-0316.webp',
-    imageAlt: 'FICCC主日崇拜',
+    image: '/images/church/epp-2025-worship-guitar.webp',
+    imageAlt: '伊的家弟兄姊妹在戶外以吉他伴奏唱詩',
     ctaText: '瀏覽講道',
     ctaHref: '/zh/sermons',
     layout: 'reversed',
@@ -115,7 +120,7 @@ const bannerBodyHtml = homePage?.bannerBody?.length
   : '<p>我們珍惜華人傳統，同時建立一個歡迎學生、家庭和各背景鄰舍的教會家園。</p>';
 const bannerImage = homePage?.bannerImage
   ? urlForImage(homePage.bannerImage, { width: 1600 })
-  : '/images/church/picnic-sunmi-lordina-tiffany-linnea.webp';
+  : '/images/church/bbq-2025-community-singing.webp';
 const bannerImageAlt = homePage?.bannerImageAlt || '多元社區成員在一起';
 const bannerCtaText = homePage?.bannerCtaText || '與我們聯繫';
 const bannerCtaHref = homePage?.bannerCtaHref || '/zh/contact';
@@ -140,7 +145,7 @@ const homeJsonLd = {
           loop
           playsinline
           preload="metadata"
-          poster={heroImage}
+          poster={heroFallbackImage}
           aria-hidden="true"
         >
           <source src={heroVideo} type="video/mp4" />

@@ -18,12 +18,15 @@ try {
   ]);
 } catch {}
 
+if (contactPage?.isVisible === false) return Astro.redirect('/404');
+
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heroImage = contactPage?.heroImage
   ? urlForImage(contactPage.heroImage, { width: 1600 })
-  : '/images/hero/friends-golden.webp';
+  : '/images/church/bbq-2025-welcome-conversation.webp';
 const heroTitle = contactPage?.heroTitle || 'Contact Us';
 const heroSubtitle = contactPage?.heroSubtitle || "We'd love to hear from you";
+const showContactForm = contactPage?.formEnabled !== false;
 
 const address = siteSettings?.address || '429 Mitchell Street';
 const city = siteSettings?.city || 'Ithaca, NY 14850';
@@ -49,13 +52,15 @@ const serviceTimes = siteSettings?.serviceTimes || [
       <div class="contact-section__inner">
         <div class="contact-layout">
           <!-- Contact form -->
-          <div class="contact-form-wrap" data-reveal>
-            <h2 class="contact-form-wrap__heading">Send Us a Message</h2>
-            <p class="contact-form-wrap__intro">
-              Questions about our church, ministries, prayer requests, or anything else. We're here for you.
-            </p>
-            <ContactForm />
-          </div>
+          {showContactForm && (
+            <div class="contact-form-wrap" data-reveal>
+              <h2 class="contact-form-wrap__heading">Send Us a Message</h2>
+              <p class="contact-form-wrap__intro">
+                Questions about our church, ministries, prayer requests, or anything else. We're here for you.
+              </p>
+              <ContactForm />
+            </div>
+          )}
 
           <!-- Church info sidebar -->
           <div class="contact-info" role="region" aria-label="Church contact information" data-reveal>

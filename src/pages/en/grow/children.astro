@@ -1,0 +1,9 @@
+---
+import GrowPage from '../../../components/GrowPage.astro';
+import { getResolvedGrowPage } from '../../../lib/grow-pages';
+
+const { content, isHidden } = await getResolvedGrowPage('en', 'children');
+if (isHidden) return Astro.redirect('/404');
+---
+
+<GrowPage content={content} />

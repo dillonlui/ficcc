@@ -1,10 +1,13 @@
 import { defineType, defineField } from 'sanity';
+import { pageVisibilityField } from '../fields/visibility';
 
 export const homePage = defineType({
   name: 'homePage',
   title: 'Home Page',
   type: 'document',
   fields: [
+    pageVisibilityField,
+
     // ── Hero ──────────────────────────────────────────────────────────
     defineField({
       name: 'heroMediaType',
@@ -33,6 +36,15 @@ export const homePage = defineType({
             ? value ? true : 'Add a hero image for the page hero and video poster fallback.'
             : true;
         }),
+    }),
+    defineField({
+      name: 'heroFallbackImage',
+      title: 'Video Failure Fallback Image',
+      type: 'image',
+      options: { hotspot: true },
+      description:
+        'Optional image shown as the video poster/fallback if the uploaded video cannot load. Leave blank to reuse the Hero Image.',
+      hidden: ({ parent }) => parent?.heroMediaType !== 'video',
     }),
     defineField({
       name: 'heroVideo',

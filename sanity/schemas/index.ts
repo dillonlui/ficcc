@@ -14,6 +14,7 @@ export { splashPage } from './singletons/splashPage';
 export { beliefsPage } from './singletons/beliefsPage';
 export { givePage } from './singletons/givePage';
 export { contactPage } from './singletons/contactPage';
+export { growPage } from './singletons/growPage';
 
 import { person } from './documents/person';
 import { sermon } from './documents/sermon';
@@ -28,6 +29,7 @@ import { splashPage } from './singletons/splashPage';
 import { beliefsPage } from './singletons/beliefsPage';
 import { givePage } from './singletons/givePage';
 import { contactPage } from './singletons/contactPage';
+import { growPage } from './singletons/growPage';
 
 /** All schema types to register with Sanity */
 export const schemaTypes = [
@@ -46,6 +48,7 @@ export const schemaTypes = [
   beliefsPage,
   givePage,
   contactPage,
+  growPage,
 ];
 
 /** Singleton type names — used by structure builder to filter from default list */
@@ -59,6 +62,7 @@ export const singletonTypes = new Set([
   'beliefsPage',
   'givePage',
   'contactPage',
+  'growPage',
 ]);
 
 /** Singleton document IDs per language */
@@ -80,4 +84,12 @@ export const singletonDocIds = [
   { id: 'givePage-zh', type: 'givePage', title: '奉獻 (ZH)' },
   { id: 'contactPage-en', type: 'contactPage', title: 'Contact (EN)' },
   { id: 'contactPage-zh', type: 'contactPage', title: '聯絡我們 (ZH)' },
+  { id: 'growPage-en-english', type: 'growPage', title: 'English Ministry (EN)' },
+  { id: 'growPage-en-chinese', type: 'growPage', title: 'Chinese Ministry (EN)' },
+  { id: 'growPage-en-youth', type: 'growPage', title: 'Youth Ministry (EN)' },
+  { id: 'growPage-en-children', type: 'growPage', title: 'Children (EN)' },
+  { id: 'growPage-zh-english', type: 'growPage', title: '英語事工 (ZH)' },
+  { id: 'growPage-zh-chinese', type: 'growPage', title: '華語事工 (ZH)' },
+  { id: 'growPage-zh-youth', type: 'growPage', title: '青少年 (ZH)' },
+  { id: 'growPage-zh-children', type: 'growPage', title: '兒童 (ZH)' },
 ];

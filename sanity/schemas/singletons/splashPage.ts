@@ -1,10 +1,13 @@
 import { defineType, defineField } from 'sanity';
+import { pageVisibilityField } from '../fields/visibility';
 
 export const splashPage = defineType({
   name: 'splashPage',
   title: 'Splash Page',
   type: 'document',
   fields: [
+    pageVisibilityField,
+
     defineField({
       name: 'backgroundImage',
       title: 'Background Image',

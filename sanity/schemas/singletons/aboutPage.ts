@@ -1,10 +1,13 @@
 import { defineType, defineField } from 'sanity';
+import { pageVisibilityField } from '../fields/visibility';
 
 export const aboutPage = defineType({
   name: 'aboutPage',
   title: 'About Page',
   type: 'document',
   fields: [
+    pageVisibilityField,
+
     // ── Who We Are ─────────────────────────────────────────────────
     defineField({ name: 'whoWeAreHeading', title: 'Heading', type: 'string', initialValue: 'Who We Are' }),
     defineField({ name: 'whoWeAreBody', title: 'Body', type: 'array', of: [{ type: 'block' }] }),

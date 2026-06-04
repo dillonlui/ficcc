@@ -77,15 +77,17 @@ src/
 - English: `/en/` (prefixed)
 - Chinese: `/zh/` (path prefix)
 - Astro i18n config: `defaultLocale: 'en'`, `locales: ['en', 'zh']`, `prefixDefaultLocale: true`, `redirectToDefaultLocale: false`
-- Content is **bespoke per ministry** — EN and ZH have separate Sanity documents, not translations.
+- Content is **bespoke per language route** — EN and ZH have separate Sanity documents, not direct translations.
+- Grow pages use fixed documents such as `growPage-en-english`, `growPage-zh-chinese`, `growPage-en-youth`, and `growPage-zh-children`.
 - When ZH UX needs differ significantly, build a bespoke page (e.g., `/zh/contact` uses WeChat-first design). (K011)
 - Use `getAlternateUrl(pathname)` from `src/lib/navigation.ts` for all EN<->ZH URL mapping. It handles asymmetric routes like `/en/visit` <-> `/zh/sundays`. (K010)
 - Language toggle persists preference via `lang-pref` cookie. Edge Middleware reads this to redirect returning visitors from `/` to `/en/` or `/zh/`.
 
 ### Sanity CMS
-- **Schema:** `sanity/schemas/` — documents (sermon, event, ministry, page, person), singletons (homePage, aboutPage, visitPage, resourcesPage, navigation, siteSettings), block/object types.
+- **Schema:** `sanity/schemas/` — documents (sermon, event, ministry, person), page documents/singletons (splashPage, homePage, aboutPage, beliefsPage, visitPage, givePage, contactPage, resourcesPage, growPage, siteSettings).
 - **Singletons** use `{type}-{lang}` IDs (e.g., `siteSettings-en`, `homePage-zh`).
 - **Every document** has a `language: 'en' | 'zh'` field.
+- Public pages and public list items use `isVisible` to hide content on the next static rebuild without deleting Sanity content.
 - **Queries:** Use typed GROQ helpers in `src/lib/sanity.ts` — each accepts a `language` parameter defaulting to `'en'`.
 - **Preview mode:** `loadQuery` with `previewDrafts` perspective + `SANITY_API_READ_TOKEN`. Never use the token in `PUBLIC_` vars or client components. (K006)
 - **Build resilience:** Wrap CMS fetches in try-catch so builds succeed with fallback content when Sanity is unavailable. (K008)

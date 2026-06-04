@@ -16,6 +16,8 @@ try {
   // Sanity unreachable — continue with fallbacks
 }
 
+if (resourcesPage?.isVisible === false) return Astro.redirect('/404');
+
 // ---------- Fallback defaults (migrated from em.ficcc.org/resources) ----------
 const fallbackCategories = [
   {

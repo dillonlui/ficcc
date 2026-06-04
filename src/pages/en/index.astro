@@ -25,6 +25,8 @@ try {
   siteSettings = await getSiteSettings('en');
 } catch {}
 
+if (homePage?.isVisible === false) return Astro.redirect('/404');
+
 const serviceTimeItems = siteSettings?.serviceTimes || [
   { label: 'Sunday Gathering', time: '9:45 AM' },
   { label: 'Discipleship Groups', time: '11:00 AM' },
@@ -37,6 +39,9 @@ const defaultHeroVideo = '/videos/ficcc-hero.mp4';
 const heroImage = homePage?.heroImage
   ? urlForImage(homePage.heroImage, { width: 1600 })
   : defaultHeroImage;
+const heroFallbackImage = homePage?.heroFallbackImage
+  ? urlForImage(homePage.heroFallbackImage, { width: 1600 })
+  : heroImage;
 const heroVideo =
   homePage?.heroMediaType === 'video'
     ? urlForFile(homePage.heroVideo)
@@ -53,8 +58,8 @@ const fallbackSections = [
     label: 'Who We Are',
     heading: 'Go Deeper at FICCC',
     bodyHtml: '<p>If you\'ve lived in Ithaca for years, just arrived as a visiting scholar, or are a student far from home, there is a place for you here.</p>',
-    image: '/images/church/img-8212.webp',
-    imageAlt: 'FICCC congregation gathered for worship',
+    image: '/images/church/bbq-2025-group-wide.webp',
+    imageAlt: 'FICCC church family gathered together outdoors',
     ctaText: 'Learn more about us',
     ctaHref: '/en/about',
     layout: 'default',
@@ -64,8 +69,8 @@ const fallbackSections = [
     label: 'Sunday Experience',
     heading: 'Sunday Mornings',
     bodyHtml: '<p>At 9:45am we gather for singing, preaching from the Bible, and the Lord\'s Supper. At 11:00am we move into Discipleship Groups for discussion and prayer. Then we eat lunch together - usually Chinese food.</p>',
-    image: '/images/church/pxl-20250813-130502778.webp',
-    imageAlt: 'FICCC church building at 429 Mitchell Street',
+    image: '/images/church/bbq-2025-outdoor-worship.webp',
+    imageAlt: 'FICCC members singing together outdoors',
     ctaText: 'Plan your first visit',
     ctaHref: '/en/visit',
     layout: 'reversed',
@@ -75,10 +80,10 @@ const fallbackSections = [
     label: 'Community',
     heading: 'Find Community',
     bodyHtml: '<p>Bible studies, fellowship groups, mission trips, and shared meals. We challenge people to get involved in serving - in our church, on campus, and in the Ithaca community.</p>',
-    image: '/images/church/2023-retreat-praying.webp',
-    imageAlt: 'Church members praying together at 2023 retreat',
+    image: '/images/church/epp-2025-diverse-community.webp',
+    imageAlt: 'FICCC members from different generations gathered together',
     ctaText: 'Explore ministries',
-    ctaHref: '/en/ministries',
+    ctaHref: '/en/grow/english',
     layout: 'default',
     tinted: false,
   },
@@ -86,8 +91,8 @@ const fallbackSections = [
     label: 'Sermons',
     heading: 'Watch Sermons',
     bodyHtml: '<p>Catch up on recent messages or explore past teaching series. Our English ministry uploads sermons weekly to YouTube.</p>',
-    image: '/images/church/img-0316.webp',
-    imageAlt: 'FICCC service',
+    image: '/images/church/epp-2025-worship-guitar.webp',
+    imageAlt: 'FICCC members singing with guitar outdoors',
     ctaText: 'Browse sermons',
     ctaHref: '/en/sermons',
     layout: 'reversed',
@@ -115,7 +120,7 @@ const bannerBodyHtml = homePage?.bannerBody?.length
   : '<p>We celebrate our Chinese heritage while building a church home that welcomes students, families, and neighbors of every background.</p>';
 const bannerImage = homePage?.bannerImage
   ? urlForImage(homePage.bannerImage, { width: 1600 })
-  : '/images/church/picnic-sunmi-lordina-tiffany-linnea.webp';
+  : '/images/church/bbq-2025-community-singing.webp';
 const bannerImageAlt = homePage?.bannerImageAlt || 'Diverse community members together';
 const bannerCtaText = homePage?.bannerCtaText || 'Get in touch';
 const bannerCtaHref = homePage?.bannerCtaHref || '/en/contact';
@@ -140,7 +145,7 @@ const homeJsonLd = {
           loop
           playsinline
           preload="metadata"
-          poster={heroImage}
+          poster={heroFallbackImage}
           aria-hidden="true"
         >
           <source src={heroVideo} type="video/mp4" />

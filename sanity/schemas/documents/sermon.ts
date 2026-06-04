@@ -1,10 +1,13 @@
 import { defineType, defineField } from 'sanity';
+import { documentVisibilityField } from '../fields/visibility';
 
 export const sermon = defineType({
   name: 'sermon',
   title: 'Sermon',
   type: 'document',
   fields: [
+    documentVisibilityField,
+
     defineField({
       name: 'title',
       title: 'Title',

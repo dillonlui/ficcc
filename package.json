@@ -4,11 +4,18 @@
   "version": "1.0.0",
   "private": true,
   "description": "First Ithaca Chinese Christian Church — unified bilingual website",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "npx serve dist/client -l 4321",
     "astro": "astro",
+    "studio": "sanity dev",
+    "studio:build": "sanity build",
+    "sanity:doctor": "sanity doctor",
+    "sanity:seed": "tsx sanity/migrations/cm-content.ts",
     "lhci": "npm run build && lhci autorun",
     "test": "vitest run",
     "test:a11y": "npx @axe-core/cli http://localhost:4321/ http://localhost:4321/en/ http://localhost:4321/en/about/ http://localhost:4321/en/contact/ http://localhost:4321/zh/ --exit",
@@ -27,7 +34,6 @@
     "@sanity/vision": "^5.18.0",
     "@vercel/analytics": "^2.0.1",
     "astro": "^5.5.5",
-    "astro-pagefind": "^1.8.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "resend": "^6.10.0",

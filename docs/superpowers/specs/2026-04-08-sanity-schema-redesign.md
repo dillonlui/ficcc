@@ -8,9 +8,10 @@ Redesign the Sanity CMS schema to make all site content editable by non-technica
 
 - **Everything editable** — every piece of visible content should be manageable in Sanity Studio
 - **Centralized shared data** — service times, contact info, and church details live in `siteSettings` and are pulled everywhere
-- **Bilingual parity** — EN and ZH content managed as paired documents grouped by page
+- **Language-gated editorial model** — EN and ZH content managed as paired documents grouped by page, including ministry-specific Grow pages
 - **Rich text where it helps** — Portable Text for body copy, plain strings for headings/labels
 - **Graceful fallbacks** — every CMS field has a hardcoded fallback so the site builds even if Sanity is unreachable (K008)
+- **Public visibility controls** — page documents and public list items can be hidden without deleting content
 
 ## Studio Sidebar Organization
 
@@ -38,6 +39,18 @@ Sanity Studio Sidebar:
 ├── 📬 Contact
 │   ├── Contact (EN)
 │   └── 聯絡我們 (ZH)
+├── 🌱 Grow: English Ministry
+│   ├── English Ministry (EN)
+│   └── 英語事工 (ZH)
+├── 🌱 Grow: Chinese Ministry
+│   ├── Chinese Ministry (EN)
+│   └── 華語事工 (ZH)
+├── 🌱 Grow: Youth
+│   ├── Youth Ministry (EN)
+│   └── 青少年 (ZH)
+├── 🌱 Grow: Children
+│   ├── Children (EN)
+│   └── 兒童 (ZH)
 ├── 📚 Resources
 │   ├── Resources (EN)
 │   └── 資源 (ZH)
@@ -57,6 +70,7 @@ ID: `splashPage`
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `isVisible` | boolean (default: true) | Hide/show the splash route |
 | `backgroundImage` | image (hotspot) | Waterfall/nature background photo |
 | `churchNameEn` | string | English church name |
 | `churchNameZh` | string | Chinese church name |
@@ -87,7 +101,11 @@ IDs: `homePage-en`, `homePage-zh`
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `isVisible` | boolean (default: true) | Hide/show this public homepage |
+| `heroMediaType` | string enum: image, video | Select image or video hero |
 | `heroImage` | image (hotspot) | Hero background photo |
+| `heroFallbackImage` | image (hotspot) | Optional video failure poster/fallback; falls back to `heroImage` |
+| `heroVideo` | file | Optimized MP4/WebM video when `heroMediaType` is video |
 | `heroTitle` | string, required | Hero heading (e.g., "Welcome Home") |
 | `heroSubtitle` | string | Hero subheading |
 | `heroCtaText` | string | CTA button text (e.g., "Plan Your Visit") |
@@ -111,6 +129,47 @@ IDs: `homePage-en`, `homePage-zh`
 | `ctaHref` | string | CTA link URL |
 | `layout` | string enum: 'default', 'reversed' | Whether image is left or right |
 | `tinted` | boolean (default: false) | Whether section has tinted background |
+
+### growPage (en/zh x audience)
+
+IDs:
+
+- `growPage-en-english`, `growPage-zh-english`
+- `growPage-en-chinese`, `growPage-zh-chinese`
+- `growPage-en-youth`, `growPage-zh-youth`
+- `growPage-en-children`, `growPage-zh-children`
+
+These documents back `/en/grow/{audience}` and `/zh/grow/{audience}`. They intentionally stay under the language-gated model even when a ministry represents the same underlying group.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `isVisible` | boolean (default: true) | Hide/show this public Grow page |
+| `audience` | string enum | english, chinese, youth, children |
+| `language` | string, required | 'en' or 'zh' |
+| `title` | string, required | SEO title |
+| `description` | text, required | SEO description |
+| `navLabel` | string, required | Short label for Grow navigation contexts |
+| `pageTitle` | string, required | Editorial page title |
+| `heroTitle` | string, required | Hero heading |
+| `heroSubtitle` | string | Hero subheading |
+| `heroImage` | image (hotspot) | Optional CMS image; code fallback used when blank |
+| `intro` | text, required | Intro above group cards |
+| `listingHeading` | string, required | Heading above group cards |
+| `groups` | array of `growGroup` | Public group/class cards |
+| `sermonsCalloutHeading` | string | Optional bottom callout heading |
+| `sermonsCalloutBody` | text | Optional bottom callout body |
+| `sermonsCtaText` | string | Optional sermon CTA label |
+| `sermonsCtaHref` | string | Optional sermon CTA href |
+
+**growGroup object:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string, required | Group/class name |
+| `meetingTime` | string | Human-readable time |
+| `description` | text, required | Card copy |
+| `image` | image (hotspot) | Optional card image |
+| `imageAlt` | string | Alt text for meaningful images |
 
 ### aboutPage (en, zh)
 
@@ -228,23 +287,23 @@ IDs: `contactPage-en`, `contactPage-zh`
 
 Contact info (address, phone, email, service times) pulled from `siteSettings`.
 
-### resourcesPage (en, zh) — exists, no changes
+### resourcesPage (en, zh)
 
-Already has: heroImage, heroTitle, heroSubtitle, resourceCategories (array of categories with nested resources).
+Has: isVisible, heroImage, heroTitle, heroSubtitle, resourceCategories (array of categories with nested resources). The current public site exposes `/en/resources`; `resourcesPage-zh` is reserved for a future Chinese resources route.
 
-## Document Collections (unchanged)
+## Document Collections
 
 ### sermon
-- title, slug, speaker, date, series, scripture, videoId, language
-- No schema changes needed
+- isVisible, title, slug, speaker, date, series, scripture, videoId, language
+- Public queries filter out `isVisible == false`
 
 ### event
-- title, date, endDate, time, location, description (Portable Text), image, recurring, language
-- No schema changes needed
+- isVisible, title, date, endDate, time, location, description (Portable Text), image, recurring, language
+- Public queries filter out `isVisible == false`
 
 ### ministry
-- name, slug, image, description (Portable Text), leader (string), meetingTime, language
-- No schema changes needed
+- isVisible, name, slug, image, description (Portable Text), leader (reference), meetingTime, language
+- This remains available as a collection, but the current `/grow/*` route pages are powered by fixed `growPage` documents.
 
 ## Centralized Data Flow
 
@@ -266,15 +325,22 @@ Staff edits service times once per language in Site Settings.
 
 Staff edits contact info once per language in Site Settings.
 
+### Visibility
+
+`isVisible` is modeled on public page documents and public collection documents.
+
+- Page templates fetch by stable `_id`; if a fetched page document has `isVisible === false`, the public route redirects to `/404` on the next build.
+- Public collections filter hidden items in GROQ using `isVisible != false`.
+- If Sanity is unavailable, page templates continue to use hardcoded fallbacks rather than failing the build.
+
 ## Migration Strategy
 
-1. **Create new schema files** for `splashPage`, `beliefsPage`, `givePage`, `contactPage`
-2. **Update existing schemas** for `siteSettings` (add `city`, ensure `serviceTimes` is correct), `visitPage` (add bus route fields), `aboutPage` (add pastors, timeline, snapshots), `homePage` (add sections, banner fields)
-3. **Remove unused schemas/fields** — clean up `navigation` singleton (nav is code-driven now), remove `page` generic type (unused), remove object types that aren't used (heroBlock, imageMosaicBlock, etc.)
-4. **Update structure.ts** to implement the new sidebar organization
-5. **Update GROQ queries** in `src/lib/sanity.ts` to fetch new fields
-6. **Update page templates** to read from CMS with existing content as fallbacks
-7. **Seed Sanity with current content** — create initial documents with the hardcoded content so staff has a starting point
+1. **Create/update schema files** for current page documents, including `growPage`
+2. **Add visibility fields** for page documents and public collections
+3. **Update structure.ts** to expose fixed page IDs in the sidebar
+4. **Update GROQ queries** in `src/lib/sanity.ts` to fetch singletons by stable `_id`
+5. **Update page templates** to read CMS data, honor `isVisible`, and use existing hardcoded content as fallbacks
+6. **Seed Sanity with current content** using `sanity/migrations/cm-content.ts`
 
 ## Schemas to Remove
 
@@ -289,12 +355,15 @@ Staff edits contact info once per language in Site Settings.
 - `sanity/schemas/singletons/beliefsPage.ts`
 - `sanity/schemas/singletons/givePage.ts`
 - `sanity/schemas/singletons/contactPage.ts`
+- `sanity/schemas/singletons/growPage.ts`
+- `sanity/schemas/fields/visibility.ts`
 
 ### Modified schemas
 - `sanity/schemas/singletons/siteSettings.ts` — add `city`, verify `serviceTimes`
 - `sanity/schemas/singletons/homePage.ts` — add `sections`, `banner*` fields
 - `sanity/schemas/singletons/aboutPage.ts` — add `pastors`, `timelineEras`, `snapshots`, `beliefsCallout*`
 - `sanity/schemas/singletons/visitPage.ts` — add `busRoute*`, `rideRequest*` fields
+- public page and collection schemas — add `isVisible`
 
 ### Removed schemas
 - `sanity/schemas/singletons/navigation.ts`
@@ -309,10 +378,8 @@ Staff edits contact info once per language in Site Settings.
 - `sanity/schemas/index.ts` — update barrel exports
 - `sanity/structure.ts` — new sidebar organization
 - `src/lib/sanity.ts` — new/updated GROQ queries and TypeScript types
+- `src/lib/grow-pages.ts` — CMS-first resolver with hardcoded fallbacks
 - All page `.astro` files — read CMS data, use existing hardcoded content as fallbacks
 
 ### Unchanged
-- `sanity/schemas/documents/sermon.ts`
-- `sanity/schemas/documents/event.ts`
-- `sanity/schemas/documents/ministry.ts`
 - `sanity/schemas/documents/person.ts` — keep for potential future use, but pastors are now inline in aboutPage

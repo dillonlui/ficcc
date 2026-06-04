@@ -1,10 +1,13 @@
 import { defineType, defineField } from 'sanity';
+import { pageVisibilityField } from '../fields/visibility';
 
 export const givePage = defineType({
   name: 'givePage',
   title: 'Give',
   type: 'document',
   fields: [
+    pageVisibilityField,
+
     defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true } }),
     defineField({ name: 'heroTitle', title: 'Hero Title', type: 'string', validation: (rule) => rule.required() }),
     defineField({ name: 'heroSubtitle', title: 'Hero Subtitle', type: 'string' }),

@@ -14,6 +14,8 @@ try {
   aboutPage = await getAboutPage('zh');
 } catch {}
 
+if (aboutPage?.isVisible === false) return Astro.redirect('/404');
+
 const fallbackHeading = '我們是誰';
 const fallbackBody = `
 <p>伊的家華人基督教會（FICCC）於1968年由一群在康奈爾大學就讀的華人研究生和學者創立，他們渴望建立一個以基督為中心的群體，在其中用自己的心靈語言敬拜，同時歡迎伊薩卡的各界朋友。</p>

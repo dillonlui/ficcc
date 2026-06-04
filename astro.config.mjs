@@ -3,7 +3,6 @@ import sitemap from '@astrojs/sitemap';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
 import vercel from '@astrojs/vercel';
-import pagefind from 'astro-pagefind';
 
 export default defineConfig({
   site: 'https://ficcc.org',
@@ -27,11 +26,10 @@ export default defineConfig({
       dataset: import.meta.env.SANITY_DATASET || 'production',
       useCdn: false, // false for static builds per @sanity/astro docs
       stega: {
-        studioUrl: import.meta.env.PUBLIC_SANITY_PREVIEW_URL || 'http://localhost:3333',
+        studioUrl: import.meta.env.PUBLIC_SANITY_STUDIO_URL || '/admin',
       },
     }),
     react(),
-    pagefind(),
   ],
   i18n: {
     defaultLocale: 'en',

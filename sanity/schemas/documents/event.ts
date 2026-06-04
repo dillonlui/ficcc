@@ -1,10 +1,13 @@
 import { defineType, defineField } from 'sanity';
+import { documentVisibilityField } from '../fields/visibility';
 
 export const event = defineType({
   name: 'event',
   title: 'Event',
   type: 'document',
   fields: [
+    documentVisibilityField,
+
     defineField({
       name: 'title',
       title: 'Title',

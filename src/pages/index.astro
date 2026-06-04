@@ -18,6 +18,8 @@ try {
   splashData = await getSplashPage();
 } catch {}
 
+if (splashData?.isVisible === false) return Astro.redirect('/en/');
+
 const churchNameEn = splashData?.churchNameEn || 'First Ithaca Chinese Christian Church';
 const churchNameZh = splashData?.churchNameZh || '以撒迦中华基督教会';
 const bgDesktop = splashData?.backgroundImage

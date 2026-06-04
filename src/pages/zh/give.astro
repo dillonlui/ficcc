@@ -13,6 +13,8 @@ try {
   givePage = await getGivePage('zh');
 } catch {}
 
+if (givePage?.isVisible === false) return Astro.redirect('/404');
+
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heroImage = givePage?.heroImage
   ? urlForImage(givePage.heroImage, { width: 1600 })

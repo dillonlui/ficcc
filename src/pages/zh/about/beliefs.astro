@@ -15,6 +15,8 @@ try {
   // Sanity unreachable — continue with fallbacks
 }
 
+if (beliefsPage?.isVisible === false) return Astro.redirect('/404');
+
 // Hero
 const heroTitle = beliefsPage?.heroTitle || '信仰與願景';
 const heroSubtitle = beliefsPage?.heroSubtitle || '扎根聖經，靠恩典塑造，活出使命。';
@@ -198,7 +200,7 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
       <div class="ministries-callout__inner">
         <h2 class="ministries-callout__heading" data-reveal>{calloutHeading}</h2>
         <p class="ministries-callout__body" data-reveal>{calloutBody}</p>
-        <a href="/zh/ministries" class="ministries-callout__cta" data-reveal>
+        <a href="/zh/grow/chinese" class="ministries-callout__cta" data-reveal>
           探索事工
           <svg class="ministries-callout__cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>

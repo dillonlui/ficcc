@@ -18,12 +18,15 @@ try {
   ]);
 } catch {}
 
+if (contactPage?.isVisible === false) return Astro.redirect('/404');
+
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heroImage = contactPage?.heroImage
   ? urlForImage(contactPage.heroImage, { width: 1600 })
-  : '/images/hero/friends-golden.webp';
+  : '/images/church/bbq-2025-welcome-conversation.webp';
 const heroTitle = contactPage?.heroTitle || '聯繫我們';
 const heroSubtitle = contactPage?.heroSubtitle || '我們期待與您聯繫';
+const showContactForm = contactPage?.formEnabled !== false;
 
 const address = siteSettings?.address || '429 Mitchell Street';
 const city = siteSettings?.city || 'Ithaca, NY 14850';
@@ -74,11 +77,12 @@ const serviceTimes = siteSettings?.serviceTimes || [
             </div>
 
             <!-- Simplified contact form -->
-            <div class="zh-contact-form-section">
-              <h2 class="zh-contact-form-section__title">發送訊息</h2>
-              <p class="zh-contact-form-section__desc">您也可以透過以下表單與我們聯繫。</p>
+            {showContactForm && (
+              <div class="zh-contact-form-section">
+                <h2 class="zh-contact-form-section__title">發送訊息</h2>
+                <p class="zh-contact-form-section__desc">您也可以透過以下表單與我們聯繫。</p>
 
-              <form class="zh-contact-form" action="#" novalidate>
+                <form class="zh-contact-form" action="#" novalidate>
                 <div class="zh-contact-form__field">
                   <label class="zh-contact-form__label" for="zh-contact-name">姓名 Name</label>
                   <input
@@ -131,8 +135,9 @@ const serviceTimes = siteSettings?.serviceTimes || [
                 </button>
 
                 <div class="zh-contact-form__banner" role="alert" hidden></div>
-              </form>
-            </div>
+                </form>
+              </div>
+            )}
           </div>
 
           <!-- Church info sidebar -->

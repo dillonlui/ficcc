@@ -29,7 +29,10 @@ Before starting the cutover, confirm all of the following:
   - `PUBLIC_TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` (spam protection)
   - `PUBLIC_GA_MEASUREMENT_ID` (e.g. `G-XXXXXXXXXX`)
   - `PUBLIC_GOOGLE_SITE_VERIFICATION` (Search Console meta tag)
-- [ ] Sanity dataset is populated with production content (homepage, about, sermons, events, ministries, etc.)
+- [ ] Sanity dataset is populated with production content (homepage, about, sermons, events, Grow page documents, site settings, etc.)
+- [ ] Sanity bootstrap has been run or equivalent documents exist:
+  `SANITY_PROJECT_ID=... SANITY_API_WRITE_TOKEN=... npx tsx sanity/migrations/cm-content.ts`
+- [ ] Required page documents exist with stable IDs, including `homePage-en`, `homePage-zh`, `siteSettings-en`, `siteSettings-zh`, and all eight `growPage-{lang}-{audience}` documents
 - [ ] Vercel deploy hook URL is configured in Sanity webhook settings (triggers rebuild on content publish)
 
 ## Vercel Domain Configuration
@@ -87,6 +90,14 @@ Run through this checklist after DNS changes have propagated:
 - [ ] `https://ficcc.org/en/about` loads the English About page
 - [ ] `https://ficcc.org/en/sermons` loads the English Sermons page
 - [ ] `https://ficcc.org/en/contact` loads the English Contact page with the Turnstile-protected form
+- [ ] `https://ficcc.org/en/grow/english` loads the English Ministry grow page
+- [ ] `https://ficcc.org/en/grow/chinese` loads the Chinese Ministry page in English
+- [ ] `https://ficcc.org/en/grow/youth` loads the Youth Ministry page
+- [ ] `https://ficcc.org/en/grow/children` loads the Children's Ministry page
+- [ ] `https://ficcc.org/zh/grow/chinese` loads the 華語事工 page
+- [ ] `https://ficcc.org/zh/grow/english` loads the 英語事工 page
+- [ ] `https://ficcc.org/zh/grow/youth` loads the 青少年事工 page
+- [ ] `https://ficcc.org/zh/grow/children` loads the 兒童事工 page
 
 ### em.ficcc.org Redirects (English legacy)
 
@@ -99,7 +110,7 @@ All should return **301 Permanent Redirect**:
 | `em.ficcc.org/home/faith/`         | `https://ficcc.org/en/about/beliefs` |
 | `em.ficcc.org/home/sermons/`       | `https://ficcc.org/en/sermons`  |
 | `em.ficcc.org/home/worship/`       | `https://ficcc.org/en/visit`    |
-| `em.ficcc.org/home/fellowships/`   | `https://ficcc.org/en/ministries` |
+| `em.ficcc.org/home/fellowships/`   | `https://ficcc.org/en/grow/english` |
 | `em.ficcc.org/home/contact/`       | `https://ficcc.org/en/contact`  |
 | `em.ficcc.org/anything-else`       | `https://ficcc.org/en/`         |
 
@@ -114,7 +125,7 @@ All should return **301 Permanent Redirect**:
 | `cm.ficcc.org/home/faith/`         | `https://ficcc.org/zh/about/beliefs`|
 | `cm.ficcc.org/home/sermons/`       | `https://ficcc.org/zh/sermons`      |
 | `cm.ficcc.org/home/worship/`       | `https://ficcc.org/zh/sundays`      |
-| `cm.ficcc.org/home/fellowships/`   | `https://ficcc.org/zh/ministries`   |
+| `cm.ficcc.org/home/fellowships/`   | `https://ficcc.org/zh/grow/chinese` |
 | `cm.ficcc.org/home/contact/`       | `https://ficcc.org/zh/contact`      |
 | `cm.ficcc.org/anything-else`       | `https://ficcc.org/zh/`             |
 

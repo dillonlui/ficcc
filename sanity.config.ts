@@ -5,10 +5,16 @@ import { visionTool } from '@sanity/vision';
 import { structure } from './sanity/structure';
 import { schemaTypes } from './sanity/schemas';
 
-// Use PUBLIC_ prefixed env vars so they're available in client-side bundles.
-// In Astro, import.meta.env.PUBLIC_* are inlined at build time.
-const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'placeholder';
-const dataset = import.meta.env.PUBLIC_SANITY_DATASET || 'production';
+const env = {
+  ...(((globalThis as any).process?.env as Record<string, string | undefined>) || {}),
+  ...(((import.meta as any).env as Record<string, string | undefined>) || {}),
+};
+
+// Studio runs in the browser, so prefer PUBLIC_ values. CLI commands can fall
+// back to server-side values from process.env.
+const projectId = env.PUBLIC_SANITY_PROJECT_ID || env.SANITY_PROJECT_ID || 'placeholder';
+const dataset = env.PUBLIC_SANITY_DATASET || env.SANITY_DATASET || 'production';
+const previewUrl = env.PUBLIC_SANITY_PREVIEW_URL || 'http://localhost:4321';
 
 export default defineConfig({
   name: 'ficcc',
@@ -18,7 +24,7 @@ export default defineConfig({
   plugins: [
     structureTool({ structure }),
     presentationTool({
-      previewUrl: import.meta.env.PUBLIC_SANITY_PREVIEW_URL || 'http://localhost:4321',
+      previewUrl,
     }),
     visionTool(),
   ],

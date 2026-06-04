@@ -73,6 +73,26 @@ export const structure: StructureResolver = (S) =>
         { id: 'contactPage-zh', title: '聯絡我們 (ZH)', type: 'contactPage' },
       ]),
 
+      pageGroup(S, 'Grow: English Ministry', [
+        { id: 'growPage-en-english', title: 'English Ministry (EN)', type: 'growPage' },
+        { id: 'growPage-zh-english', title: '英語事工 (ZH)', type: 'growPage' },
+      ]),
+
+      pageGroup(S, 'Grow: Chinese Ministry', [
+        { id: 'growPage-en-chinese', title: 'Chinese Ministry (EN)', type: 'growPage' },
+        { id: 'growPage-zh-chinese', title: '華語事工 (ZH)', type: 'growPage' },
+      ]),
+
+      pageGroup(S, 'Grow: Youth', [
+        { id: 'growPage-en-youth', title: 'Youth Ministry (EN)', type: 'growPage' },
+        { id: 'growPage-zh-youth', title: '青少年 (ZH)', type: 'growPage' },
+      ]),
+
+      pageGroup(S, 'Grow: Children', [
+        { id: 'growPage-en-children', title: 'Children (EN)', type: 'growPage' },
+        { id: 'growPage-zh-children', title: '兒童 (ZH)', type: 'growPage' },
+      ]),
+
       pageGroup(S, 'Resources', [
         { id: 'resourcesPage-en', title: 'Resources (EN)', type: 'resourcesPage' },
         { id: 'resourcesPage-zh', title: '資源 (ZH)', type: 'resourcesPage' },

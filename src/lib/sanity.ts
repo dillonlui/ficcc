@@ -41,6 +41,7 @@ export interface SanityFile {
 export interface Sermon {
   _id: string;
   _type: 'sermon';
+  isVisible?: boolean;
   title: string;
   slug?: SanitySlug;
   speaker?: string;
@@ -54,6 +55,7 @@ export interface Sermon {
 export interface Event {
   _id: string;
   _type: 'event';
+  isVisible?: boolean;
   title: string;
   date?: string;
   endDate?: string;
@@ -68,6 +70,7 @@ export interface Event {
 export interface Ministry {
   _id: string;
   _type: 'ministry';
+  isVisible?: boolean;
   name: string;
   slug?: SanitySlug;
   image?: SanityImage;
@@ -106,8 +109,10 @@ export interface ServiceTime {
 export interface HomePage {
   _id: string;
   _type: 'homePage';
+  isVisible?: boolean;
   heroMediaType?: 'image' | 'video';
   heroImage?: SanityImage;
+  heroFallbackImage?: SanityImage;
   heroVideo?: SanityFile;
   heroTitle: string;
   heroSubtitle?: string;
@@ -132,6 +137,7 @@ export interface BeliefItem {
 export interface AboutPage {
   _id: string;
   _type: 'aboutPage';
+  isVisible?: boolean;
   whoWeAreHeading?: string;
   whoWeAreBody?: PortableTextBlock[];
   whoWeAreImage?: SanityImage;
@@ -158,6 +164,7 @@ export interface FaqItem {
 export interface VisitPage {
   _id: string;
   _type: 'visitPage';
+  isVisible?: boolean;
   heroImage?: SanityImage;
   heroTitle: string;
   heroSubtitle?: string;
@@ -190,6 +197,7 @@ export interface ResourceCategory {
 export interface ResourcesPage {
   _id: string;
   _type: 'resourcesPage';
+  isVisible?: boolean;
   heroImage?: SanityImage;
   heroTitle: string;
   heroSubtitle?: string;
@@ -200,6 +208,7 @@ export interface ResourcesPage {
 export interface Person {
   _id: string;
   _type: 'person';
+  isVisible?: boolean;
   name: string;
   role?: string;
   bio?: PortableTextBlock[];
@@ -210,6 +219,7 @@ export interface Person {
 export interface SplashPage {
   _id: string;
   _type: 'splashPage';
+  isVisible?: boolean;
   backgroundImage?: SanityImage;
   churchNameEn?: string;
   churchNameZh?: string;
@@ -256,6 +266,7 @@ export interface TimelineEra {
 export interface BeliefsPage {
   _id: string;
   _type: 'beliefsPage';
+  isVisible?: boolean;
   heroImage?: SanityImage;
   heroTitle: string;
   heroSubtitle?: string;
@@ -287,6 +298,7 @@ export interface GivingMethod {
 export interface GivePage {
   _id: string;
   _type: 'givePage';
+  isVisible?: boolean;
   heroImage?: SanityImage;
   heroTitle: string;
   heroSubtitle?: string;
@@ -303,6 +315,7 @@ export interface GivePage {
 export interface ContactPage {
   _id: string;
   _type: 'contactPage';
+  isVisible?: boolean;
   heroImage?: SanityImage;
   heroTitle: string;
   heroSubtitle?: string;
@@ -316,19 +329,83 @@ export interface BusStop {
   time: string;
 }
 
+export type GrowAudience = 'english' | 'chinese' | 'youth' | 'children';
+
+export interface SanityGrowGroup {
+  _key: string;
+  name: string;
+  meetingTime?: string;
+  description: string;
+  image?: SanityImage;
+  imageAlt?: string;
+}
+
+export interface GrowPage {
+  _id: string;
+  _type: 'growPage';
+  isVisible?: boolean;
+  audience: GrowAudience;
+  language: 'en' | 'zh';
+  title: string;
+  description: string;
+  navLabel: string;
+  pageTitle: string;
+  heroTitle: string;
+  heroSubtitle?: string;
+  heroImage?: SanityImage;
+  intro: string;
+  listingHeading: string;
+  groups?: SanityGrowGroup[];
+  sermonsCalloutHeading?: string;
+  sermonsCalloutBody?: string;
+  sermonsCtaText?: string;
+  sermonsCtaHref?: string;
+}
+
+export type PageVisibilityMap = Record<string, boolean>;
+
 // ---------------------------------------------------------------------------
 // GROQ query helpers
 // ---------------------------------------------------------------------------
 
 type Language = 'en' | 'zh';
 
+function singletonId(type: string, language: Language): string {
+  return `${type}-${language}`;
+}
+
+/**
+ * Fetch public visibility for fixed page documents in one small query.
+ * Missing documents are treated as visible by consumers so local fallbacks still work.
+ */
+export async function getPageVisibility(
+  language: Language = 'en',
+): Promise<PageVisibilityMap> {
+  const ids = [
+    singletonId('homePage', language),
+    singletonId('aboutPage', language),
+    singletonId('beliefsPage', language),
+    singletonId('visitPage', language),
+    singletonId('givePage', language),
+    singletonId('contactPage', language),
+    singletonId('resourcesPage', language),
+  ];
+
+  const pages = await client.fetch<Array<{ _id: string; isVisible?: boolean }>>(
+    `*[_id in $ids]{ _id, isVisible }`,
+    { ids },
+  );
+
+  return Object.fromEntries(pages.map((page) => [page._id, page.isVisible !== false]));
+}
+
 /**
  * Fetch all sermons for a language, newest first.
  */
 export async function getSermons(language: Language = 'en'): Promise<Sermon[]> {
   return client.fetch<Sermon[]>(
-    `*[_type == "sermon" && language == $language]{
-      _id, _type, title, slug, speaker, date, series, scripture, videoId, language
+    `*[_type == "sermon" && language == $language && isVisible != false]{
+      _id, _type, isVisible, title, slug, speaker, date, series, scripture, videoId, language
     } | order(date desc)`,
     { language },
   );
@@ -339,8 +416,8 @@ export async function getSermons(language: Language = 'en'): Promise<Sermon[]> {
  */
 export async function getEvents(language: Language = 'en'): Promise<Event[]> {
   return client.fetch<Event[]>(
-    `*[_type == "event" && language == $language]{
-      _id, _type, title, date, endDate, time, location, description, image, recurring, language
+    `*[_type == "event" && language == $language && isVisible != false]{
+      _id, _type, isVisible, title, date, endDate, time, location, description, image, recurring, language
     } | order(date asc)`,
     { language },
   );
@@ -353,7 +430,7 @@ export async function getMinistries(
   language: Language = 'en',
 ): Promise<Ministry[]> {
   return client.fetch<Ministry[]>(
-    `*[_type == "ministry" && language == $language] | order(name asc)`,
+    `*[_type == "ministry" && language == $language && isVisible != false] | order(name asc)`,
     { language },
   );
 }
@@ -366,8 +443,8 @@ export async function getSiteSettings(
   language: Language = 'en',
 ): Promise<SiteSettings | null> {
   return client.fetch<SiteSettings | null>(
-    `*[_type == "siteSettings" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('siteSettings', language) },
   );
 }
 
@@ -378,8 +455,8 @@ export async function getHomePage(
   language: Language = 'en',
 ): Promise<HomePage | null> {
   return client.fetch<HomePage | null>(
-    `*[_type == "homePage" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('homePage', language) },
   );
 }
 
@@ -390,8 +467,8 @@ export async function getAboutPage(
   language: Language = 'en',
 ): Promise<AboutPage | null> {
   return client.fetch<AboutPage | null>(
-    `*[_type == "aboutPage" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('aboutPage', language) },
   );
 }
 
@@ -402,8 +479,8 @@ export async function getVisitPage(
   language: Language = 'en',
 ): Promise<VisitPage | null> {
   return client.fetch<VisitPage | null>(
-    `*[_type == "visitPage" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('visitPage', language) },
   );
 }
 
@@ -414,8 +491,8 @@ export async function getResourcesPage(
   language: Language = 'en',
 ): Promise<ResourcesPage | null> {
   return client.fetch<ResourcesPage | null>(
-    `*[_type == "resourcesPage" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('resourcesPage', language) },
   );
 }
 
@@ -426,7 +503,7 @@ export async function getStaff(
   language: Language = 'en',
 ): Promise<Person[]> {
   return client.fetch<Person[]>(
-    `*[_type == "person" && language == $language] | order(name asc)`,
+    `*[_type == "person" && language == $language && isVisible != false] | order(name asc)`,
     { language },
   );
 }
@@ -436,7 +513,7 @@ export async function getStaff(
  */
 export async function getSplashPage(): Promise<SplashPage | null> {
   return client.fetch<SplashPage | null>(
-    `*[_type == "splashPage"][0]`,
+    `*[_id == "splashPage"][0]`,
   );
 }
 
@@ -447,8 +524,8 @@ export async function getBeliefsPage(
   language: Language = 'en',
 ): Promise<BeliefsPage | null> {
   return client.fetch<BeliefsPage | null>(
-    `*[_type == "beliefsPage" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('beliefsPage', language) },
   );
 }
 
@@ -459,8 +536,8 @@ export async function getGivePage(
   language: Language = 'en',
 ): Promise<GivePage | null> {
   return client.fetch<GivePage | null>(
-    `*[_type == "givePage" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('givePage', language) },
   );
 }
 
@@ -471,8 +548,21 @@ export async function getContactPage(
   language: Language = 'en',
 ): Promise<ContactPage | null> {
   return client.fetch<ContactPage | null>(
-    `*[_type == "contactPage" && language == $language][0]`,
-    { language },
+    `*[_id == $id][0]`,
+    { id: singletonId('contactPage', language) },
+  );
+}
+
+/**
+ * Fetch one ministry-specific Grow page for a language and audience.
+ */
+export async function getGrowPageDocument(
+  language: Language,
+  audience: GrowAudience,
+): Promise<GrowPage | null> {
+  return client.fetch<GrowPage | null>(
+    `*[_id == $id][0]`,
+    { id: `growPage-${language}-${audience}` },
   );
 }
 

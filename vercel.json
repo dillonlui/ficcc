@@ -56,7 +56,7 @@
     {
       "source": "/home/fellowships/",
       "has": [{ "type": "host", "value": "em.ficcc.org" }],
-      "destination": "https://ficcc.org/en/ministries",
+      "destination": "https://ficcc.org/en/grow/english",
       "permanent": true
     },
     {
@@ -104,19 +104,19 @@
     {
       "source": "/home/fellowships/",
       "has": [{ "type": "host", "value": "cm.ficcc.org" }],
-      "destination": "https://ficcc.org/zh/ministries",
+      "destination": "https://ficcc.org/zh/grow/chinese",
       "permanent": true
     },
     {
       "source": "/home/%E6%95%99%E6%9C%83%E4%BA%8B%E5%B7%A5/",
       "has": [{ "type": "host", "value": "cm.ficcc.org" }],
-      "destination": "https://ficcc.org/zh/ministries",
+      "destination": "https://ficcc.org/zh/grow/chinese",
       "permanent": true
     },
     {
       "source": "/home/教會事工/",
       "has": [{ "type": "host", "value": "cm.ficcc.org" }],
-      "destination": "https://ficcc.org/zh/ministries",
+      "destination": "https://ficcc.org/zh/grow/chinese",
       "permanent": true
     },
     {
