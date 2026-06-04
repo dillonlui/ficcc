@@ -1,35 +1,138 @@
 import type { StructureResolver } from 'sanity/structure';
-import { singletonTypes } from './schemas';
 
 /**
  * Custom desk structure for FICCC Sanity Studio.
- * Pages grouped by function with EN/ZH pairs side by side.
- * Collections (sermons, events, ministries) shown as filterable lists.
+ * Editors choose a language first, then work through that ministry's pages.
+ * Document IDs stay stable so seeding and public-site queries remain unchanged.
  */
 
-/** Helper: create a singleton document editor list item */
-function singletonItem(S: any, id: string, title: string, type: string) {
+type Lang = 'en' | 'zh';
+
+type SingletonPage = {
+  id: string;
+  title: string;
+  type: string;
+  language?: Lang;
+};
+
+type GrowPage = SingletonPage & {
+  audience: 'english' | 'chinese' | 'youth' | 'children';
+};
+
+const englishPages: SingletonPage[] = [
+  { id: 'homePage-en', title: 'Homepage', type: 'homePage', language: 'en' },
+  { id: 'aboutPage-en', title: 'Who We Are', type: 'aboutPage', language: 'en' },
+  { id: 'beliefsPage-en', title: 'Beliefs & Vision', type: 'beliefsPage', language: 'en' },
+  { id: 'visitPage-en', title: 'Visit', type: 'visitPage', language: 'en' },
+  { id: 'givePage-en', title: 'Give', type: 'givePage', language: 'en' },
+  { id: 'contactPage-en', title: 'Contact', type: 'contactPage', language: 'en' },
+  { id: 'resourcesPage-en', title: 'Resources', type: 'resourcesPage', language: 'en' },
+];
+
+const chinesePages: SingletonPage[] = [
+  { id: 'homePage-zh', title: '首頁', type: 'homePage', language: 'zh' },
+  { id: 'aboutPage-zh', title: '關於我們', type: 'aboutPage', language: 'zh' },
+  { id: 'beliefsPage-zh', title: '信仰與願景', type: 'beliefsPage', language: 'zh' },
+  { id: 'visitPage-zh', title: '主日聚會', type: 'visitPage', language: 'zh' },
+  { id: 'givePage-zh', title: '奉獻', type: 'givePage', language: 'zh' },
+  { id: 'contactPage-zh', title: '聯絡我們', type: 'contactPage', language: 'zh' },
+  { id: 'resourcesPage-zh', title: '資源', type: 'resourcesPage', language: 'zh' },
+];
+
+const englishGrowPages: GrowPage[] = [
+  { id: 'growPage-en-english', title: 'English Ministry', type: 'growPage', language: 'en', audience: 'english' },
+  { id: 'growPage-en-chinese', title: 'Chinese Ministry', type: 'growPage', language: 'en', audience: 'chinese' },
+  { id: 'growPage-en-youth', title: 'Youth', type: 'growPage', language: 'en', audience: 'youth' },
+  { id: 'growPage-en-children', title: 'Children', type: 'growPage', language: 'en', audience: 'children' },
+];
+
+const chineseGrowPages: GrowPage[] = [
+  { id: 'growPage-zh-english', title: '英語事工', type: 'growPage', language: 'zh', audience: 'english' },
+  { id: 'growPage-zh-chinese', title: '華語事工', type: 'growPage', language: 'zh', audience: 'chinese' },
+  { id: 'growPage-zh-youth', title: '青少年', type: 'growPage', language: 'zh', audience: 'youth' },
+  { id: 'growPage-zh-children', title: '兒童', type: 'growPage', language: 'zh', audience: 'children' },
+];
+
+function singletonItem(S: any, page: SingletonPage) {
+  let document = S.document()
+    .schemaType(page.type)
+    .documentId(page.id)
+    .title(page.title);
+
+  if (page.language) {
+    document = document.initialValueTemplate(`${page.type}-${page.language}`);
+  }
+
+  return S.listItem()
+    .title(page.title)
+    .id(page.id)
+    .child(document);
+}
+
+function growItem(S: any, page: GrowPage) {
+  const document = S.document()
+    .schemaType(page.type)
+    .documentId(page.id)
+    .title(page.title)
+    .initialValueTemplate(`growPage-${page.language}-${page.audience}`);
+
+  return S.listItem()
+    .title(page.title)
+    .id(page.id)
+    .child(document);
+}
+
+function growSection(S: any, title: string, pages: GrowPage[]) {
+  return S.listItem()
+    .title(title)
+    .id(title.toLowerCase().replace(/\s+/g, '-'))
+    .child(
+      S.list()
+        .title(title)
+        .items(pages.map((page) => growItem(S, page))),
+    );
+}
+
+function collectionList(S: any, type: string, title: string, language: Lang) {
+  return S.listItem()
+    .title(title)
+    .id(`${language}-${type}`)
+    .schemaType(type)
+    .child(
+      S.documentList()
+        .title(title)
+        .schemaType(type)
+        .filter('_type == $type && language == $language')
+        .params({ type, language })
+        .initialValueTemplates([
+          S.initialValueTemplateItem(`${type}-${language}`),
+        ]),
+    );
+}
+
+function languageSection(
+  S: any,
+  id: string,
+  title: string,
+  pages: SingletonPage[],
+  growPages: GrowPage[],
+  language: Lang,
+) {
   return S.listItem()
     .title(title)
     .id(id)
     .child(
-      S.document()
-        .schemaType(type)
-        .documentId(id)
-        .title(title),
-    );
-}
-
-/** Helper: create a page group with EN/ZH pair */
-function pageGroup(S: any, title: string, pairs: { id: string; title: string; type: string }[]) {
-  return S.listItem()
-    .title(title)
-    .child(
       S.list()
         .title(title)
-        .items(
-          pairs.map((p) => singletonItem(S, p.id, p.title, p.type)),
-        ),
+        .items([
+          ...pages.map((page) => singletonItem(S, page)),
+          growSection(S, language === 'zh' ? '成長 / 事工' : 'Grow', growPages),
+          S.divider(),
+          collectionList(S, 'sermon', language === 'zh' ? '講道' : 'Sermons', language),
+          collectionList(S, 'event', language === 'zh' ? '活動' : 'Events', language),
+          collectionList(S, 'ministry', language === 'zh' ? '事工' : 'Ministries', language),
+          collectionList(S, 'person', language === 'zh' ? '人員' : 'People', language),
+        ]),
     );
 }
 
@@ -37,80 +140,34 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
     .items([
-      // Splash (language-neutral, single doc)
-      singletonItem(S, 'splashPage', 'Splash Page', 'splashPage'),
+      singletonItem(S, { id: 'splashPage', title: 'Splash Page', type: 'splashPage' }),
 
       S.divider(),
 
-      // Page singletons grouped by page with EN/ZH pairs
-      pageGroup(S, 'Homepage', [
-        { id: 'homePage-en', title: 'Homepage (EN)', type: 'homePage' },
-        { id: 'homePage-zh', title: '首頁 (ZH)', type: 'homePage' },
-      ]),
-
-      pageGroup(S, 'Who We Are', [
-        { id: 'aboutPage-en', title: 'Who We Are (EN)', type: 'aboutPage' },
-        { id: 'aboutPage-zh', title: '關於我們 (ZH)', type: 'aboutPage' },
-      ]),
-
-      pageGroup(S, 'Beliefs & Vision', [
-        { id: 'beliefsPage-en', title: 'Beliefs & Vision (EN)', type: 'beliefsPage' },
-        { id: 'beliefsPage-zh', title: '信仰與願景 (ZH)', type: 'beliefsPage' },
-      ]),
-
-      pageGroup(S, 'Visit / Sundays', [
-        { id: 'visitPage-en', title: 'Plan Your Visit (EN)', type: 'visitPage' },
-        { id: 'visitPage-zh', title: '主日聚會 (ZH)', type: 'visitPage' },
-      ]),
-
-      pageGroup(S, 'Give', [
-        { id: 'givePage-en', title: 'Give (EN)', type: 'givePage' },
-        { id: 'givePage-zh', title: '奉獻 (ZH)', type: 'givePage' },
-      ]),
-
-      pageGroup(S, 'Contact', [
-        { id: 'contactPage-en', title: 'Contact (EN)', type: 'contactPage' },
-        { id: 'contactPage-zh', title: '聯絡我們 (ZH)', type: 'contactPage' },
-      ]),
-
-      pageGroup(S, 'Grow: English Ministry', [
-        { id: 'growPage-en-english', title: 'English Ministry (EN)', type: 'growPage' },
-        { id: 'growPage-zh-english', title: '英語事工 (ZH)', type: 'growPage' },
-      ]),
-
-      pageGroup(S, 'Grow: Chinese Ministry', [
-        { id: 'growPage-en-chinese', title: 'Chinese Ministry (EN)', type: 'growPage' },
-        { id: 'growPage-zh-chinese', title: '華語事工 (ZH)', type: 'growPage' },
-      ]),
-
-      pageGroup(S, 'Grow: Youth', [
-        { id: 'growPage-en-youth', title: 'Youth Ministry (EN)', type: 'growPage' },
-        { id: 'growPage-zh-youth', title: '青少年 (ZH)', type: 'growPage' },
-      ]),
-
-      pageGroup(S, 'Grow: Children', [
-        { id: 'growPage-en-children', title: 'Children (EN)', type: 'growPage' },
-        { id: 'growPage-zh-children', title: '兒童 (ZH)', type: 'growPage' },
-      ]),
-
-      pageGroup(S, 'Resources', [
-        { id: 'resourcesPage-en', title: 'Resources (EN)', type: 'resourcesPage' },
-        { id: 'resourcesPage-zh', title: '資源 (ZH)', type: 'resourcesPage' },
-      ]),
+      languageSection(S, 'english', 'English', englishPages, englishGrowPages, 'en'),
+      languageSection(S, 'chinese', 'Chinese', chinesePages, chineseGrowPages, 'zh'),
 
       S.divider(),
 
-      // Site Settings
-      pageGroup(S, 'Site Settings', [
-        { id: 'siteSettings-en', title: 'Settings (EN)', type: 'siteSettings' },
-        { id: 'siteSettings-zh', title: '設定 (ZH)', type: 'siteSettings' },
-      ]),
-
-      S.divider(),
-
-      // Document collections (filterable lists)
-      S.documentTypeListItem('sermon').title('Sermons'),
-      S.documentTypeListItem('event').title('Events'),
-      S.documentTypeListItem('ministry').title('Ministries'),
-      S.documentTypeListItem('person').title('People'),
+      S.listItem()
+        .title('Site Settings')
+        .id('site-settings')
+        .child(
+          S.list()
+            .title('Site Settings')
+            .items([
+              singletonItem(S, {
+                id: 'siteSettings-en',
+                title: 'English Settings',
+                type: 'siteSettings',
+                language: 'en',
+              }),
+              singletonItem(S, {
+                id: 'siteSettings-zh',
+                title: 'Chinese Settings',
+                type: 'siteSettings',
+                language: 'zh',
+              }),
+            ]),
+        ),
     ]);

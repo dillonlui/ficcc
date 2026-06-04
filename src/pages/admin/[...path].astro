@@ -1,0 +1,36 @@
+---
+/**
+ * Sanity Studio client-side routes under /admin/*.
+ * Serves the same shell as /admin so refreshes and auth redirects keep working.
+ */
+export const prerender = false;
+
+import Studio from '../../components/Studio';
+---
+
+<!doctype html>
+<html lang="en" data-pagefind-ignore="all">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FICCC Studio</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+      #studio-root {
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="studio-root">
+      <Studio client:only="react" />
+    </div>
+  </body>
+</html>
