@@ -14,6 +14,7 @@ export const resourcesPage = defineType({
       title: 'Hero Image',
       type: 'image',
       options: { hotspot: true },
+      description: 'Use a wide image and set the hotspot around the visual focus; this image is cropped in the hero.',
     }),
     defineField({
       name: 'heroTitle',

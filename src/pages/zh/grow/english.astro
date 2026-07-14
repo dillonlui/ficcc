@@ -2,7 +2,9 @@
 import GrowPage from '../../../components/GrowPage.astro';
 import { getResolvedGrowPage } from '../../../lib/grow-pages';
 
-const { content, isHidden } = await getResolvedGrowPage('zh', 'english');
+export const prerender = false;
+
+const { content, isHidden } = await getResolvedGrowPage('zh', 'english', Astro.request);
 if (isHidden) return Astro.redirect('/404');
 ---
 

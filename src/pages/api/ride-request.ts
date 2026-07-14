@@ -5,6 +5,7 @@ import type { APIRoute } from 'astro';
 import {
   verifyTurnstile,
   sendEmail,
+  getFormRecipient,
   jsonError,
   jsonSuccess,
   isValidEmail,
@@ -54,7 +55,10 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // --- Send email ---
-  const to = import.meta.env.CONTACT_EMAIL || 'onboarding@resend.dev';
+  const to = getFormRecipient('FORM_RECIPIENT_RIDE');
+  if (!to) {
+    return jsonError(503, 'This form is temporarily unavailable. Please try again later.');
+  }
   const ok = await sendEmail({
     to,
     subject: `New Ride Request from ${name}`,

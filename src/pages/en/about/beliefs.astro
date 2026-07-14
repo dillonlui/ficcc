@@ -3,6 +3,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Accordion from '../../../components/Accordion.astro';
 import { getBeliefsPage, urlForImage, portableTextToHtml } from '../../../lib/sanity';
 
+export const prerender = false;
+
 const title = 'Beliefs & Vision | FICCC';
 const description =
   'The core beliefs and vision of First Ithaca Chinese Christian Church, rooted in Scripture, shaping who we are.';
@@ -10,7 +12,7 @@ const description =
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let beliefsPage: Awaited<ReturnType<typeof getBeliefsPage>> = null;
 try {
-  beliefsPage = await getBeliefsPage('en');
+  beliefsPage = await getBeliefsPage('en', { request: Astro.request });
 } catch {
   // Sanity unreachable — continue with fallbacks
 }

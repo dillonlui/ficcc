@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Hero from '../../../components/Hero.astro';
+import { starterChineseFellowships } from '../../../lib/chinese-fellowships';
+import {
+  getMinistryBySlug,
+  portableTextToHtml,
+  urlForImage,
+} from '../../../lib/sanity';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const starter = starterChineseFellowships.find((fellowship) => fellowship.slug === slug);
+
+let ministry = null;
+if (slug) {
+  try {
+    ministry = await getMinistryBySlug('zh', slug, { request: Astro.request });
+  } catch {
+    // Keep the starter content available when Sanity is temporarily unavailable.
+  }
+}
+
+if (!ministry && !starter) {
+  return Astro.redirect('/404');
+}
+
+const name = ministry?.name || starter?.name || '團契';
+const meetingTime = ministry?.meetingTime || starter?.meetingTime;
+const image = ministry?.image
+  ? urlForImage(ministry.image, { width: 1600 })
+  : starter?.image || '/images/church/bbq-2025-community-singing.webp';
+const bodyHtml = portableTextToHtml(ministry?.description);
+const summary = starter?.summary || '歡迎與我們聯絡，了解這個團契的聚會與參與方式。';
+const title = `${name} | 伊的家華人基督教會`;
+---
+
+<BaseLayout title={title} description={summary} lang="zh">
+  <main id="main-content" data-pagefind-body>
+    <Hero title={name} subtitle={meetingTime} backgroundImage={image} />
+
+    <section class="fellowship-detail" aria-label={`${name} 詳情`}>
+      <div class="fellowship-detail__inner">
+        <a class="fellowship-detail__back" href="/zh/grow/chinese">← 返回華語事工</a>
+
+        <div class="fellowship-detail__content" data-reveal>
+          <p class="fellowship-detail__eyebrow">華語事工</p>
+          <h2>{name}</h2>
+          {meetingTime && <p class="fellowship-detail__time">聚會時間：{meetingTime}</p>}
+
+          {bodyHtml ? (
+            <div class="fellowship-detail__body" set:html={bodyHtml} />
+          ) : (
+            <p class="fellowship-detail__summary">{summary}</p>
+          )}
+
+          <a class="fellowship-detail__cta" href="/zh/contact">
+            聯絡我們了解更多
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .fellowship-detail {
+    background: var(--color-bg);
+    padding: var(--space-16) var(--space-6) var(--space-20);
+  }
+
+  .fellowship-detail__inner {
+    margin-inline: auto;
+    max-width: 48rem;
+  }
+
+  .fellowship-detail__back {
+    color: var(--color-terracotta-dark);
+    display: inline-block;
+    font-family: var(--font-body);
+    font-weight: 700;
+    margin-block-end: var(--space-10);
+    text-decoration: none;
+  }
+
+  .fellowship-detail__back:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .fellowship-detail__back:focus-visible,
+  .fellowship-detail__cta:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
+  .fellowship-detail__content {
+    background: var(--color-stone);
+    border-radius: var(--radius-sm);
+    padding: clamp(var(--space-8), 8vw, var(--space-12));
+  }
+
+  .fellowship-detail__eyebrow {
+    color: var(--color-terracotta-dark);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    margin-block-end: var(--space-2);
+  }
+
+  h2 {
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    margin-block-end: var(--space-3);
+  }
+
+  .fellowship-detail__time {
+    color: var(--color-terracotta-dark);
+    font-family: var(--font-body);
+    font-weight: 700;
+    margin-block-end: var(--space-6);
+  }
+
+  .fellowship-detail__summary,
+  .fellowship-detail__body :global(p) {
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+  }
+
+  .fellowship-detail__body :global(p + p) {
+    margin-block-start: var(--space-5);
+  }
+
+  .fellowship-detail__body :global(a) {
+    color: var(--color-terracotta-dark);
+    text-underline-offset: 3px;
+  }
+
+  .fellowship-detail__cta {
+    align-items: center;
+    background: var(--primary-500);
+    border-radius: 100vw;
+    color: var(--base-50);
+    display: inline-flex;
+    font-family: var(--font-body);
+    font-weight: 700;
+    gap: var(--space-2);
+    margin-block-start: var(--space-8);
+    padding: var(--space-3) var(--space-6);
+    text-decoration: none;
+  }
+
+  .fellowship-detail__cta:hover {
+    background: var(--primary-600);
+  }
+</style>

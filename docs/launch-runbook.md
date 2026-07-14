@@ -33,7 +33,8 @@ Before starting the cutover, confirm all of the following:
 - [ ] Sanity bootstrap has been run or equivalent documents exist:
   `SANITY_PROJECT_ID=... SANITY_API_WRITE_TOKEN=... npx tsx sanity/migrations/cm-content.ts`
 - [ ] Required page documents exist with stable IDs, including `homePage-en`, `homePage-zh`, `siteSettings-en`, `siteSettings-zh`, and all eight `growPage-{lang}-{audience}` documents
-- [ ] Vercel deploy hook URL is configured in Sanity webhook settings (triggers rebuild on content publish)
+- [ ] Vercel deploy hook URL is configured in Sanity webhook settings (create, update, and delete events trigger a deploy)
+- [ ] Sanity Presentation preview opens `/api/sanity/preview`, renders drafts on an English, Chinese, Grow, and sermon page, and shows no overlay in an incognito browser
 
 ## Vercel Domain Configuration
 
@@ -78,6 +79,13 @@ Set TTL to **300 seconds (5 minutes)** before cutover to allow fast rollback. Af
 ## Post-Cutover Verification Checklist
 
 Run through this checklist after DNS changes have propagated:
+
+### CMS publish loop
+
+- [ ] Publish a harmless content change in Sanity and confirm the webhook delivery succeeds (2xx).
+- [ ] Confirm Vercel starts a deployment and it reaches **Ready**.
+- [ ] Confirm the live route reflects the published value; restore the original value and repeat once.
+- [ ] Open the same route in an incognito window to confirm no unpublished draft content or Visual Editing controls are exposed.
 
 ### Site Loading
 

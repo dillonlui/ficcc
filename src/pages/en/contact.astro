@@ -4,6 +4,8 @@ import Hero from '../../components/Hero.astro';
 import ContactForm from '../../components/ContactForm.astro';
 import { getContactPage, getSiteSettings, urlForImage } from '../../lib/sanity';
 
+export const prerender = false;
+
 const title = 'Contact | First Ithaca Chinese Christian Church';
 const description =
   'Get in touch with First Ithaca Chinese Christian Church. Send us a message — we would love to hear from you.';
@@ -13,8 +15,8 @@ let contactPage: Awaited<ReturnType<typeof getContactPage>> = null;
 let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 try {
   [contactPage, siteSettings] = await Promise.all([
-    getContactPage('en'),
-    getSiteSettings('en'),
+    getContactPage('en', { request: Astro.request }),
+    getSiteSettings('en', { request: Astro.request }),
   ]);
 } catch {}
 

@@ -15,6 +15,7 @@ const CHANNEL_ID = 'UCRuUdmxHG2c6OtuKcdH2rSw'; // @FICCCenglish
 // Uploads playlist ID is derived from channel ID (UC → UU prefix). This never
 // changes, so hardcoding it eliminates one API call per request and halves latency.
 const UPLOADS_PLAYLIST_ID = 'UURuUdmxHG2c6OtuKcdH2rSw';
+const YOUTUBE_TIMEOUT_MS = 8_000;
 
 /**
  * Fetches the latest `count` videos from the FICCC English YouTube channel.
@@ -35,7 +36,9 @@ export async function getLatestVideos(count = 6): Promise<YouTubeVideo[]> {
     playlistUrl.searchParams.set('maxResults', String(count));
     playlistUrl.searchParams.set('key', apiKey);
 
-    const playlistRes = await fetch(playlistUrl.toString());
+    const playlistRes = await fetch(playlistUrl.toString(), {
+      signal: AbortSignal.timeout(YOUTUBE_TIMEOUT_MS),
+    });
     if (!playlistRes.ok) {
       console.error(`[youtube] Playlist fetch failed: ${playlistRes.status}`);
       return [];

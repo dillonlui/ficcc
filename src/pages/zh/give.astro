@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import { getGivePage, urlForImage, portableTextToHtml } from '../../lib/sanity';
 
+export const prerender = false;
+
 const title = '奉獻 | 伊薩卡華人基督教會';
 const description =
   '透過您的慷慨奉獻，支持伊薩卡華人基督教會的事工。';
@@ -10,7 +12,7 @@ const description =
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let givePage: Awaited<ReturnType<typeof getGivePage>> = null;
 try {
-  givePage = await getGivePage('zh');
+  givePage = await getGivePage('zh', { request: Astro.request });
 } catch {}
 
 if (givePage?.isVisible === false) return Astro.redirect('/404');

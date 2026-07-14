@@ -11,11 +11,19 @@
 import '../styles/global.css';
 import cjkFontsHref from '../styles/cjk-fonts.css?url';
 import Analytics from '@vercel/analytics/astro';
-import { getSplashPage, urlForImage } from '../lib/sanity';
+import { getSanityPreviewContext, getSplashPage, urlForImage } from '../lib/sanity';
+
+export const prerender = false;
+
+const previewContext = await getSanityPreviewContext(Astro.request);
+if (previewContext.enabled) {
+  Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+  Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+}
 
 let splashData: Awaited<ReturnType<typeof getSplashPage>> = null;
 try {
-  splashData = await getSplashPage();
+  splashData = await getSplashPage({ request: Astro.request });
 } catch {}
 
 if (splashData?.isVisible === false) return Astro.redirect('/en/');

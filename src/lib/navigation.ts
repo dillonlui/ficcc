@@ -25,6 +25,7 @@ const navLinksZH: NavLink[] = [
   { label: '來訪', href: '/zh/sundays' },
   { label: '關於我們', href: '/zh/about' },
   { label: '成長', href: '/zh/grow/chinese' },
+  { label: '講道', href: '/zh/sermons' },
   { label: '奉獻', href: '/zh/give' },
   { label: '聯絡我們', href: '/zh/contact' },
 ];
@@ -49,6 +50,7 @@ const footerNavZH: NavLink[] = [
   { label: '來訪', href: '/zh/sundays' },
   { label: '關於我們', href: '/zh/about' },
   { label: '成長', href: '/zh/grow/chinese' },
+  { label: '講道', href: '/zh/sermons' },
   { label: '奉獻', href: '/zh/give' },
   { label: '聯絡我們', href: '/zh/contact' },
 ];
@@ -92,7 +94,7 @@ const ASYMMETRIC_ROUTES: Record<string, string> = {
   '/zh/sundays': '/en/visit',
 };
 
-const NO_COUNTERPART = ['/en/resources', '/styleguide', '/admin', '/404'];
+const NO_COUNTERPART = ['/en/resources', '/zh/fellowships', '/styleguide', '/admin', '/404'];
 
 export function getAlternateUrl(pathname: string, currentLang: Lang): string {
   const normalized = pathname.length > 1 && pathname.endsWith('/')

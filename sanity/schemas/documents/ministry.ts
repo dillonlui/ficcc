@@ -26,6 +26,7 @@ export const ministry = defineType({
       title: 'Image',
       type: 'image',
       options: { hotspot: true },
+      description: 'Use a landscape group photo when possible; set the hotspot around faces or the main activity.',
     }),
     defineField({
       name: 'description',

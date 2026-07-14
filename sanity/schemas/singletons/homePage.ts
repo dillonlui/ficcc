@@ -71,6 +71,12 @@ export const homePage = defineType({
       name: 'heroCtaHref',
       title: 'Hero CTA Link',
       type: 'string',
+      description: 'Use a site path such as /en/visit, or a full https:// URL.',
+      validation: (rule) => rule.custom((value) =>
+        !value || /^(\/|https:\/\/)/.test(value)
+          ? true
+          : 'Use a site path beginning with / or a full https:// URL.',
+      ),
     }),
 
     // ── Content Sections (Go Deeper, Sunday Mornings, Find Community, Watch Sermons) ──
@@ -86,12 +92,17 @@ export const homePage = defineType({
           fields: [
             defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required() }),
             defineField({ name: 'body', title: 'Body', type: 'array', of: [{ type: 'block' }] }),
-            defineField({ name: 'image', title: 'Image', type: 'image', options: { hotspot: true } }),
+            defineField({ name: 'image', title: 'Image', type: 'image', options: { hotspot: true }, description: 'Use a landscape image and set its hotspot around the visual focus.' }),
             defineField({
               name: 'imageAlt',
               title: 'Image Alt Text',
               type: 'string',
               description: 'Describe the image for screen readers. Leave blank only if the image is decorative.',
+              validation: (rule) => rule.custom((value, context) =>
+                !context.parent?.image || value
+                  ? true
+                  : 'Add alt text, or remove the image if it is not meaningful content.',
+              ).warning(),
             }),
             defineField({ name: 'ctaText', title: 'CTA Text', type: 'string' }),
             defineField({ name: 'ctaHref', title: 'CTA Link', type: 'string' }),
@@ -112,12 +123,17 @@ export const homePage = defineType({
     // ── Bridging Cultures Banner ─────────────────────────────────────
     defineField({ name: 'bannerHeading', title: 'Banner Heading', type: 'string' }),
     defineField({ name: 'bannerBody', title: 'Banner Body', type: 'array', of: [{ type: 'block' }] }),
-    defineField({ name: 'bannerImage', title: 'Banner Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'bannerImage', title: 'Banner Image', type: 'image', options: { hotspot: true }, description: 'Use a wide image and set the hotspot around the visual focus.' }),
     defineField({
       name: 'bannerImageAlt',
       title: 'Banner Image Alt Text',
       type: 'string',
       description: 'Describe the banner image for screen readers. Leave blank only if the image is decorative.',
+      validation: (rule) => rule.custom((value, context) =>
+        !context.parent?.bannerImage || value
+          ? true
+          : 'Add alt text, or remove the banner image if it is decorative.',
+      ).warning(),
     }),
     defineField({ name: 'bannerCtaText', title: 'Banner CTA Text', type: 'string' }),
     defineField({ name: 'bannerCtaHref', title: 'Banner CTA Link', type: 'string' }),

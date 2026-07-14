@@ -5,6 +5,7 @@ import type { APIRoute } from 'astro';
 import {
   verifyTurnstile,
   sendEmail,
+  getFormRecipient,
   jsonError,
   jsonSuccess,
   escapeHtml,
@@ -21,6 +22,7 @@ export const POST: APIRoute = async ({ request }) => {
   const name = String(body.name ?? '').trim();
   const email = String(body.email ?? '').trim(); // optional
   const prayerRequest = String(body.request ?? '').trim();
+  const language = body.language === 'zh' ? 'zh' : 'en';
   const turnstileToken = String(body.turnstileToken ?? '').trim();
 
   // --- Validation ---
@@ -47,7 +49,12 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // --- Send email ---
-  const to = import.meta.env.CONTACT_EMAIL || 'onboarding@resend.dev';
+  const to = getFormRecipient(
+    language === 'zh' ? 'FORM_RECIPIENT_PRAYER_ZH' : 'FORM_RECIPIENT_PRAYER_EN',
+  );
+  if (!to) {
+    return jsonError(503, 'This form is temporarily unavailable. Please try again later.');
+  }
   const ok = await sendEmail({
     to,
     subject: `New Prayer Request from ${name}`,

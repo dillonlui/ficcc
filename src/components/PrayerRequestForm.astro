@@ -2,10 +2,16 @@
 /* PrayerRequestForm — prayer request form with Cloudflare Turnstile spam
    protection and client-side fetch submission to /api/prayer-request.
    Adapted from ContactForm pattern. */
+interface Props {
+  lang?: 'en' | 'zh';
+}
+
+const { lang = 'en' } = Astro.props;
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
 <form class="prayer-form" novalidate>
+  <input type="hidden" name="language" value={lang} />
   <div class="prayer-form__field">
     <label class="prayer-form__label" for="prayer-name">Name <span aria-hidden="true">*</span></label>
     <input
@@ -149,6 +155,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       name: form.querySelector('[name="name"]').value.trim(),
       email: form.querySelector('[name="email"]').value.trim(),
       request: form.querySelector('[name="request"]').value.trim(),
+      language: form.querySelector('[name="language"]').value,
       turnstileToken: turnstileToken,
     };
 

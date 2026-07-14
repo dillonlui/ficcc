@@ -19,6 +19,28 @@ type SanityPreviewContext = {
 };
 
 const previewSecretParam = 'sanity-preview-secret';
+const previewPerspectiveParam = 'sanity-preview-perspective';
+export const sanityPreviewSecretCookie = '__sanity_preview_secret';
+export const sanityPreviewPerspectiveCookie = '__sanity_preview_perspective';
+const previewContexts = new WeakMap<Request, Promise<SanityPreviewContext>>();
+
+type QueryOptions = {
+  request?: Request;
+};
+
+function getCookie(request: Request, name: string): string | undefined {
+  return request.headers
+    .get('cookie')
+    ?.split(';')
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${name}=`))
+    ?.slice(name.length + 1);
+}
+
+/** True after the server-side preview endpoint has authenticated the editor. */
+export function hasSanityPreviewCookie(request: Request | undefined): boolean {
+  return Boolean(request && getCookie(request, sanityPreviewSecretCookie));
+}
 
 function parsePreviewPerspective(value: string | undefined): ClientPerspective {
   if (!value || value === 'drafts' || value === 'published') {
@@ -31,14 +53,22 @@ function parsePreviewPerspective(value: string | undefined): ClientPerspective {
 export async function getSanityPreviewContext(
   request: Request | undefined,
 ): Promise<SanityPreviewContext> {
-  if (!request) {
+  if (!request || !hasSanityPreviewCookie(request)) {
     return { enabled: false, perspective: 'published' };
   }
 
-  const requestUrl = new URL(request.url);
-  if (!requestUrl.searchParams.has(previewSecretParam)) {
-    return { enabled: false, perspective: 'published' };
-  }
+  const cachedContext = previewContexts.get(request);
+  if (cachedContext) return cachedContext;
+
+  const context = resolveSanityPreviewContext(request);
+  previewContexts.set(request, context);
+  return context;
+}
+
+async function resolveSanityPreviewContext(request: Request): Promise<SanityPreviewContext> {
+
+  const secret = getCookie(request, sanityPreviewSecretCookie);
+  const perspective = getCookie(request, sanityPreviewPerspectiveCookie);
 
   const token = import.meta.env.SANITY_API_READ_TOKEN;
   if (!token) {
@@ -47,7 +77,13 @@ export async function getSanityPreviewContext(
     );
   }
 
-  const validation = await validatePreviewUrl(client.withConfig({ token }), request.url);
+  // The secret is never left in the browser URL. Reconstruct the validation URL
+  // from the HTTP-only cookie solely for the Sanity server-side verification.
+  const validationUrl = new URL('/api/sanity/preview', request.url);
+  validationUrl.searchParams.set(previewSecretParam, secret!);
+  if (perspective) validationUrl.searchParams.set(previewPerspectiveParam, perspective);
+
+  const validation = await validatePreviewUrl(client.withConfig({ token }), validationUrl.href);
   if (!validation.isValid) {
     return { enabled: false, perspective: 'published' };
   }
@@ -384,6 +420,7 @@ export interface SanityGrowGroup {
   description: string;
   image?: SanityImage;
   imageAlt?: string;
+  detail?: Pick<Ministry, 'isVisible' | 'language' | 'slug'>;
 }
 
 export interface GrowPage {
@@ -416,6 +453,18 @@ export type PageVisibilityMap = Record<string, boolean>;
 
 type Language = 'en' | 'zh';
 
+async function fetchQuery<T>(
+  query: string,
+  params: QueryParams = {},
+  options: QueryOptions = {},
+): Promise<T> {
+  if (options.request) {
+    return (await loadQuery<T>(query, params, options)).data;
+  }
+
+  return client.fetch<T>(query, params, { perspective: 'published' });
+}
+
 function singletonId(type: string, language: Language): string {
   return `${type}-${language}`;
 }
@@ -426,6 +475,7 @@ function singletonId(type: string, language: Language): string {
  */
 export async function getPageVisibility(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<PageVisibilityMap> {
   const ids = [
     singletonId('homePage', language),
@@ -437,9 +487,10 @@ export async function getPageVisibility(
     singletonId('resourcesPage', language),
   ];
 
-  const pages = await client.fetch<Array<{ _id: string; isVisible?: boolean }>>(
+  const pages = await fetchQuery<Array<{ _id: string; isVisible?: boolean }>>(
     `*[_id in $ids]{ _id, isVisible }`,
     { ids },
+    options,
   );
 
   return Object.fromEntries(pages.map((page) => [page._id, page.isVisible !== false]));
@@ -448,24 +499,26 @@ export async function getPageVisibility(
 /**
  * Fetch all sermons for a language, newest first.
  */
-export async function getSermons(language: Language = 'en'): Promise<Sermon[]> {
-  return client.fetch<Sermon[]>(
+export async function getSermons(language: Language = 'en', options: QueryOptions = {}): Promise<Sermon[]> {
+  return fetchQuery<Sermon[]>(
     `*[_type == "sermon" && language == $language && isVisible != false]{
       _id, _type, isVisible, title, slug, speaker, date, series, scripture, videoId, language
     } | order(date desc)`,
     { language },
+    options,
   );
 }
 
 /**
  * Fetch upcoming events for a language, soonest first.
  */
-export async function getEvents(language: Language = 'en'): Promise<Event[]> {
-  return client.fetch<Event[]>(
+export async function getEvents(language: Language = 'en', options: QueryOptions = {}): Promise<Event[]> {
+  return fetchQuery<Event[]>(
     `*[_type == "event" && language == $language && isVisible != false]{
       _id, _type, isVisible, title, date, endDate, time, location, description, image, recurring, language
     } | order(date asc)`,
     { language },
+    options,
   );
 }
 
@@ -474,11 +527,44 @@ export async function getEvents(language: Language = 'en'): Promise<Event[]> {
  */
 export async function getMinistries(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<Ministry[]> {
-  return client.fetch<Ministry[]>(
+  return fetchQuery<Ministry[]>(
     `*[_type == "ministry" && language == $language && isVisible != false] | order(name asc)`,
     { language },
+    options,
   );
+}
+
+/**
+ * Fetch one public ministry by its language and slug.
+ * Chinese fellowship detail pages reuse this existing editorial document type.
+ */
+export async function getMinistryBySlug(
+  language: Language,
+  slug: string,
+  options: QueryOptions = {},
+): Promise<Ministry | null> {
+  return fetchQuery<Ministry | null>(
+    `*[_type == "ministry" && language == $language && slug.current == $slug && isVisible != false][0]`,
+    { language, slug },
+    options,
+  );
+}
+
+/**
+ * Return the published Chinese ministry slugs linked from the Chinese Grow page.
+ * The page route uses these during static generation, while its built-in starter
+ * content keeps the known fellowships available before the CMS is populated.
+ */
+export async function getChineseFellowshipSlugs(options: QueryOptions = {}): Promise<string[]> {
+  const slugs = await fetchQuery<Array<string | null>>(
+    `*[_id == "growPage-zh-chinese"][0].groups[].detail->slug.current`,
+    {},
+    options,
+  );
+
+  return slugs.filter((slug): slug is string => Boolean(slug));
 }
 
 /**
@@ -487,10 +573,12 @@ export async function getMinistries(
  */
 export async function getSiteSettings(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<SiteSettings | null> {
-  return client.fetch<SiteSettings | null>(
+  return fetchQuery<SiteSettings | null>(
     `*[_id == $id][0]`,
     { id: singletonId('siteSettings', language) },
+    options,
   );
 }
 
@@ -499,10 +587,12 @@ export async function getSiteSettings(
  */
 export async function getHomePage(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<HomePage | null> {
-  return client.fetch<HomePage | null>(
+  return fetchQuery<HomePage | null>(
     `*[_id == $id][0]`,
     { id: singletonId('homePage', language) },
+    options,
   );
 }
 
@@ -511,10 +601,12 @@ export async function getHomePage(
  */
 export async function getAboutPage(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<AboutPage | null> {
-  return client.fetch<AboutPage | null>(
+  return fetchQuery<AboutPage | null>(
     `*[_id == $id][0]`,
     { id: singletonId('aboutPage', language) },
+    options,
   );
 }
 
@@ -523,10 +615,12 @@ export async function getAboutPage(
  */
 export async function getVisitPage(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<VisitPage | null> {
-  return client.fetch<VisitPage | null>(
+  return fetchQuery<VisitPage | null>(
     `*[_id == $id][0]`,
     { id: singletonId('visitPage', language) },
+    options,
   );
 }
 
@@ -535,10 +629,12 @@ export async function getVisitPage(
  */
 export async function getResourcesPage(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<ResourcesPage | null> {
-  return client.fetch<ResourcesPage | null>(
+  return fetchQuery<ResourcesPage | null>(
     `*[_id == $id][0]`,
     { id: singletonId('resourcesPage', language) },
+    options,
   );
 }
 
@@ -547,19 +643,23 @@ export async function getResourcesPage(
  */
 export async function getStaff(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<Person[]> {
-  return client.fetch<Person[]>(
+  return fetchQuery<Person[]>(
     `*[_type == "person" && language == $language && isVisible != false] | order(name asc)`,
     { language },
+    options,
   );
 }
 
 /**
  * Fetch the splash page document (language-neutral singleton).
  */
-export async function getSplashPage(): Promise<SplashPage | null> {
-  return client.fetch<SplashPage | null>(
+export async function getSplashPage(options: QueryOptions = {}): Promise<SplashPage | null> {
+  return fetchQuery<SplashPage | null>(
     `*[_id == "splashPage"][0]`,
+    {},
+    options,
   );
 }
 
@@ -568,10 +668,12 @@ export async function getSplashPage(): Promise<SplashPage | null> {
  */
 export async function getBeliefsPage(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<BeliefsPage | null> {
-  return client.fetch<BeliefsPage | null>(
+  return fetchQuery<BeliefsPage | null>(
     `*[_id == $id][0]`,
     { id: singletonId('beliefsPage', language) },
+    options,
   );
 }
 
@@ -580,10 +682,12 @@ export async function getBeliefsPage(
  */
 export async function getGivePage(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<GivePage | null> {
-  return client.fetch<GivePage | null>(
+  return fetchQuery<GivePage | null>(
     `*[_id == $id][0]`,
     { id: singletonId('givePage', language) },
+    options,
   );
 }
 
@@ -592,10 +696,12 @@ export async function getGivePage(
  */
 export async function getContactPage(
   language: Language = 'en',
+  options: QueryOptions = {},
 ): Promise<ContactPage | null> {
-  return client.fetch<ContactPage | null>(
+  return fetchQuery<ContactPage | null>(
     `*[_id == $id][0]`,
     { id: singletonId('contactPage', language) },
+    options,
   );
 }
 
@@ -605,10 +711,18 @@ export async function getContactPage(
 export async function getGrowPageDocument(
   language: Language,
   audience: GrowAudience,
+  options: QueryOptions = {},
 ): Promise<GrowPage | null> {
-  return client.fetch<GrowPage | null>(
-    `*[_id == $id][0]`,
+  return fetchQuery<GrowPage | null>(
+    `*[_id == $id][0]{
+      ...,
+      groups[]{
+        ...,
+        detail->{ slug, language, isVisible }
+      }
+    }`,
     { id: `growPage-${language}-${audience}` },
+    options,
   );
 }
 
@@ -743,9 +857,6 @@ function escapeHtml(str: string): string {
 // Visual Editing — draft-aware query helper for server-rendered preview
 // ---------------------------------------------------------------------------
 
-const isVisualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED !== 'false';
-
 /**
  * Draft-aware query helper for preview/visual-editing contexts.
  *
@@ -756,8 +867,9 @@ const isVisualEditingEnabled =
  *
  * Normal public requests always fall back to published perspective with no token or stega.
  *
- * This is a *parallel* helper — existing getSermons / getHomePage / etc.
- * remain unchanged for static build-time fetching.
+ * CMS query helpers call this when a request is available. Build-time callers
+ * keep the published-only path, so missing Sanity configuration still falls
+ * back safely during local development and builds.
  */
 export async function loadQuery<T = unknown>(
   query: string,
@@ -766,7 +878,7 @@ export async function loadQuery<T = unknown>(
 ): Promise<{ data: T; perspective: ClientPerspective; sourceMap?: unknown }> {
   const previewContext = await getSanityPreviewContext(options.request);
 
-  if (isVisualEditingEnabled && previewContext.enabled) {
+  if (previewContext.enabled) {
     const token = import.meta.env.SANITY_API_READ_TOKEN;
     if (!token) {
       throw new Error(

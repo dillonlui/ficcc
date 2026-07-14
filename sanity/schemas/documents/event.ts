@@ -46,6 +46,7 @@ export const event = defineType({
       title: 'Image',
       type: 'image',
       options: { hotspot: true },
+      description: 'Use a landscape image with the important subject near the center. The site crops this image at different sizes.',
     }),
     defineField({
       name: 'recurring',

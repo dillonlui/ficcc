@@ -30,6 +30,7 @@ export const person = defineType({
       title: 'Photo',
       type: 'image',
       options: { hotspot: true },
+      description: 'Use a clear portrait. Set the hotspot over the person’s face so smaller crops remain useful.',
     }),
     defineField({
       name: 'language',

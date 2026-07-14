@@ -21,7 +21,11 @@ const previewOrigin =
 const previewUrl = {
   initial: previewOrigin,
   previewMode: {
-    enable: '/?sanity-preview=1',
+    // Presentation appends the short-lived secret and the destination route to
+    // this endpoint. The endpoint validates it server-side before setting the
+    // HttpOnly preview cookie and redirecting to the requested page.
+    enable: '/api/sanity/preview',
+    disable: '/api/sanity/preview/disable',
     shareAccess: false,
   },
 };
@@ -35,6 +39,7 @@ const mainDocuments = defineDocuments([
   { route: '/en/give', filter: `_id == "givePage-en"` },
   { route: '/en/contact', filter: `_id == "contactPage-en"` },
   { route: '/en/resources', filter: `_id == "resourcesPage-en"` },
+  { route: '/en/sermons', filter: `_type == "sermon" && language == "en"` },
   { route: '/en/grow/english', filter: `_id == "growPage-en-english"` },
   { route: '/en/grow/chinese', filter: `_id == "growPage-en-chinese"` },
   { route: '/en/grow/youth', filter: `_id == "growPage-en-youth"` },
@@ -45,6 +50,7 @@ const mainDocuments = defineDocuments([
   { route: '/zh/sundays', filter: `_id == "visitPage-zh"` },
   { route: '/zh/give', filter: `_id == "givePage-zh"` },
   { route: '/zh/contact', filter: `_id == "contactPage-zh"` },
+  { route: '/zh/sermons', filter: `_type == "sermon" && language == "zh"` },
   { route: '/zh/resources', filter: `_id == "resourcesPage-zh"` },
   { route: '/zh/grow/english', filter: `_id == "growPage-zh-english"` },
   { route: '/zh/grow/chinese', filter: `_id == "growPage-zh-chinese"` },
@@ -113,6 +119,41 @@ const documentLocations = {
       locations: doc?.audience
         ? [{ title: 'Grow', href: `${languagePrefix(doc?.language)}/grow/${doc.audience}` }]
         : [],
+    }),
+  }),
+  ministry: defineLocations({
+    select: { language: 'language', slug: 'slug.current' },
+    resolve: (doc) => ({
+      locations: doc?.language === 'zh' && doc?.slug
+        ? [{ title: 'Fellowship Detail', href: `/zh/fellowships/${doc.slug}` }]
+        : [],
+    }),
+  }),
+  sermon: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{
+        title: doc?.language === 'zh' ? '講道' : 'Sermons',
+        href: `${languagePrefix(doc?.language)}/sermons`,
+      }],
+    }),
+  }),
+  event: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{
+        title: doc?.language === 'zh' ? '首頁活動' : 'Homepage events',
+        href: languagePrefix(doc?.language),
+      }],
+    }),
+  }),
+  person: defineLocations({
+    select: { language: 'language' },
+    resolve: (doc) => ({
+      locations: [{
+        title: doc?.language === 'zh' ? '關於我們' : 'Who We Are',
+        href: `${languagePrefix(doc?.language)}/about`,
+      }],
     }),
   }),
   siteSettings: defineLocations({

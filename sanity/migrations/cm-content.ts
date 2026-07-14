@@ -1,12 +1,16 @@
 /**
  * Current CMS Bootstrap Content
  *
- * Seeds the Sanity documents that match the current FICCC site structure:
+ * Seeds missing Sanity documents that match the current FICCC site structure:
  * / splash, /en/*, /zh/*, and the eight /{lang}/grow/{audience} pages.
  *
  * Usage:
  *   DRY RUN: SANITY_PROJECT_ID=... npx tsx sanity/migrations/cm-content.ts
  *   LIVE:    SANITY_PROJECT_ID=... SANITY_API_WRITE_TOKEN=sk-... npx tsx sanity/migrations/cm-content.ts
+ *
+ * This migration intentionally never overwrites an existing document. Run it
+ * before adding new schema requirements so production editorial content stays
+ * intact and can be completed in Studio at the editor's pace.
  */
 
 import { createClient } from '@sanity/client';
@@ -438,11 +442,11 @@ async function main() {
 
   const tx = client.transaction();
   for (const doc of documents) {
-    tx.createOrReplace(doc);
+    tx.createIfNotExists(doc);
   }
 
   const result = await tx.commit();
-  console.log(`Seeded ${documents.length} documents.`);
+  console.log(`Created any missing documents from ${documents.length} seed records.`);
   console.log(result);
 }
 

@@ -2,6 +2,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Timeline from '../../../components/Timeline.astro';
 import { getAboutPage, portableTextToHtml, urlForImage } from '../../../lib/sanity';
+
+export const prerender = false;
 import { buildOrganizationJsonLd } from '../../../lib/structured-data';
 
 const title = '關於我們 | 伊的家華人基督教會';
@@ -11,7 +13,7 @@ const description =
 let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
 
 try {
-  aboutPage = await getAboutPage('zh');
+  aboutPage = await getAboutPage('zh', { request: Astro.request });
 } catch {}
 
 if (aboutPage?.isVisible === false) return Astro.redirect('/404');

@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import { getResourcesPage, urlForImage } from '../../lib/sanity';
 
+export const prerender = false;
+
 const title = 'Resources | First Ithaca Chinese Christian Church';
 const description =
   'Spiritual growth resources, reading plans, newcomer recommendations, and campus ministry connections at Cornell.';
@@ -11,7 +13,7 @@ const description =
 let resourcesPage: Awaited<ReturnType<typeof getResourcesPage>> = null;
 
 try {
-  resourcesPage = await getResourcesPage('en');
+  resourcesPage = await getResourcesPage('en', { request: Astro.request });
 } catch {
   // Sanity unreachable — continue with fallbacks
 }

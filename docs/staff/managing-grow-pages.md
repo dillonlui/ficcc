@@ -20,6 +20,7 @@ Edit the English and Chinese versions separately. They may describe the same min
 - **Hero Title / Hero Subtitle / Hero Image** — top page section.
 - **Intro Text** — paragraph above the group cards.
 - **Groups / Classes** — the cards for worship gatherings, fellowships, classes, or care options.
+- **Fellowship Detail Page** — optional on each card. For the Chinese Ministry page, select a published **團契詳情** document to make that card open its CMS-managed detail page.
 - **Sermons Callout** — optional text and link for the bottom sermon callout.
 
 ## Routes
@@ -34,6 +35,18 @@ Edit the English and Chinese versions separately. They may describe the same min
 | 華語事工 (ZH) | `/zh/grow/chinese` |
 | 青少年 (ZH) | `/zh/grow/youth` |
 | 兒童 (ZH) | `/zh/grow/children` |
+
+## Chinese Fellowship Detail Pages
+
+The five starter cards on `/zh/grow/chinese` already open detail pages. Their initial text is a temporary fallback so the pages remain available while ministry content is being gathered.
+
+To publish the real content:
+
+1. In **Chinese → 團契詳情**, create a document in Chinese with a unique slug, meeting time, image, and description.
+2. Publish it, then open **Chinese → 成長 / 事工 → 華語事工**.
+3. On the matching group card, select that document in **Fellowship Detail Page** and publish the Grow page.
+
+The detail page is generated on the next site rebuild. Add any new fellowship card and link its published document in the same way; no code change is needed.
 
 ## Images
 

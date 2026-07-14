@@ -8,7 +8,7 @@ export const contactPage = defineType({
   fields: [
     pageVisibilityField,
 
-    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Use a wide, welcoming photo and set the hotspot around the main subject.' }),
     defineField({ name: 'heroTitle', title: 'Hero Title', type: 'string', validation: (rule) => rule.required() }),
     defineField({ name: 'heroSubtitle', title: 'Hero Subtitle', type: 'string' }),
     defineField({

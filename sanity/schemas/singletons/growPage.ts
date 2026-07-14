@@ -71,7 +71,7 @@ export const growPage = defineType({
       title: 'Hero Image',
       type: 'image',
       options: { hotspot: true },
-      description: 'Leave blank to use the built-in page fallback image.',
+      description: 'Leave blank to use the built-in page fallback image. For uploads, choose a wide image and set the hotspot around the visual focus.',
     }),
     defineField({
       name: 'intro',
@@ -125,6 +125,22 @@ export const growPage = defineType({
               title: 'Image Alt Text',
               type: 'string',
               description: 'Describe meaningful images. Leave blank only if decorative.',
+              validation: (rule) => rule.custom((value, context) =>
+                !context.parent?.image || value
+                  ? true
+                  : 'Add alt text, or remove the image if it is decorative.',
+              ).warning(),
+            }),
+            defineField({
+              name: 'detail',
+              title: 'Fellowship Detail Page',
+              type: 'reference',
+              to: [{ type: 'ministry' }],
+              description:
+                'Optional. On the Chinese Ministry page, link this card to a published Chinese Ministry document for its detail page.',
+              options: {
+                filter: 'language == "zh"',
+              },
             }),
           ],
           preview: {
@@ -155,6 +171,11 @@ export const growPage = defineType({
       title: 'Sermons CTA Link',
       type: 'string',
       description: 'Use a site path like /en/sermons or /zh/sermons.',
+      validation: (rule) => rule.custom((value) =>
+        !value || value.startsWith('/')
+          ? true
+          : 'Use a site path that begins with /.',
+      ),
     }),
   ],
   preview: {

@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getHomePage, getSermons, getEvents, urlForImage, urlForFile, portableTextToHtml, getSiteSettings } from '../../lib/sanity';
 import { buildChurchJsonLd, buildWebSiteJsonLd } from '../../lib/structured-data';
 
+export const prerender = false;
+
 const title = 'First Ithaca Chinese Christian Church | 伊的家華人基督教會';
 const description =
   'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY. Sunday gathering at 9:45am, 429 Mitchell Street.';
@@ -15,14 +17,14 @@ let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 
 try {
   [homePage, sermons, events] = await Promise.all([
-    getHomePage('en'),
-    getSermons('en'),
-    getEvents('en'),
+    getHomePage('en', { request: Astro.request }),
+    getSermons('en', { request: Astro.request }),
+    getEvents('en', { request: Astro.request }),
   ]);
 } catch {}
 
 try {
-  siteSettings = await getSiteSettings('en');
+  siteSettings = await getSiteSettings('en', { request: Astro.request });
 } catch {}
 
 if (homePage?.isVisible === false) return Astro.redirect('/404');

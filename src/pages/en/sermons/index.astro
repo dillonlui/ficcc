@@ -4,6 +4,8 @@ import Hero from '../../../components/Hero.astro';
 import { getSermons } from '../../../lib/sanity';
 import { getLatestVideos, type YouTubeVideo } from '../../../lib/youtube';
 
+export const prerender = false;
+
 const title = 'Sermons | FICCC';
 const description = 'Browse sermons from First Ithaca Chinese Christian Church. Watch messages from our Sunday gatherings.';
 
@@ -14,7 +16,7 @@ let sanitySermons: Awaited<ReturnType<typeof getSermons>> = [];
 try {
   [ytVideos, sanitySermons] = await Promise.all([
     getLatestVideos(7),
-    getSermons('en').catch(() => []),
+    getSermons('en', { request: Astro.request }).catch(() => []),
   ]);
 } catch {
   // Both failed — continue with empty arrays

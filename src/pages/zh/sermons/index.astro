@@ -4,16 +4,16 @@ import Hero from '../../../components/Hero.astro';
 import SermonCard from '../../../components/SermonCard.astro';
 import { getSermons } from '../../../lib/sanity';
 
+export const prerender = false;
+
 const title = '證道 | FICCC';
 const description = '浏览以萨卡华人基督教会的证道信息。按系列筛选，在线观看讲道。';
-
-return Astro.redirect('/404');
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let sermons: Awaited<ReturnType<typeof getSermons>> = [];
 
 try {
-  sermons = await getSermons('zh');
+  sermons = await getSermons('zh', { request: Astro.request });
 } catch {
   // Sanity unreachable — continue with empty array
 }

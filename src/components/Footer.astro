@@ -4,22 +4,18 @@
  * Uses CSS custom properties only.
  */
 import { getFooterNav, getServiceTimes, getChurchName, type Lang } from '../lib/navigation';
-import { getSiteSettings } from '../lib/sanity';
+import type { SiteSettings } from '../lib/sanity';
 
 interface Props {
   lang?: Lang;
+  siteSettings?: SiteSettings | null;
 }
 
-const { lang = 'en' } = Astro.props;
+const { lang = 'en', siteSettings = null } = Astro.props;
 const currentYear = new Date().getFullYear();
 const footerNav = getFooterNav(lang);
 const serviceTimes = getServiceTimes(lang);
 const churchName = getChurchName(lang);
-
-let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
-try {
-  siteSettings = await getSiteSettings(lang);
-} catch {}
 
 // Use CMS service times if available, otherwise fall back to navigation.ts
 const resolvedServiceTimes = siteSettings?.serviceTimes?.length

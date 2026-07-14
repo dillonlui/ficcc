@@ -1,14 +1,14 @@
 ---
 import { getNavLinks, type Lang } from '../lib/navigation';
 import { getResolvedGrowNavItems } from '../lib/grow-pages';
-import { getPageVisibility } from '../lib/sanity';
 
 interface Props {
   lang?: Lang;
   langToggleHref?: string;
+  pageVisibility?: Record<string, boolean>;
 }
 
-const { lang = 'en', langToggleHref: langToggleHrefProp } = Astro.props;
+const { lang = 'en', langToggleHref: langToggleHrefProp, pageVisibility: pageVisibilityProp } = Astro.props;
 const logoHref = lang === 'zh' ? '/zh' : '/en/';
 const logoText = lang === 'zh' ? '伊的家' : 'FICCC';
 const logoLabel = lang === 'zh' ? '伊的家' : 'FICCC Home';
@@ -26,11 +26,7 @@ interface DropdownConfig {
 const aboutPrefix = lang === 'zh' ? '/zh/about' : '/en/about';
 const growPrefix = lang === 'zh' ? '/zh/grow' : '/en/grow';
 const defaultGrowHref = lang === 'zh' ? '/zh/grow/chinese' : '/en/grow/english';
-let pageVisibility: Record<string, boolean> = {};
-
-try {
-  pageVisibility = await getPageVisibility(lang);
-} catch {}
+const pageVisibility = pageVisibilityProp ?? {};
 
 const isVisible = (id: string) => pageVisibility[id] !== false;
 const aboutSubLinks = [
@@ -42,7 +38,7 @@ const aboutSubLinks = [
     : null,
 ].filter((link): link is { label: string; href: string } => Boolean(link));
 const aboutHref = aboutSubLinks[0]?.href || aboutPrefix;
-const resolvedGrowNavItems = await getResolvedGrowNavItems(lang);
+const resolvedGrowNavItems = await getResolvedGrowNavItems(lang, Astro.request);
 const resourcesVisible = lang === 'en' && isVisible('resourcesPage-en');
 const growNavItems = lang === 'en'
   ? [

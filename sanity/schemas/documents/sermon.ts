@@ -30,6 +30,7 @@ export const sermon = defineType({
       name: 'date',
       title: 'Date',
       type: 'date',
+      validation: (rule) => rule.required().warning('Add the sermon date so it can be ordered correctly.'),
     }),
     defineField({
       name: 'series',
@@ -45,7 +46,9 @@ export const sermon = defineType({
       name: 'videoId',
       title: 'YouTube Video ID',
       type: 'string',
-      description: 'YouTube video ID only (e.g. dQw4w9WgXcQ), not the full URL',
+      description: 'YouTube video ID only (e.g. dQw4w9WgXcQ), not the full URL. Paste the 11-character ID after v=.',
+      validation: (rule) =>
+        rule.regex(/^[A-Za-z0-9_-]{11}$/).warning('Use an 11-character YouTube video ID, not a full URL.'),
     }),
     defineField({
       name: 'language',

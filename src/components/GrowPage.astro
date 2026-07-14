@@ -20,6 +20,7 @@ const calloutBody =
     ? '瀏覽近期講道，聆聽我們每週日的教導信息。'
     : 'Catch up on recent messages or explore past teaching series from our Sunday gatherings.');
 const calloutHref = content.sermonsCtaHref || sermonsHref;
+const groupDetailLabel = lang === 'zh' ? '詳情' : 'Learn more';
 ---
 
 <BaseLayout title={content.title} description={content.description} lang={lang}>
@@ -40,18 +41,36 @@ const calloutHref = content.sermonsCtaHref || sermonsHref;
 
         <div class="grow-grid" data-reveal>
           {content.groups.map((group) => (
-            <article class="group-card">
-              {group.image && (
-                <div class="group-card__image">
-                  <img src={group.image} alt={group.imageAlt || ''} loading="lazy" />
+            group.href ? (
+              <a class="group-card__link" href={group.href} aria-label={`${group.name} ${groupDetailLabel}`}>
+                <article class="group-card group-card--linked">
+                  {group.image && (
+                    <div class="group-card__image">
+                      <img src={group.image} alt={group.imageAlt || ''} loading="lazy" />
+                    </div>
+                  )}
+                  <div class="group-card__body">
+                    <h3 class="group-card__name">{group.name}</h3>
+                    {group.meetingTime && <p class="group-card__time">{group.meetingTime}</p>}
+                    <p class="group-card__desc">{group.description}</p>
+                    <span class="group-card__cta" aria-hidden="true">{groupDetailLabel} <span>→</span></span>
+                  </div>
+                </article>
+              </a>
+            ) : (
+              <article class="group-card">
+                {group.image && (
+                  <div class="group-card__image">
+                    <img src={group.image} alt={group.imageAlt || ''} loading="lazy" />
+                  </div>
+                )}
+                <div class="group-card__body">
+                  <h3 class="group-card__name">{group.name}</h3>
+                  {group.meetingTime && <p class="group-card__time">{group.meetingTime}</p>}
+                  <p class="group-card__desc">{group.description}</p>
                 </div>
-              )}
-              <div class="group-card__body">
-                <h3 class="group-card__name">{group.name}</h3>
-                {group.meetingTime && <p class="group-card__time">{group.meetingTime}</p>}
-                <p class="group-card__desc">{group.description}</p>
-              </div>
-            </article>
+              </article>
+            )
           ))}
         </div>
       </div>
@@ -126,6 +145,29 @@ const calloutHref = content.sermonsCtaHref || sermonsHref;
     overflow: hidden;
   }
 
+  .group-card__link {
+    color: inherit;
+    display: block;
+    text-decoration: none;
+  }
+
+  .group-card--linked {
+    height: 100%;
+    transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition);
+  }
+
+  .group-card__link:hover .group-card--linked {
+    background-color: var(--base-200);
+    box-shadow: 0 12px 24px rgb(43 34 24 / 12%);
+    transform: translateY(-4px);
+  }
+
+  .group-card__link:focus-visible {
+    border-radius: var(--radius-sm);
+    outline: 3px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
   .group-card__image {
     aspect-ratio: 16 / 10;
     overflow: hidden;
@@ -163,6 +205,24 @@ const calloutHref = content.sermonsCtaHref || sermonsHref;
     line-height: var(--leading-relaxed);
     color: var(--base-800);
     margin: 0;
+  }
+
+  .group-card__cta {
+    color: var(--color-terracotta-dark);
+    display: inline-flex;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    gap: var(--space-2);
+    margin-block-start: var(--space-5);
+  }
+
+  .group-card__cta span {
+    transition: transform var(--transition);
+  }
+
+  .group-card__link:hover .group-card__cta span {
+    transform: translateX(3px);
   }
 
   .sermons-callout {

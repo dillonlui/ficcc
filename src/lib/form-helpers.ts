@@ -10,6 +10,7 @@ import { Resend } from 'resend';
 
 const TURNSTILE_VERIFY_URL =
   'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+const TURNSTILE_TIMEOUT_MS = 5_000;
 
 /**
  * Verify a Cloudflare Turnstile token against the siteverify API.
@@ -27,6 +28,7 @@ export async function verifyTurnstile(token: string): Promise<boolean> {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ secret, response: token }),
+      signal: AbortSignal.timeout(TURNSTILE_TIMEOUT_MS),
     });
 
     const data = (await res.json()) as { success: boolean; 'error-codes'?: string[] };
@@ -54,6 +56,20 @@ interface SendEmailOptions {
 }
 
 /**
+ * Read a form-specific recipient from the deployment environment. We fail
+ * closed instead of routing church correspondence to Resend's sample address.
+ */
+export function getFormRecipient(variableName: string): string | null {
+  const recipient = import.meta.env[variableName]?.trim();
+  if (!recipient || !isValidEmail(recipient)) {
+    console.error(`[form-helpers] ${variableName} must be a valid email address`);
+    return null;
+  }
+
+  return recipient;
+}
+
+/**
  * Send an email via the Resend SDK.
  * Returns true on success. Logs the Resend error payload on failure.
  */
@@ -64,7 +80,11 @@ export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
     return false;
   }
 
-  const from = import.meta.env.FROM_EMAIL || 'onboarding@resend.dev';
+  const from = import.meta.env.FROM_EMAIL?.trim();
+  if (!from) {
+    console.error('[form-helpers] FROM_EMAIL is not set');
+    return false;
+  }
 
   try {
     const resend = new Resend(apiKey);

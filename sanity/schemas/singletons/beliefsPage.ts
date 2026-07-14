@@ -8,7 +8,7 @@ export const beliefsPage = defineType({
   fields: [
     pageVisibilityField,
 
-    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Use a wide image and set the hotspot around the visual focus; the site crops this as a hero.' }),
     defineField({ name: 'heroTitle', title: 'Hero Title', type: 'string', validation: (rule) => rule.required() }),
     defineField({ name: 'heroSubtitle', title: 'Hero Subtitle', type: 'string' }),
     defineField({ name: 'beliefsHeading', title: 'Beliefs Section Heading', type: 'string', initialValue: 'What We Believe' }),
@@ -28,7 +28,7 @@ export const beliefsPage = defineType({
     }),
     defineField({ name: 'scriptureQuote', title: 'Scripture Quote', type: 'text', rows: 3, description: 'Quote text for the scripture banner between sections' }),
     defineField({ name: 'scriptureCitation', title: 'Scripture Citation', type: 'string', description: 'e.g. "2 Timothy 3:16-17"' }),
-    defineField({ name: 'scriptureImage', title: 'Scripture Banner Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'scriptureImage', title: 'Scripture Banner Image', type: 'image', options: { hotspot: true }, description: 'Use an uncluttered wide image so the Scripture text remains legible over it.' }),
     defineField({ name: 'visionHeading', title: 'Vision Section Heading', type: 'string', initialValue: 'Our Vision' }),
     defineField({ name: 'visionIntro', title: 'Vision Intro', type: 'array', of: [{ type: 'block' }] }),
     defineField({

@@ -14,6 +14,7 @@ export const visitPage = defineType({
       title: 'Hero Image',
       type: 'image',
       options: { hotspot: true },
+      description: 'Use a welcoming, wide photo. Set the hotspot around people or the building entrance because the hero is cropped responsively.',
     }),
     defineField({
       name: 'heroTitle',

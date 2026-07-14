@@ -8,7 +8,7 @@ export const givePage = defineType({
   fields: [
     pageVisibilityField,
 
-    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Use a wide image with calm negative space; the hero is cropped responsively.' }),
     defineField({ name: 'heroTitle', title: 'Hero Title', type: 'string', validation: (rule) => rule.required() }),
     defineField({ name: 'heroSubtitle', title: 'Hero Subtitle', type: 'string' }),
     defineField({ name: 'whyWeGiveHeading', title: 'Why We Give Heading', type: 'string', initialValue: 'Why We Give' }),

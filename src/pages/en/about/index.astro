@@ -4,6 +4,8 @@ import Timeline from '../../../components/Timeline.astro';
 import { getAboutPage, portableTextToHtml, urlForImage } from '../../../lib/sanity';
 import { buildOrganizationJsonLd } from '../../../lib/structured-data';
 
+export const prerender = false;
+
 const title = 'Who We Are | FICCC';
 const description =
   'Learn about First Ithaca Chinese Christian Church, our history, mission, and community.';
@@ -12,7 +14,7 @@ const description =
 let aboutPage: Awaited<ReturnType<typeof getAboutPage>> = null;
 
 try {
-  aboutPage = await getAboutPage('en');
+  aboutPage = await getAboutPage('en', { request: Astro.request });
 } catch {
   // Sanity unreachable — continue with fallbacks
 }

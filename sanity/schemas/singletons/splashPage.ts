@@ -13,7 +13,7 @@ export const splashPage = defineType({
       title: 'Background Image',
       type: 'image',
       options: { hotspot: true },
-      description: 'Full-screen background image (waterfall photo)',
+      description: 'Full-screen background image. Use a high-resolution landscape photo with an uncluttered center for the logo and buttons.',
     }),
     defineField({
       name: 'churchNameEn',

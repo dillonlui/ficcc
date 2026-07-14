@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import Accordion from '../../components/Accordion.astro';
 import RideRequestForm from '../../components/RideRequestForm.astro';
-import { loadQuery, urlForImage, portableTextToHtml, type VisitPage } from '../../lib/sanity';
+import { hasSanityPreviewCookie, loadQuery, urlForImage, portableTextToHtml, type VisitPage } from '../../lib/sanity';
 
 export const prerender = false;
 
@@ -13,8 +13,7 @@ const description =
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let visitPage: VisitPage | null = null;
-const isSanityPreviewRequest =
-  new URL(Astro.request.url).searchParams.has('sanity-preview-secret');
+const isSanityPreviewRequest = hasSanityPreviewCookie(Astro.request);
 
 try {
   const result = await loadQuery<VisitPage | null>(

@@ -9,6 +9,7 @@ export interface GrowGroup {
   description: string;
   image?: string;
   imageAlt?: string;
+  href?: string;
 }
 
 export interface GrowPageContent {
@@ -217,30 +218,35 @@ const zhGrowPages: Record<GrowAudience, GrowPageContent> = {
     groups: [
       {
         name: '福音組',
+        href: '/zh/fellowships/gospel-group',
         image: '/images/church/epp-2025-discipleship-group.webp',
         meetingTime: '週日 11:00 AM',
         description: '以福音為核心的小組，歡迎慕道友與初信者一同認識信仰。',
       },
       {
         name: '家庭組',
+        href: '/zh/fellowships/family-fellowship',
         image: '/images/church/bbq-2025-intergenerational-table.webp',
         meetingTime: '週六 7:00 PM',
         description: '以家庭為單位的團契，在信仰與生活中彼此扶持。',
       },
       {
         name: '校園組',
+        href: '/zh/fellowships/campus-fellowship',
         image: '/images/church/bbq-2025-campus-fellowship.webp',
         meetingTime: '週五 7:30 PM',
         description: '大學生與研究生團契，在校園生活中一起成長。',
       },
       {
         name: '職青組',
+        href: '/zh/fellowships/young-professionals',
         image: '/images/church/bbq-2025-young-adults-group.webp',
         meetingTime: '週五 7:30 PM',
         description: '為職場青年預備的團契，在工作與信仰中尋找方向。',
       },
       {
         name: '長青組',
+        href: '/zh/fellowships/senior-fellowship',
         image: '/images/church/epp-2025-senior-table.webp',
         meetingTime: '週三 10:00 AM',
         description: '為年長弟兄姊妹預備的團契，一同查經、分享與代禱。',
@@ -308,11 +314,12 @@ export function getGrowPage(lang: Lang, audience: GrowAudience): GrowPageContent
 export async function getResolvedGrowPage(
   lang: Lang,
   audience: GrowAudience,
+  request?: Request,
 ): Promise<{ content: GrowPageContent; isHidden: boolean }> {
   const fallback = getGrowPage(lang, audience);
 
   try {
-    const page = await getGrowPageDocument(lang, audience);
+    const page = await getGrowPageDocument(lang, audience, { request });
 
     if (!page) {
       return { content: fallback, isHidden: false };
@@ -336,15 +343,27 @@ export async function getResolvedGrowPage(
         intro: page.intro || fallback.intro,
         listingHeading: page.listingHeading || fallback.listingHeading,
         groups: page.groups?.length
-          ? page.groups.map((group, index) => ({
-              name: group.name,
-              meetingTime: group.meetingTime,
-              description: group.description,
-              image: group.image
-                ? urlForImage(group.image, { width: 900 })
-                : fallback.groups[index]?.image,
-              imageAlt: group.imageAlt || '',
-            }))
+          ? page.groups.map((group, index) => {
+              const fallbackGroup = fallback.groups.find((item) => item.name === group.name)
+                || fallback.groups[index];
+              const detailSlug = group.detail?.isVisible !== false
+                && group.detail?.language === 'zh'
+                ? group.detail.slug?.current
+                : undefined;
+
+              return {
+                name: group.name,
+                meetingTime: group.meetingTime,
+                description: group.description,
+                image: group.image
+                  ? urlForImage(group.image, { width: 900 })
+                  : fallbackGroup?.image,
+                imageAlt: group.imageAlt || '',
+                href: detailSlug
+                  ? `/zh/fellowships/${detailSlug}`
+                  : fallbackGroup?.href,
+              };
+            })
           : fallback.groups,
         sermonsCalloutHeading: page.sermonsCalloutHeading,
         sermonsCalloutBody: page.sermonsCalloutBody,
@@ -364,12 +383,15 @@ export function getGrowNavItems(lang: Lang): { label: string; href: string }[] {
   }));
 }
 
-export async function getResolvedGrowNavItems(lang: Lang): Promise<{ label: string; href: string }[]> {
+export async function getResolvedGrowNavItems(
+  lang: Lang,
+  request?: Request,
+): Promise<{ label: string; href: string }[]> {
   try {
     const pages = await Promise.all(
       growAudiences.map(async (audience) => ({
         audience,
-        page: await getGrowPageDocument(lang, audience),
+        page: await getGrowPageDocument(lang, audience, { request }),
       })),
     );
 

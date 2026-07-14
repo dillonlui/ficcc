@@ -3,6 +3,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Accordion from '../../../components/Accordion.astro';
 import { getBeliefsPage, urlForImage, portableTextToHtml } from '../../../lib/sanity';
 
+export const prerender = false;
+
 const title = '我們的信仰 | 伊的家華人基督教會';
 const description =
   '伊的家華人基督教會的核心信仰，美國播道會（EFCA）十一條信仰宣言。';
@@ -10,7 +12,7 @@ const description =
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let beliefsPage: Awaited<ReturnType<typeof getBeliefsPage>> = null;
 try {
-  beliefsPage = await getBeliefsPage('zh');
+  beliefsPage = await getBeliefsPage('zh', { request: Astro.request });
 } catch {
   // Sanity unreachable — continue with fallbacks
 }
