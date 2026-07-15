@@ -1,82 +1,74 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/Hero.astro';
-import { getResourcesPage, urlForImage } from '../../lib/sanity';
+import { getResourcesPage, urlForImage, type ResourceItem } from '../../lib/sanity';
 
 export const prerender = false;
 
 const title = 'Resources | First Ithaca Chinese Christian Church';
 const description =
-  'Spiritual growth resources, reading plans, newcomer recommendations, and campus ministry connections at Cornell.';
+  'Practical guides for college life and Christian faith, Bible reading plans, and links to Christian ministries at Cornell.';
 
-// ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let resourcesPage: Awaited<ReturnType<typeof getResourcesPage>> = null;
 
 try {
   resourcesPage = await getResourcesPage('en', { request: Astro.request });
 } catch {
-  // Sanity unreachable — continue with fallbacks
+  // Sanity unreachable — continue with the complete legacy-content fallback.
 }
 
 if (resourcesPage?.isVisible === false) return Astro.redirect('/404');
 
-// ---------- Fallback defaults (migrated from em.ficcc.org/resources) ----------
+// The fallback is the actual collection from em.ficcc.org/resources. Keeping it
+// complete makes the page useful even before the CMS document is populated.
 const fallbackCategories = [
   {
-    title: 'Spiritual Growth',
+    title: 'College Life Recommendations',
     description:
-      'Articles and guides to help you grow in your walk with Christ, whether you\'re exploring faith for the first time or have been following Jesus for years.',
+      'A practical guide for loving the Lord, the lost, and your local church throughout college—and long after graduation.',
     resources: [
       {
-        title: 'What Does Baptism Mean and How Do I Get Baptized?',
-        description:
-          'An introduction to the meaning of baptism in the Christian faith and how to take this step at FICCC.',
-        type: 'article' as const,
+        title: 'College Life Recommendations',
+        url: '/college-life-recommendations.pdf',
+        description: 'A one-page guide prepared by FICCC for college students.',
+        type: 'pdf' as const,
       },
+    ],
+  },
+  {
+    title: 'Baptism & Membership',
+    description:
+      'We encourage Christians, including students, to commit to membership in a local church wherever God has placed them.',
+    resources: [
       {
-        title: 'Church Membership: Why It Matters',
-        description:
-          'Learn about the purpose and value of committing to a local church through membership.',
-        type: 'article' as const,
+        title: 'Why Join a Church?',
+        url: 'https://www.9marks.org/article/why-join-a-church/',
+        description: 'A short explanation from 9Marks on the purpose of church membership.',
+        type: 'link' as const,
       },
+    ],
+  },
+  {
+    title: 'Keeping Your Faith in College',
+    description:
+      'Classes, studying, and campus life can make it difficult to prioritize faith. This illustrated guide offers a helpful place to begin.',
+    resources: [
       {
         title: 'Keeping Your Faith in College',
-        description:
-          'Practical encouragement for college students navigating faith during their university years.',
-        type: 'article' as const,
-      },
-      {
-        title: 'Building Community as a Believer',
-        description:
-          'Why Christian community matters and how to build it, especially in a college town like Ithaca.',
-        type: 'article' as const,
+        url: 'https://drive.google.com/file/d/14L_zeCjGJkJf-es8OP1nLgpkuWIJ6lpU/view?usp=drive_link',
+        description: 'Open the illustrated guide in Google Drive.',
+        type: 'link' as const,
       },
     ],
   },
   {
     title: 'Bible Readathon',
     description:
-      'Join our community Bible reading plan. Download the reading plan and read through Scripture together.',
+      'Read about two chapters a day and finish the Bible in two years, with a fresh schedule for each quarter of Scripture.',
     resources: [
       {
-        title: 'Bible Readathon Reading Plan (PDF)',
+        title: 'Bible Readathon Reading Plan',
         url: '/readathon4.pdf',
-        description:
-          'Download the Bible Readathon reading plan, a guide to reading through the Bible together as a church.',
-        type: 'pdf' as const,
-      },
-    ],
-  },
-  {
-    title: 'Newcomer Recommendations',
-    description:
-      'Resources to help new believers and newcomers to our church get started.',
-    resources: [
-      {
-        title: 'Newcomer Recommendations (PDF)',
-        url: '/newcomer-recommendations.pdf',
-        description:
-          'A curated list of spiritual growth recommendations for anyone new to the Christian faith or to our church.',
+        description: 'The current one-page reading schedule from the legacy resources page.',
         type: 'pdf' as const,
       },
     ],
@@ -84,259 +76,807 @@ const fallbackCategories = [
   {
     title: 'Cornell Campus Ministries',
     description:
-      'FICCC is a registered student organization of Cornell University. Here are other campus ministries where you can connect with fellow believers.',
+      'Christian fellowships and organizations serving students across Cornell. Each link opens the ministry’s own website or social profile.',
     resources: [
-      {
-        title: 'Cru (Campus Crusade for Christ)',
-        url: 'https://www.crucornell.com',
-        description: 'One of the largest interdenominational campus ministries at Cornell.',
-        type: 'link' as const,
-      },
-      {
-        title: 'Cornell Graduate Christian Fellowship (GCF)',
-        url: 'https://www.cornellgcf.org',
-        description: 'A community of graduate and professional students united by faith in Christ.',
-        type: 'link' as const,
-      },
-      {
-        title: 'InterVarsity Christian Fellowship',
-        url: 'https://intervarsity.org',
-        description: 'An evangelical campus ministry active at hundreds of universities, including Cornell.',
-        type: 'link' as const,
-      },
-      {
-        title: 'The Navigators',
-        url: 'https://www.navigators.org/ministry/college/',
-        description: 'A ministry focused on discipleship and life-on-life mentoring for college students.',
-        type: 'link' as const,
-      },
-      {
-        title: 'Asian American InterVarsity (AAIV)',
-        url: 'https://intervarsity.org',
-        description: 'A chapter of InterVarsity specifically welcoming Asian American students.',
-        type: 'link' as const,
-      },
-      {
-        title: 'Cornell Chinese Bible Study (CBS)',
-        url: 'https://cornell.campusgroups.com',
-        description: 'A bilingual Bible study group serving the Chinese-speaking community at Cornell.',
-        type: 'link' as const,
-      },
-      {
-        title: 'Korean Campus Crusade for Christ (KCCC)',
-        url: 'https://www.crucornell.com',
-        description: 'A ministry serving Korean and Korean American students at Cornell.',
-        type: 'link' as const,
-      },
+      { title: 'Asian American InterVarsity (AAIV)', url: 'https://cornellaaiv.org/', type: 'link' as const },
+      { title: 'Chesterton House', url: 'https://chestertonhouse.org/', type: 'link' as const },
+      { title: 'Chinese Bible Study (CBS)', url: 'https://cbscornell.com/', type: 'link' as const },
+      { title: 'Christian Union', url: 'https://christianunion.org/cornell/', type: 'link' as const },
+      { title: 'Cru', url: 'https://www.crucornell.com/', type: 'link' as const },
+      { title: 'Fellowship of Christian Athletes (FCA)', url: 'https://www.instagram.com/fca_cornell/', type: 'link' as const },
+      { title: 'Cornell International Christian Fellowship (CICF)', url: 'https://www.cornellicf.org/', type: 'link' as const },
     ],
   },
 ];
 
-// ---------- Resolved data (CMS ▸ fallback) ----------
 const heroImage = resourcesPage?.heroImage
-  ? urlForImage(resourcesPage.heroImage, { width: 1600 })
+  ? urlForImage(resourcesPage.heroImage, { width: 1200 })
   : '/images/hero/bible.webp';
 const heroTitle = resourcesPage?.heroTitle || 'Resources';
 const heroSubtitle =
   resourcesPage?.heroSubtitle ||
-  'Tools for spiritual growth, reading plans, and campus connections';
+  'A small, practical library for following Jesus through college and beyond.';
 
 const categories =
   resourcesPage?.resourceCategories && resourcesPage.resourceCategories.length > 0
     ? resourcesPage.resourceCategories
     : fallbackCategories;
 
-/** Return an icon label for the resource type badge. */
-function typeLabel(type?: string): string {
-  switch (type) {
-    case 'pdf':
-      return '↓ PDF';
-    case 'link':
-      return '↗ Link';
-    default:
-      return '📄 Article';
+const membershipCategory = categories.find((category) =>
+  /baptis|membership/i.test(category.title),
+);
+const directoryCategory = categories.find((category) => {
+  const resources = category.resources || [];
+  return /campus|minist/i.test(category.title) ||
+    (resources.length >= 4 && resources.every((resource) => resource.type === 'link'));
+});
+const guideCategories = categories.filter(
+  (category) => category !== membershipCategory && category !== directoryCategory,
+);
+
+function isExternal(resource: ResourceItem): boolean {
+  return resource.type === 'link' || /^https?:\/\//.test(resource.url || '');
+}
+
+function resourceLabel(resource: ResourceItem): string {
+  if (resource.type === 'pdf') return 'PDF guide';
+  if (isExternal(resource)) return 'External resource';
+  return 'Resource';
+}
+
+function actionLabel(resource: ResourceItem): string {
+  if (resource.type === 'pdf') return 'Download PDF';
+  if (isExternal(resource)) return 'Visit resource';
+  return 'Open resource';
+}
+
+function hostLabel(url?: string): string {
+  if (!url) return '';
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    if (host === 'instagram.com') return 'Instagram';
+    return host;
+  } catch {
+    return '';
   }
 }
 ---
 
 <BaseLayout title={title} description={description}>
-  <main id="main-content" data-pagefind-body>
-    <Hero
-      title={heroTitle}
-      subtitle={heroSubtitle}
-      backgroundImage={heroImage}
-    />
+  <main id="main-content" data-pagefind-body class="resources-page">
+    <section class="resources-hero" aria-labelledby="resources-title">
+      <div class="resources-hero__texture" aria-hidden="true"></div>
+      <div class="resources-hero__inner">
+        <div class="resources-hero__copy">
+          <p class="resources-hero__eyebrow">For college, church &amp; everyday faith</p>
+          <h1 id="resources-title" class="resources-hero__title">{heroTitle}</h1>
+          <p class="resources-hero__subtitle">{heroSubtitle}</p>
+        </div>
+        <div class="resources-hero__image-wrap" aria-hidden="true">
+          <img
+            class="resources-hero__image"
+            src={heroImage}
+            alt=""
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </section>
 
-    {categories.map((category, idx) => (
-      <section
-        class:list={['resource-section', { 'resource-section--alt': idx % 2 === 1 }]}
-        aria-label={category.title}
-      >
-        <div class="resource-section__inner">
-          <h2 class="section-heading" data-reveal>{category.title}</h2>
-          {category.description && (
-            <p class="resource-section__desc" data-reveal>{category.description}</p>
-          )}
+    {guideCategories.length > 0 && (
+      <section class="resource-shelf" aria-labelledby="guides-heading">
+        <div class="resource-shelf__inner">
+          <div class="resource-shelf__intro" data-reveal>
+            <p class="section-kicker">Guides &amp; reading</p>
+            <h2 id="guides-heading" class="section-heading">A few good places to begin</h2>
+            <p class="section-intro">
+              Download a guide from FICCC or open a resource we recommend. The format and destination are always shown before you click.
+            </p>
+          </div>
 
-          {category.resources && category.resources.length > 0 && (
-            <div class="resource-grid" data-reveal>
-              {category.resources.map((resource) => (
-                <div class="resource-card">
-                  <div class="resource-card__header">
-                    <span class:list={['resource-card__badge', `resource-card__badge--${resource.type || 'article'}`]}>
-                      {typeLabel(resource.type)}
-                    </span>
-                  </div>
-                  <h3 class="resource-card__title">
-                    {resource.url ? (
-                      <a
-                        href={resource.url}
-                        target={resource.type === 'link' ? '_blank' : undefined}
-                        rel={resource.type === 'link' ? 'noopener noreferrer' : undefined}
-                        download={resource.type === 'pdf' ? '' : undefined}
-                      >
-                        {resource.title}
-                      </a>
-                    ) : (
-                      resource.title
-                    )}
-                  </h3>
-                  {resource.description && (
-                    <p class="resource-card__desc">{resource.description}</p>
+          <div class="resource-shelf__grid" data-reveal-stagger>
+            {guideCategories.map((category) => (
+              <article class="guide" data-reveal>
+                <div class="guide__mark" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                    <path d="M6 3.75h9.25L19 7.5v12.75H6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M15 3.75V7.5h4M9 11h7M9 14.5h7M9 18h4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="guide__content">
+                  <h3 class="guide__title">{category.title}</h3>
+                  {category.description && <p class="guide__description">{category.description}</p>}
+                  {category.resources && category.resources.length > 0 && (
+                    <div class="guide__actions">
+                      {category.resources.map((resource) => (
+                        resource.url ? (
+                          <a
+                            class="guide__action"
+                            href={resource.url}
+                            target={isExternal(resource) ? '_blank' : undefined}
+                            rel={isExternal(resource) ? 'noopener noreferrer' : undefined}
+                            download={resource.type === 'pdf' && !isExternal(resource) ? '' : undefined}
+                          >
+                            <span>
+                              <span class="guide__meta">{resourceLabel(resource)}</span>
+                              <span class="guide__action-label">{actionLabel(resource)}</span>
+                            </span>
+                            {isExternal(resource) ? (
+                              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+                                <path d="M14 5h5v5M19 5l-8 8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M19 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                              </svg>
+                            ) : (
+                              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+                                <path d="M12 4v11M8 11l4 4 4-4M5 19h14" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                            )}
+                          </a>
+                        ) : (
+                          <p class="guide__unavailable">{resource.title}</p>
+                        )
+                      ))}
+                    </div>
                   )}
                 </div>
-              ))}
-            </div>
-          )}
+              </article>
+            ))}
+          </div>
         </div>
       </section>
-    ))}
+    )}
+
+    {membershipCategory && (
+      <section class="membership" aria-labelledby="membership-heading">
+        <div class="membership__texture" aria-hidden="true"></div>
+        <div class="membership__inner">
+          <div class="membership__copy" data-reveal>
+            <p class="membership__kicker">A next step at FICCC</p>
+            <h2 id="membership-heading" class="membership__heading">{membershipCategory.title}</h2>
+            {membershipCategory.description && (
+              <p class="membership__description">{membershipCategory.description}</p>
+            )}
+            <p class="membership__description">
+              If you would like to be baptized or become a member, Pastor Zhida would be glad to talk with you.
+            </p>
+          </div>
+          <div class="membership__actions" data-reveal>
+            <a class="membership__contact" href="/en/contact">
+              Contact us
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            {membershipCategory.resources?.map((resource) => (
+              resource.url && (
+                <a
+                  class="membership__reading"
+                  href={resource.url}
+                  target={isExternal(resource) ? '_blank' : undefined}
+                  rel={isExternal(resource) ? 'noopener noreferrer' : undefined}
+                >
+                  <span>
+                    <span class="membership__reading-meta">Recommended reading</span>
+                    <span class="membership__reading-title">{resource.title}</span>
+                  </span>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+                    <path d="M14 5h5v5M19 5l-8 8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </a>
+              )
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {directoryCategory && directoryCategory.resources && directoryCategory.resources.length > 0 && (
+      <section class="directory" aria-labelledby="directory-heading">
+        <div class="directory__inner">
+          <div class="directory__intro" data-reveal>
+            <p class="section-kicker">Around Cornell</p>
+            <h2 id="directory-heading" class="section-heading">{directoryCategory.title}</h2>
+            {directoryCategory.description && (
+              <p class="section-intro">{directoryCategory.description}</p>
+            )}
+          </div>
+          <ul class="directory__list" data-reveal-stagger>
+            {directoryCategory.resources.map((resource) => (
+              <li class="directory__item" data-reveal>
+                {resource.url ? (
+                  <a
+                    class="directory__link"
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span class="directory__link-copy">
+                      <span class="directory__name">{resource.title}</span>
+                      <span class="directory__host">{hostLabel(resource.url)}</span>
+                    </span>
+                    <svg viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true">
+                      <path d="M14 5h5v5M19 5l-8 8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M19 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </a>
+                ) : (
+                  <span class="directory__link directory__link--disabled">{resource.title}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
   </main>
 </BaseLayout>
 
 <style>
-  /* ---------- Shared ---------- */
-  .section-heading {
-    font-family: var(--font-heading);
-    font-size: var(--text-3xl);
-    color: var(--color-ink);
-    text-align: center;
-    margin-block-end: var(--space-4);
-  }
-
-  /* ---------- Resource Section ---------- */
-  .resource-section {
-    padding: var(--space-16) var(--space-6);
+  .resources-page {
     background-color: var(--color-bg);
   }
 
-  .resource-section--alt {
-    background-color: var(--color-stone);
+  .resources-hero {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--primary-50);
   }
 
-  .resource-section__inner {
+  .resources-hero__texture,
+  .membership__texture {
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/textures/paper-light.jpg');
+    background-size: 28rem auto;
+    mix-blend-mode: multiply;
+    opacity: 0.13;
+    pointer-events: none;
+  }
+
+  .resources-hero__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(21rem, 0.92fr);
+    min-height: 29rem;
     max-width: var(--max-width);
     margin-inline: auto;
   }
 
-  .resource-section__desc {
+  .resources-hero__copy {
+    align-self: center;
+    padding: var(--space-16) var(--space-12) var(--space-16) var(--space-6);
+  }
+
+  .resources-hero__eyebrow,
+  .section-kicker,
+  .membership__kicker {
+    margin-block-end: var(--space-4);
+    color: var(--color-terracotta-dark);
     font-family: var(--font-body);
-    font-size: var(--text-lg);
-    line-height: var(--leading-relaxed);
-    color: var(--color-body);
-    text-align: center;
-    max-width: 40rem;
-    margin-inline: auto;
-    margin-block-end: var(--space-10);
-  }
-
-  /* ---------- Resource Grid ---------- */
-  .resource-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-    gap: var(--space-6);
-  }
-
-  /* ---------- Resource Card ---------- */
-  .resource-card {
-    background-color: var(--color-bg);
-    border: 1px solid var(--color-border, #e5e5e5);
-    border-radius: var(--radius-md);
-    padding: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    transition: box-shadow 0.15s ease;
-  }
-
-  .resource-section--alt .resource-card {
-    background-color: #fff;
-  }
-
-  .resource-card:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .resource-card__header {
-    display: flex;
-    align-items: center;
-  }
-
-  .resource-card__badge {
-    font-family: var(--font-body);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: 600;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.15em 0.5em;
-    border-radius: var(--radius-sm, 4px);
-    background-color: var(--color-stone);
-    color: var(--color-body);
   }
 
-  .resource-card__badge--pdf {
-    background-color: var(--danger-bg);
-    color: var(--danger-text);
-  }
-
-  .resource-card__badge--link {
-    background-color: #eff6ff;
-    color: #1d4ed8;
-  }
-
-  .resource-card__title {
-    font-family: var(--font-heading);
-    font-size: var(--text-lg);
+  .resources-hero__title {
+    max-width: 11ch;
+    margin-block-end: var(--space-5);
     color: var(--color-ink);
-    line-height: var(--leading-tight, 1.25);
+    font-size: clamp(var(--text-3xl), 5vw, 4.25rem);
+    letter-spacing: -0.035em;
   }
 
-  .resource-card__title a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .resource-card__title a:hover {
-    color: var(--primary-500);
-    text-decoration: underline;
-  }
-
-  .resource-card__desc {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    line-height: var(--leading-relaxed);
+  .resources-hero__subtitle {
+    max-width: 34rem;
     color: var(--color-body);
+    font-size: var(--text-xl);
+    line-height: var(--leading-snug);
+  }
+
+  .resources-hero__image-wrap {
+    position: relative;
+    min-height: 25rem;
+    margin-block: var(--space-8);
+    margin-inline-end: var(--space-6);
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 1.25rem 3rem rgba(26, 58, 44, 0.12);
+  }
+
+  .resources-hero__image-wrap::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(26, 58, 44, 0.05), rgba(26, 58, 44, 0.25));
+    content: '';
+  }
+
+  .resources-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .resource-shelf,
+  .directory {
+    padding: var(--space-20) var(--space-6);
+  }
+
+  .resource-shelf__inner,
+  .directory__inner,
+  .membership__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .resource-shelf__intro {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.75fr) minmax(20rem, 1.25fr);
+    column-gap: var(--space-12);
+    align-items: end;
+    margin-block-end: var(--space-12);
+  }
+
+  .resource-shelf__intro .section-kicker {
+    grid-column: 1;
+  }
+
+  .resource-shelf__intro .section-heading {
+    grid-column: 1;
     margin: 0;
   }
 
-  /* ---------- Responsive ---------- */
-  @media (max-width: 768px) {
-    .section-heading {
+  .resource-shelf__intro .section-intro {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: end;
+  }
+
+  .section-heading {
+    color: var(--color-ink);
+    font-size: var(--text-3xl);
+    letter-spacing: -0.025em;
+  }
+
+  .section-intro {
+    max-width: 42rem;
+    color: var(--color-body);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+  }
+
+  .resource-shelf__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--base-300);
+    border-left: 1px solid var(--base-300);
+  }
+
+  .guide {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 25rem;
+    padding: var(--space-8);
+    border-right: 1px solid var(--base-300);
+    border-bottom: 1px solid var(--base-300);
+    background-color: var(--base-50);
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .guide:hover {
+    z-index: 1;
+    background-color: var(--primary-50);
+  }
+
+  .guide__mark {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    margin-block-end: var(--space-12);
+    border-radius: 50%;
+    background-color: var(--secondary-100);
+    color: var(--secondary-700);
+  }
+
+  .guide__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .guide__title {
+    margin-block-end: var(--space-4);
+    font-size: var(--text-xl);
+  }
+
+  .guide__description {
+    color: var(--color-body);
+    line-height: var(--leading-relaxed);
+  }
+
+  .guide__actions {
+    display: grid;
+    gap: var(--space-3);
+    margin-block-start: auto;
+    padding-block-start: var(--space-8);
+  }
+
+  .guide__action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 4.25rem;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+  }
+
+  .guide__action:hover {
+    border-color: var(--primary-400);
+    box-shadow: 0 0.5rem 1.5rem rgba(26, 58, 44, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .guide__action svg {
+    flex: 0 0 auto;
+    color: var(--color-terracotta-dark);
+  }
+
+  .guide__meta,
+  .guide__action-label {
+    display: block;
+  }
+
+  .guide__meta {
+    margin-block-end: var(--space-1);
+    color: var(--base-700);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .guide__action-label {
+    font-size: var(--text-sm);
+    font-weight: 700;
+  }
+
+  .guide__unavailable {
+    color: var(--base-700);
+    font-size: var(--text-sm);
+  }
+
+  .membership {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--primary-700);
+  }
+
+  .membership__texture {
+    opacity: 0.06;
+  }
+
+  .membership__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(17rem, 0.75fr);
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  .membership__kicker {
+    color: var(--secondary-300);
+  }
+
+  .membership__heading {
+    margin-block-end: var(--space-5);
+    color: var(--base-50);
+    font-size: var(--text-3xl);
+  }
+
+  .membership__description {
+    max-width: 43rem;
+    margin-block-end: var(--space-3);
+    color: var(--primary-100);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+  }
+
+  .membership__description:last-child {
+    margin-block-end: 0;
+  }
+
+  .membership__actions {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+
+  .membership__contact {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-pill);
+    background-color: var(--secondary-400);
+    color: var(--primary-900);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .membership__contact:hover {
+    background-color: var(--secondary-300);
+    transform: translateY(-1px);
+  }
+
+  .membership__reading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    width: 100%;
+    max-width: 20rem;
+    min-height: 4.5rem;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--primary-400);
+    border-radius: var(--radius-md);
+    background-color: rgba(237, 245, 241, 0.06);
+    color: var(--base-100);
+    text-decoration: none;
+    transition: border-color var(--transition), background-color var(--transition), transform var(--transition);
+  }
+
+  .membership__reading:hover {
+    border-color: var(--secondary-300);
+    background-color: rgba(237, 245, 241, 0.1);
+    color: var(--base-50);
+    transform: translateY(-2px);
+  }
+
+  .membership__reading > svg {
+    flex: 0 0 auto;
+    color: var(--primary-200);
+  }
+
+  .membership__reading-meta,
+  .membership__reading-title {
+    display: block;
+  }
+
+  .membership__reading-meta {
+    margin-block-end: var(--space-1);
+    color: var(--primary-200);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .membership__reading-title {
+    font-size: var(--text-sm);
+    font-weight: 700;
+  }
+
+  .directory {
+    background-color: var(--color-stone);
+  }
+
+  .directory__inner {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.75fr) minmax(24rem, 1.25fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .directory__intro {
+    position: sticky;
+    top: var(--space-8);
+  }
+
+  .directory__intro .section-heading {
+    margin-block-end: var(--space-6);
+  }
+
+  .directory__intro .section-intro {
+    color: var(--base-800);
+  }
+
+  .directory__list {
+    overflow: hidden;
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-bg);
+    list-style: none;
+  }
+
+  .directory__item + .directory__item {
+    border-top: 1px solid var(--base-300);
+  }
+
+  .directory__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    min-height: 5.25rem;
+    padding: var(--space-5) var(--space-6);
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: background-color var(--transition), color var(--transition);
+  }
+
+  .directory__link:hover {
+    background-color: var(--primary-50);
+    color: var(--primary-600);
+  }
+
+  .directory__link:focus-visible,
+  .guide__action:focus-visible,
+  .membership__contact:focus-visible,
+  .membership__reading:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: -3px;
+  }
+
+  .directory__link-copy {
+    min-width: 0;
+  }
+
+  .directory__name,
+  .directory__host {
+    display: block;
+  }
+
+  .directory__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: var(--leading-snug);
+  }
+
+  .directory__host {
+    margin-block-start: var(--space-1);
+    overflow: hidden;
+    color: var(--base-700);
+    font-size: var(--text-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .directory__link svg {
+    flex: 0 0 auto;
+    color: var(--color-terracotta-dark);
+  }
+
+  .directory__link--disabled {
+    color: var(--base-700);
+  }
+
+  @media (max-width: 900px) {
+    .resources-hero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.7fr);
+    }
+
+    .resources-hero__copy {
+      padding-inline-end: var(--space-8);
+    }
+
+    .resource-shelf__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .membership__inner,
+    .directory__inner {
+      gap: var(--space-10);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .resources-hero__inner,
+    .resource-shelf__intro,
+    .membership__inner,
+    .directory__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .resources-hero__copy {
+      padding: var(--space-12) var(--space-6);
+    }
+
+    .resources-hero__title {
+      font-size: var(--text-3xl);
+    }
+
+    .resources-hero__subtitle {
+      font-size: var(--text-lg);
+    }
+
+    .resources-hero__image-wrap {
+      min-height: 14rem;
+      margin: 0 var(--space-4) var(--space-8);
+      border-radius: var(--radius-lg);
+    }
+
+    .resource-shelf,
+    .directory {
+      padding: var(--space-16) var(--space-4);
+    }
+
+    .resource-shelf__intro {
+      display: block;
+      margin-block-end: var(--space-10);
+    }
+
+    .resource-shelf__intro .section-heading {
+      margin-block-end: var(--space-5);
+    }
+
+    .section-heading,
+    .membership__heading {
       font-size: var(--text-2xl);
     }
 
-    .resource-grid {
+    .resource-shelf__grid {
       grid-template-columns: 1fr;
+    }
+
+    .guide {
+      min-height: 22rem;
+      padding: var(--space-6);
+    }
+
+    .guide__mark {
+      margin-block-end: var(--space-8);
+    }
+
+    .membership {
+      padding: var(--space-12) var(--space-4);
+    }
+
+    .membership__inner {
+      gap: var(--space-8);
+    }
+
+    .membership__reading {
+      max-width: none;
+    }
+
+    .membership__description,
+    .section-intro {
+      font-size: var(--text-base);
+    }
+
+    .directory__intro {
+      position: static;
+    }
+
+    .directory__link {
+      min-height: 4.75rem;
+      padding-inline: var(--space-4);
+    }
+
+    .directory__name {
+      font-size: var(--text-base);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .guide,
+    .guide__action,
+    .membership__contact,
+    .membership__reading,
+    .directory__link {
+      transition: none;
     }
   }
 </style>

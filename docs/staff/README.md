@@ -22,6 +22,8 @@ There are two kinds of content in the Studio:
 - **Page documents** (Homepage, About, Grow pages, Contact, etc.) — Each public route has a fixed document in the Studio.
 - **Singletons** (Site Settings) — There is one per language. Site Settings controls global things like the church name, contact info, service times, and the announcement bar.
 
+The fixed page documents and Site Settings cannot be deleted in the Studio, because the website relies on them. Ordinary collection items such as sermons and events can still be deleted when they are no longer needed.
+
 ### Language Variants
 
 The website supports English (EN) and Chinese (ZH). Most content types have a **Language** field:

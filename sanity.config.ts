@@ -1,10 +1,9 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { defineDocuments, defineLocations, presentationTool } from 'sanity/presentation';
-import { visionTool } from '@sanity/vision';
 import { FicccStudioIcon } from './sanity/components/FicccStudioIcon';
 import { structure } from './sanity/structure';
-import { schemaTypes } from './sanity/schemas';
+import { schemaTypes, singletonTypes } from './sanity/schemas';
 
 const env = {
   ...(((globalThis as any).process?.env as Record<string, string | undefined>) || {}),
@@ -15,11 +14,16 @@ const env = {
 // back to server-side values from process.env.
 const projectId = env.PUBLIC_SANITY_PROJECT_ID || env.SANITY_PROJECT_ID || 'placeholder';
 const dataset = env.PUBLIC_SANITY_DATASET || env.SANITY_DATASET || 'production';
-const previewOrigin =
-  env.PUBLIC_SANITY_PREVIEW_URL ||
-  (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321');
+// Presentation must target the public site, not the Studio's own origin. This
+// fallback also keeps a missing production environment variable from loading
+// the embedded Studio route in the preview iframe.
+const previewOrigin = env.PUBLIC_SANITY_PREVIEW_URL || 'https://ficcc.org';
 const previewUrl = {
-  initial: previewOrigin,
+  // The splash page is the site entry point. The query bypasses the visitor's
+  // saved language preference only in this Presentation iframe, so `/` stays
+  // associated with the Splash Page document instead of redirecting to /en or
+  // /zh and leaving the editor focused on the wrong document.
+  initial: new URL('/?chooselang', previewOrigin).toString(),
   previewMode: {
     // Presentation appends the short-lived secret and the destination route to
     // this endpoint. The endpoint validates it server-side before setting the
@@ -229,8 +233,19 @@ export default defineConfig({
         locations: documentLocations,
       },
     }),
-    visionTool(),
   ],
+  // Content is published directly by staff; the release/scheduling workflow
+  // adds complexity without being part of the editorial process.
+  releases: { enabled: false },
+  // Fixed pages and global settings are required by stable public routes and
+  // queries. Staff may still delete collection items (for example, a sermon or
+  // event), but cannot accidentally remove a required singleton in Studio.
+  document: {
+    actions: (previous, { schemaType }) =>
+      singletonTypes.has(schemaType)
+        ? previous.filter((action) => action.action !== 'delete')
+        : previous,
+  },
   schema: {
     types: schemaTypes,
     templates: (prev) => [...prev, ...languageTemplates, ...growPageTemplates],

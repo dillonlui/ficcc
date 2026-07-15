@@ -11,7 +11,7 @@ Set these in Vercel for Production and Preview:
 - `PUBLIC_SANITY_PROJECT_ID`
 - `PUBLIC_SANITY_DATASET`
 - `PUBLIC_SANITY_STUDIO_URL` — usually `/admin`
-- `PUBLIC_SANITY_PREVIEW_URL` — production should be `https://ficcc.org`
+- `PUBLIC_SANITY_PREVIEW_URL` — production should be `https://ficcc.org` (the public site origin, never the Studio URL)
 - `SANITY_API_READ_TOKEN` — required for Presentation preview; keep this server-only (never use a `PUBLIC_` prefix)
 
 Local `.env` should use the same names. The `PUBLIC_` values are required because the embedded Studio runs in the browser.
@@ -38,7 +38,9 @@ Allow credentials for Studio/authenticated editing origins.
 
 ## Presentation Preview and Visual Editing
 
-The Presentation tool opens `/api/sanity/preview`, not a public preview query string. That endpoint validates Sanity’s short-lived preview secret, stores it in HTTP-only cookies for four hours, and redirects the editor to the selected site route.
+The Presentation tool opens the splash page (`/?chooselang`) by default, not a Studio URL. The query prevents a saved visitor language preference from redirecting the Presentation iframe, so the Splash Page stays paired with its CMS document. It does not alter or delete the editor’s normal `lang-pref` cookie.
+
+Presentation then opens `/api/sanity/preview`, not a public preview query string. That endpoint validates Sanity’s short-lived preview secret, stores it in HTTP-only cookies for four hours, and redirects the editor to the selected site route.
 
 - Keep Presentation’s **Share preview access** setting off. The Studio configuration already requests `shareAccess: false`.
 - Do not add `PUBLIC_SANITY_VISUAL_EDITING_ENABLED`; Visual Editing appears only after a valid Presentation preview has authenticated the browser.
