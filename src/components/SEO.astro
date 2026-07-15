@@ -8,6 +8,7 @@ interface Props {
   lang?: string;
   jsonLd?: Record<string, unknown>;
   alternateUrl?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   lang = 'en',
   jsonLd,
   alternateUrl,
+  noindex = false,
 } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL('https://ficcc.org');
@@ -50,6 +52,7 @@ const structuredData = jsonLd ?? defaultJsonLd;
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonical} />
 
 {alternateUrl && (

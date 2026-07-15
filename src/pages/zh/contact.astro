@@ -56,18 +56,18 @@ const serviceTimes = siteSettings?.serviceTimes || [
           <!-- Main content: WeChat + form -->
           <div class="contact-main" data-reveal>
             <!-- WeChat section — primary contact method for Chinese ministry -->
-            <div class="wechat-section" aria-label="微信聯繫">
+            <section class="wechat-section" aria-labelledby="wechat-heading">
               <div class="wechat-section__header">
                 <svg class="wechat-section__icon" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true">
                   <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05a6.127 6.127 0 0 1-.231-1.676c0-3.56 3.143-6.448 7.02-6.448.186 0 .367.013.55.025C16.339 4.79 12.87 2.188 8.69 2.188zm-2.6 4.408a1.09 1.09 0 1 1 0 2.181 1.09 1.09 0 0 1 0-2.18zm5.198 0a1.09 1.09 0 1 1 0 2.181 1.09 1.09 0 0 1 0-2.18z"/>
                   <path d="M23.155 14.262c0-3.26-3.262-5.907-7.282-5.907-4.02 0-7.282 2.646-7.282 5.907 0 3.262 3.262 5.908 7.282 5.908.85 0 1.67-.118 2.432-.332a.69.69 0 0 1 .57.078l1.528.893a.264.264 0 0 0 .133.044.233.233 0 0 0 .233-.236c0-.058-.023-.114-.038-.17l-.312-1.187a.47.47 0 0 1 .171-.533c1.465-1.08 2.565-2.737 2.565-4.465zm-9.86-.984a.89.89 0 1 1 0-1.779.89.89 0 0 1 0 1.78zm5.157 0a.89.89 0 1 1 0-1.779.89.89 0 0 1 0 1.78z"/>
                 </svg>
-                <h2 class="wechat-section__title">微信 WeChat</h2>
+                <h2 id="wechat-heading" class="wechat-section__title">微信 WeChat</h2>
               </div>
               <p class="wechat-section__desc">
                 微信是我們中文事工的主要聯繫方式。掃描下方二維碼或搜尋我們的微信號，即可與教會取得聯繫。
               </p>
-              <div class="wechat-section__qr" aria-label="微信二維碼">
+              <div class="wechat-section__qr" role="img" aria-label="微信二維碼">
                 <!-- Placeholder for WeChat QR code — replace src with actual QR image -->
                 <div class="wechat-section__qr-placeholder">
                   <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" aria-hidden="true" class="wechat-section__qr-icon">
@@ -76,7 +76,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
                   <span class="wechat-section__qr-text">微信二維碼</span>
                 </div>
               </div>
-            </div>
+            </section>
 
             <!-- Simplified contact form -->
             {showContactForm && (
@@ -84,7 +84,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
                 <h2 class="zh-contact-form-section__title">發送訊息</h2>
                 <p class="zh-contact-form-section__desc">您也可以透過以下表單與我們聯繫。</p>
 
-                <form class="zh-contact-form" action="#" novalidate>
+                <form class="zh-contact-form" novalidate aria-busy="false" aria-describedby="zh-contact-privacy-note">
                 <div class="zh-contact-form__field">
                   <label class="zh-contact-form__label" for="zh-contact-name">姓名 Name</label>
                   <input
@@ -95,9 +95,11 @@ const serviceTimes = siteSettings?.serviceTimes || [
                     required
                     minlength="2"
                     autocomplete="name"
+                    aria-describedby="zh-contact-name-error"
+                    aria-invalid="false"
                     placeholder="您的姓名"
                   />
-                  <span class="zh-contact-form__error" data-field="name" aria-live="polite"></span>
+                  <span id="zh-contact-name-error" class="zh-contact-form__error" data-field="name" aria-live="polite" hidden></span>
                 </div>
 
                 <div class="zh-contact-form__field">
@@ -109,9 +111,11 @@ const serviceTimes = siteSettings?.serviceTimes || [
                     name="email"
                     required
                     autocomplete="email"
+                    aria-describedby="zh-contact-email-error"
+                    aria-invalid="false"
                     placeholder="you@example.com"
                   />
-                  <span class="zh-contact-form__error" data-field="email" aria-live="polite"></span>
+                  <span id="zh-contact-email-error" class="zh-contact-form__error" data-field="email" aria-live="polite" hidden></span>
                 </div>
 
                 <div class="zh-contact-form__field">
@@ -123,20 +127,28 @@ const serviceTimes = siteSettings?.serviceTimes || [
                     required
                     minlength="10"
                     rows="5"
+                    aria-describedby="zh-contact-message-error"
+                    aria-invalid="false"
                     placeholder="請輸入您的訊息"
                   ></textarea>
-                  <span class="zh-contact-form__error" data-field="message" aria-live="polite"></span>
+                  <span id="zh-contact-message-error" class="zh-contact-form__error" data-field="message" aria-live="polite" hidden></span>
                 </div>
 
                 <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
-                <span class="zh-contact-form__error" data-field="turnstileToken" aria-live="polite"></span>
+                <span id="zh-contact-turnstile-error" class="zh-contact-form__error" data-field="turnstileToken" aria-live="polite" hidden></span>
+
+                <p id="zh-contact-privacy-note" class="zh-contact-form__privacy">
+                  我們只會使用您提供的資料來回覆訊息。此表單由 Cloudflare Turnstile 保護，並透過 Resend 傳送。
+                  <a href="/zh/privacy">閱讀隱私聲明</a>。
+                </p>
 
                 <button class="zh-contact-form__submit" type="submit">
                   <span class="zh-contact-form__submit-text">發送</span>
                   <span class="zh-contact-form__spinner" aria-hidden="true"></span>
                 </button>
 
-                <div class="zh-contact-form__banner" role="alert" hidden></div>
+                <div class="zh-contact-form__banner zh-contact-form__banner--error" role="alert" tabindex="-1" hidden></div>
+                <div class="zh-contact-form__banner zh-contact-form__banner--success" role="status" aria-atomic="true" tabindex="-1" hidden></div>
                 </form>
               </div>
             )}
@@ -224,24 +236,56 @@ const serviceTimes = siteSettings?.serviceTimes || [
 
   function showError(field, msg) {
     var el = form.querySelector('[data-field="' + field + '"]');
-    if (el) el.textContent = msg;
+    if (el) {
+      el.textContent = msg;
+      el.hidden = !msg;
+    }
     var input = form.querySelector('[name="' + field + '"]');
-    if (input) input.classList.toggle('zh-contact-form__input--error', !!msg);
+    if (input) {
+      input.classList.toggle('zh-contact-form__input--error', !!msg);
+      input.setAttribute('aria-invalid', String(!!msg));
+    }
   }
 
   function clearErrors() {
     var errors = form.querySelectorAll('.zh-contact-form__error');
-    for (var i = 0; i < errors.length; i++) errors[i].textContent = '';
+    for (var i = 0; i < errors.length; i++) {
+      errors[i].textContent = '';
+      errors[i].hidden = true;
+    }
     var inputs = form.querySelectorAll('.zh-contact-form__input');
-    for (var j = 0; j < inputs.length; j++) inputs[j].classList.remove('zh-contact-form__input--error');
+    for (var j = 0; j < inputs.length; j++) {
+      inputs[j].classList.remove('zh-contact-form__input--error');
+      inputs[j].setAttribute('aria-invalid', 'false');
+    }
+    hideBanners();
+  }
+
+  function hideBanners() {
+    var banners = form.querySelectorAll('.zh-contact-form__banner');
+    for (var i = 0; i < banners.length; i++) {
+      banners[i].hidden = true;
+      banners[i].textContent = '';
+    }
   }
 
   function showBanner(msg, type) {
-    var banner = form.querySelector('.zh-contact-form__banner');
+    var banner = form.querySelector('.zh-contact-form__banner--' + type);
     if (!banner) return;
     banner.textContent = msg;
-    banner.className = 'zh-contact-form__banner zh-contact-form__banner--' + type;
     banner.hidden = false;
+    banner.focus();
+  }
+
+  function focusFirstInvalidField() {
+    var firstInvalid = form.querySelector('[aria-invalid="true"]');
+    if (firstInvalid) firstInvalid.focus();
+  }
+
+  function resetTurnstile() {
+    if (typeof turnstile !== 'undefined') {
+      try { turnstile.reset(); } catch (_) {}
+    }
   }
 
   function setLoading(loading) {
@@ -250,6 +294,13 @@ const serviceTimes = siteSettings?.serviceTimes || [
       btn.disabled = loading;
       btn.classList.toggle('zh-contact-form__submit--loading', loading);
     }
+    form.setAttribute('aria-busy', String(loading));
+  }
+
+  function responseMessage(status) {
+    if (status === 403) return '驗證失敗，請再試一次。';
+    if (status === 503) return '表單目前暫時無法使用，請稍後再試。';
+    return '目前無法發送訊息，請稍後再試。';
   }
 
   form.addEventListener('submit', function (e) {
@@ -271,19 +322,19 @@ const serviceTimes = siteSettings?.serviceTimes || [
       }
     }
 
-    if (!valid) return;
-
-    setLoading(true);
-    var banner = form.querySelector('.zh-contact-form__banner');
-    if (banner) banner.hidden = true;
+    if (!valid) {
+      focusFirstInvalidField();
+      return;
+    }
 
     var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
     var turnstileToken = turnstileInput ? turnstileInput.value : '';
     if (!turnstileToken) {
       showError('turnstileToken', '請完成驗證');
-      setLoading(false);
       return;
     }
+
+    setLoading(true);
 
     var payload = {
       name: data.name.trim(),
@@ -297,27 +348,35 @@ const serviceTimes = siteSettings?.serviceTimes || [
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-      .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+      .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, status: res.status, data: d }; }); })
       .then(function (result) {
-        setLoading(false);
         if (!result.ok) {
           if (result.data.fields) {
             for (var i = 0; i < result.data.fields.length; i++) {
-              showError(result.data.fields[i].field, result.data.fields[i].message);
+              var field = result.data.fields[i].field;
+              var messages = {
+                name: '請輸入您的姓名（至少2個字）',
+                email: '請輸入有效的電郵地址',
+                message: '請輸入訊息（至少10個字）',
+                turnstileToken: '請完成驗證'
+              };
+              showError(field, messages[field] || result.data.fields[i].message);
             }
           }
-          showBanner(result.data.error || '發送失敗，請稍後再試。', 'error');
-          if (typeof turnstile !== 'undefined') turnstile.reset();
+          resetTurnstile();
+          if (result.data.fields && result.data.fields.length) focusFirstInvalidField();
+          else showBanner(responseMessage(result.status), 'error');
           return;
         }
         showBanner('感謝您的訊息！我們會盡快回覆您。', 'success');
         form.reset();
-        if (typeof turnstile !== 'undefined') turnstile.reset();
+        resetTurnstile();
       })
       .catch(function () {
-        setLoading(false);
-        showBanner('網路錯誤，請檢查您的連接後再試。', 'error');
-      });
+        resetTurnstile();
+        showBanner('我們無法確認訊息是否已送出。請稍候再試，或直接聯絡我們。', 'error');
+      })
+      .finally(function () { setLoading(false); });
   });
 })();
 </script>
@@ -403,7 +462,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
   .wechat-section__qr-text {
     font-family: var(--font-body);
     font-size: var(--text-sm);
-    opacity: 0.6;
+    color: var(--color-body);
   }
 
   /* ---------- Contact form ---------- */
@@ -497,6 +556,24 @@ const serviceTimes = siteSettings?.serviceTimes || [
     cursor: pointer;
     position: relative;
     transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .zh-contact-form__privacy {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .zh-contact-form__privacy a {
+    color: var(--color-terracotta-dark);
+    text-underline-offset: 0.18em;
+  }
+
+  .zh-contact-form__privacy a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
   }
 
   .zh-contact-form__submit:hover:not(:disabled) {

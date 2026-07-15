@@ -4,7 +4,7 @@
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
-<form class="contact-form" novalidate>
+<form class="contact-form" novalidate aria-busy="false" aria-describedby="contact-privacy-note">
   <div class="contact-form__field">
     <label class="contact-form__label" for="contact-name">Name</label>
     <input
@@ -15,9 +15,11 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       required
       minlength="2"
       autocomplete="name"
+      aria-describedby="contact-name-error"
+      aria-invalid="false"
       placeholder="Your name"
     />
-    <span class="contact-form__error" data-field="name"></span>
+    <span id="contact-name-error" class="contact-form__error" data-field="name" aria-live="polite" hidden></span>
   </div>
 
   <div class="contact-form__field">
@@ -29,9 +31,11 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       name="email"
       required
       autocomplete="email"
+      aria-describedby="contact-email-error"
+      aria-invalid="false"
       placeholder="you@example.com"
     />
-    <span class="contact-form__error" data-field="email"></span>
+    <span id="contact-email-error" class="contact-form__error" data-field="email" aria-live="polite" hidden></span>
   </div>
 
   <div class="contact-form__field">
@@ -43,14 +47,21 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       required
       minlength="10"
       rows="5"
+      aria-describedby="contact-message-error"
+      aria-invalid="false"
       placeholder="How can we help?"
     ></textarea>
-    <span class="contact-form__error" data-field="message"></span>
+    <span id="contact-message-error" class="contact-form__error" data-field="message" aria-live="polite" hidden></span>
   </div>
 
   <!-- Cloudflare Turnstile widget -->
   <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
-  <span class="contact-form__error" data-field="turnstileToken"></span>
+  <span id="contact-turnstile-error" class="contact-form__error" data-field="turnstileToken" aria-live="polite" hidden></span>
+
+  <p id="contact-privacy-note" class="contact-form__privacy">
+    We use the details you provide to respond to your message. This form is protected by
+    Cloudflare Turnstile and delivered through Resend. <a href="/en/privacy">Read our privacy notice</a>.
+  </p>
 
   <button class="contact-form__submit" type="submit">
     <span class="contact-form__submit-text">Send Message</span>
@@ -58,10 +69,10 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   </button>
 
   <!-- General error banner -->
-  <div class="contact-form__banner contact-form__banner--error" role="alert" hidden></div>
+  <div class="contact-form__banner contact-form__banner--error" role="alert" tabindex="-1" hidden></div>
 
   <!-- Success message -->
-  <div class="contact-form__banner contact-form__banner--success" role="status" hidden></div>
+  <div class="contact-form__banner contact-form__banner--success" role="status" aria-atomic="true" tabindex="-1" hidden></div>
 </form>
 
 <script is:inline>
@@ -84,7 +95,10 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       el.hidden = false;
     }
     const input = form.querySelector('[name="' + field + '"]');
-    if (input) input.classList.add('contact-form__input--error');
+    if (input) {
+      input.classList.add('contact-form__input--error');
+      input.setAttribute('aria-invalid', 'true');
+    }
   }
 
   function clearErrors() {
@@ -95,14 +109,35 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     form.querySelectorAll('.contact-form__input--error').forEach(function (el) {
       el.classList.remove('contact-form__input--error');
     });
+    form.querySelectorAll('[aria-invalid="true"]').forEach(function (el) {
+      el.setAttribute('aria-invalid', 'false');
+    });
     errorBanner.hidden = true;
     errorBanner.textContent = '';
+  }
+
+  function focusFirstInvalidField() {
+    var firstInvalid = form.querySelector('[aria-invalid="true"]');
+    if (firstInvalid) firstInvalid.focus();
+  }
+
+  function showSystemError(message) {
+    errorBanner.textContent = message;
+    errorBanner.hidden = false;
+    errorBanner.focus();
+  }
+
+  function resetTurnstile() {
+    if (typeof turnstile !== 'undefined') {
+      try { turnstile.reset(); } catch (_) {}
+    }
   }
 
   function setLoading(loading) {
     submitBtn.disabled = loading;
     submitText.textContent = loading ? 'Sending…' : 'Send Message';
     spinner.hidden = !loading;
+    form.setAttribute('aria-busy', String(loading));
   }
 
   /* ---- Client-side validation ---- */
@@ -138,6 +173,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     var clientErrors = validate();
     if (clientErrors.length > 0) {
       clientErrors.forEach(function (err) { showFieldError(err.field, err.message); });
+      focusFirstInvalidField();
       return;
     }
 
@@ -169,17 +205,13 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
       if (!res.ok) {
         /* Field-level errors from server */
-        if (data.fields && Array.isArray(data.fields)) {
+        var hasFieldErrors = data.fields && Array.isArray(data.fields) && data.fields.length > 0;
+        if (hasFieldErrors) {
           data.fields.forEach(function (err) { showFieldError(err.field, err.message); });
         }
-        /* General error */
-        errorBanner.textContent = data.error || 'Something went wrong. Please try again.';
-        errorBanner.hidden = false;
-
-        /* Reset Turnstile on failure so user can retry */
-        if (typeof turnstile !== 'undefined') {
-          turnstile.reset();
-        }
+        resetTurnstile();
+        if (hasFieldErrors) focusFirstInvalidField();
+        else showSystemError(data.error || 'Something went wrong. Please try again.');
         return;
       }
 
@@ -187,12 +219,11 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       successBanner.textContent = data.message || 'Your message has been sent!';
       successBanner.hidden = false;
       form.reset();
-      if (typeof turnstile !== 'undefined') {
-        turnstile.reset();
-      }
+      resetTurnstile();
+      successBanner.focus();
     } catch (err) {
-      errorBanner.textContent = 'Network error. Please check your connection and try again.';
-      errorBanner.hidden = false;
+      resetTurnstile();
+      showSystemError("We couldn't confirm the status of your message. Please wait a moment, then try again or contact us directly.");
     } finally {
       setLoading(false);
     }
@@ -278,6 +309,24 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     padding: var(--space-3) var(--space-8);
     cursor: pointer;
     transition: background-color var(--transition), transform var(--transition), opacity var(--transition);
+  }
+
+  .contact-form__privacy {
+    max-width: 34rem;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .contact-form__privacy a {
+    color: var(--color-terracotta-dark);
+    text-underline-offset: 0.18em;
+  }
+
+  .contact-form__privacy a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
   }
 
   .contact-form__submit:hover:not(:disabled) {

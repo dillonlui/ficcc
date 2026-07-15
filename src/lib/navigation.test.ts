@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getAlternateUrl } from './navigation';
+import { getAlternateUrl, hasLanguageCounterpart } from './navigation';
 
 describe('getAlternateUrl', () => {
   describe('standard prefix swap', () => {
@@ -17,6 +17,11 @@ describe('getAlternateUrl', () => {
 
     it('ZH /zh/sermons → EN /en/sermons', () => {
       expect(getAlternateUrl('/zh/sermons', 'zh')).toBe('/en/sermons');
+    });
+
+    it('maps the bilingual privacy notices', () => {
+      expect(getAlternateUrl('/en/privacy', 'en')).toBe('/zh/privacy');
+      expect(getAlternateUrl('/zh/privacy', 'zh')).toBe('/en/privacy');
     });
   });
 
@@ -101,6 +106,17 @@ describe('getAlternateUrl', () => {
 
     it('ZH /zh/grow/children → EN /en/grow/children', () => {
       expect(getAlternateUrl('/zh/grow/children', 'zh')).toBe('/en/grow/children');
+    });
+  });
+
+  describe('genuine language counterparts', () => {
+    it('recognizes equivalent bilingual pages', () => {
+      expect(hasLanguageCounterpart('/en/about/')).toBe(true);
+      expect(hasLanguageCounterpart('/zh/sundays/')).toBe(true);
+    });
+
+    it('excludes Chinese-only fellowship detail pages', () => {
+      expect(hasLanguageCounterpart('/zh/fellowships/gospel-group/')).toBe(false);
     });
   });
 });

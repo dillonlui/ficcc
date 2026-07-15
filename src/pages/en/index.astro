@@ -37,19 +37,25 @@ const churchAddress = siteSettings?.address || '429 Mitchell Street';
 const churchCity = siteSettings?.city || 'Ithaca, NY 14850';
 
 const defaultHeroImage = '/images/hero/ficcc-hero-poster.jpg';
-const defaultHeroVideo = '/videos/ficcc-hero.mp4';
+const defaultHeroVideos = [
+  { src: '/videos/ficcc-hero.webm', type: 'video/webm' },
+  { src: '/videos/ficcc-hero.mp4', type: 'video/mp4' },
+];
 const heroImage = homePage?.heroImage
   ? urlForImage(homePage.heroImage, { width: 1600 })
   : defaultHeroImage;
 const heroFallbackImage = homePage?.heroFallbackImage
   ? urlForImage(homePage.heroFallbackImage, { width: 1600 })
   : heroImage;
-const heroVideo =
-  homePage?.heroMediaType === 'video'
-    ? urlForFile(homePage.heroVideo) || defaultHeroVideo
-    : homePage?.heroMediaType === 'image'
-      ? ''
-      : defaultHeroVideo;
+const uploadedHeroVideo = urlForFile(homePage?.heroVideo);
+const heroVideoSources = homePage?.heroMediaType === 'image'
+  ? []
+  : uploadedHeroVideo
+    ? [{
+        src: uploadedHeroVideo,
+        type: uploadedHeroVideo.endsWith('.webm') ? 'video/webm' : 'video/mp4',
+      }]
+    : defaultHeroVideos;
 const heroTitle = homePage?.heroTitle || 'Welcome Home';
 const heroSubtitle =
   homePage?.heroSubtitle ||
@@ -139,7 +145,7 @@ const homeJsonLd = {
 
     <!-- ============ HERO — tall, editorial, people-first ============ -->
     <section class="hero-home">
-      {heroVideo ? (
+      {heroVideoSources.length ? (
         <video
           class="hero-home__media"
           autoplay
@@ -150,7 +156,7 @@ const homeJsonLd = {
           poster={heroFallbackImage}
           aria-hidden="true"
         >
-          <source src={heroVideo} type="video/mp4" />
+          {heroVideoSources.map((source) => <source src={source.src} type={source.type} />)}
         </video>
       ) : (
         <img
@@ -202,7 +208,7 @@ const homeJsonLd = {
           </a>
         </div>
       </div>
-      {heroVideo && (
+      {heroVideoSources.length > 0 && (
         <button
           class="hero-home__media-toggle"
           type="button"

@@ -23,6 +23,8 @@ const t = lang === 'zh' ? {
   notesPlaceholder: '其他需要我們知道的事情？（選填）',
   submit: '申請接送',
   captcha: '請完成驗證',
+  privacy: '我們只會使用您提供的資料來安排接送。此表單由 Cloudflare Turnstile 保護，並透過 Resend 傳送。',
+  privacyLink: '閱讀隱私聲明',
 } : {
   name: 'Name',
   email: 'Email',
@@ -37,10 +39,12 @@ const t = lang === 'zh' ? {
   notesPlaceholder: 'Anything else we should know? (optional)',
   submit: 'Request a Ride',
   captcha: 'Please complete the captcha verification',
+  privacy: 'We use the details you provide to coordinate your ride. This form is protected by Cloudflare Turnstile and delivered through Resend.',
+  privacyLink: 'Read our privacy notice',
 };
 ---
 
-<form class="ride-form" novalidate>
+<form class="ride-form" novalidate aria-busy="false" lang={lang} aria-describedby="ride-privacy-note">
   <div class="ride-form__row">
     <div class="ride-form__field">
       <label class="ride-form__label" for="ride-name">{t.name} <span aria-hidden="true">*</span></label>
@@ -52,9 +56,11 @@ const t = lang === 'zh' ? {
         required
         minlength="2"
         autocomplete="name"
+        aria-describedby="ride-name-error"
+        aria-invalid="false"
         placeholder={t.namePlaceholder}
       />
-      <span class="ride-form__error" data-field="name"></span>
+      <span id="ride-name-error" class="ride-form__error" data-field="name" aria-live="polite" hidden></span>
     </div>
 
     <div class="ride-form__field">
@@ -66,9 +72,11 @@ const t = lang === 'zh' ? {
         name="email"
         required
         autocomplete="email"
+        aria-describedby="ride-email-error"
+        aria-invalid="false"
         placeholder={t.emailPlaceholder}
       />
-      <span class="ride-form__error" data-field="email"></span>
+      <span id="ride-email-error" class="ride-form__error" data-field="email" aria-live="polite" hidden></span>
     </div>
   </div>
 
@@ -81,9 +89,11 @@ const t = lang === 'zh' ? {
         id="ride-phone"
         name="phone"
         autocomplete="tel"
+        aria-describedby="ride-phone-error"
+        aria-invalid="false"
         placeholder={t.phonePlaceholder}
       />
-      <span class="ride-form__error" data-field="phone"></span>
+      <span id="ride-phone-error" class="ride-form__error" data-field="phone" aria-live="polite" hidden></span>
     </div>
 
     <div class="ride-form__field">
@@ -93,8 +103,10 @@ const t = lang === 'zh' ? {
         type="date"
         id="ride-date"
         name="preferredDate"
+        aria-describedby="ride-date-error"
+        aria-invalid="false"
       />
-      <span class="ride-form__error" data-field="preferredDate"></span>
+      <span id="ride-date-error" class="ride-form__error" data-field="preferredDate" aria-live="polite" hidden></span>
     </div>
   </div>
 
@@ -105,11 +117,13 @@ const t = lang === 'zh' ? {
       type="text"
       id="ride-pickup"
       name="pickupLocation"
-      required
-      minlength="5"
-      placeholder={t.pickupPlaceholder}
-    />
-    <span class="ride-form__error" data-field="pickupLocation"></span>
+        required
+        minlength="5"
+        aria-describedby="ride-pickup-error"
+        aria-invalid="false"
+        placeholder={t.pickupPlaceholder}
+      />
+    <span id="ride-pickup-error" class="ride-form__error" data-field="pickupLocation" aria-live="polite" hidden></span>
   </div>
 
   <div class="ride-form__field">
@@ -119,14 +133,20 @@ const t = lang === 'zh' ? {
       id="ride-notes"
       name="notes"
       rows="3"
+      aria-describedby="ride-notes-error"
+      aria-invalid="false"
       placeholder={t.notesPlaceholder}
     ></textarea>
-    <span class="ride-form__error" data-field="notes"></span>
+    <span id="ride-notes-error" class="ride-form__error" data-field="notes" aria-live="polite" hidden></span>
   </div>
 
   <!-- Cloudflare Turnstile widget -->
   <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
-  <span class="ride-form__error" data-field="turnstileToken"></span>
+  <span id="ride-turnstile-error" class="ride-form__error" data-field="turnstileToken" aria-live="polite" hidden></span>
+
+  <p id="ride-privacy-note" class="ride-form__privacy">
+    {t.privacy} <a href={lang === 'zh' ? '/zh/privacy' : '/en/privacy'}>{t.privacyLink}</a>.
+  </p>
 
   <button class="ride-form__submit" type="submit">
     <span class="ride-form__submit-text">{t.submit}</span>
@@ -134,10 +154,10 @@ const t = lang === 'zh' ? {
   </button>
 
   <!-- General error banner -->
-  <div class="ride-form__banner ride-form__banner--error" role="alert" hidden></div>
+  <div class="ride-form__banner ride-form__banner--error" role="alert" tabindex="-1" hidden></div>
 
   <!-- Success message -->
-  <div class="ride-form__banner ride-form__banner--success" role="status" hidden></div>
+  <div class="ride-form__banner ride-form__banner--success" role="status" aria-atomic="true" tabindex="-1" hidden></div>
 </form>
 
 <script is:inline>
@@ -150,6 +170,33 @@ const t = lang === 'zh' ? {
   const spinner = form.querySelector('.ride-form__spinner');
   const errorBanner = form.querySelector('.ride-form__banner--error');
   const successBanner = form.querySelector('.ride-form__banner--success');
+  const copy = form.getAttribute('lang') === 'zh'
+    ? {
+      submit: '申請接送',
+      sending: '發送中…',
+      nameError: '請輸入您的姓名（至少2個字）',
+      emailError: '請輸入有效的電郵地址',
+      pickupError: '請輸入接送地點（至少5個字）',
+      captchaError: '請完成驗證',
+      captchaFailure: '驗證失敗，請再試一次。',
+      unavailable: '表單目前暫時無法使用，請稍後再試。',
+      requestFailed: '目前無法提交申請，請稍後再試。',
+      success: '您的接送申請已送出！我們會盡快與您聯絡。',
+      uncertain: '我們無法確認申請是否已送出。請稍候再試，或直接聯絡我們。',
+    }
+    : {
+      submit: 'Request a Ride',
+      sending: 'Sending…',
+      nameError: 'Name is required (min 2 characters)',
+      emailError: 'A valid email address is required',
+      pickupError: 'Pickup location is required (min 5 characters)',
+      captchaError: 'Please complete the captcha verification',
+      captchaFailure: 'Captcha verification failed. Please try again.',
+      unavailable: 'This form is temporarily unavailable. Please try again later.',
+      requestFailed: 'Unable to submit your ride request right now. Please try again later.',
+      success: 'Your ride request has been submitted! We’ll be in touch soon.',
+      uncertain: "We couldn't confirm the status of your request. Please wait a moment, then try again or contact us directly.",
+    };
 
   /* ---- Helpers ---- */
 
@@ -160,7 +207,10 @@ const t = lang === 'zh' ? {
       el.hidden = false;
     }
     var input = form.querySelector('[name="' + field + '"]');
-    if (input) input.classList.add('ride-form__input--error');
+    if (input) {
+      input.classList.add('ride-form__input--error');
+      input.setAttribute('aria-invalid', 'true');
+    }
   }
 
   function clearErrors() {
@@ -171,14 +221,42 @@ const t = lang === 'zh' ? {
     form.querySelectorAll('.ride-form__input--error').forEach(function (el) {
       el.classList.remove('ride-form__input--error');
     });
+    form.querySelectorAll('[aria-invalid="true"]').forEach(function (el) {
+      el.setAttribute('aria-invalid', 'false');
+    });
     errorBanner.hidden = true;
     errorBanner.textContent = '';
   }
 
+  function focusFirstInvalidField() {
+    var firstInvalid = form.querySelector('[aria-invalid="true"]');
+    if (firstInvalid) firstInvalid.focus();
+  }
+
+  function showSystemError(message) {
+    errorBanner.textContent = message;
+    errorBanner.hidden = false;
+    errorBanner.focus();
+  }
+
+  function resetTurnstile() {
+    if (typeof turnstile !== 'undefined') {
+      try { turnstile.reset(); } catch (_) {}
+    }
+  }
+
+  function responseMessage(status, message) {
+    if (form.getAttribute('lang') !== 'zh') return message || copy.requestFailed;
+    if (status === 403) return copy.captchaFailure;
+    if (status === 503) return copy.unavailable;
+    return copy.requestFailed;
+  }
+
   function setLoading(loading) {
     submitBtn.disabled = loading;
-    submitText.textContent = loading ? 'Sending\u2026' : 'Request a Ride';
+    submitText.textContent = loading ? copy.sending : copy.submit;
     spinner.hidden = !loading;
+    form.setAttribute('aria-busy', String(loading));
   }
 
   /* ---- Client-side validation ---- */
@@ -192,13 +270,13 @@ const t = lang === 'zh' ? {
     var pickup = form.querySelector('[name="pickupLocation"]').value.trim();
 
     if (name.length < 2) {
-      errors.push({ field: 'name', message: 'Name is required (min 2 characters)' });
+      errors.push({ field: 'name', message: copy.nameError });
     }
     if (!EMAIL_RE.test(email)) {
-      errors.push({ field: 'email', message: 'A valid email address is required' });
+      errors.push({ field: 'email', message: copy.emailError });
     }
     if (pickup.length < 5) {
-      errors.push({ field: 'pickupLocation', message: 'Pickup location is required (min 5 characters)' });
+      errors.push({ field: 'pickupLocation', message: copy.pickupError });
     }
     return errors;
   }
@@ -214,6 +292,7 @@ const t = lang === 'zh' ? {
     var clientErrors = validate();
     if (clientErrors.length > 0) {
       clientErrors.forEach(function (err) { showFieldError(err.field, err.message); });
+      focusFirstInvalidField();
       return;
     }
 
@@ -221,7 +300,7 @@ const t = lang === 'zh' ? {
     var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
     var turnstileToken = turnstileInput ? turnstileInput.value : '';
     if (!turnstileToken) {
-      showFieldError('turnstileToken', 'Please complete the captcha verification');
+      showFieldError('turnstileToken', copy.captchaError);
       return;
     }
 
@@ -248,30 +327,27 @@ const t = lang === 'zh' ? {
 
       if (!res.ok) {
         /* Field-level errors from server */
-        if (data.fields && Array.isArray(data.fields)) {
+        var hasFieldErrors = data.fields && Array.isArray(data.fields) && data.fields.length > 0;
+        if (hasFieldErrors) {
           data.fields.forEach(function (err) { showFieldError(err.field, err.message); });
         }
-        /* General error */
-        errorBanner.textContent = data.error || 'Something went wrong. Please try again.';
-        errorBanner.hidden = false;
-
-        /* Reset Turnstile on failure so user can retry */
-        if (typeof turnstile !== 'undefined') {
-          turnstile.reset();
-        }
+        resetTurnstile();
+        if (hasFieldErrors) focusFirstInvalidField();
+        else showSystemError(responseMessage(res.status, data.error));
         return;
       }
 
       /* Success */
-      successBanner.textContent = data.message || 'Your ride request has been submitted! We\u2019ll be in touch soon.';
+      successBanner.textContent = form.getAttribute('lang') === 'zh'
+        ? copy.success
+        : (data.message || copy.success);
       successBanner.hidden = false;
       form.reset();
-      if (typeof turnstile !== 'undefined') {
-        turnstile.reset();
-      }
+      resetTurnstile();
+      successBanner.focus();
     } catch (err) {
-      errorBanner.textContent = 'Unable to submit your request right now. Please try again later or contact us directly.';
-      errorBanner.hidden = false;
+      resetTurnstile();
+      showSystemError(copy.uncertain);
     } finally {
       setLoading(false);
     }
@@ -368,6 +444,25 @@ const t = lang === 'zh' ? {
     padding: var(--space-3) var(--space-8);
     cursor: pointer;
     transition: background-color var(--transition), transform var(--transition), opacity var(--transition);
+  }
+
+  .ride-form__privacy {
+    max-width: 34rem;
+    margin-inline: auto;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--base-200);
+  }
+
+  .ride-form__privacy a {
+    color: var(--base-50);
+    text-underline-offset: 0.18em;
+  }
+
+  .ride-form__privacy a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
   }
 
   .ride-form__submit:hover:not(:disabled) {

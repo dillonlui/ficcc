@@ -55,10 +55,7 @@ ficcc/
 | `RESEND_API_KEY` | Email delivery for form submissions | Vercel only |
 | `FROM_EMAIL` | Verified Resend sender, e.g. `FICCC Website <website@notify.ficcc.org>` | Vercel only |
 | `FORM_RECIPIENT_CONTACT` | `office@ficcc.org` for general contact messages | Vercel only |
-| `FORM_RECIPIENT_CONNECT` | `office@ficcc.org` for newcomer connection requests | Vercel only |
 | `FORM_RECIPIENT_RIDE` | `office@ficcc.org` for ride requests | Vercel only |
-| `FORM_RECIPIENT_PRAYER_EN` | `empastor@ficcc.org` for English prayer requests | Vercel only |
-| `FORM_RECIPIENT_PRAYER_ZH` | `cmpastor@ficcc.org` for Chinese prayer requests | Vercel only |
 | `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile spam protection | Vercel only |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Turnstile client-side key | `.env` + Vercel |
 
@@ -67,8 +64,9 @@ ficcc/
 | Command | Description |
 |---|---|
 | `npm run dev` | Start Astro dev server |
-| `npm run build` | Build static site to `dist/client/` |
-| `npm run preview` | Preview built site locally |
+| `npm run build` | Build Vercel output (static assets and SSR function) |
+| `npm run preview` | Preview the built static and SSR routes locally |
+| `npm run audit` | Check production and development dependencies for moderate-or-higher vulnerabilities |
 | `npm run studio` | Run Sanity Studio locally |
 | `npm run studio:build` | Build the Sanity Studio bundle |
 | `npm run sanity:seed` | Seed current CMS documents into Sanity |

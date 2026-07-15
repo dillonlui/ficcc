@@ -25,14 +25,18 @@ const resolvedServiceTimes = siteSettings?.serviceTimes?.length
 // Use CMS contact info if available
 const resolvedAddress = siteSettings?.address || '429 Mitchell Street';
 const resolvedCity = siteSettings?.city || 'Ithaca, NY 14850';
+const homeLabel = lang === 'zh' ? '伊的家首頁' : 'FICCC Home';
+const linksHeading = lang === 'zh' ? '連結' : 'Links';
+const footerNavLabel = lang === 'zh' ? '頁尾導覽' : 'Footer navigation';
+const rightsText = lang === 'zh' ? '版權所有。' : 'All rights reserved.';
 ---
 
 <footer class="site-footer">
   <div class="footer-inner">
     <!-- Church identity -->
     <div class="footer-col footer-identity">
-      <a href={lang === 'zh' ? '/zh' : '/en/'} class="footer-logo-link" aria-label="Home">
-        <img src="/logo/logo-bilingual-dark.svg" alt="FICCC" class="footer-logo" width="280" height="52" />
+      <a href={lang === 'zh' ? '/zh' : '/en/'} class="footer-logo-link" aria-label={homeLabel}>
+        <img src="/logo/logo-bilingual-dark.svg" alt="" class="footer-logo" width="280" height="52" />
       </a>
       <address class="footer-address">
         {resolvedAddress}<br />
@@ -51,8 +55,8 @@ const resolvedCity = siteSettings?.city || 'Ithaca, NY 14850';
     </div>
 
     <!-- Navigation -->
-    <nav class="footer-col footer-nav" aria-label="Footer navigation">
-      <h2 class="footer-heading">Links</h2>
+    <nav class="footer-col footer-nav" aria-label={footerNavLabel}>
+      <h2 class="footer-heading">{linksHeading}</h2>
       <ul class="footer-list" role="list">
         {footerNav.map((link) => (
           <li><a href={link.href} class="footer-link">{link.label}</a></li>
@@ -62,7 +66,7 @@ const resolvedCity = siteSettings?.city || 'Ithaca, NY 14850';
   </div>
 
   <div class="footer-bottom">
-    <p>&copy; {currentYear} {churchName}. All rights reserved.</p>
+    <p>&copy; {currentYear} {churchName}. {rightsText}</p>
   </div>
 </footer>
 

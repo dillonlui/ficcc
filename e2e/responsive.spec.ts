@@ -80,8 +80,10 @@ test.describe('Responsive layout', () => {
       await hamburger.click();
 
       // About label should be visible as a non-interactive heading
-      const aboutLabel = page.getByRole('button', { name: 'About' });
+      const aboutLabel = page.locator('.nav-dropdown-trigger', { hasText: 'About' });
       await expect(aboutLabel).toBeVisible();
+      await expect(aboutLabel).toHaveAttribute('aria-hidden', 'true');
+      await expect(aboutLabel).toHaveAttribute('tabindex', '-1');
       // Chevron should be hidden on mobile
       const chevron = aboutLabel.locator('.nav-dropdown-chevron');
       await expect(chevron).toBeHidden();

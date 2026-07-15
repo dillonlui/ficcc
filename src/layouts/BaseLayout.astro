@@ -7,7 +7,7 @@ import SEO from '../components/SEO.astro';
 import { getPageVisibility, getSanityPreviewContext, getSiteSettings } from '../lib/sanity';
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import Analytics from '@vercel/analytics/astro';
-import { getAlternateUrl, type Lang } from '../lib/navigation';
+import { getAlternateUrl, hasLanguageCounterpart, type Lang } from '../lib/navigation';
 
 interface Props {
   title: string;
@@ -16,6 +16,7 @@ interface Props {
   jsonLd?: Record<string, unknown>;
   ogImage?: string;
   ogType?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   jsonLd,
   ogImage,
   ogType,
+  noindex = false,
 } = Astro.props;
 
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
@@ -35,6 +37,7 @@ const enableVercelAnalytics =
 
 const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as Lang);
 const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.org').href;
+const hasAlternate = hasLanguageCounterpart(Astro.url.pathname);
 
 let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 let pageVisibility: Awaited<ReturnType<typeof getPageVisibility>> = {};
@@ -42,6 +45,9 @@ const previewContext = await getSanityPreviewContext(Astro.request);
 if (previewContext.enabled) {
   // Draft responses must never be stored by a browser, CDN, or shared proxy.
   Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+  Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+}
+if (noindex) {
   Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 }
 try {
@@ -55,6 +61,7 @@ try {
 
 const showAnnouncementBar =
   siteSettings?.announcementBarEnabled && siteSettings?.announcementBarText;
+const skipLinkText = lang === 'zh' ? '跳至主要內容' : 'Skip to main content';
 ---
 
 <!doctype html>
@@ -62,7 +69,7 @@ const showAnnouncementBar =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <SEO title={title} description={description} lang={lang} alternateUrl={absoluteAlternateUrl} jsonLd={jsonLd} ogImage={ogImage} ogType={ogType} />
+    <SEO title={title} description={description} lang={lang} alternateUrl={hasAlternate ? absoluteAlternateUrl : undefined} jsonLd={jsonLd} ogImage={ogImage} ogType={ogType} noindex={noindex} />
     {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script is:inline>
@@ -73,7 +80,7 @@ const showAnnouncementBar =
     <noscript><link rel="stylesheet" href={cjkFontsHref} /></noscript>
   </head>
   <body>
-    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    <a href="#main-content" class="skip-to-content">{skipLinkText}</a>
     {showAnnouncementBar && (
       siteSettings.announcementBarLink ? (
         <a href={siteSettings.announcementBarLink} class="announcement-bar" role="banner">
@@ -108,6 +115,19 @@ const showAnnouncementBar =
       </>
     )}
     <script>
+      const skipLink = document.querySelector<HTMLAnchorElement>('.skip-to-content');
+      skipLink?.addEventListener('click', () => {
+        const target = document.querySelector<HTMLElement>(skipLink.hash);
+        if (!target) return;
+
+        const hadTabIndex = target.hasAttribute('tabindex');
+        if (!hadTabIndex) target.setAttribute('tabindex', '-1');
+        requestAnimationFrame(() => target.focus());
+        if (!hadTabIndex) {
+          target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
+        }
+      });
+
       document.addEventListener('click', (e) => {
         const toggle = (e.target as HTMLElement).closest('.lang-toggle') as HTMLAnchorElement | null;
         if (toggle) {

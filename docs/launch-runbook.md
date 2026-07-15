@@ -19,8 +19,12 @@ Before starting the cutover, confirm all of the following:
 
 - [ ] Vercel deployment is live and accessible at `ficcc.vercel.app`
 - [ ] `npm run build` exits 0 — no build errors
+- [ ] `npm run audit` reports 0 moderate-or-higher dependency vulnerabilities
 - [ ] `npm test` passes — all unit tests green
 - [ ] `npm run test:e2e` passes — all Playwright smoke/bilingual/responsive tests green
+- [ ] `npm run test:a11y` reports 0 automated axe violations
+- [ ] Complete and record the human Safari/VoiceOver launch check in `docs/accessibility-review.md`
+- [ ] `/en/privacy` and `/zh/privacy` load, are linked from both footers, and are referenced before each form submission
 - [ ] Environment variables are set in Vercel dashboard:
   - `SANITY_PROJECT_ID` / `PUBLIC_SANITY_PROJECT_ID`
   - `SANITY_DATASET` / `PUBLIC_SANITY_DATASET`
@@ -47,6 +51,95 @@ Add all three domains in the Vercel dashboard:
 5. Vercel auto-provisions SSL certificates via Let's Encrypt for all added domains — no manual certificate setup is needed
 
 The redirect rules in `vercel.json` use host-matching (`"has": [{ "type": "host", "value": "em.ficcc.org" }]`) so they only activate once these domains are pointed at Vercel.
+
+## Form Delivery Setup
+
+The site has server-side endpoints for general contact and ride requests. They fail
+closed (returning a temporary-unavailable response) until every required Vercel
+variable below is set. This prevents a misconfigured deployment from silently routing
+correspondence to an unintended address.
+
+### 1. Verify the Resend sending subdomain
+
+The public website does **not** need to be live on `ficcc.org` before email delivery
+can be enabled. Resend only needs DNS control for the sending subdomain.
+
+1. Create or sign in to the church's Resend account; use an account owned by the
+   church, not an individual developer.
+2. In **Domains**, add `notify.ficcc.org`.
+3. At the DNS provider for `ficcc.org`, add every SPF, DKIM, and (if supplied) MX
+   record shown by Resend exactly as displayed. Do not replace or overwrite the
+   existing `ficcc.org` SPF record.
+4. Wait until Resend marks `notify.ficcc.org` as **Verified**.
+5. Create an API key limited to sending email for this project. Store it only in
+   Vercel; never add it to a committed `.env` file or a `PUBLIC_` variable.
+
+Use this sender value after verification:
+
+```
+FICCC Website <website@notify.ficcc.org>
+```
+
+### 2. Create the production Turnstile widget
+
+In Cloudflare Turnstile, create one managed widget and authorize these hostnames:
+
+- `ficcc.vercel.app` — the current live Vercel hostname
+- `ficcc.org` — covers the future apex site and its subdomains
+
+Turnstile hostname entries are bare hostnames: do not include `https://`, paths, or
+ports. The default Vercel branch/commit preview URLs are separate hostnames, so they
+will need to be added individually if they must run real Turnstile checks. Use
+Cloudflare's test keys for automated/local testing instead of loosening the production
+widget's hostname policy.
+
+### 3. Add Vercel environment variables
+
+In **Vercel → Project → Settings → Environment Variables**, add the following values
+to **Production** and **Preview** while `ficcc.vercel.app` is the test site. Do not
+mark the Resend key or Turnstile secret as public.
+
+| Variable | Value |
+|---|---|
+| `RESEND_API_KEY` | The restricted Resend sending API key |
+| `FROM_EMAIL` | `FICCC Website <website@notify.ficcc.org>` |
+| `FORM_RECIPIENT_CONTACT` | `office@ficcc.org` |
+| `FORM_RECIPIENT_RIDE` | `office@ficcc.org` |
+| `PUBLIC_TURNSTILE_SITE_KEY` | The production Turnstile site key |
+| `TURNSTILE_SECRET_KEY` | The matching production Turnstile secret key |
+
+Environment-variable changes take effect only in newly created deployments. Redeploy
+the project after saving them, then use the fresh deployment URL for testing.
+
+### 4. Real-delivery verification
+
+Use an inbox you control as the visitor email address. Include a unique label in each
+message (for example, `FORM-TEST-2026-07-15-contact`) so it can be traced in both
+Resend's email logs and the receiving inbox.
+
+For each public form, verify all of the following:
+
+- Turnstile completes without a hostname error.
+- The browser shows the success state and the request appears as `Delivered` in
+  Resend's email log.
+- The configured recipient receives the message, including the unique label.
+- The delivered message's `Reply-To` is the visitor test address; replying from the
+  recipient mailbox targets that address rather than `website@notify.ficcc.org`.
+- The message does not arrive in spam. If it does, retain the message headers and
+  inspect Resend's event log before changing any DNS records.
+
+Run one delivery test for each public form:
+
+| Public form | Endpoint | Intended recipient |
+|---|---|---|
+| English contact (`/en/contact`) | `/api/contact` | `office@ficcc.org` |
+| Chinese contact (`/zh/contact`) | `/api/contact` | `office@ficcc.org` |
+| English ride request (`/en/visit`) | `/api/ride-request` | `office@ficcc.org` |
+| Chinese ride request (`/zh/sundays`) | `/api/ride-request` | `office@ficcc.org` |
+
+Do not mark form delivery complete until the recipient has confirmed receipt of each
+expected test. Repeat the same checks after the `ficcc.org` domain cutover; no Resend
+sender change should be required, but Turnstile must be exercised on the new hostname.
 
 ## DNS Records
 
@@ -98,6 +191,7 @@ Run through this checklist after DNS changes have propagated:
 - [ ] `https://ficcc.org/en/about` loads the English About page
 - [ ] `https://ficcc.org/en/sermons` loads the English Sermons page
 - [ ] `https://ficcc.org/en/contact` loads the English Contact page with the Turnstile-protected form
+- [ ] `https://ficcc.org/en/privacy` loads the English privacy notice
 - [ ] `https://ficcc.org/en/grow/english` loads the English Ministry grow page
 - [ ] `https://ficcc.org/en/grow/chinese` loads the Chinese Ministry page in English
 - [ ] `https://ficcc.org/en/grow/youth` loads the Youth Ministry page
@@ -106,6 +200,14 @@ Run through this checklist after DNS changes have propagated:
 - [ ] `https://ficcc.org/zh/grow/english` loads the 英語事工 page
 - [ ] `https://ficcc.org/zh/grow/youth` loads the 青少年事工 page
 - [ ] `https://ficcc.org/zh/grow/children` loads the 兒童事工 page
+- [ ] `https://ficcc.org/zh/privacy` loads the Chinese privacy notice
+
+### Manual accessibility
+
+- [ ] Keyboard through the desktop and mobile navigation in both languages; focus is visible and Escape closes the mobile menu
+- [ ] Use Safari VoiceOver to read each contact/ride form through its privacy note, Turnstile, validation errors, and success state
+- [ ] Use VoiceOver rotor headings and landmarks on English and Chinese pages; confirm Chinese control names are understandable
+- [ ] Operate the home-page video control and sermon audio controls with keyboard and VoiceOver
 
 ### em.ficcc.org Redirects (English legacy)
 

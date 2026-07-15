@@ -20,9 +20,9 @@
 **Rule:** Embed Sanity Studio via a `client:only="react"` component (`src/components/Studio.tsx`) on a dedicated Astro page (`src/pages/admin/index.astro`). Use `PUBLIC_` prefixed env vars for project ID and dataset since Studio runs client-side. See D011.
 **Files:** `src/components/Studio.tsx`, `src/pages/admin/index.astro`, `sanity.config.ts`
 
-## K005a: Astro 5 removed `output: 'hybrid'` — use static + adapter instead
-**Context:** Astro 5 merged hybrid into static mode. Adding an adapter (e.g. `@astrojs/vercel`) to a `static` site enables per-page SSR opt-in via `export const prerender = false`. The `output: 'hybrid'` config value no longer exists.
-**Rule:** Don't set `output: 'hybrid'` — it errors on Astro 5. Keep `output: 'static'` and add the adapter. Use `@astrojs/vercel@9` (v10 requires Astro 6). See D014.
+## K005a: Astro uses static output plus the Vercel adapter for per-page SSR
+**Context:** Modern Astro merged hybrid rendering into static mode. Adding the Vercel adapter to a `static` site enables individual routes to opt into SSR with `export const prerender = false`; `output: 'hybrid'` is no longer valid.
+**Rule:** Keep `output: 'static'` and the Vercel adapter. Use the currently tested compatible major pair (`astro@7` and `@astrojs/vercel@11`) and preserve per-page `prerender` declarations when upgrading.
 **Files:** `astro.config.mjs`, `package.json`
 
 ## K006: Sanity preview mode architecture — loadQuery vs existing GROQ helpers
@@ -44,10 +44,10 @@
 **Rule:** Use the typed GROQ helpers in `src/lib/sanity.ts` for all content fetching — each accepts a `language` parameter defaulting to `'en'`. When adding new schema types, add them to the barrel export and update the structure builder in `sanity/structure.ts`.
 **Files:** `sanity/schemas/index.ts`, `src/lib/sanity.ts`, `sanity/structure.ts`
 
-## K009: Vercel adapter outputs static files to dist/client/ not dist/
-**Context:** With `@astrojs/vercel` adapter, `npm run build` outputs static HTML to `dist/client/` not `dist/`. Verification commands and gate checks that reference `dist/index.html` or `dist/zh/about/index.html` fail even though the pages built correctly.
-**Rule:** When writing verification commands for Astro + Vercel adapter builds, always use `dist/client/` as the base path for static file checks. E.g. `test -f dist/client/zh/about/index.html` not `test -f dist/zh/about/index.html`.
-**Files:** `dist/client/`
+## K009: Vercel output separates static assets from the SSR handler
+**Context:** With the Vercel adapter, `npm run build` writes client assets and prerendered pages to `dist/client/`, while server-rendered routes are handled by `.vercel/output/functions/_render.func/`. An SSR page such as `/en/visit` therefore does not need a matching HTML file in `dist/client/`.
+**Rule:** Check `dist/client/` only for assets and explicitly prerendered routes. Exercise SSR routes through the generated Vercel handler with `npm run preview`; do not infer a missing route from the absence of a static HTML file.
+**Files:** `dist/client/`, `.vercel/output/functions/_render.func/`, `scripts/preview-vercel-output.mjs`
 
 ## K010: Bilingual URL resolution — getAlternateUrl as single source of truth
 **Context:** Language toggle href, hreflang SEO tags, and any future bilingual URL needs all require the same EN↔ZH path mapping logic. Duplicating this logic across Header, SEO, and other consumers leads to drift.
@@ -59,10 +59,10 @@
 **Rule:** When ZH content or UX needs differ significantly from EN, build a bespoke page rather than cloning. Follow the same BaseLayout/lang='zh' pattern, but design the page layout for the ZH audience. Current bespoke pages: /zh/contact (WeChat-first), /zh/about (extended 1968-2009 timeline), /zh/about/beliefs (11 EFCA points vs EN's 8).
 **Files:** `src/pages/zh/contact.astro`, `src/pages/zh/about/index.astro`, `src/pages/zh/about/beliefs.astro`
 
-## K012: Use npx serve for LHCI instead of astro preview with Vercel adapter
-**Context:** With `@astrojs/vercel` adapter, `astro preview` tries to start a Vercel dev server which is incompatible with Lighthouse CI. Static output lives in `dist/client/`.
-**Rule:** Use `npx serve dist/client -l 4321` as the LHCI startServerCommand. Match `startServerReadyPattern: 'Accepting connections'` for serve's output.
-**Files:** `lighthouserc.cjs`
+## K012: Local CI preview must exercise both static output and SSR
+**Context:** Serving only `dist/client/` makes server-rendered routes such as `/en/visit` return a false 404 even though they work on Vercel. The local preview harness serves static assets first and forwards other requests to the built Vercel render function.
+**Rule:** Use `npm run preview` for Playwright and Lighthouse CI, matching the `SSR preview listening` ready message. Use `E2E_PORT` or `LHCI_PORT` when a non-default port is required; do not replace the harness with a static file server.
+**Files:** `scripts/preview-vercel-output.mjs`, `playwright.config.ts`, `lighthouserc.cjs`
 
 ## K013: --color-terracotta fails WCAG AA — use --color-terracotta-dark for text
 **Context:** `--color-terracotta` (#C4745A) has only 3.31:1 contrast ratio against `--color-bg`, failing WCAG AA for normal text (4.5:1 required). `--color-terracotta-dark` (#A85E42) achieves 4.56:1.

@@ -1,17 +1,22 @@
+const port = Number(process.env.LHCI_PORT || 4321);
+const origin = `http://127.0.0.1:${port}`;
+
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'npx serve dist/client -l 4321',
-      startServerReadyPattern: 'Accepting connections',
+      startServerCommand: `npm run preview -- --port ${port}`,
+      startServerReadyPattern: 'SSR preview listening',
       url: [
-        'http://localhost:4321/',
-        'http://localhost:4321/en/',
-        'http://localhost:4321/en/about/',
-        'http://localhost:4321/en/contact/',
-        'http://localhost:4321/en/visit/',
-        'http://localhost:4321/en/give/',
-        'http://localhost:4321/zh/',
-        'http://localhost:4321/404.html',
+        `${origin}/`,
+        `${origin}/en/`,
+        `${origin}/en/about/`,
+        `${origin}/en/contact/`,
+        `${origin}/en/visit/`,
+        `${origin}/en/privacy/`,
+        `${origin}/en/give/`,
+        `${origin}/zh/`,
+        `${origin}/zh/privacy/`,
+        `${origin}/404.html`,
       ],
       numberOfRuns: 3,
     },

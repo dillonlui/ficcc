@@ -13,6 +13,9 @@ const logoHref = lang === 'zh' ? '/zh' : '/en/';
 const logoText = lang === 'zh' ? '伊的家' : 'FICCC';
 const logoLabel = lang === 'zh' ? '伊的家' : 'FICCC Home';
 const langToggleLabel = lang === 'zh' ? '中文 / EN' : 'EN / 中文';
+const navLabel = lang === 'zh' ? '主要導覽' : 'Main navigation';
+const menuOpenLabel = lang === 'zh' ? '開啟導覽選單' : 'Open navigation menu';
+const menuCloseLabel = lang === 'zh' ? '關閉導覽選單' : 'Close navigation menu';
 const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/en/' : '/zh');
 const currentPath = Astro.url.pathname;
 const logoSrc = lang === 'zh' ? '/logo/logo-zh-light.svg' : '/logo/logo-en-light.svg';
@@ -100,7 +103,9 @@ if (growNavItems.length > 0) {
         type="button"
         aria-expanded="false"
         aria-controls="nav-menu"
-        aria-label="Toggle navigation menu"
+        aria-label={menuOpenLabel}
+        data-label-open={menuOpenLabel}
+        data-label-close={menuCloseLabel}
       >
         <span class="hamburger-bar" aria-hidden="true"></span>
         <span class="hamburger-bar" aria-hidden="true"></span>
@@ -108,7 +113,7 @@ if (growNavItems.length > 0) {
       </button>
     </div>
 
-    <nav id="nav-menu" class="nav" aria-label="Main navigation">
+    <nav id="nav-menu" class="nav" aria-label={navLabel}>
       <ul class="nav-list" role="list">
         {navLinks.map((link) => {
           const dropdown = dropdowns[link.href];
@@ -481,33 +486,62 @@ if (growNavItems.length > 0) {
 </style>
 
 <script>
-  // Hamburger toggle
   const btn = document.querySelector('.hamburger') as HTMLButtonElement;
   const nav = document.querySelector('#nav-menu') as HTMLElement;
+  const mobileQuery = window.matchMedia('(max-width: 767px)');
 
   if (btn && nav) {
+    const dropdownTriggers = Array.from(nav.querySelectorAll<HTMLButtonElement>('.nav-dropdown-trigger'));
+    const openLabel = btn.dataset.labelOpen || 'Open navigation menu';
+    const closeLabel = btn.dataset.labelClose || 'Close navigation menu';
+
+    function firstInteractiveItem() {
+      return nav.querySelector<HTMLElement>('a:not([tabindex="-1"]), button:not([tabindex="-1"])');
+    }
+
+    function syncResponsiveState() {
+      const isMobile = mobileQuery.matches;
+      const isOpen = nav.classList.contains('is-open');
+
+      nav.inert = isMobile && !isOpen;
+      if (isMobile && !isOpen) nav.setAttribute('aria-hidden', 'true');
+      else nav.removeAttribute('aria-hidden');
+
+      dropdownTriggers.forEach((trigger) => {
+        if (isMobile) {
+          trigger.tabIndex = -1;
+          trigger.setAttribute('aria-hidden', 'true');
+          trigger.setAttribute('aria-expanded', 'true');
+        } else {
+          trigger.removeAttribute('tabindex');
+          trigger.removeAttribute('aria-hidden');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
     function openNav() {
       btn.setAttribute('aria-expanded', 'true');
+      btn.setAttribute('aria-label', closeLabel);
       nav.classList.add('is-open');
-      // Focus first link in nav for accessibility
-      const firstLink = nav.querySelector('a, button') as HTMLElement | null;
-      firstLink?.focus();
+      syncResponsiveState();
+      firstInteractiveItem()?.focus();
       document.addEventListener('focusin', trapFocus);
     }
 
-    function closeNav() {
+    function closeNav(restoreFocus = true) {
       btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-label', openLabel);
       nav.classList.remove('is-open');
       document.removeEventListener('focusin', trapFocus);
-      btn.focus();
+      syncResponsiveState();
+      if (restoreFocus) btn.focus();
     }
 
-    // Focus trap: keep focus inside nav while open
     function trapFocus(e: FocusEvent) {
       if (!nav.classList.contains('is-open')) return;
       if (!nav.contains(e.target as Node) && e.target !== btn) {
-        const firstLink = nav.querySelector('a, button') as HTMLElement | null;
-        firstLink?.focus();
+        firstInteractiveItem()?.focus();
       }
     }
 
@@ -519,11 +553,35 @@ if (growNavItems.length > 0) {
         openNav();
       }
     });
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
         closeNav();
       }
     });
-  }
 
+    dropdownTriggers.forEach((trigger) => {
+      const dropdown = trigger.closest<HTMLElement>('.nav-dropdown');
+      if (!dropdown) return;
+
+      const setExpanded = (expanded: boolean) => {
+        if (!mobileQuery.matches) trigger.setAttribute('aria-expanded', String(expanded));
+      };
+
+      dropdown.addEventListener('mouseenter', () => setExpanded(true));
+      dropdown.addEventListener('mouseleave', () => {
+        if (!dropdown.contains(document.activeElement)) setExpanded(false);
+      });
+      dropdown.addEventListener('focusin', () => setExpanded(true));
+      dropdown.addEventListener('focusout', (event) => {
+        if (!dropdown.contains(event.relatedTarget as Node | null)) setExpanded(false);
+      });
+    });
+
+    mobileQuery.addEventListener('change', () => {
+      if (!mobileQuery.matches && nav.classList.contains('is-open')) closeNav(false);
+      else syncResponsiveState();
+    });
+    syncResponsiveState();
+  }
 </script>

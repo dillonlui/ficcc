@@ -1,5 +1,7 @@
 import { defineConfig } from 'sanity';
-import { structureTool } from 'sanity/structure';
+// Sanity 6's Rolldown bundle currently resolves the legacy compatibility name
+// more reliably than the direct `sanity/structure` entrypoint.
+import { deskTool as structureTool } from 'sanity/desk';
 import { defineDocuments, defineLocations, presentationTool } from 'sanity/presentation';
 import { FicccStudioIcon } from './sanity/components/FicccStudioIcon';
 import { structure } from './sanity/structure';

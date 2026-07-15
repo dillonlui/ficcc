@@ -12,7 +12,15 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [
     sitemap({
-      filter: (page) => page !== 'https://ficcc.org/',
+      filter: (page) => {
+        const pathname = new URL(page).pathname;
+
+        return pathname !== '/'
+          && !pathname.startsWith('/admin/')
+          && pathname !== '/admin'
+          && pathname !== '/styleguide/'
+          && pathname !== '/styleguide';
+      },
       i18n: {
         defaultLocale: 'en',
         locales: {

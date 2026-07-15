@@ -43,6 +43,7 @@ const footerNavEN: NavLink[] = [
   { label: 'Sermons', href: '/en/sermons' },
   { label: 'Give', href: '/en/give' },
   { label: 'Contact', href: '/en/contact' },
+  { label: 'Privacy', href: '/en/privacy' },
 ];
 
 const footerNavZH: NavLink[] = [
@@ -53,6 +54,7 @@ const footerNavZH: NavLink[] = [
   { label: '講道', href: '/zh/sermons' },
   { label: '奉獻', href: '/zh/give' },
   { label: '聯絡我們', href: '/zh/contact' },
+  { label: '隱私聲明', href: '/zh/privacy' },
 ];
 
 export function getFooterNav(lang: Lang = 'en'): NavLink[] {
@@ -96,16 +98,31 @@ const ASYMMETRIC_ROUTES: Record<string, string> = {
 
 const NO_COUNTERPART = ['/en/resources', '/zh/fellowships', '/styleguide', '/admin', '/404'];
 
-export function getAlternateUrl(pathname: string, currentLang: Lang): string {
-  const normalized = pathname.length > 1 && pathname.endsWith('/')
+function normalizePathname(pathname: string): string {
+  return pathname.length > 1 && pathname.endsWith('/')
     ? pathname.slice(0, -1)
     : pathname;
+}
+
+/**
+ * Whether a page has a genuine page-level counterpart in the other language.
+ * Navigation can still fall back to the other-language homepage, but hreflang
+ * must only be emitted for an equivalent page.
+ */
+export function hasLanguageCounterpart(pathname: string): boolean {
+  const normalized = normalizePathname(pathname);
+
+  return !NO_COUNTERPART.some((p) => normalized === p || normalized.startsWith(p + '/'));
+}
+
+export function getAlternateUrl(pathname: string, currentLang: Lang): string {
+  const normalized = normalizePathname(pathname);
 
   if (ASYMMETRIC_ROUTES[normalized]) {
     return ASYMMETRIC_ROUTES[normalized];
   }
 
-  if (NO_COUNTERPART.some((p) => normalized === p || normalized.startsWith(p + '/'))) {
+  if (!hasLanguageCounterpart(normalized)) {
     return currentLang === 'en' ? '/zh' : '/en/';
   }
 

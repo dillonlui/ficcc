@@ -1,0 +1,278 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  lang?: 'en' | 'zh';
+}
+
+const { lang = 'en' } = Astro.props;
+const isZh = lang === 'zh';
+
+const copy = isZh ? {
+  pageTitle: '隱私聲明 | 伊的家華人基督教會',
+  description: '了解伊的家華人基督教會網站如何收集、使用和保護您的個人資料。',
+  eyebrow: '隱私與關懷',
+  heading: '隱私聲明',
+  intro: '當您與教會聯繫時，我們希望清楚說明您的資料如何被使用。這份聲明適用於 ficcc.org 網站。',
+  updated: '最後更新：2026年7月15日',
+  summaryHeading: '簡要說明',
+  summaryItems: [
+    '我們使用您提供的資料來回覆訊息或安排接送。',
+    '我們不會出售或出租您的個人資料。',
+    '網站使用可信賴的服務供應商來託管內容、阻擋垃圾訊息、傳送電郵和了解網站使用情況。',
+  ],
+  collectHeading: '我們收集的資料',
+  collectBody: '當您提交聯絡或接送表單時，我們會收到您主動提供的資料，例如姓名、電郵地址、電話號碼、希望日期、接送地點和訊息內容。網站也可能接收一般技術資料，例如 IP 位址、瀏覽器和裝置類型、所瀏覽的頁面及大約位置。語言選擇會儲存在 lang-pref Cookie 中，方便下次顯示您偏好的語言。',
+  useHeading: '我們如何使用資料',
+  useBody: '我們會使用這些資料來回覆您的問題、安排接送、維護和保護網站、預防濫用，以及了解網站哪些部分對訪客最有幫助。只有需要處理相關事務的教會同工和義工才可存取表單內容。',
+  providersHeading: '協助我們運作網站的服務',
+  providersIntro: '以下供應商可能依其服務需要處理有限的資料：',
+  providerItems: [
+    { name: 'Cloudflare Turnstile', detail: '驗證表單並阻擋垃圾訊息。', href: 'https://www.cloudflare.com/privacypolicy/' },
+    { name: 'Resend', detail: '將表單內容傳送到教會的電郵信箱。', href: 'https://resend.com/legal/privacy-policy' },
+    { name: 'Vercel', detail: '託管網站，並在啟用時提供網站分析。', href: 'https://vercel.com/legal/privacy-policy' },
+    { name: 'Sanity', detail: '託管網站內容和媒體；聯絡表單內容不會儲存在 Sanity。', href: 'https://www.sanity.io/legal/privacy' },
+    { name: 'Google Analytics', detail: '僅在網站設定啟用時提供使用情況分析。', href: 'https://policies.google.com/privacy' },
+  ],
+  retentionHeading: '保存與保護',
+  retentionBody: '我們只會在回覆、後續關懷、行政或法律需要的合理期間內保留表單資料。我們和服務供應商採取合理的技術與組織措施保護資料，但沒有任何網路傳輸或儲存方式能保證絕對安全。',
+  childrenHeading: '兒童資料',
+  childrenBody: '網上聯絡和接送表單是為成年人及家長或監護人而設。我們不會故意透過本網站直接向兒童收集個人資料。如您認為兒童已提交資料，請聯絡我們以便刪除。',
+  choicesHeading: '您的選擇與聯絡方式',
+  choicesBody: '您可以要求查閱、更正或刪除您透過網站提交的個人資料。您也可以在瀏覽器中限制 Cookie；這可能會影響語言偏好等功能。如有任何隱私問題，請電郵',
+  contactLabel: 'info@ficcc.org',
+} : {
+  pageTitle: 'Privacy Notice | First Ithaca Chinese Christian Church',
+  description: 'Learn how First Ithaca Chinese Christian Church collects, uses, and protects personal information on this website.',
+  eyebrow: 'Privacy & care',
+  heading: 'Privacy notice',
+  intro: 'When you reach out to our church, we want you to understand how your information is used. This notice applies to the ficcc.org website.',
+  updated: 'Last updated July 15, 2026',
+  summaryHeading: 'In brief',
+  summaryItems: [
+    'We use information you provide to respond to messages and coordinate rides.',
+    'We do not sell or rent your personal information.',
+    'Trusted service providers help us host content, prevent spam, deliver email, and understand site use.',
+  ],
+  collectHeading: 'Information we collect',
+  collectBody: 'When you submit a contact or ride-request form, we receive the information you choose to provide, such as your name, email address, phone number, preferred date, pickup location, and message. The site may also receive ordinary technical data such as IP address, browser and device type, pages viewed, and approximate location. A lang-pref cookie remembers your language choice for future visits.',
+  useHeading: 'How we use information',
+  useBody: 'We use this information to answer questions, coordinate rides, maintain and protect the site, prevent abuse, and understand which parts of the site are most useful. Form content is available only to church staff and volunteers who need it for the relevant ministry response.',
+  providersHeading: 'Services that help operate the site',
+  providersIntro: 'The following providers may process limited data as needed to provide their services:',
+  providerItems: [
+    { name: 'Cloudflare Turnstile', detail: 'checks forms and prevents spam.', href: 'https://www.cloudflare.com/privacypolicy/' },
+    { name: 'Resend', detail: 'delivers form content to church email inboxes.', href: 'https://resend.com/legal/privacy-policy' },
+    { name: 'Vercel', detail: 'hosts the site and provides site analytics when enabled.', href: 'https://vercel.com/legal/privacy-policy' },
+    { name: 'Sanity', detail: 'hosts website content and media; contact-form submissions are not stored in Sanity.', href: 'https://www.sanity.io/legal/privacy' },
+    { name: 'Google Analytics', detail: 'provides usage analytics only when enabled in the site configuration.', href: 'https://policies.google.com/privacy' },
+  ],
+  retentionHeading: 'Retention and security',
+  retentionBody: 'We keep form information only as long as reasonably needed for a response, follow-up care, administration, or legal obligations. We and our providers use reasonable technical and organizational safeguards, but no internet transmission or storage system can be guaranteed completely secure.',
+  childrenHeading: 'Children’s information',
+  childrenBody: 'The online contact and ride-request forms are intended for adults and for parents or guardians. We do not knowingly collect personal information directly from children through this site. If you believe a child submitted information, contact us so we can remove it.',
+  choicesHeading: 'Your choices and how to contact us',
+  choicesBody: 'You may ask to access, correct, or delete personal information you submitted through the site. You can also limit cookies in your browser, though that may affect features such as language preference. For privacy questions, email',
+  contactLabel: 'info@ficcc.org',
+};
+---
+
+<BaseLayout title={copy.pageTitle} description={copy.description} lang={lang}>
+  <main id="main-content" class="privacy-page" data-pagefind-body>
+    <header class="privacy-page__hero">
+      <div class="privacy-page__hero-inner" data-reveal>
+        <p class="privacy-page__eyebrow">{copy.eyebrow}</p>
+        <h1>{copy.heading}</h1>
+        <p class="privacy-page__intro">{copy.intro}</p>
+        <p class="privacy-page__updated">{copy.updated}</p>
+      </div>
+    </header>
+
+    <div class="privacy-page__layout">
+      <aside class="privacy-page__summary" aria-labelledby="privacy-summary-heading" data-reveal>
+        <h2 id="privacy-summary-heading">{copy.summaryHeading}</h2>
+        <ul>
+          {copy.summaryItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </aside>
+
+      <article class="privacy-page__content">
+        <section data-reveal>
+          <h2>{copy.collectHeading}</h2>
+          <p>{copy.collectBody}</p>
+        </section>
+
+        <section data-reveal>
+          <h2>{copy.useHeading}</h2>
+          <p>{copy.useBody}</p>
+        </section>
+
+        <section data-reveal>
+          <h2>{copy.providersHeading}</h2>
+          <p>{copy.providersIntro}</p>
+          <ul class="privacy-page__providers">
+            {copy.providerItems.map((provider) => (
+              <li>
+                <a href={provider.href}>{provider.name}</a> {provider.detail}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section data-reveal>
+          <h2>{copy.retentionHeading}</h2>
+          <p>{copy.retentionBody}</p>
+        </section>
+
+        <section data-reveal>
+          <h2>{copy.childrenHeading}</h2>
+          <p>{copy.childrenBody}</p>
+        </section>
+
+        <section data-reveal>
+          <h2>{copy.choicesHeading}</h2>
+          <p>{copy.choicesBody} <a href={`mailto:${copy.contactLabel}`}>{copy.contactLabel}</a>.</p>
+        </section>
+      </article>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .privacy-page {
+    padding-bottom: calc(var(--space-16) + var(--space-8));
+    background:
+      radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--color-terracotta) 12%, transparent), transparent 24rem),
+      var(--color-bg);
+  }
+
+  .privacy-page__hero {
+    border-bottom: 1px solid var(--color-stone);
+  }
+
+  .privacy-page__hero-inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-16) var(--space-6) var(--space-12);
+  }
+
+  .privacy-page__eyebrow {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-terracotta-dark);
+  }
+
+  .privacy-page h1 {
+    max-width: 14ch;
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    line-height: var(--leading-tight);
+    color: var(--color-ink);
+  }
+
+  .privacy-page__intro {
+    max-width: 42rem;
+    margin-top: var(--space-5);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .privacy-page__updated {
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--base-700);
+  }
+
+  .privacy-page__layout {
+    display: grid;
+    grid-template-columns: minmax(14rem, 18rem) minmax(0, 42rem);
+    gap: var(--space-12);
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-12) var(--space-6);
+  }
+
+  .privacy-page__summary {
+    align-self: start;
+    padding: var(--space-6);
+    background: color-mix(in srgb, var(--base-100) 88%, transparent);
+    border: 1px solid var(--color-stone);
+    border-left: 4px solid var(--color-terracotta-dark);
+    border-radius: var(--radius-md);
+  }
+
+  .privacy-page__summary h2,
+  .privacy-page__content h2 {
+    font-family: var(--font-heading);
+    color: var(--color-ink);
+  }
+
+  .privacy-page__summary h2 {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-lg);
+  }
+
+  .privacy-page__summary ul,
+  .privacy-page__providers {
+    padding-left: var(--space-5);
+  }
+
+  .privacy-page__summary li,
+  .privacy-page__providers li {
+    margin-bottom: var(--space-3);
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .privacy-page__content section + section {
+    margin-top: var(--space-10);
+    padding-top: var(--space-10);
+    border-top: 1px solid var(--color-stone);
+  }
+
+  .privacy-page__content h2 {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-xl);
+  }
+
+  .privacy-page__content p {
+    line-height: var(--leading-relaxed);
+    color: var(--color-body);
+  }
+
+  .privacy-page a {
+    color: var(--color-terracotta-dark);
+    font-weight: 600;
+    text-underline-offset: 0.18em;
+  }
+
+  .privacy-page a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  @media (max-width: 767px) {
+    .privacy-page__hero-inner {
+      padding: var(--space-12) var(--space-4) var(--space-10);
+    }
+
+    .privacy-page h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .privacy-page__intro {
+      font-size: var(--text-base);
+    }
+
+    .privacy-page__layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+      padding: var(--space-8) var(--space-4);
+    }
+  }
+</style>

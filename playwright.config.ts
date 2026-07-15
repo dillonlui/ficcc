@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const CI = !!process.env.CI;
+const PORT = Number(process.env.E2E_PORT || 4321);
 
 export default defineConfig({
   testDir: './e2e',
@@ -10,7 +11,7 @@ export default defineConfig({
   workers: CI ? 1 : undefined,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:4321',
+    baseURL: `http://127.0.0.1:${PORT}`,
     trace: 'on-first-retry',
   },
   projects: [
@@ -32,8 +33,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx serve dist/client -l 4321',
-    port: 4321,
+    command: `npm run preview -- --port ${PORT}`,
+    port: PORT,
     reuseExistingServer: !CI,
     stdout: 'pipe',
   },
