@@ -109,6 +109,9 @@
 
   /* --- Layout --- */
   --max-width:  72rem;
+  --site-header-logo-height: 44px;
+  --site-header-height: calc(var(--site-header-logo-height) + var(--space-8) + 1px);
+  --sticky-section-offset: calc(var(--site-header-height) + var(--space-6));
 
   /* --- Radius: soft shapes ─── */
   --radius-sm:   6px;
@@ -229,44 +232,44 @@ a.announcement-bar:focus-visible {
 
 @keyframes reveal-up {
   from {
-    transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(14px);
   }
   to {
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes reveal-fade {
-  from { opacity: 1; }
+  from { opacity: 0; }
   to   { opacity: 1; }
 }
 
 .reveal-enabled [data-reveal] {
-  transform: translateY(20px);
+  opacity: 0;
+  transform: translateY(14px);
 }
 
 [data-reveal].is-visible {
-  animation: reveal-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: reveal-up 0.56s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms) both;
+}
+
+[data-reveal="fade"] {
+  transform: none;
 }
 
 [data-reveal="fade"].is-visible {
-  animation: reveal-fade 0.7s ease forwards;
+  animation: reveal-fade 0.5s ease-out var(--reveal-delay, 0ms) both;
 }
 
-/* Stagger children: each successive [data-reveal] child delays slightly */
-[data-reveal-stagger] > [data-reveal]:nth-child(1) { animation-delay: 0ms; }
-[data-reveal-stagger] > [data-reveal]:nth-child(2) { animation-delay: 80ms; }
-[data-reveal-stagger] > [data-reveal]:nth-child(3) { animation-delay: 160ms; }
-[data-reveal-stagger] > [data-reveal]:nth-child(4) { animation-delay: 240ms; }
-[data-reveal-stagger] > [data-reveal]:nth-child(5) { animation-delay: 320ms; }
-[data-reveal-stagger] > [data-reveal]:nth-child(6) { animation-delay: 400ms; }
-[data-reveal-stagger] > [data-reveal]:nth-child(7) { animation-delay: 480ms; }
-[data-reveal-stagger] > [data-reveal]:nth-child(8) { animation-delay: 560ms; }
+/* Stagger delays are assigned per entering viewport batch by BaseLayout. */
 
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1;
+    transform: none !important;
     animation: none !important;
   }
 }

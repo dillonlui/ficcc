@@ -122,13 +122,33 @@ const showAnnouncementBar =
         const els = document.querySelectorAll('[data-reveal]');
         if (els.length && 'IntersectionObserver' in window) {
           const io = new IntersectionObserver((entries) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) {
-                e.target.classList.add('is-visible');
-                io.unobserve(e.target);
+            const entering = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+            const staggerCounts = new Map<Element, number>();
+
+            entering.forEach((entry) => {
+              const target = entry.target as HTMLElement;
+              const staggerGroup = target.parentElement?.matches('[data-reveal-stagger]')
+                ? target.parentElement
+                : null;
+              const staggerIndex = staggerGroup
+                ? staggerCounts.get(staggerGroup) ?? 0
+                : 0;
+
+              target.style.setProperty('--reveal-delay', `${staggerIndex * 40}ms`);
+              target.classList.add('is-visible');
+              io.unobserve(target);
+
+              if (staggerGroup) {
+                staggerCounts.set(staggerGroup, staggerIndex + 1);
               }
             });
-          }, { threshold: 0.15 });
+          }, {
+            threshold: 0.01,
+            rootMargin: '0px 0px 160px 0px',
+          });
           els.forEach((el) => io.observe(el));
         } else {
           els.forEach((el) => el.classList.add('is-visible'));

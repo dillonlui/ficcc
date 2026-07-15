@@ -154,13 +154,16 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
     </section>
 
     <!-- Beliefs -->
-    <section class="section" aria-labelledby="beliefs-heading">
-      <div class="section__inner">
-        <h2 class="section__heading" id="beliefs-heading" data-reveal>{beliefsHeading}</h2>
-        <p class="section__intro" data-reveal>
-          {beliefsIntro}
-        </p>
-        <div data-reveal>
+    <section class="section section--accordion" aria-labelledby="beliefs-heading">
+      <div class="section__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
+      <div class="section__inner section__inner--accordion">
+        <div class="section__lead" data-reveal>
+          <h2 class="section__heading" id="beliefs-heading">{beliefsHeading}</h2>
+          <p class="section__intro">
+            {beliefsIntro}
+          </p>
+        </div>
+        <div class="section__panel" data-reveal>
           <Accordion items={beliefs} />
         </div>
       </div>
@@ -178,19 +181,22 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
     </section>
 
     <!-- Vision -->
-    <section class="section section--alt" aria-labelledby="vision-heading">
-      <div class="section__inner">
-        <h2 class="section__heading" id="vision-heading" data-reveal>{visionHeading}</h2>
-        {visionIntroHtml ? (
-          <div class="section__intro" data-reveal set:html={visionIntroHtml} />
-        ) : (
-          <p class="section__intro" data-reveal>
-            伊的家華人基督教會的使命是「培養謙卑的僕人，一生愛主、愛失喪的人、愛地方教會」。
-            這個異象根植於聖經中反覆強調的三個標準，我們盼望在每位弟兄姊妹的生命中培育這些品格，
-            使他們能忠心地管理神所賜的豐盛恩典。
-          </p>
-        )}
-        <div data-reveal>
+    <section class="section section--accordion section--alt" aria-labelledby="vision-heading">
+      <div class="section__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
+      <div class="section__inner section__inner--accordion">
+        <div class="section__lead" data-reveal>
+          <h2 class="section__heading" id="vision-heading">{visionHeading}</h2>
+          {visionIntroHtml ? (
+            <div class="section__intro" set:html={visionIntroHtml} />
+          ) : (
+            <p class="section__intro">
+              伊的家華人基督教會的使命是「培養謙卑的僕人，一生愛主、愛失喪的人、愛地方教會」。
+              這個異象根植於聖經中反覆強調的三個標準，我們盼望在每位弟兄姊妹的生命中培育這些品格，
+              使他們能忠心地管理神所賜的豐盛恩典。
+            </p>
+          )}
+        </div>
+        <div class="section__panel" data-reveal>
           <Accordion items={visionItems} />
         </div>
       </div>
@@ -277,9 +283,13 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
   }
 
   .section {
-    padding-block: var(--space-16);
+    padding: var(--space-20) var(--space-6);
     position: relative;
-    overflow: hidden;
+    overflow: clip;
+  }
+
+  .section--accordion {
+    background-color: var(--color-bg);
   }
 
   .section--alt {
@@ -289,16 +299,39 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
   .section__inner {
     max-width: var(--max-width);
     margin-inline: auto;
-    padding-inline: var(--space-6);
     position: relative;
     z-index: 2;
+  }
+
+  .section__inner--accordion {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.65fr) minmax(0, 1.35fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .section__tex {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.1;
+    mix-blend-mode: multiply;
+  }
+
+  .section__lead {
+    position: sticky;
+    top: var(--sticky-section-offset);
   }
 
   .section__heading {
     font-family: var(--font-heading);
     font-size: var(--text-4xl);
     color: var(--color-ink);
-    margin-block-end: var(--space-4);
+    margin: 0;
+    text-wrap: balance;
   }
 
   .section__intro {
@@ -307,7 +340,25 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
     line-height: var(--leading-relaxed);
     color: var(--color-body);
     max-width: 48rem;
-    margin-block-end: var(--space-10);
+    margin: var(--space-5) 0 0;
+    text-wrap: pretty;
+  }
+
+  .section__intro :global(p) {
+    margin-block-end: var(--space-3);
+  }
+
+  .section__intro :global(p:last-child) {
+    margin-block-end: 0;
+  }
+
+  .section__panel {
+    min-width: 0;
+    padding: var(--space-3) var(--space-6);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-xl);
+    background: var(--base-50);
+    box-shadow: 0 var(--space-3) var(--space-8) color-mix(in srgb, var(--primary-900) 8%, transparent);
   }
 
   /* ================================================================
@@ -446,6 +497,17 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
   /* ================================================================
      RESPONSIVE
      ================================================================ */
+  @media (max-width: 960px) {
+    .section__inner--accordion {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    .section__lead {
+      position: static;
+    }
+  }
+
   @media (max-width: 767px) {
     .beliefs-hero {
       min-height: 30vh;
@@ -460,7 +522,7 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
     }
 
     .section {
-      padding-block: var(--space-10);
+      padding: var(--space-16) var(--space-4);
     }
 
     .section__heading {
@@ -469,6 +531,10 @@ const calloutBody = beliefsPage?.calloutBody || '從敬拜聚會到小組團契�
 
     .section__intro {
       font-size: var(--text-base);
+    }
+
+    .section__panel {
+      padding-inline: var(--space-4);
     }
 
     .scripture-banner {

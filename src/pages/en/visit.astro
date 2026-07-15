@@ -135,44 +135,70 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
 ---
 
 <BaseLayout title={title} description={description}>
-  <main id="main-content" data-pagefind-body>
+  <main id="main-content" data-pagefind-body class="visit-page">
     <Hero
       title={heroTitle}
       subtitle={heroSubtitle}
       backgroundImage={heroImage}
     />
 
-    <!-- Schedule -->
-    <section class="schedule" aria-label="Sunday Schedule">
-      <div class="schedule__inner">
-        <h2 class="section-heading" data-reveal>Sunday Schedule</h2>
-        <div class="schedule__grid" data-reveal-stagger>
-          {schedule.map((item) => (
-            <div class="schedule__card" data-reveal>
-              <span class="schedule__time">{item.time}</span>
-              <h3 class="schedule__label">{item.label}</h3>
-              {item.description && (
-                <p class="schedule__desc">{item.description}</p>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <div class="visit-intro-field">
+      <div class="visit-intro-field__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
 
-    <!-- What to Expect -->
-    <section class="expect expect--textured" aria-label="What to Expect">
-      <div class="expect__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
-      <div class="expect__inner">
-        <h2 class="section-heading" data-reveal>What to Expect</h2>
-        <div class="expect__body" data-reveal set:html={whatToExpectHtml} />
-      </div>
-    </section>
+      <!-- Sunday at a glance -->
+      <section class="schedule" aria-label="Sunday at a glance">
+        <div class="schedule__inner">
+          <div class="schedule__rail" data-reveal>
+            <div class="schedule__heading">
+              <span class="schedule__kicker">Sunday at a glance</span>
+              <span class="schedule__address">429 Mitchell Street</span>
+            </div>
+            <div class="schedule__events" data-reveal-stagger>
+              {schedule.map((item) => (
+                <div class="schedule__event" data-reveal>
+                  <span class="schedule__time">{item.time}</span>
+                  <span class="schedule__event-copy">
+                    <span class="schedule__label">{item.label}</span>
+                    {item.description && <span class="schedule__desc">{item.description}</span>}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <a
+              class="schedule__directions"
+              href="https://www.google.com/maps/search/?api=1&query=429+Mitchell+Street+Ithaca+NY+14850"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get directions
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+                <path d="M14 5h5v5M19 5l-8 8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- What to Expect -->
+      <section class="expect" aria-label="What to Expect">
+        <div class="expect__inner">
+          <div class="section-intro" data-reveal>
+            <p class="section-kicker">Your first Sunday</p>
+            <h2 class="section-heading">What to Expect</h2>
+          </div>
+          <div class="expect__body" data-reveal set:html={whatToExpectHtml} />
+        </div>
+      </section>
+    </div>
 
     <!-- Transportation & Directions -->
     <section class="directions" aria-label="Transportation and Directions">
       <div class="directions__inner">
-        <h2 class="section-heading" data-reveal>Getting Here</h2>
+        <div class="section-intro" data-reveal>
+          <p class="section-kicker">Arrive with confidence</p>
+          <h2 class="section-heading">Getting Here</h2>
+        </div>
         <div class="directions__columns" data-reveal>
           <div class="directions__body" set:html={transportationHtml} />
           <div class="directions__map">
@@ -186,6 +212,15 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
             ></iframe>
+            <a
+              class="directions__map-link"
+              href="https://www.google.com/maps/search/?api=1&query=429+Mitchell+Street+Ithaca+NY+14850"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open in Google Maps
+              <span aria-hidden="true">↗</span>
+            </a>
           </div>
         </div>
       </div>
@@ -195,14 +230,18 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
     <section class="faq faq--textured" aria-label="Frequently Asked Questions">
       <div class="faq__tex" style="background-image: url('/images/textures/kiwihug-qv05FvdE26k-unsplash.jpg')"></div>
       <div class="faq__inner">
-        <h2 class="section-heading" data-reveal>Frequently Asked Questions</h2>
-        <div data-reveal><Accordion items={accordionItems} /></div>
+        <div class="faq__intro" data-reveal>
+          <p class="section-kicker">Good to know</p>
+          <h2 class="section-heading">Frequently Asked Questions</h2>
+          <p>Still wondering about something? These are the questions first-time guests ask most often.</p>
+        </div>
+        <div class="faq__panel" data-reveal><Accordion items={accordionItems} /></div>
       </div>
     </section>
 
     <!-- Ride Request -->
     {showRideRequest && (
-      <section class="ride-request" aria-label="Request a Ride">
+      <section id="ride-request" class="ride-request" aria-label="Request a Ride">
         <div class="ride-request__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
         <div class="ride-request__inner">
           <h2 class="ride-request__heading" data-reveal>{rideRequestHeading}</h2>
@@ -220,83 +259,167 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
-  /* ---------- Hero image position override ---------- */
   :global(.hero__img) {
     object-position: center 25%;
   }
 
-  /* ---------- Shared ---------- */
-  .section-heading {
-    font-family: var(--font-heading);
-    font-size: var(--text-3xl);
-    color: var(--color-ink);
-    text-align: center;
+  .visit-page {
+    background: var(--color-bg);
+  }
+
+  .visit-intro-field {
+    position: relative;
+    display: flow-root;
+    background: var(--primary-50);
+  }
+
+  .visit-intro-field__tex {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
+  }
+
+  .section-intro {
     margin-block-end: var(--space-10);
   }
 
-  /* ---------- Schedule ---------- */
+  .section-kicker {
+    margin: 0 0 var(--space-2);
+    color: var(--color-terracotta-dark);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .section-heading {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    text-align: left;
+  }
+
   .schedule {
-    padding: var(--space-16) var(--space-6);
-    background-color: var(--color-bg);
+    position: relative;
+    z-index: 2;
+    margin-block-start: calc(var(--space-12) * -1);
+    padding: 0 var(--space-6);
+    background: transparent;
   }
 
   .schedule__inner {
     max-width: var(--max-width);
     margin-inline: auto;
+    padding-block-end: 0;
   }
 
-  .schedule__grid {
+  .schedule__rail {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: var(--space-8);
+    grid-template-columns: minmax(11rem, 0.55fr) minmax(0, 1.5fr) auto;
+    overflow: hidden;
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-xl);
+    background: var(--base-50);
+    box-shadow: 0 var(--space-4) var(--space-10) color-mix(in srgb, var(--primary-900) 12%, transparent);
   }
 
-  .schedule__card {
-    background-color: var(--color-stone);
-    border-radius: var(--radius-xl);
-    padding: var(--space-8) var(--space-6);
-    text-align: center;
+  .schedule__heading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    border-inline-end: 1px solid var(--base-300);
+    background: var(--base-50);
+  }
+
+  .schedule__kicker {
+    color: var(--primary-600);
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+  }
+
+  .schedule__address {
+    color: var(--base-700);
+    font-size: var(--text-sm);
+  }
+
+  .schedule__events {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .schedule__event {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-width: 0;
+    padding: var(--space-6);
+    border-inline-end: 1px solid var(--base-300);
   }
 
   .schedule__time {
-    display: block;
+    flex: 0 0 auto;
     font-family: var(--font-heading);
-    font-size: var(--text-2xl);
+    font-size: var(--text-xl);
     font-weight: 700;
-    color: var(--primary-500);
-    margin-block-end: var(--space-2);
+    color: var(--primary-600);
+    white-space: nowrap;
+  }
+
+  .schedule__event-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--space-1);
   }
 
   .schedule__label {
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
+    font-size: var(--text-base);
+    font-weight: 500;
     color: var(--color-ink);
-    margin-block-end: var(--space-3);
   }
 
   .schedule__desc {
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
     color: var(--color-body);
   }
 
-  /* ---------- What to Expect ---------- */
-  .expect {
-    padding: var(--space-16) var(--space-6);
-    background-color: var(--color-stone);
-    position: relative;
-    overflow: hidden;
+  .schedule__directions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    color: var(--primary-700);
+    background: var(--primary-100);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 160ms ease, color 160ms ease;
   }
 
-  .expect--textured .expect__tex {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    pointer-events: none;
-    opacity: 0.35;
-    z-index: 0;
+  .schedule__directions:hover {
+    color: var(--primary-800);
+    background: var(--primary-200);
+  }
+
+  .expect {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-20) var(--space-6);
+    background-color: transparent;
   }
 
   .expect__inner {
@@ -307,29 +430,44 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
   }
 
   .expect__body {
-    max-width: 48rem;
-    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
     font-family: var(--font-body);
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: var(--color-body);
   }
 
   .expect__body :global(p) {
-    margin-block-end: var(--space-4);
+    margin: 0;
+    padding: var(--space-6);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--base-50) 92%, transparent);
   }
 
-  .expect__body :global(p:last-child) {
-    margin-block-end: 0;
+  .expect__body :global(p:first-child) {
+    grid-column: 1 / -1;
+    max-width: 46rem;
+    padding: 0 0 var(--space-4);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-ink);
+    font-size: var(--text-lg);
   }
 
   .expect__body :global(strong) {
+    display: block;
+    margin-block-end: var(--space-2);
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
     color: var(--color-ink);
   }
 
-  /* ---------- Directions ---------- */
   .directions {
-    padding: var(--space-16) var(--space-6);
+    padding: var(--space-20) var(--space-6);
     background-color: var(--color-bg);
   }
 
@@ -340,12 +478,16 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
 
   .directions__columns {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-10);
-    align-items: start;
+    grid-template-columns: minmax(18rem, 0.85fr) minmax(0, 1.15fr);
+    gap: var(--space-8);
+    align-items: stretch;
   }
 
   .directions__body {
+    overflow: hidden;
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-xl);
+    background: var(--base-50);
     font-family: var(--font-body);
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
@@ -353,15 +495,23 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
   }
 
   .directions__body :global(p) {
-    margin-block-end: var(--space-4);
+    margin: 0;
+    padding: var(--space-5) var(--space-6);
+    border-block-end: 1px solid var(--base-300);
   }
 
   .directions__body :global(p:last-child) {
-    margin-block-end: 0;
+    border-block-end: 0;
   }
 
   .directions__body :global(strong) {
-    color: var(--color-ink);
+    display: block;
+    margin-block-end: var(--space-1);
+    color: var(--color-terracotta-dark);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   .directions__body :global(a) {
@@ -375,20 +525,48 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
   }
 
   .directions__map {
+    position: relative;
+    min-height: 100%;
     border-radius: var(--radius-xl);
     overflow: hidden;
+    box-shadow: 0 var(--space-3) var(--space-8) color-mix(in srgb, var(--primary-900) 10%, transparent);
   }
 
   .directions__map iframe {
     display: block;
+    height: 100%;
+    min-height: 24rem;
   }
 
-  /* ---------- FAQ ---------- */
+  .directions__map-link {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-full);
+    color: var(--primary-700);
+    background: var(--base-50);
+    box-shadow: 0 var(--space-2) var(--space-5) color-mix(in srgb, var(--primary-900) 18%, transparent);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 160ms ease, background-color 160ms ease;
+  }
+
+  .directions__map-link:hover {
+    transform: translateY(-2px);
+    background: var(--primary-50);
+  }
+
   .faq {
-    padding: var(--space-16) var(--space-6);
-    background-color: var(--color-stone);
     position: relative;
-    overflow: hidden;
+    overflow: clip;
+    padding: var(--space-20) var(--space-6);
+    background-color: var(--base-100);
   }
 
   .faq--textured .faq__tex {
@@ -397,20 +575,45 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
     background-size: cover;
     background-position: center;
     pointer-events: none;
-    opacity: 0.35;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
     z-index: 0;
   }
 
   .faq__inner {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.65fr) minmax(0, 1.35fr);
+    gap: var(--space-16);
+    align-items: start;
     max-width: var(--max-width);
     margin-inline: auto;
     position: relative;
     z-index: 1;
   }
 
-  /* ---------- Ride Request — dark callout with texture ---------- */
+  .faq__intro {
+    position: sticky;
+    top: var(--sticky-section-offset);
+  }
+
+  .faq__intro > p:last-child {
+    max-width: 25rem;
+    margin: var(--space-5) 0 0;
+    color: var(--color-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+  }
+
+  .faq__panel {
+    padding: var(--space-3) var(--space-6);
+    border: 1px solid var(--base-300);
+    border-radius: var(--radius-xl);
+    background: var(--base-50);
+    box-shadow: 0 var(--space-3) var(--space-8) color-mix(in srgb, var(--primary-900) 8%, transparent);
+  }
+
   .ride-request {
-    padding: var(--space-16) var(--space-6) calc(var(--space-16) + 2rem);
+    padding: var(--space-20) var(--space-6);
     background-color: var(--base-800);
     position: relative;
     overflow: hidden;
@@ -451,10 +654,85 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
     margin-block-end: var(--space-10);
   }
 
-  /* ---------- Responsive ---------- */
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
+    .schedule__rail {
+      grid-template-columns: 1fr;
+    }
+
+    .schedule__heading {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--base-300);
+    }
+
+    .schedule__event:last-child {
+      border-inline-end: 0;
+    }
+
+    .schedule__directions {
+      padding-block: var(--space-4);
+    }
+
+    .faq__inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    .faq__intro {
+      position: static;
+    }
+  }
+
+  @media (max-width: 700px) {
     .section-heading {
       font-size: var(--text-2xl);
+    }
+
+    .schedule {
+      margin-block-start: calc(var(--space-8) * -1);
+      padding-inline: var(--space-4);
+      background: transparent;
+    }
+
+    .schedule__inner {
+      padding-block-end: 0;
+    }
+
+    .schedule__rail {
+      border-radius: var(--radius-lg);
+    }
+
+    .schedule__heading {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: var(--space-5);
+    }
+
+    .schedule__events {
+      grid-template-columns: 1fr;
+    }
+
+    .schedule__event {
+      padding: var(--space-5);
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--base-300);
+    }
+
+    .expect,
+    .directions,
+    .faq,
+    .ride-request {
+      padding: var(--space-16) var(--space-4);
+    }
+
+    .expect__body {
+      grid-template-columns: 1fr;
+    }
+
+    .expect__body :global(p:first-child) {
+      grid-column: auto;
     }
 
     .ride-request__heading {
@@ -465,8 +743,19 @@ const rideRequestIntro = visitPage?.rideRequestIntro || "Don't have a car? No pr
       grid-template-columns: 1fr;
     }
 
-    .schedule__grid {
-      grid-template-columns: 1fr;
+    .directions__map iframe {
+      min-height: 20rem;
+    }
+
+    .faq__panel {
+      padding-inline: var(--space-4);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .schedule__directions,
+    .directions__map-link {
+      transition: none;
     }
   }
 </style>
