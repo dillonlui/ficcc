@@ -89,8 +89,13 @@ export function buildVideoObjectJsonLd(
 export interface EventInput {
   title: string;
   date?: string;
+  endDate?: string;
   location?: string;
+  address?: string;
   description?: string;
+  image?: string;
+  url?: string;
+  ended?: boolean;
 }
 
 export function buildEventJsonLd(event: EventInput): Record<string, unknown> {
@@ -104,17 +109,28 @@ export function buildEventJsonLd(event: EventInput): Record<string, unknown> {
     ld.startDate = event.date;
   }
 
+  if (event.endDate) {
+    ld.endDate = event.endDate;
+  }
+
   if (event.location) {
     ld.location = {
       '@type': 'Place',
       name: event.location,
-      address: event.location,
+      address: event.address || event.location,
     };
   }
 
   if (event.description) {
     ld.description = event.description;
   }
+
+  if (event.image) ld.image = event.image;
+  if (event.url) ld.url = event.url;
+  ld.eventAttendanceMode = 'https://schema.org/OfflineEventAttendanceMode';
+  ld.eventStatus = event.ended
+    ? 'https://schema.org/EventCompleted'
+    : 'https://schema.org/EventScheduled';
 
   return ld;
 }

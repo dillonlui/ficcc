@@ -17,6 +17,7 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   noindex?: boolean;
+  alternatePath?: string;
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   ogImage,
   ogType,
   noindex = false,
+  alternatePath,
 } = Astro.props;
 
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
@@ -35,9 +37,9 @@ const enableVercelAnalytics =
   import.meta.env.VERCEL === '1' ||
   import.meta.env.PUBLIC_VERCEL_ANALYTICS_ENABLED === 'true';
 
-const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as Lang);
+const alternateUrl = getAlternateUrl(Astro.url.pathname, lang as Lang, alternatePath);
 const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.org').href;
-const hasAlternate = hasLanguageCounterpart(Astro.url.pathname);
+const hasAlternate = Boolean(alternatePath) || hasLanguageCounterpart(Astro.url.pathname);
 
 let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 let pageVisibility: Awaited<ReturnType<typeof getPageVisibility>> = {};

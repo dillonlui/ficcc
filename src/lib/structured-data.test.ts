@@ -59,12 +59,17 @@ describe('buildEventJsonLd', () => {
     const ld = buildEventJsonLd({
       title: 'Friday Fellowship',
       date: '2026-04-05',
+      endDate: '2026-04-06',
       location: '429 Mitchell Street, Ithaca, NY 14850',
+      url: 'https://ficcc.org/en/events/friday-fellowship',
     });
     expect(ld['@context']).toBe('https://schema.org');
     expect(ld['@type']).toBe('Event');
     expect(ld.startDate).toBe('2026-04-05');
+    expect(ld.endDate).toBe('2026-04-06');
     expect(ld.name).toBe('Friday Fellowship');
+    expect(ld.url).toBe('https://ficcc.org/en/events/friday-fellowship');
+    expect(ld.eventStatus).toBe('https://schema.org/EventScheduled');
     expect((ld.location as Record<string, unknown>)['@type']).toBe('Place');
   });
 

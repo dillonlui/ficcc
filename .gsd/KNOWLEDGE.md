@@ -73,3 +73,8 @@
 **Context:** Without explicit config, Vitest discovers and tries to run Playwright e2e specs (`e2e/**/*.spec.ts`), which use `test.describe` from `@playwright/test` instead of Vitest's API. This causes `npm test` to fail.
 **Rule:** Use `vitest.config.ts` with Astro's `getViteConfig` and set `test.exclude` to include `e2e/` and `.gsd/` directories. This keeps unit tests (src/**/*.test.ts) working while excluding Playwright specs.
 **Files:** `vitest.config.ts`
+
+## K015: Events are homepage-driven and expire through one lifecycle utility
+**Context:** FICCC does not maintain a public events directory. Active events appear conditionally on the matching-language homepage and link to durable landing pages. One event is featured, two or three use a grid, and four or more use an accessible non-autoplay carousel containing every active event. Expired events leave the homepage but retain a noindexed “event has ended” landing page so old shared links do not break.
+**Rule:** Use `getEventOccurrence()` / `getUpcomingEvents()` from `src/lib/events.ts` for all event filtering, ordering, next-occurrence, and expiration decisions. Start Date and slug are required for public discovery. Weekly, monthly, and yearly recurrence must have a Final Occurrence Date; never implement an indefinite recurrence path. Evaluate calendar-day boundaries in `America/New_York`. English and Chinese event documents remain separate and may optionally reference each other for language switching.
+**Files:** `src/lib/events.ts`, `sanity/schemas/documents/event.ts`, `src/components/EventsShowcase.astro`, `src/components/EventDetail.astro`

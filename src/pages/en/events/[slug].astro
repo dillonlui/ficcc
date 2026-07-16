@@ -1,0 +1,21 @@
+---
+import EventDetail from '../../../components/EventDetail.astro';
+import { getEventBySlug } from '../../../lib/sanity';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+let event = null;
+
+if (slug) {
+  try {
+    event = await getEventBySlug('en', slug, { request: Astro.request });
+  } catch {
+    // Preserve a valid 404 response when Sanity is temporarily unavailable.
+  }
+}
+
+if (!event) return Astro.redirect('/404');
+---
+
+<EventDetail event={event} lang="en" />

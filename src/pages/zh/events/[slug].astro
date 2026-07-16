@@ -1,0 +1,21 @@
+---
+import EventDetail from '../../../components/EventDetail.astro';
+import { getEventBySlug } from '../../../lib/sanity';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+let event = null;
+
+if (slug) {
+  try {
+    event = await getEventBySlug('zh', slug, { request: Astro.request });
+  } catch {
+    // Sanity failures still resolve to the shared 404 page.
+  }
+}
+
+if (!event) return Astro.redirect('/404');
+---
+
+<EventDetail event={event} lang="zh" />

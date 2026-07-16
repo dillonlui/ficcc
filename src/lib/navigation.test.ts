@@ -75,6 +75,16 @@ describe('getAlternateUrl', () => {
     it('EN /404 → ZH /zh', () => {
       expect(getAlternateUrl('/404', 'en')).toBe('/zh');
     });
+
+    it('unpaired event pages fall back to the other-language homepage', () => {
+      expect(getAlternateUrl('/en/events/church-picnic', 'en')).toBe('/zh');
+      expect(getAlternateUrl('/zh/events/church-picnic', 'zh')).toBe('/en/');
+    });
+
+    it('uses an explicitly paired event path when one exists', () => {
+      expect(getAlternateUrl('/en/events/church-picnic', 'en', '/zh/events/教會野餐'))
+        .toBe('/zh/events/教會野餐');
+    });
   });
 
   describe('trailing slash normalization', () => {
@@ -117,6 +127,11 @@ describe('getAlternateUrl', () => {
 
     it('excludes Chinese-only fellowship detail pages', () => {
       expect(hasLanguageCounterpart('/zh/fellowships/gospel-group/')).toBe(false);
+    });
+
+    it('requires event pages to opt into a paired counterpart', () => {
+      expect(hasLanguageCounterpart('/en/events/church-picnic')).toBe(false);
+      expect(hasLanguageCounterpart('/zh/events/church-picnic')).toBe(false);
     });
   });
 });

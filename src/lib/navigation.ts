@@ -96,7 +96,15 @@ const ASYMMETRIC_ROUTES: Record<string, string> = {
   '/zh/sundays': '/en/visit',
 };
 
-const NO_COUNTERPART = ['/en/resources', '/zh/fellowships', '/styleguide', '/admin', '/404'];
+const NO_COUNTERPART = [
+  '/en/resources',
+  '/en/events',
+  '/zh/events',
+  '/zh/fellowships',
+  '/styleguide',
+  '/admin',
+  '/404',
+];
 
 function normalizePathname(pathname: string): string {
   return pathname.length > 1 && pathname.endsWith('/')
@@ -115,7 +123,13 @@ export function hasLanguageCounterpart(pathname: string): boolean {
   return !NO_COUNTERPART.some((p) => normalized === p || normalized.startsWith(p + '/'));
 }
 
-export function getAlternateUrl(pathname: string, currentLang: Lang): string {
+export function getAlternateUrl(
+  pathname: string,
+  currentLang: Lang,
+  explicitCounterpart?: string,
+): string {
+  if (explicitCounterpart) return normalizePathname(explicitCounterpart);
+
   const normalized = normalizePathname(pathname);
 
   if (ASYMMETRIC_ROUTES[normalized]) {

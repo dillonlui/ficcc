@@ -145,11 +145,13 @@ const documentLocations = {
     }),
   }),
   event: defineLocations({
-    select: { language: 'language' },
+    select: { language: 'language', slug: 'slug.current' },
     resolve: (doc) => ({
       locations: [{
-        title: doc?.language === 'zh' ? '首頁活動' : 'Homepage events',
-        href: languagePrefix(doc?.language),
+        title: doc?.language === 'zh' ? '活動頁面' : 'Event page',
+        href: doc?.slug
+          ? `${languagePrefix(doc?.language)}/events/${doc.slug}`
+          : languagePrefix(doc?.language),
       }],
     }),
   }),

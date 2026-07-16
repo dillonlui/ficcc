@@ -139,12 +139,28 @@ export interface Event {
   _type: 'event';
   isVisible?: boolean;
   title: string;
+  slug?: SanitySlug;
+  summary?: string;
   date?: string;
   endDate?: string;
   time?: string;
   location?: string;
+  address?: string;
+  mapUrl?: string;
   description?: PortableTextBlock[];
   image?: SanityImage;
+  imageAlt?: string;
+  recurrence?: 'none' | 'weekly' | 'monthly' | 'yearly';
+  recurrenceEndDate?: string;
+  registrationLabel?: string;
+  registrationUrl?: string;
+  contactName?: string;
+  contactEmail?: string;
+  translation?: {
+    language?: 'en' | 'zh';
+    slug?: string;
+  };
+  /** Legacy field retained for existing Sanity documents. */
   recurring?: boolean;
   language: 'en' | 'zh';
 }
@@ -509,15 +525,36 @@ export async function getSermons(language: Language = 'en', options: QueryOption
   );
 }
 
-/**
- * Fetch upcoming events for a language, soonest first.
- */
+const eventProjection = `
+  _id, _type, isVisible, title, slug, summary, date, endDate, time,
+  location, address, mapUrl, description, image, imageAlt,
+  recurrence, recurrenceEndDate, recurring,
+  registrationLabel, registrationUrl, contactName, contactEmail, language,
+  translation->{language, "slug": slug.current}
+`;
+
+/** Fetch public event documents for a language. Lifecycle filtering happens in src/lib/events.ts. */
 export async function getEvents(language: Language = 'en', options: QueryOptions = {}): Promise<Event[]> {
   return fetchQuery<Event[]>(
     `*[_type == "event" && language == $language && isVisible != false]{
-      _id, _type, isVisible, title, date, endDate, time, location, description, image, recurring, language
+      ${eventProjection}
     } | order(date asc)`,
     { language },
+    options,
+  );
+}
+
+/** Fetch one public event landing page by language and slug. */
+export async function getEventBySlug(
+  language: Language,
+  slug: string,
+  options: QueryOptions = {},
+): Promise<Event | null> {
+  return fetchQuery<Event | null>(
+    `*[_type == "event" && language == $language && slug.current == $slug && isVisible != false][0]{
+      ${eventProjection}
+    }`,
+    { language, slug },
     options,
   );
 }
@@ -790,18 +827,19 @@ export function urlForFile(file: SanityFile | undefined | null): string {
 // Portable Text → HTML (lightweight server-side renderer)
 // ---------------------------------------------------------------------------
 
-/**
- * Convert an array of Portable Text blocks to an HTML string.
- *
- * Handles `block` type with `normal` style (paragraphs), `strong`/`em` marks,
- * and `link` annotations. Other block types are silently skipped.
- */
+/** Convert common Portable Text paragraphs, headings, lists, emphasis, and links to safe HTML. */
 export function portableTextToHtml(blocks: PortableTextBlock[] | undefined | null): string {
   if (!blocks?.length) return '';
 
-  return blocks
-    .filter((b) => b._type === 'block')
-    .map((block) => {
+  const html: string[] = [];
+  let openList: 'ul' | 'ol' | null = null;
+
+  const closeList = () => {
+    if (openList) html.push(`</${openList}>`);
+    openList = null;
+  };
+
+  for (const block of blocks.filter((candidate) => candidate._type === 'block')) {
       const children = (block.children as Array<{
         _type: string;
         text: string;
@@ -828,8 +866,8 @@ export function portableTextToHtml(blocks: PortableTextBlock[] | undefined | nul
               // Check markDefs for link annotations
               const def = markDefs.find((d) => d._key === mark);
               if (def?._type === 'link' && def.href) {
-                // Block javascript: URIs to prevent XSS from CMS content
-                const safeHref = /^https?:\/\//i.test(def.href) || def.href.startsWith('/')
+                // Allow normal site, web, email, and telephone links while blocking script URIs.
+                const safeHref = /^(https?:\/\/|mailto:|tel:)/i.test(def.href) || def.href.startsWith('/')
                   ? def.href
                   : '#';
                 text = `<a href="${escapeHtml(safeHref)}">${text}</a>`;
@@ -840,9 +878,28 @@ export function portableTextToHtml(blocks: PortableTextBlock[] | undefined | nul
         })
         .join('');
 
-      return `<p>${inner}</p>`;
-    })
-    .join('\n');
+    const listItem = block.listItem as string | undefined;
+    if (listItem === 'bullet' || listItem === 'number') {
+      const list = listItem === 'number' ? 'ol' : 'ul';
+      if (openList !== list) {
+        closeList();
+        openList = list;
+        html.push(`<${list}>`);
+      }
+      html.push(`<li>${inner}</li>`);
+      continue;
+    }
+
+    closeList();
+    const style = block.style as string | undefined;
+    const tag = style === 'h2' || style === 'h3' || style === 'h4' || style === 'blockquote'
+      ? style
+      : 'p';
+    html.push(`<${tag}>${inner}</${tag}>`);
+  }
+
+  closeList();
+  return html.join('\n');
 }
 
 function escapeHtml(str: string): string {

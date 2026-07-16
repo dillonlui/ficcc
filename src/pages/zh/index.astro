@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getHomePage, getSermons, getEvents, urlForImage, urlForFile, portableTextToHtml, getSiteSettings } from '../../lib/sanity';
+import EventsShowcase from '../../components/EventsShowcase.astro';
+import { getHomePage, getEvents, urlForImage, urlForFile, portableTextToHtml, getSiteSettings } from '../../lib/sanity';
+import { getUpcomingEvents } from '../../lib/events';
 import { buildChurchJsonLd, buildWebSiteJsonLd } from '../../lib/structured-data';
 
 export const prerender = false;
@@ -10,18 +12,16 @@ const description =
   '紐約伊薩卡的華人基督教會。每週日上午9:45崇拜，地址：429 Mitchell Street。歡迎大學生、家庭及社區鄰舍。';
 
 let homePage: Awaited<ReturnType<typeof getHomePage>> = null;
-let sermons: Awaited<ReturnType<typeof getSermons>> = [];
 let events: Awaited<ReturnType<typeof getEvents>> = [];
 
 let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 
-try {
-  [homePage, sermons, events] = await Promise.all([
-    getHomePage('zh', { request: Astro.request }),
-    getSermons('zh', { request: Astro.request }),
-    getEvents('zh', { request: Astro.request }),
-  ]);
-} catch {}
+const [homePageResult, eventsResult] = await Promise.allSettled([
+  getHomePage('zh', { request: Astro.request }),
+  getEvents('zh', { request: Astro.request }),
+]);
+if (homePageResult.status === 'fulfilled') homePage = homePageResult.value;
+if (eventsResult.status === 'fulfilled') events = eventsResult.value;
 
 try {
   siteSettings = await getSiteSettings('zh', { request: Astro.request });
@@ -132,6 +132,7 @@ const bannerImage = homePage?.bannerImage
 const bannerImageAlt = homePage?.bannerImageAlt || '多元社區成員在一起';
 const bannerCtaText = homePage?.bannerCtaText || '與我們聯繫';
 const bannerCtaHref = homePage?.bannerCtaHref || '/zh/contact';
+const activeEvents = getUpcomingEvents(events);
 
 const siteUrl = (Astro.site ?? new URL('https://ficcc.org')).href;
 const homeJsonLd = {
@@ -246,6 +247,8 @@ const homeJsonLd = {
         </div>
       </section>
     ))}
+
+    <EventsShowcase events={activeEvents} lang="zh" />
 
     <!-- ============ SECTION 5: 連結文化與世代 banner ============ -->
     <section class="banner" aria-label="連結文化">

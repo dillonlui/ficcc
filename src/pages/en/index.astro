@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getHomePage, getSermons, getEvents, urlForImage, urlForFile, portableTextToHtml, getSiteSettings } from '../../lib/sanity';
+import EventsShowcase from '../../components/EventsShowcase.astro';
+import { getHomePage, getEvents, urlForImage, urlForFile, portableTextToHtml, getSiteSettings } from '../../lib/sanity';
+import { getUpcomingEvents } from '../../lib/events';
 import { buildChurchJsonLd, buildWebSiteJsonLd } from '../../lib/structured-data';
 
 export const prerender = false;
@@ -10,18 +12,16 @@ const description =
   'A Chinese-heritage, university-adjacent Christian community in Ithaca, NY. Sunday gathering at 9:45am, 429 Mitchell Street.';
 
 let homePage: Awaited<ReturnType<typeof getHomePage>> = null;
-let sermons: Awaited<ReturnType<typeof getSermons>> = [];
 let events: Awaited<ReturnType<typeof getEvents>> = [];
 
 let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 
-try {
-  [homePage, sermons, events] = await Promise.all([
-    getHomePage('en', { request: Astro.request }),
-    getSermons('en', { request: Astro.request }),
-    getEvents('en', { request: Astro.request }),
-  ]);
-} catch {}
+const [homePageResult, eventsResult] = await Promise.allSettled([
+  getHomePage('en', { request: Astro.request }),
+  getEvents('en', { request: Astro.request }),
+]);
+if (homePageResult.status === 'fulfilled') homePage = homePageResult.value;
+if (eventsResult.status === 'fulfilled') events = eventsResult.value;
 
 try {
   siteSettings = await getSiteSettings('en', { request: Astro.request });
@@ -132,6 +132,7 @@ const bannerImage = homePage?.bannerImage
 const bannerImageAlt = homePage?.bannerImageAlt || 'Diverse community members together';
 const bannerCtaText = homePage?.bannerCtaText || 'Get in touch';
 const bannerCtaHref = homePage?.bannerCtaHref || '/en/contact';
+const activeEvents = getUpcomingEvents(events);
 
 const siteUrl = (Astro.site ?? new URL('https://ficcc.org')).href;
 const homeJsonLd = {
@@ -246,6 +247,8 @@ const homeJsonLd = {
         </div>
       </section>
     ))}
+
+    <EventsShowcase events={activeEvents} lang="en" />
 
     <!-- ============ SECTION 5: Bridging Cultures banner ============ -->
     <section class="banner" aria-label="Bridging Cultures">
