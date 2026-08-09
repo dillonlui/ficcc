@@ -94,6 +94,7 @@ const documents = [
     phone: '(607) 273-1223',
     email: 'info@ficcc.org',
     serviceTimes: serviceTimesEn,
+    youtubeChannelUrl: 'https://www.youtube.com/@FICCCenglish',
     announcementBarEnabled: false,
   },
   {

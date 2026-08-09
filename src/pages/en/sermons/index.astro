@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Hero from '../../../components/Hero.astro';
-import { getSermons } from '../../../lib/sanity';
+import { getSermons, getSiteSettings } from '../../../lib/sanity';
 import { getLatestVideos, type YouTubeVideo } from '../../../lib/youtube';
 
 export const prerender = false;
@@ -12,18 +12,23 @@ const description = 'Browse sermons from First Ithaca Chinese Christian Church. 
 // ---------- Fetch from YouTube + Sanity in parallel ----------
 let ytVideos: YouTubeVideo[] = [];
 let sanitySermons: Awaited<ReturnType<typeof getSermons>> = [];
+let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 
 try {
-  [ytVideos, sanitySermons] = await Promise.all([
+  [ytVideos, sanitySermons, siteSettings] = await Promise.all([
     getLatestVideos(7),
     getSermons('en', { request: Astro.request }).catch(() => []),
+    getSiteSettings('en', { request: Astro.request }).catch(() => null),
   ]);
 } catch {
   // Both failed — continue with empty arrays
 }
 
+const youtubeChannelUrl = siteSettings?.youtubeChannelUrl || 'https://www.youtube.com/@FICCCenglish';
+
 // ---------- Build merged sermon list ----------
-// YouTube is the primary source; Sanity enriches with series, speaker, scripture
+// YouTube is the primary source; Sanity enriches it and provides a durable
+// fallback when YouTube is temporarily unavailable.
 interface MergedSermon {
   videoId: string;
   title: string;
@@ -41,7 +46,7 @@ const sanityByVideoId = new Map(
     .map((s) => [s.videoId!, s]),
 );
 
-const mergedSermons: MergedSermon[] = ytVideos.map((yt) => {
+const youtubeSermons: MergedSermon[] = ytVideos.map((yt) => {
   const override = sanityByVideoId.get(yt.videoId);
   return {
     videoId: yt.videoId,
@@ -54,6 +59,23 @@ const mergedSermons: MergedSermon[] = ytVideos.map((yt) => {
     slug: override?.slug?.current,
   };
 });
+
+const youtubeVideoIds = new Set(youtubeSermons.map((sermon) => sermon.videoId));
+const sanityOnlySermons: MergedSermon[] = sanitySermons
+  .filter((sermon) => sermon.videoId && !youtubeVideoIds.has(sermon.videoId))
+  .map((sermon) => ({
+    videoId: sermon.videoId!,
+    title: sermon.title,
+    date: sermon.date,
+    thumbnail: `https://i.ytimg.com/vi/${sermon.videoId}/mqdefault.jpg`,
+    speaker: sermon.speaker,
+    series: sermon.series,
+    scripture: sermon.scripture,
+    slug: sermon.slug?.current,
+  }));
+
+const mergedSermons = [...youtubeSermons, ...sanityOnlySermons]
+  .sort((a, b) => b.date.localeCompare(a.date));
 
 const latestSermon = mergedSermons[0] ?? null;
 const recentSermons = mergedSermons.slice(1);
@@ -160,7 +182,7 @@ function formatDate(dateStr: string): string {
             <h2 class="yt-cta__heading">Sermon Archive</h2>
             <p class="yt-cta__body">Browse the full library of sermons from our English ministry on YouTube.</p>
             <a
-              href="https://www.youtube.com/@FICCCenglish"
+              href={youtubeChannelUrl}
               target="_blank"
               rel="noopener noreferrer"
               class="yt-cta__link"
@@ -178,7 +200,7 @@ function formatDate(dateStr: string): string {
         <div class="sermons-empty__inner">
           <p class="sermons-empty__message">
             Sermons are coming soon. In the meantime, visit our
-            <a href="https://www.youtube.com/@FICCCenglish" target="_blank" rel="noopener noreferrer">YouTube channel</a>
+            <a href={youtubeChannelUrl} target="_blank" rel="noopener noreferrer">YouTube channel</a>
             to watch past messages.
           </p>
         </div>
