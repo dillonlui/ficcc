@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Hero from '../../../components/Hero.astro';
 import SermonCard from '../../../components/SermonCard.astro';
-import { getSermons } from '../../../lib/sanity';
+import { getSermons, getSiteSettings } from '../../../lib/sanity';
 
 export const prerender = false;
 
@@ -11,9 +11,13 @@ const description = '浏览以萨卡华人基督教会的证道信息。按系�
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
 let sermons: Awaited<ReturnType<typeof getSermons>> = [];
+let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
 
 try {
-  sermons = await getSermons('zh', { request: Astro.request });
+  [sermons, siteSettings] = await Promise.all([
+    getSermons('zh', { request: Astro.request }).catch(() => []),
+    getSiteSettings('zh', { request: Astro.request }).catch(() => null),
+  ]);
 } catch {
   // Sanity unreachable — continue with empty array
 }
@@ -66,6 +70,23 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
       <section class="sermons-empty" aria-label="暂无讲道">
         <div class="sermons-empty__inner">
           <p class="sermons-empty__message">目前暂无讲道信息，请稍后再来查看。</p>
+        </div>
+      </section>
+    )}
+
+    {siteSettings?.youtubeChannelUrl && (
+      <section class="yt-cta" aria-label="YouTube 頻道">
+        <div class="yt-cta__inner">
+          <h2 class="yt-cta__heading">講道影音庫</h2>
+          <p class="yt-cta__body">在 YouTube 上瀏覽華語事工完整的講道影音。</p>
+          <a
+            href={siteSettings.youtubeChannelUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="yt-cta__link"
+          >
+            前往 YouTube 頻道
+          </a>
         </div>
       </section>
     )}
@@ -192,6 +213,56 @@ const allSeries = [...new Set(sermons.map((s) => s.series).filter(Boolean))] as 
     font-size: var(--text-lg);
     color: var(--color-body);
     line-height: var(--leading-relaxed);
+  }
+
+  /* ---------- YouTube CTA ---------- */
+  .yt-cta {
+    padding: var(--space-16) var(--space-6);
+    background-color: var(--color-stone);
+    text-align: center;
+  }
+
+  .yt-cta__inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .yt-cta__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-ink);
+    margin-block-end: var(--space-3);
+  }
+
+  .yt-cta__body {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    color: var(--color-body);
+    margin-block-end: var(--space-6);
+  }
+
+  .yt-cta__link {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-bg);
+    background-color: var(--primary-500);
+    padding: var(--space-3) var(--space-8);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color var(--transition), transform var(--transition);
+  }
+
+  .yt-cta__link:hover {
+    background-color: var(--primary-400);
+    transform: translateY(-1px);
+  }
+
+  .yt-cta__link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
   }
 
   /* ---------- Visit callout banner ---------- */
