@@ -1,13 +1,12 @@
 ---
 /**
  * Sanity Studio client-side routes under /admin/*.
- * Serves the same shell as /admin so refreshes and auth redirects keep working.
+ *
+ * Sanity generates nested intent and document-pane URLs (for example after
+ * opening a document from Presentation). This route must be server-rendered
+ * so every nested URL returns the Studio shell on a direct visit or refresh.
  */
-export function getStaticPaths() {
-  return ['presentation', 'structure'].map((path) => ({
-    params: { path },
-  }));
-}
+export const prerender = false;
 
 import Studio from '../../components/Studio';
 ---

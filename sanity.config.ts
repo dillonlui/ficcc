@@ -45,7 +45,13 @@ const mainDocuments = defineDocuments([
   { route: '/en/give', filter: `_id == "givePage-en"` },
   { route: '/en/contact', filter: `_id == "contactPage-en"` },
   { route: '/en/resources', filter: `_id == "resourcesPage-en"` },
-  { route: '/en/sermons', filter: `_type == "sermon" && language == "en"` },
+  {
+    route: '/en/events/:slug',
+    resolve: ({ params }) => ({
+      filter: `_type == "event" && language == $language && slug.current == $slug`,
+      params: { language: 'en', slug: params.slug },
+    }),
+  },
   { route: '/en/grow/english', filter: `_id == "growPage-en-english"` },
   { route: '/en/grow/chinese', filter: `_id == "growPage-en-chinese"` },
   { route: '/en/grow/youth', filter: `_id == "growPage-en-youth"` },
@@ -56,8 +62,21 @@ const mainDocuments = defineDocuments([
   { route: '/zh/sundays', filter: `_id == "visitPage-zh"` },
   { route: '/zh/give', filter: `_id == "givePage-zh"` },
   { route: '/zh/contact', filter: `_id == "contactPage-zh"` },
-  { route: '/zh/sermons', filter: `_type == "sermon" && language == "zh"` },
   { route: '/zh/resources', filter: `_id == "resourcesPage-zh"` },
+  {
+    route: '/zh/events/:slug',
+    resolve: ({ params }) => ({
+      filter: `_type == "event" && language == $language && slug.current == $slug`,
+      params: { language: 'zh', slug: params.slug },
+    }),
+  },
+  {
+    route: '/zh/fellowships/:slug',
+    resolve: ({ params }) => ({
+      filter: `_type == "ministry" && language == $language && slug.current == $slug`,
+      params: { language: 'zh', slug: params.slug },
+    }),
+  },
   { route: '/zh/grow/english', filter: `_id == "growPage-zh-english"` },
   { route: '/zh/grow/chinese', filter: `_id == "growPage-zh-chinese"` },
   { route: '/zh/grow/youth', filter: `_id == "growPage-zh-youth"` },
