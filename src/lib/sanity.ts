@@ -192,6 +192,7 @@ export interface SiteSettings {
   phone?: string;
   email?: string;
   serviceTimes?: ServiceTime[];
+  youtubeChannelUrl?: string;
   socialLinks?: SocialLink[];
   language: 'en' | 'zh';
   announcementBarEnabled?: boolean;
