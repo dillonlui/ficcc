@@ -51,6 +51,13 @@ export const siteSettings = defineType({
       ],
     }),
     defineField({
+      name: 'youtubeChannelUrl',
+      title: 'YouTube Channel URL',
+      type: 'url',
+      description: 'Used for the sermon archive link on this language’s sermons page.',
+      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+    }),
+    defineField({
       name: 'socialLinks',
       title: 'Social Links',
       type: 'array',
