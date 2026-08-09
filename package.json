@@ -16,6 +16,7 @@
     "studio:build": "sanity build",
     "sanity:doctor": "sanity doctor",
     "sanity:seed": "tsx sanity/migrations/cm-content.ts",
+    "sanity:seed:media": "tsx sanity/migrations/cm-media.ts",
     "lhci": "npm run build && lhci autorun",
     "audit": "npm audit --audit-level=moderate",
     "test": "vitest run",

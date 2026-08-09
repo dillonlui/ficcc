@@ -68,13 +68,30 @@ export const resourcesPage = defineType({
                     }),
                     defineField({
                       name: 'url',
-                      title: 'URL',
+                      title: 'External or Legacy URL',
                       type: 'url',
+                      description:
+                        'Use for an external article, website, or an existing PDF hosted elsewhere. For a new PDF, use the upload field below instead.',
                       validation: (rule) =>
                         rule.uri({
                           scheme: ['http', 'https', 'mailto'],
                           allowRelative: true,
                         }),
+                    }),
+                    defineField({
+                      name: 'file',
+                      title: 'PDF Upload',
+                      type: 'file',
+                      options: { accept: 'application/pdf' },
+                      hidden: ({ parent }) => parent?.type !== 'pdf',
+                      description:
+                        'Upload a PDF for Sanity to host. An uploaded PDF takes precedence over the URL above.',
+                      validation: (rule) =>
+                        rule.custom((file, context) =>
+                          context.parent?.type !== 'pdf' || file || context.parent?.url
+                            ? true
+                            : 'Upload a PDF or provide a URL.',
+                        ),
                     }),
                     defineField({
                       name: 'description',

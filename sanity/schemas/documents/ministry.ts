@@ -56,10 +56,11 @@ export const ministry = defineType({
     }),
   ],
   preview: {
-    select: { title: 'name', language: 'language', slug: 'slug.current' },
-    prepare: ({ title, language, slug }) => ({
+    select: { title: 'name', language: 'language', slug: 'slug.current', media: 'image' },
+    prepare: ({ title, language, slug, media }) => ({
       title: title || 'Unnamed Ministry',
       subtitle: slug ? `/${slug} · ${language?.toUpperCase()}` : language?.toUpperCase(),
+      media,
     }),
   },
 });

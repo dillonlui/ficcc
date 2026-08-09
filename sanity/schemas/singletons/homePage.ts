@@ -115,7 +115,7 @@ export const homePage = defineType({
             }),
             defineField({ name: 'tinted', title: 'Tinted Background', type: 'boolean', initialValue: false }),
           ],
-          preview: { select: { title: 'heading', subtitle: 'layout' } },
+          preview: { select: { title: 'heading', subtitle: 'layout', media: 'image' } },
         },
       ],
     }),

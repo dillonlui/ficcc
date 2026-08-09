@@ -190,12 +190,13 @@ export const event = defineType({
     { title: 'Date (Soonest)', name: 'dateAsc', by: [{ field: 'date', direction: 'asc' }] },
   ],
   preview: {
-    select: { title: 'title', date: 'date', language: 'language', recurrence: 'recurrence' },
-    prepare: ({ title, date, language, recurrence }) => ({
+    select: { title: 'title', date: 'date', language: 'language', recurrence: 'recurrence', media: 'image' },
+    prepare: ({ title, date, language, recurrence, media }) => ({
       title: title || 'Untitled Event',
       subtitle: [date?.slice(0, 10), recurrence && recurrence !== 'none' ? recurrence : null, language?.toUpperCase()]
         .filter(Boolean)
         .join(' · '),
+      media,
     }),
   },
 });

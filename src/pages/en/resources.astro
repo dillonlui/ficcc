@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getResourcesPage, urlForImage, type ResourceItem } from '../../lib/sanity';
+import { getResourcesPage, urlForFile, urlForImage, type ResourceItem } from '../../lib/sanity';
 
 export const prerender = false;
 
@@ -115,7 +115,11 @@ const guideCategories = categories.filter(
 );
 
 function isExternal(resource: ResourceItem): boolean {
-  return resource.type === 'link' || /^https?:\/\//.test(resource.url || '');
+  return !resource.file && (resource.type === 'link' || /^https?:\/\//.test(resource.url || ''));
+}
+
+function resourceHref(resource: ResourceItem): string {
+  return urlForFile(resource.file) || resource.url || '';
 }
 
 function resourceLabel(resource: ResourceItem): string {
@@ -191,10 +195,10 @@ function hostLabel(url?: string): string {
                   {category.resources && category.resources.length > 0 && (
                     <div class="guide__actions">
                       {category.resources.map((resource) => (
-                        resource.url ? (
+                        resourceHref(resource) ? (
                           <a
                             class="guide__action"
-                            href={resource.url}
+                            href={resourceHref(resource)}
                             target={isExternal(resource) ? '_blank' : undefined}
                             rel={isExternal(resource) ? 'noopener noreferrer' : undefined}
                             download={resource.type === 'pdf' && !isExternal(resource) ? '' : undefined}

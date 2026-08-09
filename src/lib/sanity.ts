@@ -282,6 +282,7 @@ export interface VisitPage {
 export interface ResourceItem {
   title: string;
   url?: string;
+  file?: SanityFile;
   description?: string;
   type?: 'article' | 'pdf' | 'link';
 }
