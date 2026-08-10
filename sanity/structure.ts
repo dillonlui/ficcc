@@ -146,6 +146,7 @@ export const structure: StructureResolver = (S) =>
     .title('Content')
     .items([
       singletonItem(S, { id: 'splashPage', title: 'Splash Page', type: 'splashPage' }),
+      singletonItem(S, { id: 'siteBranding', title: 'Site Branding', type: 'siteBranding' }),
 
       S.divider(),
 

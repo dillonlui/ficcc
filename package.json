@@ -18,6 +18,7 @@
     "sanity:seed": "tsx sanity/migrations/cm-content.ts",
     "sanity:seed:media": "tsx sanity/migrations/cm-media.ts",
     "sanity:seed:youtube": "tsx sanity/migrations/seed-youtube-channel-url.ts",
+    "sanity:seed:branding": "tsx sanity/migrations/seed-site-branding.ts",
     "lhci": "npm run build && lhci autorun",
     "audit": "npm audit --audit-level=moderate",
     "test": "vitest run",

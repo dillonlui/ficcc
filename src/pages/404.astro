@@ -2,11 +2,18 @@
 export const prerender = false;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteBranding, urlForFile } from '../lib/sanity';
+
+let branding: Awaited<ReturnType<typeof getSiteBranding>> = null;
+try {
+  branding = await getSiteBranding({ request: Astro.request });
+} catch {}
+const errorLogoSrc = urlForFile(branding?.splashLogo) || '/logo/icon-light.svg';
 ---
 
 <BaseLayout title="Page Not Found | 頁面未找到" description="The page you're looking for doesn't exist.">
   <main id="main-content" data-pagefind-ignore="all" class="error-page">
-    <img src="/logo/icon-light.svg" alt="" class="error-icon" width="96" height="96" />
+    <img src={errorLogoSrc} alt="" class="error-icon" width="96" height="96" />
     <h1>404</h1>
     <p class="error-en">Sorry, the page you're looking for doesn't exist or has been moved.</p>
     <p class="error-zh" lang="zh">抱歉，您要找的頁面不存在或已被移動。</p>

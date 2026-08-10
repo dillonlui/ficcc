@@ -4,14 +4,15 @@
  * Uses CSS custom properties only.
  */
 import { getFooterNav, getServiceTimes, getChurchName, type Lang } from '../lib/navigation';
-import type { SiteSettings } from '../lib/sanity';
+import { urlForFile, type SiteBranding, type SiteSettings } from '../lib/sanity';
 
 interface Props {
   lang?: Lang;
   siteSettings?: SiteSettings | null;
+  branding?: SiteBranding | null;
 }
 
-const { lang = 'en', siteSettings = null } = Astro.props;
+const { lang = 'en', siteSettings = null, branding = null } = Astro.props;
 const currentYear = new Date().getFullYear();
 const footerNav = getFooterNav(lang);
 const serviceTimes = getServiceTimes(lang);
@@ -29,6 +30,7 @@ const homeLabel = lang === 'zh' ? '伊的家首頁' : 'FICCC Home';
 const linksHeading = lang === 'zh' ? '連結' : 'Links';
 const footerNavLabel = lang === 'zh' ? '頁尾導覽' : 'Footer navigation';
 const rightsText = lang === 'zh' ? '版權所有。' : 'All rights reserved.';
+const footerLogoSrc = urlForFile(branding?.footerLogo) || '/logo/logo-bilingual-dark.svg';
 ---
 
 <footer class="site-footer">
@@ -36,7 +38,7 @@ const rightsText = lang === 'zh' ? '版權所有。' : 'All rights reserved.';
     <!-- Church identity -->
     <div class="footer-col footer-identity">
       <a href={lang === 'zh' ? '/zh' : '/en/'} class="footer-logo-link" aria-label={homeLabel}>
-        <img src="/logo/logo-bilingual-dark.svg" alt="" class="footer-logo" width="280" height="52" />
+        <img src={footerLogoSrc} alt="" class="footer-logo" width="280" height="52" />
       </a>
       <address class="footer-address">
         {resolvedAddress}<br />

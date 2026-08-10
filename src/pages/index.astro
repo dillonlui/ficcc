@@ -11,7 +11,7 @@
 import '../styles/global.css';
 import cjkFontsHref from '../styles/cjk-fonts.css?url';
 import Analytics from '@vercel/analytics/astro';
-import { getSanityPreviewContext, getSplashPage, urlForImage } from '../lib/sanity';
+import { getSanityPreviewContext, getSiteBranding, getSplashPage, urlForFile, urlForImage } from '../lib/sanity';
 
 export const prerender = false;
 
@@ -22,8 +22,12 @@ if (previewContext.enabled) {
 }
 
 let splashData: Awaited<ReturnType<typeof getSplashPage>> = null;
+let branding: Awaited<ReturnType<typeof getSiteBranding>> = null;
 try {
-  splashData = await getSplashPage({ request: Astro.request });
+  [splashData, branding] = await Promise.all([
+    getSplashPage({ request: Astro.request }),
+    getSiteBranding({ request: Astro.request }),
+  ]);
 } catch {}
 
 if (splashData?.isVisible === false) return Astro.redirect('/en/');
@@ -36,6 +40,7 @@ const bgDesktop = splashData?.backgroundImage
 const bgMobile = splashData?.backgroundImage
   ? urlForImage(splashData.backgroundImage, { width: 600 })
   : '/images/hero/waterfall-landing-600.jpg';
+const splashLogoSrc = urlForFile(branding?.splashLogo);
 
 const ogBaseUrl = import.meta.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${import.meta.env.VERCEL_PROJECT_PRODUCTION_URL}`
@@ -80,6 +85,9 @@ const enableVercelAnalytics =
     <main class="splash" id="main-content">
       <div class="splash__content">
         <div class="splash__logo" aria-hidden="true">
+          {splashLogoSrc ? (
+            <img src={splashLogoSrc} alt="" width="140" height="137" />
+          ) : (
           <svg viewBox="0 0 220 216" width="140" height="137" role="img" aria-label="FICCC cross logo">
             <circle cx="110" cy="108" r="92" fill="none" stroke="rgba(245,242,236,0.4)" stroke-width="1.5"/>
             <clipPath id="splash-logo"><circle cx="110" cy="108" r="90"/></clipPath>
@@ -91,6 +99,7 @@ const enableVercelAnalytics =
             <line x1="110" y1="34" x2="110" y2="126" stroke="#F5F2EC" stroke-width="7.5" stroke-linecap="round"/>
             <line x1="88" y1="59" x2="132" y2="59" stroke="#F5F2EC" stroke-width="7.5" stroke-linecap="round"/>
           </svg>
+          )}
         </div>
         <h1 class="splash__name">{churchNameEn}</h1>
         <p class="splash__name-zh"><span lang="zh">{churchNameZh}</span></p>
@@ -173,7 +182,8 @@ const enableVercelAnalytics =
     animation: splash-fade-in 0.6s ease-out forwards;
   }
 
-  .splash__logo svg {
+  .splash__logo svg,
+  .splash__logo img {
     width: 140px;
     height: auto;
     display: block;
@@ -272,7 +282,8 @@ const enableVercelAnalytics =
       max-width: 240px;
     }
 
-    .splash__logo svg {
+    .splash__logo svg,
+    .splash__logo img {
       width: 110px;
     }
   }

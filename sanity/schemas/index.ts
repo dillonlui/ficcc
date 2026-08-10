@@ -6,6 +6,7 @@ export { ministry } from './documents/ministry';
 
 // Singletons
 export { siteSettings } from './singletons/siteSettings';
+export { siteBranding } from './singletons/siteBranding';
 export { homePage } from './singletons/homePage';
 export { aboutPage } from './singletons/aboutPage';
 export { visitPage } from './singletons/visitPage';
@@ -21,6 +22,7 @@ import { sermon } from './documents/sermon';
 import { event } from './documents/event';
 import { ministry } from './documents/ministry';
 import { siteSettings } from './singletons/siteSettings';
+import { siteBranding } from './singletons/siteBranding';
 import { homePage } from './singletons/homePage';
 import { aboutPage } from './singletons/aboutPage';
 import { visitPage } from './singletons/visitPage';
@@ -40,6 +42,7 @@ export const schemaTypes = [
   ministry,
   // Singletons
   siteSettings,
+  siteBranding,
   homePage,
   aboutPage,
   visitPage,
@@ -54,6 +57,7 @@ export const schemaTypes = [
 /** Singleton type names — used by structure builder to filter from default list */
 export const singletonTypes = new Set([
   'siteSettings',
+  'siteBranding',
   'homePage',
   'aboutPage',
   'visitPage',
@@ -65,8 +69,9 @@ export const singletonTypes = new Set([
   'growPage',
 ]);
 
-/** Singleton document IDs per language */
+/** Singleton document IDs for initial Studio documents. */
 export const singletonDocIds = [
+  { id: 'siteBranding', type: 'siteBranding', title: 'Site Branding' },
   { id: 'siteSettings-en', type: 'siteSettings', title: 'Settings (EN)' },
   { id: 'siteSettings-zh', type: 'siteSettings', title: '設定 (ZH)' },
   { id: 'homePage-en', type: 'homePage', title: 'Homepage (EN)' },

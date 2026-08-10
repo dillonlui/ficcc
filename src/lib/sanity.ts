@@ -325,6 +325,15 @@ export interface SplashPage {
   churchNameZh?: string;
 }
 
+export interface SiteBranding {
+  _id: string;
+  _type: 'siteBranding';
+  splashLogo?: SanityFile;
+  headerLogoEn?: SanityFile;
+  headerLogoZh?: SanityFile;
+  footerLogo?: SanityFile;
+}
+
 export interface HomeSection {
   _key: string;
   heading: string;
@@ -697,6 +706,15 @@ export async function getStaff(
 export async function getSplashPage(options: QueryOptions = {}): Promise<SplashPage | null> {
   return fetchQuery<SplashPage | null>(
     `*[_id == "splashPage"][0]`,
+    {},
+    options,
+  );
+}
+
+/** Fetch the shared, language-neutral branding singleton. */
+export async function getSiteBranding(options: QueryOptions = {}): Promise<SiteBranding | null> {
+  return fetchQuery<SiteBranding | null>(
+    `*[_id == "siteBranding"][0]`,
     {},
     options,
   );

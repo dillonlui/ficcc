@@ -4,7 +4,7 @@ import cjkFontsHref from '../styles/cjk-fonts.css?url';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
-import { getPageVisibility, getSanityPreviewContext, getSiteSettings } from '../lib/sanity';
+import { getPageVisibility, getSanityPreviewContext, getSiteBranding, getSiteSettings } from '../lib/sanity';
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import Analytics from '@vercel/analytics/astro';
 import { getAlternateUrl, hasLanguageCounterpart, type Lang } from '../lib/navigation';
@@ -42,6 +42,7 @@ const absoluteAlternateUrl = new URL(alternateUrl, Astro.site ?? 'https://ficcc.
 const hasAlternate = Boolean(alternatePath) || hasLanguageCounterpart(Astro.url.pathname);
 
 let siteSettings: Awaited<ReturnType<typeof getSiteSettings>> = null;
+let branding: Awaited<ReturnType<typeof getSiteBranding>> = null;
 let pageVisibility: Awaited<ReturnType<typeof getPageVisibility>> = {};
 const previewContext = await getSanityPreviewContext(Astro.request);
 if (previewContext.enabled) {
@@ -53,8 +54,9 @@ if (noindex) {
   Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 }
 try {
-  [siteSettings, pageVisibility] = await Promise.all([
+  [siteSettings, branding, pageVisibility] = await Promise.all([
     getSiteSettings(lang as Lang, { request: Astro.request }),
+    getSiteBranding({ request: Astro.request }),
     getPageVisibility(lang as Lang, { request: Astro.request }),
   ]);
 } catch {
@@ -94,9 +96,9 @@ const skipLinkText = lang === 'zh' ? '跳至主要內容' : 'Skip to main conten
         </div>
       )
     )}
-    <Header lang={lang} langToggleHref={alternateUrl} pageVisibility={pageVisibility} />
+    <Header lang={lang} langToggleHref={alternateUrl} pageVisibility={pageVisibility} branding={branding} />
     <slot />
-    <Footer lang={lang} siteSettings={siteSettings} />
+    <Footer lang={lang} siteSettings={siteSettings} branding={branding} />
     {previewContext.enabled && <VisualEditing enabled={true} />}
     {gaMeasurementId && (
       <>

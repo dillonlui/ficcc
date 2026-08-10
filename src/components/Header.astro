@@ -1,14 +1,16 @@
 ---
 import { getNavLinks, type Lang } from '../lib/navigation';
 import { getResolvedGrowNavItems } from '../lib/grow-pages';
+import { urlForFile, type SiteBranding } from '../lib/sanity';
 
 interface Props {
   lang?: Lang;
   langToggleHref?: string;
   pageVisibility?: Record<string, boolean>;
+  branding?: SiteBranding | null;
 }
 
-const { lang = 'en', langToggleHref: langToggleHrefProp, pageVisibility: pageVisibilityProp } = Astro.props;
+const { lang = 'en', langToggleHref: langToggleHrefProp, pageVisibility: pageVisibilityProp, branding = null } = Astro.props;
 const logoHref = lang === 'zh' ? '/zh' : '/en/';
 const logoText = lang === 'zh' ? '伊的家' : 'FICCC';
 const logoLabel = lang === 'zh' ? '伊的家' : 'FICCC Home';
@@ -18,7 +20,8 @@ const menuOpenLabel = lang === 'zh' ? '開啟導覽選單' : 'Open navigation me
 const menuCloseLabel = lang === 'zh' ? '關閉導覽選單' : 'Close navigation menu';
 const langToggleHref = langToggleHrefProp ?? (lang === 'zh' ? '/en/' : '/zh');
 const currentPath = Astro.url.pathname;
-const logoSrc = lang === 'zh' ? '/logo/logo-zh-light.svg' : '/logo/logo-en-light.svg';
+const fallbackLogoSrc = lang === 'zh' ? '/logo/logo-zh-light.svg' : '/logo/logo-en-light.svg';
+const logoSrc = urlForFile(lang === 'zh' ? branding?.headerLogoZh : branding?.headerLogoEn) || fallbackLogoSrc;
 
 // Dropdown configurations — keyed by the nav link href that triggers the dropdown
 interface DropdownConfig {
