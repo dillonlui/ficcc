@@ -24,7 +24,8 @@ if (!projectId) {
 }
 
 const assets = [
-  ['splashLogo', 'icon-light.svg'],
+  ['splashLogo', 'icon-splash-light.svg'],
+  ['notFoundLogo', 'icon-light.svg'],
   ['headerLogoEn', 'logo-en-light.svg'],
   ['headerLogoZh', 'logo-zh-light.svg'],
   ['footerLogo', 'logo-bilingual-dark.svg'],

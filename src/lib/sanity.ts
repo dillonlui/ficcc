@@ -329,6 +329,7 @@ export interface SiteBranding {
   _id: string;
   _type: 'siteBranding';
   splashLogo?: SanityFile;
+  notFoundLogo?: SanityFile;
   headerLogoEn?: SanityFile;
   headerLogoZh?: SanityFile;
   footerLogo?: SanityFile;
