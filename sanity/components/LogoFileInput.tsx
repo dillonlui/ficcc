@@ -4,7 +4,7 @@ type LogoFileValue = {
   asset?: { _ref?: string };
 };
 
-type PreviewTone = 'light' | 'dark';
+type PreviewTone = 'light' | 'dark' | 'splash';
 
 function fileUrl(ref: string, projectId: string, dataset: string) {
   const value = ref.replace(/^file-/, '');
@@ -22,6 +22,7 @@ function createLogoFileInput(tone: PreviewTone) {
     const previewUrl = assetRef && config.projectId && config.dataset
       ? fileUrl(assetRef, config.projectId, config.dataset)
       : null;
+    const isSplashPreview = tone === 'splash';
 
     return (
       <>
@@ -30,6 +31,11 @@ function createLogoFileInput(tone: PreviewTone) {
           <div
             style={{
               background: tone === 'dark' ? '#1A3A2C' : '#F5F2EC',
+              backgroundImage: isSplashPreview
+                ? "linear-gradient(to bottom, rgba(33, 30, 26, 0.65) 0%, rgba(33, 30, 26, 0.4) 45%, rgba(33, 30, 26, 0.72) 100%), url('/images/hero/waterfall-landing-1600.jpg')"
+                : undefined,
+              backgroundPosition: isSplashPreview ? 'center' : undefined,
+              backgroundSize: isSplashPreview ? 'cover' : undefined,
               border: '1px solid rgba(33, 30, 26, 0.16)',
               borderRadius: '4px',
               marginTop: '12px',
@@ -50,3 +56,4 @@ function createLogoFileInput(tone: PreviewTone) {
 
 export const darkLogoFileInput = createLogoFileInput('dark');
 export const lightLogoFileInput = createLogoFileInput('light');
+export const splashLogoFileInput = createLogoFileInput('splash');
