@@ -22,9 +22,9 @@ export const siteBranding = defineType({
   type: 'document',
   fields: [
     svgLogoField('splashLogo', 'Splash Logo Mark', 'Circular mark shown on the language-selection splash page and 404 page.', 'dark'),
-    svgLogoField('headerLogoEn', 'Header Logo (English)', 'Wordmark shown in the English site header.', 'dark'),
-    svgLogoField('headerLogoZh', 'Header Logo (Chinese)', 'Wordmark shown in the Chinese site header.', 'dark'),
-    svgLogoField('footerLogo', 'Footer Logo (Bilingual)', 'Bilingual wordmark shown in both site footers.', 'light'),
+    svgLogoField('headerLogoEn', 'Header Logo (English)', 'Wordmark shown in the English site header.', 'light'),
+    svgLogoField('headerLogoZh', 'Header Logo (Chinese)', 'Wordmark shown in the Chinese site header.', 'light'),
+    svgLogoField('footerLogo', 'Footer Logo (Bilingual)', 'Bilingual wordmark shown in both site footers.', 'dark'),
   ],
   preview: {
     prepare: () => ({ title: 'Site Branding' }),

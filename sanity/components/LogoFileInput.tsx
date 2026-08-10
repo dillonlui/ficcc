@@ -29,7 +29,7 @@ function createLogoFileInput(tone: PreviewTone) {
         {previewUrl && (
           <div
             style={{
-              background: tone === 'dark' ? '#211e1a' : '#f5f2ec',
+              background: tone === 'dark' ? '#1A3A2C' : '#F5F2EC',
               border: '1px solid rgba(33, 30, 26, 0.16)',
               borderRadius: '4px',
               marginTop: '12px',
