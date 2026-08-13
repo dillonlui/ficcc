@@ -1,9 +1,8 @@
 /**
  * Fetch latest videos from a YouTube channel.
  *
- * The public channel feed keeps the sermons page working without a YouTube Data
- * API key. When a key is configured, use the Data API first because it provides
- * the same information in a more structured response.
+ * The public channel feed supplies the information needed for the sermons page,
+ * without requiring a YouTube Data API key.
  */
 
 export interface YouTubeVideo {
@@ -14,9 +13,6 @@ export interface YouTubeVideo {
 }
 
 const CHANNEL_ID = 'UCRuUdmxHG2c6OtuKcdH2rSw'; // @FICCCenglish
-// Uploads playlist ID is derived from channel ID (UC → UU prefix). This never
-// changes, so hardcoding it eliminates one API call per request and halves latency.
-const UPLOADS_PLAYLIST_ID = 'UURuUdmxHG2c6OtuKcdH2rSw';
 const YOUTUBE_TIMEOUT_MS = 8_000;
 
 function decodeXml(value: string): string {
@@ -67,41 +63,8 @@ async function getLatestVideosFromFeed(count: number): Promise<YouTubeVideo[]> {
 
 /**
  * Fetches the latest `count` videos from the FICCC English YouTube channel.
- * Returns an empty array only when both the Data API and public feed are
- * unavailable.
+ * Returns an empty array when the public feed is unavailable.
  */
 export async function getLatestVideos(count = 6): Promise<YouTubeVideo[]> {
-  const apiKey = import.meta.env.YOUTUBE_API_KEY;
-  if (!apiKey) return getLatestVideosFromFeed(count);
-
-  try {
-    // Fetch latest videos from the uploads playlist (single API call)
-    const playlistUrl = new URL('https://www.googleapis.com/youtube/v3/playlistItems');
-    playlistUrl.searchParams.set('part', 'snippet');
-    playlistUrl.searchParams.set('playlistId', UPLOADS_PLAYLIST_ID);
-    playlistUrl.searchParams.set('maxResults', String(count));
-    playlistUrl.searchParams.set('key', apiKey);
-
-    const playlistRes = await fetch(playlistUrl.toString(), {
-      signal: AbortSignal.timeout(YOUTUBE_TIMEOUT_MS),
-    });
-    if (!playlistRes.ok) {
-      console.error(`[youtube] Playlist fetch failed: ${playlistRes.status}`);
-      return getLatestVideosFromFeed(count);
-    }
-
-    const playlistData = await playlistRes.json();
-
-    const videos = (playlistData.items ?? []).map((item: any) => ({
-      videoId: item.snippet.resourceId.videoId,
-      title: item.snippet.title,
-      date: item.snippet.publishedAt?.split('T')[0] ?? '',
-      thumbnail: item.snippet.thumbnails?.medium?.url ??
-        `https://img.youtube.com/vi/${item.snippet.resourceId.videoId}/mqdefault.jpg`,
-    }));
-    return videos.length > 0 ? videos : getLatestVideosFromFeed(count);
-  } catch (err) {
-    console.error('[youtube] Fetch error:', err);
-    return getLatestVideosFromFeed(count).catch(() => []);
-  }
+  return getLatestVideosFromFeed(count).catch(() => []);
 }
