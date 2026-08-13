@@ -13,6 +13,10 @@ The production site uses language-prefixed routes:
 
 Legacy English Ministry URLs redirect to `/en/...`; legacy Chinese Ministry URLs redirect to `/zh/...`.
 
+> **Deferred:** `cccf.ficcc.org` is not part of this launch. See
+> [CCCF Site Migration Brief](./cccf-migration-brief.md) for the post-launch
+> migration inventory and plan.
+
 ## Prerequisites
 
 Before starting the cutover, confirm all of the following:
