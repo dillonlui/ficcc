@@ -26,16 +26,15 @@ test.describe('Bilingual — Chinese pages', () => {
     expect(h1Text).toMatch(/[\u4e00-\u9fff]/); // contains CJK characters
   });
 
-  test('/zh/contact/ has WeChat section', async ({ page }) => {
+  test('/zh/contact/ has contact form', async ({ page }) => {
     await page.goto('/zh/contact/', { waitUntil: 'domcontentloaded' });
 
-    // WeChat section is unique to the Chinese contact page
-    const wechatSection = page.locator('.wechat-section');
-    await expect(wechatSection).toBeVisible();
+    const contactForm = page.locator('.zh-contact-form');
+    await expect(contactForm).toBeVisible();
 
-    // Should contain the WeChat title
     const bodyText = await page.locator('body').innerText();
-    expect(bodyText).toContain('微信');
+    expect(bodyText).toContain('發送訊息');
+    expect(bodyText).not.toContain('微信');
   });
 });
 

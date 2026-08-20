@@ -7,7 +7,7 @@ export const prerender = false;
 
 const title = '聯繫我們 | 伊薩卡華人基督教會';
 const description =
-  '聯繫伊薩卡華人基督教會。透過微信或表單與我們取得聯繫。';
+  '聯繫伊薩卡華人基督教會。透過表單與我們取得聯繫。';
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
@@ -53,36 +53,12 @@ const serviceTimes = siteSettings?.serviceTimes || [
     <section class="contact-section" aria-label="聯繫方式">
       <div class="contact-section__inner">
         <div class="contact-layout">
-          <!-- Main content: WeChat + form -->
+          <!-- Contact form -->
           <div class="contact-main" data-reveal>
-            <!-- WeChat section — primary contact method for Chinese ministry -->
-            <section class="wechat-section" aria-labelledby="wechat-heading">
-              <div class="wechat-section__header">
-                <svg class="wechat-section__icon" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true">
-                  <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05a6.127 6.127 0 0 1-.231-1.676c0-3.56 3.143-6.448 7.02-6.448.186 0 .367.013.55.025C16.339 4.79 12.87 2.188 8.69 2.188zm-2.6 4.408a1.09 1.09 0 1 1 0 2.181 1.09 1.09 0 0 1 0-2.18zm5.198 0a1.09 1.09 0 1 1 0 2.181 1.09 1.09 0 0 1 0-2.18z"/>
-                  <path d="M23.155 14.262c0-3.26-3.262-5.907-7.282-5.907-4.02 0-7.282 2.646-7.282 5.907 0 3.262 3.262 5.908 7.282 5.908.85 0 1.67-.118 2.432-.332a.69.69 0 0 1 .57.078l1.528.893a.264.264 0 0 0 .133.044.233.233 0 0 0 .233-.236c0-.058-.023-.114-.038-.17l-.312-1.187a.47.47 0 0 1 .171-.533c1.465-1.08 2.565-2.737 2.565-4.465zm-9.86-.984a.89.89 0 1 1 0-1.779.89.89 0 0 1 0 1.78zm5.157 0a.89.89 0 1 1 0-1.779.89.89 0 0 1 0 1.78z"/>
-                </svg>
-                <h2 id="wechat-heading" class="wechat-section__title">微信 WeChat</h2>
-              </div>
-              <p class="wechat-section__desc">
-                微信是我們中文事工的主要聯繫方式。掃描下方二維碼或搜尋我們的微信號，即可與教會取得聯繫。
-              </p>
-              <div class="wechat-section__qr" role="img" aria-label="微信二維碼">
-                <!-- Placeholder for WeChat QR code — replace src with actual QR image -->
-                <div class="wechat-section__qr-placeholder">
-                  <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" aria-hidden="true" class="wechat-section__qr-icon">
-                    <path d="M3 3h7v7H3V3zm1 1v5h5V4H4zm8-1h7v7h-7V3zm1 1v5h5V4h-5zM3 12h7v7H3v-7zm1 1v5h5v-5H4zm10 0h1v1h-1v-1zm2 0h3v1h-3v-1zm-2 2h1v3h-1v-3zm4 0h1v1h-1v-1zm-2 2h1v1h-1v-1zm2 0h3v1h-3v-1zm0 2h1v1h-1v-1z"/>
-                  </svg>
-                  <span class="wechat-section__qr-text">微信二維碼</span>
-                </div>
-              </div>
-            </section>
-
-            <!-- Simplified contact form -->
             {showContactForm && (
               <div class="zh-contact-form-section">
                 <h2 class="zh-contact-form-section__title">發送訊息</h2>
-                <p class="zh-contact-form-section__desc">您也可以透過以下表單與我們聯繫。</p>
+                <p class="zh-contact-form-section__desc">透過以下表單與我們聯繫。</p>
 
                 <form class="zh-contact-form" novalidate aria-busy="false" aria-describedby="zh-contact-privacy-note">
                 <div class="zh-contact-form__field">
@@ -399,72 +375,6 @@ const serviceTimes = siteSettings?.serviceTimes || [
     align-items: start;
   }
 
-  /* ---------- WeChat section ---------- */
-
-  .wechat-section {
-    background-color: var(--base-100);
-    border-radius: var(--radius-md);
-    padding: var(--space-8);
-    margin-bottom: var(--space-12);
-  }
-
-  .wechat-section__header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-4);
-  }
-
-  .wechat-section__icon {
-    color: #07c160; /* WeChat brand green */
-    flex-shrink: 0;
-  }
-
-  .wechat-section__title {
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-weight: 700;
-    color: var(--color-ink);
-    margin: 0;
-  }
-
-  .wechat-section__desc {
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    color: var(--color-body);
-    line-height: var(--leading-relaxed);
-    margin: 0 0 var(--space-6) 0;
-  }
-
-  .wechat-section__qr {
-    display: flex;
-    justify-content: center;
-  }
-
-  .wechat-section__qr-placeholder {
-    width: 12rem;
-    height: 12rem;
-    border: 2px dashed var(--color-stone);
-    border-radius: var(--radius-md, 0.5rem);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    color: var(--color-body);
-    background-color: var(--color-bg);
-  }
-
-  .wechat-section__qr-icon {
-    opacity: 0.4;
-  }
-
-  .wechat-section__qr-text {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: var(--color-body);
-  }
-
   /* ---------- Contact form ---------- */
 
   .zh-contact-form-section {
@@ -708,11 +618,6 @@ const serviceTimes = siteSettings?.serviceTimes || [
 
     .contact-section {
       padding: var(--space-10) var(--space-4) calc(var(--space-10) + 2rem);
-    }
-
-    .wechat-section__qr-placeholder {
-      width: 10rem;
-      height: 10rem;
     }
   }
 </style>
