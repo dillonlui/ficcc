@@ -474,9 +474,6 @@ const fallbackBackfill: Record<string, Record<string, unknown>> = {
   'visitPage-zh': {
     whatToExpect: blocks('visit-zh-expect', ['無論您是第一次來教會，還是曾經參加過其他教會，都歡迎您如實地來到這裡。', '穿著：隨意穿著即可，大多數人穿休閒服裝。', '主日流程：聚會包括詩歌敬拜、禱告、讀經和講道。崇拜以中文為主，部分環節為雙語。', '歡迎孩子：兒童隨時歡迎參加主堂崇拜。崇拜後我們也提供按年齡分組的主日學課程。', '聚會多長時間？主日崇拜通常約75分鐘。']),
     transportation: blocks('visit-zh-transport', ['地址：429 Mitchell Street, Ithaca, NY 14850', '停車：教會旁設有免費停車場。Mitchell Street 及附近街道也有路邊停車位。', '靠近康奈爾：我們距離康奈爾大學校園很近。如果您是沒有車的學生，我們很樂意安排接送，請與我們聯繫！', '公共交通：TCAT公車可到達附近地區。請查詢 tcatbus.com 了解時刻表。']),
-    busRouteHeading: '主日接送巴士路線',
-    busRouteIntro: '每週日早上，教會提供免費接送巴士服務。以下為七站路線及預計到達時間：',
-    busRoute: ['教會（429 Mitchell St）', 'Hasbrouck Apartments', 'Collegetown（College Ave & Dryden）', 'North Campus（Robert Purcell）', 'Ithaca Commons', 'East Hill Plaza', '返回教會（429 Mitchell St）'].map((stop, index) => ({ _type: 'busStop', _key: `bus-${index + 1}`, stop, time: ['9:00 AM', '9:10 AM', '9:15 AM', '9:22 AM', '9:30 AM', '9:35 AM', '9:40 AM'][index] })),
     faqItems: [
       ['應該穿什麼？', '沒有穿著要求，隨意穿著即可。大多數人穿休閒服裝。'], ['歡迎兒童嗎？', '當然！兒童隨時歡迎參加主堂崇拜，崇拜後我們也提供按年齡分組的主日學課程。'], ['崇拜使用什麼語言？', '我們的崇拜以中文為主，部分環節為雙語（中英文）。無論您的語言背景如何，都歡迎您。'], ['有停車位嗎？', '有！教會旁設有免費停車場，附近街道也有路邊停車位。'], ['聚會多長時間？', '主日崇拜通常約75分鐘。主日學在11:15 AM開始，約45分鐘。'], ['平日如何聯繫教會？', '我們很期待幫助您融入社區！聚會後請到歡迎桌了解小組、查經班和其他連結方式。您也可以通過我們的聯繫頁面與我們溝通。'],
     ].map(([question, answer], index) => ({ _type: 'faqItem', _key: `faq-${index + 1}`, question, answer })),

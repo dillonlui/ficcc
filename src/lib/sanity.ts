@@ -272,9 +272,6 @@ export interface VisitPage {
   transportation?: PortableTextBlock[];
   faqItems?: FaqItem[];
   rideRequestEnabled?: boolean;
-  busRouteHeading?: string;
-  busRouteIntro?: string;
-  busRoute?: BusStop[];
   rideRequestHeading?: string;
   rideRequestIntro?: string;
   language: 'en' | 'zh';
@@ -431,12 +428,6 @@ export interface ContactPage {
   heroSubtitle?: string;
   formEnabled?: boolean;
   language: 'en' | 'zh';
-}
-
-export interface BusStop {
-  _key: string;
-  stop: string;
-  time: string;
 }
 
 export type GrowAudience = 'english' | 'chinese' | 'youth' | 'children';

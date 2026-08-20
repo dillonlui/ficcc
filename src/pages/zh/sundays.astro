@@ -58,21 +58,6 @@ const fallbackTransportationHtml = `
 <p><strong>公共交通：</strong>TCAT公車可到達附近地區。請查詢 <a href="https://tcatbus.com">tcatbus.com</a> 了解時刻表。</p>
 `;
 
-// ---------- Bus Route (ZH-specific bespoke content) ----------
-const busRouteHeading = visitPage?.busRouteHeading || '主日接送巴士路線';
-const busRouteIntro = visitPage?.busRouteIntro || '每週日早上，教會提供免費接送巴士服務。以下為七站路線及預計到達時間：';
-const busRoute = visitPage?.busRoute?.length
-  ? visitPage.busRoute
-  : [
-      { stop: '教會（429 Mitchell St）', time: '9:00 AM' },
-      { stop: 'Hasbrouck Apartments', time: '9:10 AM' },
-      { stop: 'Collegetown（College Ave & Dryden）', time: '9:15 AM' },
-      { stop: 'North Campus（Robert Purcell）', time: '9:22 AM' },
-      { stop: 'Ithaca Commons', time: '9:30 AM' },
-      { stop: 'East Hill Plaza', time: '9:35 AM' },
-      { stop: '返回教會（429 Mitchell St）', time: '9:40 AM' },
-    ];
-
 const fallbackFaqItems = [
   {
     question: '應該穿什麼？',
@@ -234,29 +219,6 @@ const rideRequestIntro = visitPage?.rideRequestIntro || '沒有車？沒問題�
             </a>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Sunday Bus Route (ZH-specific) -->
-    <section class="bus-route" aria-label="主日接送路線">
-      <div class="bus-route__tex" style="background-image: url('/images/textures/valentin-beauvais-4YrVF0gVdjk-unsplash.jpg')"></div>
-      <div class="bus-route__inner">
-        <div class="bus-route__intro-block" data-reveal>
-          <p class="bus-route__kicker">免費主日接送</p>
-          <h2 class="bus-route__heading">{busRouteHeading}</h2>
-          <p class="bus-route__intro">{busRouteIntro}</p>
-        </div>
-        <ol class="bus-route__list" data-reveal-stagger>
-          {busRoute.map((stop, i) => (
-            <li class="bus-route__stop" data-reveal>
-              <span class="bus-route__number" aria-hidden="true">{i + 1}</span>
-              <div class="bus-route__details">
-                <span class="bus-route__name">{stop.stop}</span>
-                <span class="bus-route__time">{stop.time}</span>
-              </div>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
 
@@ -590,135 +552,6 @@ const rideRequestIntro = visitPage?.rideRequestIntro || '沒有車？沒問題�
     background: var(--primary-50);
   }
 
-  .bus-route {
-    position: relative;
-    overflow: hidden;
-    padding: var(--space-20) var(--space-6);
-    background-color: var(--primary-800);
-  }
-
-  .bus-route__tex {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    pointer-events: none;
-    opacity: 0.18;
-    mix-blend-mode: soft-light;
-  }
-
-  .bus-route__inner {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(15rem, 0.7fr) minmax(0, 1.3fr);
-    gap: var(--space-16);
-    align-items: start;
-    max-width: var(--max-width);
-    margin-inline: auto;
-  }
-
-  .bus-route__intro-block {
-    position: sticky;
-    top: var(--space-8);
-  }
-
-  .bus-route__kicker {
-    margin: 0 0 var(--space-2);
-    color: var(--primary-200);
-    font-size: var(--text-sm);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-  }
-
-  .bus-route__heading {
-    margin: 0;
-    color: var(--base-50);
-    font-family: var(--font-heading);
-    font-size: var(--text-3xl);
-  }
-
-  .bus-route__intro {
-    max-width: 30rem;
-    margin: var(--space-5) 0 0;
-    color: var(--primary-100);
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
-  }
-
-  .bus-route__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    position: relative;
-  }
-
-  .bus-route__stop:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: var(--space-5);
-    top: 50%;
-    height: calc(100% + var(--space-4));
-    width: 3px;
-    background-color: var(--primary-300);
-    border-radius: var(--radius-full);
-    opacity: 0.65;
-    transform: translateX(-50%);
-    z-index: 0;
-  }
-
-  .bus-route__stop {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    position: relative;
-  }
-
-  .bus-route__number {
-    flex-shrink: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    background-color: var(--primary-200);
-    color: var(--primary-900);
-    font-family: var(--font-heading);
-    font-size: var(--text-base);
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-
-  .bus-route__details {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-4) var(--space-5);
-    border: 1px solid var(--primary-600);
-    border-radius: var(--radius-lg);
-    background-color: color-mix(in srgb, var(--primary-600) 34%, transparent);
-  }
-
-  .bus-route__name {
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    color: var(--base-50);
-  }
-
-  .bus-route__time {
-    font-family: var(--font-heading);
-    font-size: var(--text-base);
-    font-weight: 600;
-    color: var(--primary-200);
-    white-space: nowrap;
-  }
-
   .faq {
     position: relative;
     overflow: clip;
@@ -832,13 +665,11 @@ const rideRequestIntro = visitPage?.rideRequestIntro || '沒有車？沒問題�
       padding-block: var(--space-4);
     }
 
-    .bus-route__inner,
     .faq__inner {
       grid-template-columns: 1fr;
       gap: var(--space-8);
     }
 
-    .bus-route__intro-block,
     .faq__intro {
       position: static;
     }
@@ -846,7 +677,6 @@ const rideRequestIntro = visitPage?.rideRequestIntro || '沒有車？沒問題�
 
   @media (max-width: 700px) {
     .section-heading,
-    .bus-route__heading,
     .ride-request__heading {
       font-size: var(--text-2xl);
     }
@@ -883,7 +713,6 @@ const rideRequestIntro = visitPage?.rideRequestIntro || '沒有車？沒問題�
 
     .expect,
     .directions,
-    .bus-route,
     .faq,
     .ride-request {
       padding: var(--space-16) var(--space-4);
@@ -903,12 +732,6 @@ const rideRequestIntro = visitPage?.rideRequestIntro || '沒有車？沒問題�
 
     .directions__map iframe {
       min-height: 20rem;
-    }
-
-    .bus-route__details {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: var(--space-1);
     }
 
     .faq__panel {
