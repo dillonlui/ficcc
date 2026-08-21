@@ -5,9 +5,9 @@ import { getContactPage, getSiteSettings, urlForImage } from '../../lib/sanity';
 
 export const prerender = false;
 
-const title = '聯繫我們 | 伊薩卡華人基督教會';
+const title = '聯繫我們 | 伊的家華人基督教會';
 const description =
-  '聯繫伊薩卡華人基督教會。透過表單與我們取得聯繫。';
+  '聯繫伊的家華人基督教會。透過表單與我們取得聯繫。';
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
 // ---------- CMS data (graceful fallback when Sanity is unreachable) ----------
@@ -146,7 +146,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
             <div class="contact-info__block">
               <h3 class="contact-info__label">教會地址</h3>
               <address class="contact-info__value">
-                伊薩卡華人基督教會<br />
+                伊的家華人基督教會<br />
                 {address}<br />
                 {city}
               </address>
