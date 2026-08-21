@@ -474,17 +474,44 @@ export type PageVisibilityMap = Record<string, boolean>;
 // ---------------------------------------------------------------------------
 
 type Language = 'en' | 'zh';
+const reportedFailedRequests = new WeakSet<Request>();
+
+export function reportSanityQueryFailure(request?: Request, error?: unknown): void {
+  if (request && reportedFailedRequests.has(request)) return;
+  if (request) reportedFailedRequests.add(request);
+
+  let route = 'build-time';
+  if (request) {
+    try {
+      route = new URL(request.url).pathname;
+    } catch {
+      route = 'unknown';
+    }
+  }
+
+  console.error('[sanity/fallback]', JSON.stringify({
+    event: 'sanity_query_failed',
+    route,
+    previewCookiePresent: hasSanityPreviewCookie(request),
+    errorName: error instanceof Error ? error.name : 'UnknownError',
+  }));
+}
 
 async function fetchQuery<T>(
   query: string,
   params: QueryParams = {},
   options: QueryOptions = {},
 ): Promise<T> {
-  if (options.request) {
-    return (await loadQuery<T>(query, params, options)).data;
-  }
+  try {
+    if (options.request) {
+      return (await loadQuery<T>(query, params, options)).data;
+    }
 
-  return client.fetch<T>(query, params, { perspective: 'published' });
+    return client.fetch<T>(query, params, { perspective: 'published' });
+  } catch (error) {
+    reportSanityQueryFailure(options.request, error);
+    throw error;
+  }
 }
 
 function singletonId(type: string, language: Language): string {

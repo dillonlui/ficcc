@@ -175,13 +175,13 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M8 — Public pages are uncached and depend on live Sanity queries
 
-- **Status:** [~] Edge-cache policy deployed and verified; fallback monitoring remains
+- **Status:** [~] Edge caching and fallback signals deployed; alert wiring remains
 - **Owner:** Unassigned
 - **Evidence:** Production responses showed `x-vercel-cache: MISS` and `cache-control: public, max-age=0, must-revalidate`; most pages make several Sanity requests with `useCdn: false`.
 - **Risk:** Higher latency, extra Sanity/Vercel usage, and greater exposure to upstream outages. Code generally falls back safely, but fallback content can be stale or inconsistent with current staff content.
 - **Recommended remediation:** Establish an explicit freshness policy, such as short CDN caching with stale-while-revalidate for public responses while keeping preview responses private/no-store. Add monitoring for fallback activation and Sanity failures.
 - **Verification:** Confirm cache headers/hit behavior, staff-update latency, preview isolation, and correct fallback behavior during a controlled Sanity failure.
-- **Notes:** Public BaseLayout responses now keep browsers on `max-age=0` while using a Vercel-only 30-second fresh window, 60-second stale-while-revalidate window, and one-day stale-if-error protection. Authenticated Sanity preview responses explicitly remove all shared-cache overrides and remain `private, no-store`. Unit coverage verifies both policies. Repeated production requests returned `x-vercel-cache: HIT` with a rising `Age` header on 2026-08-21. Controlled Sanity-failure behavior and alerting still need production verification.
+- **Notes:** Public BaseLayout responses now keep browsers on `max-age=0` while using a Vercel-only 30-second fresh window, 60-second stale-while-revalidate window, and one-day stale-if-error protection. Authenticated Sanity preview responses explicitly remove all shared-cache overrides and remain `private, no-store`. Unit coverage verifies both policies. Repeated production requests returned `x-vercel-cache: HIT` with a rising `Age` header on 2026-08-21. Sanity query failures now emit one structured `[sanity/fallback]` event per request without query text, parameters, content, tokens, or error messages. A controlled production failure and an external alert on `sanity_query_failed` still need configuration/verification.
 
 ## Lower-Priority / Operational Gaps
 
