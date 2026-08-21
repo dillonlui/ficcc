@@ -58,9 +58,19 @@ interface SendEmailOptions {
 /**
  * Read a form-specific recipient from the deployment environment. We fail
  * closed instead of routing church correspondence to Resend's sample address.
+ *
+ * Access env vars with static property reads — Vite only inlines
+ * `import.meta.env.FORM_RECIPIENT_*` when the key is written literally.
+ * Dynamic `import.meta.env[name]` stays undefined at runtime even when
+ * the variable is set in Vercel.
  */
 export function getFormRecipient(variableName: string): string | null {
-  const recipient = import.meta.env[variableName]?.trim();
+  const recipients: Record<string, string | undefined> = {
+    FORM_RECIPIENT_CONTACT: import.meta.env.FORM_RECIPIENT_CONTACT,
+    FORM_RECIPIENT_RIDE: import.meta.env.FORM_RECIPIENT_RIDE,
+  };
+
+  const recipient = recipients[variableName]?.trim();
   if (!recipient || !isValidEmail(recipient)) {
     console.error(`[form-helpers] ${variableName} must be a valid email address`);
     return null;
