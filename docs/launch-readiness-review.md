@@ -106,13 +106,13 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M1 — Form request bodies and fields have no upper bounds
 
-- **Status:** [~] Application limits and production WAF rule complete; code deployment pending
+- **Status:** [x] Verified complete and deployed
 - **Owner:** Site maintainer
 - **Evidence:** `src/pages/api/contact.ts` and `src/pages/api/ride-request.ts` call `request.json()` before any size check and validate only minimum field lengths.
 - **Risk:** Oversized valid requests can consume function memory and create oversized/costly emails. Turnstile reduces automated abuse but is not application rate limiting.
 - **Recommended remediation:** Reject large `Content-Length` values before parsing, cap every field server-side, validate dates and telephone lengths, and add an edge/platform rate limit keyed by IP plus endpoint. Return `413` for oversized bodies and `429` for throttling.
 - **Verification:** Add boundary tests for maximum accepted sizes, one-byte-over limits, malformed JSON, repeated requests, and missing/invalid Turnstile tokens.
-- **Notes:** Both endpoints now reject declared and streamed bodies above 16 KiB, require object-shaped JSON, cap every accepted field, validate optional phone/date values, and apply a five-request/ten-minute endpoint+IP safeguard with `429` and `Retry-After`. Matching HTML `maxlength` attributes reduce accidental client-side errors. The in-function limiter is bounded and useful as defense in depth, but Vercel functions can scale across instances. On 2026-08-21, a production Vercel WAF fixed-window rule was published for the exact path expression `^/api/(contact|ride-request)$`, keyed by IP, with five combined requests per 600 seconds and a `429` action. The application changes still require deployment and production verification before M1 is complete.
+- **Notes:** Both endpoints now reject declared and streamed bodies above 16 KiB, require object-shaped JSON, cap every accepted field, validate optional phone/date values, and apply a five-request/ten-minute endpoint+IP safeguard with `429` and `Retry-After`. Matching HTML `maxlength` attributes reduce accidental client-side errors. The in-function limiter is bounded and useful as defense in depth, but Vercel functions can scale across instances. On 2026-08-21, a production Vercel WAF fixed-window rule was published for the exact path expression `^/api/(contact|ride-request)$`, keyed by IP, with five combined requests per 600 seconds and a `429` action. Commit `12d12b3` deployed successfully with all four Resend variables available to Production and Preview. Live verification returned `413` for a 16,385-byte body, `400` for harmless malformed requests below the threshold, and `429` once the combined five-request window was exhausted. Clearly labeled contact and ride-request submissions were accepted by Resend under test IDs `CONTACT-2026-08-21T17-01-47-621Z` and `RIDE-2026-08-21T17-01-47-621Z`; recipient inbox confirmation remains part of the broader completion gate.
 
 ### M2 — Grow listing descriptions lack editorial guardrails
 
