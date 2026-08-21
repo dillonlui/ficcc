@@ -3,7 +3,7 @@
 **Site:** https://ficcc.org
 **Initial review:** 2026-08-20
 **Last updated:** 2026-08-21
-**Overall status:** High-priority remediation and owner-confirmed operational checks are complete. Direct-404 and staff-documentation fixes are implemented locally; caching, fallback snapshots, CSP hardening, the final live smoke test, and the human VoiceOver check remain.
+**Overall status:** High-priority remediation, owner-confirmed operational checks, direct-404 handling, editorial guardrails, documentation corrections, and edge caching are live and verified. Fallback snapshots, fallback alerting, CSP hardening, and the human VoiceOver check remain.
 
 **Release safety:** The pre-remediation baseline is commit `044a4c4a53a57f9e53635eca10b1254087c4b2f4`. The production tip immediately before this deployment is tagged `pre-launch-deploy-20260820`; the reviewed remediation commit is tagged `launch-readiness-remediation-20260820`. Application and CMS rollback procedures are documented in `docs/launch-runbook.md`.
 
@@ -116,7 +116,7 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M2 — Grow listing descriptions lack editorial guardrails
 
-- **Status:** [~] Hard publishing guardrail implemented; deployment verification pending
+- **Status:** [x] Verified complete and deployed
 - **Owner:** Site maintainer / church staff
 - **Evidence:** `sanity/schemas/singletons/growPage.ts` requires `groups[].description` but sets no maximum; `src/components/GrowPage.astro` renders the entire value on the index card.
 - **Risk:** Staff can unintentionally paste full detail content or sensitive information into a summary, producing extremely long, hard-to-scan cards.
@@ -145,23 +145,23 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M5 — Detached fellowship detail documents remain public and indexable
 
-- **Status:** [~] Remediation implemented; deployment verification pending
+- **Status:** [x] Verified complete and deployed
 - **Owner:** Church staff / site administrator
 - **Evidence:** `/zh/fellowships/gospel-group` is no longer linked from the listing but still returns a public page with a canonical URL and no `noindex` directive.
 - **Risk:** Retired or stale CMS content remains discoverable by direct URL and search engines.
 - **Recommended remediation:** Staff should turn `Publicly Visible` off for retired Ministry documents. Consider distinguishing `listed` from `public-by-link` only if that is an intentional workflow.
 - **Verification:** Retired documents return a real 404/noindex response and are absent from internal links and sitemaps.
-- **Notes:** The Chinese fellowship route now requires a published Ministry document to be explicitly linked from the published Chinese Grow page. If Sanity responds successfully, detached or hidden documents return the shared 404 page directly; starter content is used only during a Sanity failure. Local Playwright verification confirmed `/zh/fellowships/gospel-group` returns 404 with no redirect.
+- **Notes:** The Chinese fellowship route now requires a published Ministry document to be explicitly linked from the published Chinese Grow page. If Sanity responds successfully, detached or hidden documents return the shared 404 page directly; starter content is used only during a Sanity failure. Local Playwright and production verification confirmed `/zh/fellowships/gospel-group` returns 404 with no redirect.
 
 ### M6 — Hidden and missing CMS pages create soft 404s
 
-- **Status:** [~] Remediation implemented; deployment verification pending
+- **Status:** [x] Verified complete and deployed
 - **Owner:** Unassigned
 - **Evidence:** Dynamic routes use `Astro.redirect('/404')`; the resulting flow redirects to a normal rendered page instead of returning a direct `404` status.
 - **Risk:** Search engines and monitoring can treat missing content as successful navigation, weakening indexing and error reporting.
 - **Recommended remediation:** Return/render the 404 page with status 404 rather than redirecting, while preserving `noindex`.
 - **Verification:** `curl -I` against an unknown event/fellowship slug returns `404` with no redirect chain.
-- **Notes:** Hidden singleton routes and missing event/fellowship routes now use an internal Astro rewrite to the shared 404 page instead of a redirect. Local Playwright verification confirmed direct 404 responses with no `Location` header for an unknown event and detached fellowship across all four viewport projects.
+- **Notes:** Hidden singleton routes and missing event/fellowship routes now use an internal Astro rewrite to the shared 404 page instead of a redirect. Local Playwright verification confirmed direct 404 responses with no `Location` header across all four viewport projects. Production returned direct `404` responses with `X-Robots-Tag: noindex, nofollow` for both routes on 2026-08-21.
 
 ### M7 — CMS publishing documentation is outdated
 
@@ -175,13 +175,13 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M8 — Public pages are uncached and depend on live Sanity queries
 
-- **Status:** [~] Short edge-cache policy implemented; deployment and fallback-monitoring work remain
+- **Status:** [~] Edge-cache policy deployed and verified; fallback monitoring remains
 - **Owner:** Unassigned
 - **Evidence:** Production responses showed `x-vercel-cache: MISS` and `cache-control: public, max-age=0, must-revalidate`; most pages make several Sanity requests with `useCdn: false`.
 - **Risk:** Higher latency, extra Sanity/Vercel usage, and greater exposure to upstream outages. Code generally falls back safely, but fallback content can be stale or inconsistent with current staff content.
 - **Recommended remediation:** Establish an explicit freshness policy, such as short CDN caching with stale-while-revalidate for public responses while keeping preview responses private/no-store. Add monitoring for fallback activation and Sanity failures.
 - **Verification:** Confirm cache headers/hit behavior, staff-update latency, preview isolation, and correct fallback behavior during a controlled Sanity failure.
-- **Notes:** Public BaseLayout responses now keep browsers on `max-age=0` while using a Vercel-only 30-second fresh window, 60-second stale-while-revalidate window, and one-day stale-if-error protection. Authenticated Sanity preview responses explicitly remove all shared-cache overrides and remain `private, no-store`. Unit coverage verifies both policies; live `x-vercel-cache` behavior, controlled Sanity-failure behavior, and alerting still need production verification.
+- **Notes:** Public BaseLayout responses now keep browsers on `max-age=0` while using a Vercel-only 30-second fresh window, 60-second stale-while-revalidate window, and one-day stale-if-error protection. Authenticated Sanity preview responses explicitly remove all shared-cache overrides and remain `private, no-store`. Unit coverage verifies both policies. Repeated production requests returned `x-vercel-cache: HIT` with a rising `Age` header on 2026-08-21. Controlled Sanity-failure behavior and alerting still need production verification.
 
 ## Lower-Priority / Operational Gaps
 
@@ -255,7 +255,7 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 | `npm run build` | Pass | Astro 7.2.4 and Sanity 6.10.1 production build completed |
 | `npm run test:e2e` | Pass | 186 passed, 42 intentionally skipped, 0 failed across four viewport projects |
 | `npm run test:a11y` | Pass | 0 violations across all eight configured routes |
-| Live post-deploy smoke test | Targeted fellowship and M1 form passes; full-site smoke pending | Production Sanity dry run reports no pending fellowship writes; the live listing exposes six distinct routes and CCCF resolves correctly. M1 limits, WAF throttling, and Resend acceptance were verified in production on 2026-08-21. |
+| Live post-deploy smoke test | Pass | Representative splash, EN, ZH, contact, visit, Grow, and fellowship routes returned 200. Detached fellowship and unknown event returned direct 404. Corrected Chinese church naming and Vercel cache hits were verified on 2026-08-21. |
 
 ## 2026-08-21 Follow-up Validation
 
@@ -287,4 +287,4 @@ Do not mark this review complete until:
 - [x] Every public form completes a confirmed real-delivery test. Site-owner confirmation recorded 2026-08-21.
 - [x] A staff CMS publish/edit/hide workflow is verified in both languages. Site-owner confirmation recorded 2026-08-21.
 - [x] Sanity and Vercel access/security settings have been manually reviewed. Site-owner confirmation recorded 2026-08-21.
-- [ ] The live deployment has been smoke-tested after remediation.
+- [x] The live deployment has been smoke-tested after remediation on 2026-08-21.
