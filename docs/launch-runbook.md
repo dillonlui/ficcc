@@ -280,7 +280,22 @@ curl -sI https://cm.ficcc.org/home/about/ | grep -i 'location'
 curl -vI https://ficcc.org 2>&1 | grep 'SSL certificate verify ok'
 ```
 
-## Rollback
+## Application Release Rollback
+
+For the 2026-08-20 launch-readiness remediation:
+
+- Baseline tag: `pre-launch-readiness-20260820` (the production code before remediation)
+- Release tag: `launch-readiness-remediation-20260820` (the complete remediation commit)
+
+If the new application deployment has a critical regression:
+
+1. In Vercel, promote the immediately previous known-good production deployment. This is the fastest application rollback and does not change Sanity content.
+2. Revert the release in Git with `git revert launch-readiness-remediation-20260820`, review the generated revert, and push the new revert commit to `main`. Do not rewrite shared history or use `git reset --hard`.
+3. Run the smoke checks below against production and confirm Vercel reports the rollback deployment as Ready.
+
+The fellowship migration is a separate CMS change. It preserves existing documents and references, but if its result must be rolled back, restore `growPage-zh-chinese` from Sanity document history to the revision immediately before the migration. The newly created detail documents can remain temporarily unlinked while the issue is investigated; do not delete them during an incident.
+
+## DNS Rollback
 
 If critical issues are found after cutover:
 

@@ -7,23 +7,35 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const clientRoot = join(root, 'dist', 'client');
-const entryPath = join(
+const functionRoot = join(
   root,
   '.vercel',
   'output',
   'functions',
   '_render.func',
-  'dist',
-  'server',
-  'entry.mjs',
 );
+const entryCandidates = [
+  join(functionRoot, '.vercel', 'output', 'server', 'entry.mjs'),
+  join(functionRoot, 'dist', 'server', 'entry.mjs'),
+];
 
 const portFlag = process.argv.indexOf('--port');
 const port = Number(portFlag >= 0 ? process.argv[portFlag + 1] : process.env.PORT || 4321);
 
-await access(entryPath).catch(() => {
+let entryPath;
+for (const candidate of entryCandidates) {
+  try {
+    await access(candidate);
+    entryPath = candidate;
+    break;
+  } catch {
+    // Try the next adapter output layout.
+  }
+}
+
+if (!entryPath) {
   throw new Error('Vercel server output is missing. Run `npm run build` before previewing.');
-});
+}
 
 const { default: entrypoint } = await import(pathToFileURL(entryPath).href);
 const render = typeof entrypoint === 'function'

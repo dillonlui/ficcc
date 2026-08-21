@@ -1,5 +1,5 @@
 import type { Lang } from './navigation';
-import { getGrowPageDocument, urlForImage } from './sanity';
+import { getGrowPageDocument, urlForImage, type SanityGrowGroup } from './sanity';
 
 export type GrowAudience = 'english' | 'chinese' | 'youth' | 'children';
 
@@ -311,6 +311,15 @@ export function getGrowPage(lang: Lang, audience: GrowAudience): GrowPageContent
   return lang === 'zh' ? zhGrowPages[audience] : enGrowPages[audience];
 }
 
+export function getGrowGroupHref(group: SanityGrowGroup): string | undefined {
+  const detailSlug = group.detail?.isVisible !== false
+    && group.detail?.language === 'zh'
+    ? group.detail.slug?.current
+    : undefined;
+
+  return detailSlug ? `/zh/fellowships/${detailSlug}` : undefined;
+}
+
 export async function getResolvedGrowPage(
   lang: Lang,
   audience: GrowAudience,
@@ -346,11 +355,6 @@ export async function getResolvedGrowPage(
           ? page.groups.map((group, index) => {
               const fallbackGroup = fallback.groups.find((item) => item.name === group.name)
                 || fallback.groups[index];
-              const detailSlug = group.detail?.isVisible !== false
-                && group.detail?.language === 'zh'
-                ? group.detail.slug?.current
-                : undefined;
-
               return {
                 name: group.name,
                 meetingTime: group.meetingTime,
@@ -359,9 +363,7 @@ export async function getResolvedGrowPage(
                   ? urlForImage(group.image, { width: 900 })
                   : fallbackGroup?.image,
                 imageAlt: group.imageAlt || '',
-                href: detailSlug
-                  ? `/zh/fellowships/${detailSlug}`
-                  : fallbackGroup?.href,
+                href: getGrowGroupHref(group),
               };
             })
           : fallback.groups,

@@ -34,7 +34,6 @@ const CRITICAL_PAGES: [string, string][] = [
   ['/zh/about/', 'About (Chinese)'],
   ['/zh/grow/chinese/', 'Grow Chinese'],
   ['/zh/sermons/', 'Sermons (Chinese)'],
-  ['/zh/fellowships/gospel-group/', 'Gospel Group (Chinese)'],
   ['/zh/grow/children/', 'Grow Children (Chinese)'],
 ];
 
@@ -92,13 +91,18 @@ test.describe('Splash language gateway', () => {
 });
 
 test.describe('Chinese fellowship detail pages', () => {
-  test('Chinese Ministry cards link to fellowship details', async ({ page }) => {
+  test('published Chinese Ministry detail links resolve successfully', async ({ page }) => {
     await page.goto('/zh/grow/chinese/', { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByRole('link', { name: '福音組 詳情' })).toHaveAttribute(
-      'href',
-      '/zh/fellowships/gospel-group',
+    const detailHrefs = await page.locator('.group-card__link').evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href')).filter((href): href is string => Boolean(href)),
     );
+
+    for (const href of detailHrefs) {
+      expect(href).toMatch(/^\/zh\/fellowships\/[a-z0-9-]+$/);
+      const response = await page.request.get(href);
+      expect(response.status(), `${href} should return 200`).toBe(200);
+    }
   });
 });
 

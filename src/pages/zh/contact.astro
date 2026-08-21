@@ -136,8 +136,8 @@ const serviceTimes = siteSettings?.serviceTimes || [
             )}
           </div>
 
-          <!-- Church info sidebar -->
-          <aside class="contact-info" data-reveal aria-label="教會資訊">
+          <!-- Church info region -->
+          <div class="contact-info" data-reveal role="region" aria-label="教會資訊">
             <h2 class="contact-info__heading">教會資訊</h2>
 
             <div class="contact-info__block">
@@ -171,7 +171,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
                 <a href={`tel:${phone.replace(/[^+\d]/g, '')}`} class="contact-info__link">{phone}</a>
               </p>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
     </section>

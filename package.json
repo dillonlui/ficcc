@@ -3,6 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@11.17.0",
   "description": "First Ithaca Chinese Christian Church — unified bilingual website",
   "engines": {
     "node": "24.x"
@@ -20,6 +21,7 @@
     "sanity:seed:youtube": "tsx sanity/migrations/seed-youtube-channel-url.ts",
     "sanity:seed:branding": "tsx sanity/migrations/seed-site-branding.ts",
     "sanity:replace:splash-logo": "tsx sanity/migrations/replace-splash-logo.ts",
+    "sanity:link:fellowships": "tsx sanity/migrations/link-chinese-fellowships.ts",
     "lhci": "npm run build && lhci autorun",
     "audit": "npm audit --audit-level=moderate",
     "test": "vitest run",
@@ -27,22 +29,21 @@
     "test:e2e": "npx playwright test"
   },
   "dependencies": {
-    "@astrojs/react": "^6.0.1",
+    "@astrojs/react": "^6.0.4",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/vercel": "^11.0.3",
+    "@astrojs/vercel": "^11.0.7",
     "@fontsource-variable/dm-sans": "^5.2.8",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/lora": "^5.2.8",
     "@fontsource/noto-serif-sc": "^5.2.9",
-    "@sanity/astro": "^3.4.2",
-    "@sanity/client": "^7.23.2",
-    "@sanity/vision": "^6.5.0",
+    "@sanity/astro": "^3.5.1",
+    "@sanity/client": "^7.26.2",
     "@vercel/analytics": "^2.0.1",
-    "astro": "^7.0.9",
+    "astro": "^7.2.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "resend": "^6.17.2",
-    "sanity": "^6.5.0",
+    "sanity": "^6.10.1",
     "styled-components": "^6.4.3"
   },
   "devDependencies": {
@@ -53,10 +54,11 @@
     "vitest": "^4.1.10"
   },
   "overrides": {
+    "@sanity/sdk-react": "2.19.0",
     "@sanity/uuid": "3.0.3",
     "@vercel/frameworks": {
-      ".": "3.30.6",
-      "js-yaml": "3.15.0",
+      ".": "3.32.0",
+      "js-yaml": "3.15.1",
       "smol-toml": "1.6.1"
     },
     "@vercel/routing-utils": {

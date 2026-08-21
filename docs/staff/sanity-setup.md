@@ -26,6 +26,8 @@ SANITY_PROJECT_ID=yourProjectId SANITY_API_WRITE_TOKEN=sk... npm run sanity:seed
 
 The seed creates the page documents the Studio sidebar expects, including `siteSettings-en`, `homePage-en`, `homePage-zh`, and all eight Grow page documents.
 
+This is a one-time/manual bootstrap command, not a deployment step. Keep `SANITY_API_WRITE_TOKEN` out of Vercel and GitHub Actions, and never add `npm run sanity:seed` or another migration to the production build command. A normal `npm run build` is read-only with respect to Sanity.
+
 ## CORS
 
 In Sanity project settings, add these origins:

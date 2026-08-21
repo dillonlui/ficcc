@@ -43,7 +43,7 @@ const fallbackGivingMethods = [
   },
   {
     title: '支票奉獻',
-    description: '支票抬頭請寫 <strong>First Ithaca Chinese Christian Church</strong>，並郵寄至：',
+    description: '支票抬頭請寫 First Ithaca Chinese Christian Church，並郵寄至：',
     icon: 'envelope' as const,
     address: 'First Ithaca Chinese Christian Church\n429 Mitchell Street\nIthaca, NY 14850',
   },
@@ -117,7 +117,7 @@ const iconSvgs: Record<string, string> = {
               )}
               <h3 class="give-method__title">{method.title}</h3>
               {method.description && (
-                <p class="give-method__desc" set:html={method.description} />
+                <p class="give-method__desc">{method.description}</p>
               )}
               {method.link && method.linkText && (
                 <a
@@ -131,7 +131,7 @@ const iconSvgs: Record<string, string> = {
                 </a>
               )}
               {method.address && (
-                <address class="give-method__address" set:html={method.address.replace(/\n/g, '<br />')} />
+                <address class="give-method__address">{method.address}</address>
               )}
               {method.note && (
                 <p class="give-method__note">{method.note}</p>
@@ -270,11 +270,8 @@ const iconSvgs: Record<string, string> = {
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: var(--color-body);
+    white-space: pre-line;
     margin-block-end: var(--space-4);
-  }
-
-  .give-method__desc strong {
-    color: var(--color-ink);
   }
 
   .give-method__link {
@@ -316,6 +313,7 @@ const iconSvgs: Record<string, string> = {
     font-style: normal;
     line-height: var(--leading-relaxed);
     color: var(--color-body);
+    white-space: pre-line;
   }
 
   .give-method__note {

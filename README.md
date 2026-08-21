@@ -70,6 +70,7 @@ ficcc/
 | `npm run studio` | Run Sanity Studio locally |
 | `npm run studio:build` | Build the Sanity Studio bundle |
 | `npm run sanity:seed` | Seed current CMS documents into Sanity |
+| `npm run sanity:link:fellowships` | Dry-run the non-overwriting Chinese fellowship detail setup |
 | `npm run lhci` | Build + run Lighthouse CI audit |
 
 ## Deployment
@@ -77,6 +78,7 @@ ficcc/
 - **Preview:** Every PR gets a Vercel preview URL automatically
 - **Production:** Merges to `main` deploy to production
 - **Content updates:** Sanity publish triggers Vercel redeploy via webhook. Production pages are server-rendered so published Sanity changes are also visible immediately; the webhook remains the cache/build integration check.
+- **Launch readiness:** Track security, CMS, accessibility, and operational remediation in [`docs/launch-readiness-review.md`](docs/launch-readiness-review.md).
 
 ## Bilingual Architecture
 

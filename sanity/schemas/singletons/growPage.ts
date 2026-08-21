@@ -1,6 +1,30 @@
 import { defineType, defineField } from 'sanity';
 import { pageVisibilityField } from '../fields/visibility';
 
+type GrowGroupReference = {
+  name?: string;
+  detail?: { _ref?: string };
+};
+
+export function validateUniqueDetailReferences(groups?: GrowGroupReference[]) {
+  if (!groups) return true;
+
+  const linkedGroups = new Map<string, string>();
+  for (const group of groups) {
+    const reference = group.detail?._ref;
+    if (!reference) continue;
+
+    const existingName = linkedGroups.get(reference);
+    if (existingName) {
+      return `Each card must use a different Fellowship Detail Page. “${group.name || 'Unnamed group'}” and “${existingName}” currently use the same page.`;
+    }
+
+    linkedGroups.set(reference, group.name || 'Unnamed group');
+  }
+
+  return true;
+}
+
 const audiences = [
   { title: 'English Ministry', value: 'english' },
   { title: 'Chinese Ministry', value: 'chinese' },
@@ -109,10 +133,14 @@ export const growPage = defineType({
             }),
             defineField({
               name: 'description',
-              title: 'Description',
+              title: 'Card Summary',
               type: 'text',
               rows: 3,
-              validation: (rule) => rule.required(),
+              description: 'A concise public summary for this listing card. Put schedules, contact details, meeting links, and longer content in the Fellowship Detail Page.',
+              validation: (rule) => [
+                rule.required(),
+                rule.max(360).warning('Keep the card summary under 360 characters and move longer content to the detail page.'),
+              ],
             }),
             defineField({
               name: 'image',
@@ -148,7 +176,7 @@ export const growPage = defineType({
           },
         },
       ],
-      validation: (rule) => rule.min(1).required(),
+      validation: (rule) => rule.min(1).required().custom(validateUniqueDetailReferences),
     }),
     defineField({
       name: 'sermonsCalloutHeading',
