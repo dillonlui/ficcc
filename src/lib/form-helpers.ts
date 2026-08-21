@@ -4,6 +4,136 @@
 
 import { Resend } from 'resend';
 
+// Keep form payloads comfortably below the size needed for ordinary church
+// correspondence. This is enforced while streaming as well as through the
+// Content-Length fast path so chunked requests cannot bypass it.
+export const FORM_BODY_MAX_BYTES = 16 * 1024;
+export const FORM_RATE_LIMIT = 5;
+export const FORM_RATE_WINDOW_MS = 10 * 60 * 1000;
+const FORM_RATE_MAX_KEYS = 10_000;
+
+type JsonBodyResult =
+  | { ok: true; body: Record<string, unknown> }
+  | { ok: false; status: 400 | 413; error: string };
+
+type RateLimitEntry = { count: number; resetAt: number };
+const formRateLimits = new Map<string, RateLimitEntry>();
+
+export async function readLimitedJsonBody(
+  request: Request,
+  maxBytes = FORM_BODY_MAX_BYTES,
+): Promise<JsonBodyResult> {
+  const contentLength = request.headers.get('content-length');
+  if (contentLength !== null) {
+    const declaredBytes = Number(contentLength);
+    if (!Number.isSafeInteger(declaredBytes) || declaredBytes < 0) {
+      return { ok: false, status: 400, error: 'Invalid Content-Length header' };
+    }
+    if (declaredBytes > maxBytes) {
+      return { ok: false, status: 413, error: 'Request body is too large' };
+    }
+  }
+
+  if (!request.body) {
+    return { ok: false, status: 400, error: 'Invalid JSON body' };
+  }
+
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let bytesRead = 0;
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytesRead += value.byteLength;
+      if (bytesRead > maxBytes) {
+        await reader.cancel();
+        return { ok: false, status: 413, error: 'Request body is too large' };
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return { ok: false, status: 400, error: 'Invalid JSON body' };
+  }
+
+  const bytes = new Uint8Array(bytesRead);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  try {
+    const body = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return { ok: false, status: 400, error: 'JSON body must be an object' };
+    }
+    return { ok: true, body: body as Record<string, unknown> };
+  } catch {
+    return { ok: false, status: 400, error: 'Invalid JSON body' };
+  }
+}
+
+export function formField(body: Record<string, unknown>, name: string): string {
+  const value = body[name];
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+export function isValidIsoDate(value: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year
+    && date.getUTCMonth() === month - 1
+    && date.getUTCDate() === day;
+}
+
+export function getFormClientKey(request: Request, endpoint: string, clientAddress?: string): string {
+  const ip = request.headers.get('x-real-ip')?.trim()
+    || clientAddress?.trim()
+    || 'unknown';
+  return `${endpoint}:${ip}`;
+}
+
+export function checkFormRateLimit(
+  key: string,
+  now = Date.now(),
+  limit = FORM_RATE_LIMIT,
+  windowMs = FORM_RATE_WINDOW_MS,
+): { allowed: boolean; retryAfterSeconds: number } {
+  const existing = formRateLimits.get(key);
+  if (!existing || now >= existing.resetAt) {
+    if (!existing && formRateLimits.size >= FORM_RATE_MAX_KEYS) {
+      for (const [storedKey, entry] of formRateLimits) {
+        if (now >= entry.resetAt) formRateLimits.delete(storedKey);
+      }
+      if (formRateLimits.size >= FORM_RATE_MAX_KEYS) {
+        return { allowed: false, retryAfterSeconds: Math.ceil(windowMs / 1000) };
+      }
+    }
+    formRateLimits.set(key, { count: 1, resetAt: now + windowMs });
+    return { allowed: true, retryAfterSeconds: 0 };
+  }
+
+  if (existing.count >= limit) {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.max(1, Math.ceil((existing.resetAt - now) / 1000)),
+    };
+  }
+
+  existing.count += 1;
+  return { allowed: true, retryAfterSeconds: 0 };
+}
+
+export function resetFormRateLimitsForTests(): void {
+  formRateLimits.clear();
+}
+
 // ---------------------------------------------------------------------------
 // Turnstile verification
 // ---------------------------------------------------------------------------

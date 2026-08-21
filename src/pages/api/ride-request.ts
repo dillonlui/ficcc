@@ -10,38 +10,63 @@ import {
   jsonSuccess,
   isValidEmail,
   escapeHtml,
+  readLimitedJsonBody,
+  formField,
+  isValidIsoDate,
+  getFormClientKey,
+  checkFormRateLimit,
 } from '../../lib/form-helpers';
 
-export const POST: APIRoute = async ({ request }) => {
-  let body: Record<string, unknown>;
-  try {
-    body = await request.json();
-  } catch {
-    return jsonError(400, 'Invalid JSON body');
+const ENDPOINT = '/api/ride-request';
+
+export const POST: APIRoute = async ({ request, clientAddress }) => {
+  const rateLimit = checkFormRateLimit(getFormClientKey(request, ENDPOINT, clientAddress));
+  if (!rateLimit.allowed) {
+    const response = jsonError(429, 'Too many requests. Please wait before trying again.');
+    response.headers.set('Retry-After', String(rateLimit.retryAfterSeconds));
+    return response;
   }
 
-  const name = String(body.name ?? '').trim();
-  const email = String(body.email ?? '').trim();
-  const phone = String(body.phone ?? '').trim();
-  const pickupLocation = String(body.pickupLocation ?? '').trim();
-  const preferredDate = String(body.preferredDate ?? '').trim();
-  const notes = String(body.notes ?? '').trim();
-  const turnstileToken = String(body.turnstileToken ?? '').trim();
+  const parsed = await readLimitedJsonBody(request);
+  if (!parsed.ok) return jsonError(parsed.status, parsed.error);
+
+  const name = formField(parsed.body, 'name');
+  const email = formField(parsed.body, 'email');
+  const phone = formField(parsed.body, 'phone');
+  const pickupLocation = formField(parsed.body, 'pickupLocation');
+  const preferredDate = formField(parsed.body, 'preferredDate');
+  const notes = formField(parsed.body, 'notes');
+  const turnstileToken = formField(parsed.body, 'turnstileToken');
 
   // --- Validation ---
   const fields: { field: string; message: string }[] = [];
 
   if (name.length < 2) {
     fields.push({ field: 'name', message: 'Name is required (min 2 characters)' });
+  } else if (name.length > 100) {
+    fields.push({ field: 'name', message: 'Name must be 100 characters or fewer' });
   }
-  if (!isValidEmail(email)) {
+  if (!isValidEmail(email) || email.length > 254) {
     fields.push({ field: 'email', message: 'A valid email address is required' });
+  }
+  if (phone && (phone.length < 7 || phone.length > 40)) {
+    fields.push({ field: 'phone', message: 'Phone must be between 7 and 40 characters' });
   }
   if (pickupLocation.length < 5) {
     fields.push({ field: 'pickupLocation', message: 'Pickup location is required (min 5 characters)' });
+  } else if (pickupLocation.length > 300) {
+    fields.push({ field: 'pickupLocation', message: 'Pickup location must be 300 characters or fewer' });
+  }
+  if (preferredDate && !isValidIsoDate(preferredDate)) {
+    fields.push({ field: 'preferredDate', message: 'Preferred date must be a valid date' });
+  }
+  if (notes.length > 2_000) {
+    fields.push({ field: 'notes', message: 'Notes must be 2000 characters or fewer' });
   }
   if (!turnstileToken) {
     fields.push({ field: 'turnstileToken', message: 'Captcha verification is required' });
+  } else if (turnstileToken.length > 2_048) {
+    fields.push({ field: 'turnstileToken', message: 'Captcha verification token is invalid' });
   }
 
   if (fields.length > 0) {

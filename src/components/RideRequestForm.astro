@@ -55,6 +55,7 @@ const t = lang === 'zh' ? {
         name="name"
         required
         minlength="2"
+        maxlength="100"
         autocomplete="name"
         aria-describedby="ride-name-error"
         aria-invalid="false"
@@ -71,6 +72,7 @@ const t = lang === 'zh' ? {
         id="ride-email"
         name="email"
         required
+        maxlength="254"
         autocomplete="email"
         aria-describedby="ride-email-error"
         aria-invalid="false"
@@ -88,6 +90,8 @@ const t = lang === 'zh' ? {
         type="tel"
         id="ride-phone"
         name="phone"
+        minlength="7"
+        maxlength="40"
         autocomplete="tel"
         aria-describedby="ride-phone-error"
         aria-invalid="false"
@@ -119,6 +123,7 @@ const t = lang === 'zh' ? {
       name="pickupLocation"
         required
         minlength="5"
+        maxlength="300"
         aria-describedby="ride-pickup-error"
         aria-invalid="false"
         placeholder={t.pickupPlaceholder}
@@ -133,6 +138,7 @@ const t = lang === 'zh' ? {
       id="ride-notes"
       name="notes"
       rows="3"
+      maxlength="2000"
       aria-describedby="ride-notes-error"
       aria-invalid="false"
       placeholder={t.notesPlaceholder}

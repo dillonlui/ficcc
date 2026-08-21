@@ -14,6 +14,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       name="name"
       required
       minlength="2"
+      maxlength="100"
       autocomplete="name"
       aria-describedby="contact-name-error"
       aria-invalid="false"
@@ -30,6 +31,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       id="contact-email"
       name="email"
       required
+      maxlength="254"
       autocomplete="email"
       aria-describedby="contact-email-error"
       aria-invalid="false"
@@ -46,6 +48,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       name="message"
       required
       minlength="10"
+      maxlength="5000"
       rows="5"
       aria-describedby="contact-message-error"
       aria-invalid="false"

@@ -10,35 +10,50 @@ import {
   jsonSuccess,
   isValidEmail,
   escapeHtml,
+  readLimitedJsonBody,
+  formField,
+  getFormClientKey,
+  checkFormRateLimit,
 } from '../../lib/form-helpers';
 
-export const POST: APIRoute = async ({ request }) => {
-  let body: Record<string, unknown>;
-  try {
-    body = await request.json();
-  } catch {
-    return jsonError(400, 'Invalid JSON body');
+const ENDPOINT = '/api/contact';
+
+export const POST: APIRoute = async ({ request, clientAddress }) => {
+  const rateLimit = checkFormRateLimit(getFormClientKey(request, ENDPOINT, clientAddress));
+  if (!rateLimit.allowed) {
+    const response = jsonError(429, 'Too many requests. Please wait before trying again.');
+    response.headers.set('Retry-After', String(rateLimit.retryAfterSeconds));
+    return response;
   }
 
-  const name = String(body.name ?? '').trim();
-  const email = String(body.email ?? '').trim();
-  const message = String(body.message ?? '').trim();
-  const turnstileToken = String(body.turnstileToken ?? '').trim();
+  const parsed = await readLimitedJsonBody(request);
+  if (!parsed.ok) return jsonError(parsed.status, parsed.error);
+
+  const name = formField(parsed.body, 'name');
+  const email = formField(parsed.body, 'email');
+  const message = formField(parsed.body, 'message');
+  const turnstileToken = formField(parsed.body, 'turnstileToken');
 
   // --- Validation ---
   const fields: { field: string; message: string }[] = [];
 
   if (name.length < 2) {
     fields.push({ field: 'name', message: 'Name is required (min 2 characters)' });
+  } else if (name.length > 100) {
+    fields.push({ field: 'name', message: 'Name must be 100 characters or fewer' });
   }
-  if (!isValidEmail(email)) {
+  if (!isValidEmail(email) || email.length > 254) {
     fields.push({ field: 'email', message: 'A valid email address is required' });
   }
   if (message.length < 10) {
     fields.push({ field: 'message', message: 'Message is required (min 10 characters)' });
+  } else if (message.length > 5_000) {
+    fields.push({ field: 'message', message: 'Message must be 5000 characters or fewer' });
   }
   if (!turnstileToken) {
     fields.push({ field: 'turnstileToken', message: 'Captcha verification is required' });
+  } else if (turnstileToken.length > 2_048) {
+    fields.push({ field: 'turnstileToken', message: 'Captcha verification token is invalid' });
   }
 
   if (fields.length > 0) {

@@ -106,12 +106,13 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M1 — Form request bodies and fields have no upper bounds
 
-- **Status:** [ ] Open
-- **Owner:** Unassigned
+- **Status:** [~] Application limits and production WAF rule complete; code deployment pending
+- **Owner:** Site maintainer
 - **Evidence:** `src/pages/api/contact.ts` and `src/pages/api/ride-request.ts` call `request.json()` before any size check and validate only minimum field lengths.
 - **Risk:** Oversized valid requests can consume function memory and create oversized/costly emails. Turnstile reduces automated abuse but is not application rate limiting.
 - **Recommended remediation:** Reject large `Content-Length` values before parsing, cap every field server-side, validate dates and telephone lengths, and add an edge/platform rate limit keyed by IP plus endpoint. Return `413` for oversized bodies and `429` for throttling.
 - **Verification:** Add boundary tests for maximum accepted sizes, one-byte-over limits, malformed JSON, repeated requests, and missing/invalid Turnstile tokens.
+- **Notes:** Both endpoints now reject declared and streamed bodies above 16 KiB, require object-shaped JSON, cap every accepted field, validate optional phone/date values, and apply a five-request/ten-minute endpoint+IP safeguard with `429` and `Retry-After`. Matching HTML `maxlength` attributes reduce accidental client-side errors. The in-function limiter is bounded and useful as defense in depth, but Vercel functions can scale across instances. On 2026-08-21, a production Vercel WAF fixed-window rule was published for the exact path expression `^/api/(contact|ride-request)$`, keyed by IP, with five combined requests per 600 seconds and a `429` action. The application changes still require deployment and production verification before M1 is complete.
 
 ### M2 — Grow listing descriptions lack editorial guardrails
 
@@ -248,7 +249,7 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 | `npm run build` | Pass | Astro 7.2.4 and Sanity 6.10.1 production build completed |
 | `npm run test:e2e` | Pass | 186 passed, 42 intentionally skipped, 0 failed across four viewport projects |
 | `npm run test:a11y` | Pass | 0 violations across all eight configured routes |
-| Live post-deploy smoke test | Pending | Local changes have not yet been deployed |
+| Live post-deploy smoke test | Targeted fellowship pass; full-site smoke pending | Production Sanity dry run reports no pending fellowship writes; the live listing exposes six distinct routes and CCCF resolves correctly. The new M1 form changes are local and not yet deployed. |
 
 ## Recommended Remediation Order
 

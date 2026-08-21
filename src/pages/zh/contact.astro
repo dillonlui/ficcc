@@ -70,6 +70,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
                     name="name"
                     required
                     minlength="2"
+                    maxlength="100"
                     autocomplete="name"
                     aria-describedby="zh-contact-name-error"
                     aria-invalid="false"
@@ -86,6 +87,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
                     id="zh-contact-email"
                     name="email"
                     required
+                    maxlength="254"
                     autocomplete="email"
                     aria-describedby="zh-contact-email-error"
                     aria-invalid="false"
@@ -102,6 +104,7 @@ const serviceTimes = siteSettings?.serviceTimes || [
                     name="message"
                     required
                     minlength="10"
+                    maxlength="5000"
                     rows="5"
                     aria-describedby="zh-contact-message-error"
                     aria-invalid="false"
