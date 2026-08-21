@@ -134,7 +134,9 @@ function languageSection(
           S.divider(),
           collectionList(S, 'sermon', language === 'zh' ? '講道' : 'Sermons', language),
           collectionList(S, 'event', language === 'zh' ? '活動' : 'Events', language),
-          collectionList(S, 'ministry', language === 'zh' ? '團契詳情' : 'Ministries', language),
+          ...(language === 'zh'
+            ? [collectionList(S, 'ministry', '團契詳情', language)]
+            : []),
           collectionList(S, 'person', language === 'zh' ? '人員' : 'People', language),
         ]),
     );
