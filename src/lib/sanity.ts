@@ -273,6 +273,9 @@ export interface VisitPage {
   faqItems?: FaqItem[];
   rideRequestEnabled?: boolean;
   rideRequestHeading?: string;
+  rideMessengerMessage?: string;
+  rideMessengerButtonLabel?: string;
+  rideMessengerUrl?: string;
   rideRequestIntro?: string;
   language: 'en' | 'zh';
 }

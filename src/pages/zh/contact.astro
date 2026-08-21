@@ -111,6 +111,12 @@ const serviceTimes = siteSettings?.serviceTimes || [
                 </div>
 
                 <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+                {!siteKey && (
+                  <p class="zh-contact-form__error" role="status">
+                    目前無法載入表單驗證，請改以電郵聯絡我們：
+                    <a href="mailto:info@ficcc.org">info@ficcc.org</a>。
+                  </p>
+                )}
                 <span id="zh-contact-turnstile-error" class="zh-contact-form__error" data-field="turnstileToken" aria-live="polite" hidden></span>
 
                 <p id="zh-contact-privacy-note" class="zh-contact-form__privacy">
@@ -306,7 +312,12 @@ const serviceTimes = siteSettings?.serviceTimes || [
     var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
     var turnstileToken = turnstileInput ? turnstileInput.value : '';
     if (!turnstileToken) {
-      showError('turnstileToken', '請完成驗證');
+      var turnstileContainer = form.querySelector('.cf-turnstile');
+      var siteKey = turnstileContainer ? (turnstileContainer.getAttribute('data-sitekey') || '') : '';
+      showError(
+        'turnstileToken',
+        siteKey ? '請完成驗證' : '目前無法載入表單驗證，請改以電郵聯絡我們：info@ficcc.org',
+      );
       return;
     }
 

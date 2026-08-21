@@ -56,6 +56,12 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   <!-- Cloudflare Turnstile widget -->
   <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+  {!siteKey && (
+    <p class="contact-form__error" role="status">
+      Spam protection is not configured on this deployment, so the form cannot be submitted yet.
+      Please email <a href="mailto:info@ficcc.org">info@ficcc.org</a> directly.
+    </p>
+  )}
   <span id="contact-turnstile-error" class="contact-form__error" data-field="turnstileToken" aria-live="polite" hidden></span>
 
   <p id="contact-privacy-note" class="contact-form__privacy">
@@ -181,7 +187,14 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
     var turnstileToken = turnstileInput ? turnstileInput.value : '';
     if (!turnstileToken) {
-      showFieldError('turnstileToken', 'Please complete the captcha verification');
+      var turnstileContainer = form.querySelector('.cf-turnstile');
+      var siteKey = turnstileContainer ? (turnstileContainer.getAttribute('data-sitekey') || '') : '';
+      showFieldError(
+        'turnstileToken',
+        siteKey
+          ? 'Please complete the captcha verification'
+          : 'Spam protection is not configured. Please email info@ficcc.org directly.',
+      );
       return;
     }
 

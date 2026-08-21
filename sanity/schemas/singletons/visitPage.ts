@@ -125,10 +125,33 @@ export const visitPage = defineType({
       initialValue: 'Need a Ride?',
     }),
     defineField({
+      name: 'rideMessengerMessage',
+      title: 'Messenger Ride Message',
+      type: 'text',
+      rows: 3,
+      description:
+        'English Visit page only. Shown above the ride form — explain that rides are arranged in the Messenger group.',
+    }),
+    defineField({
+      name: 'rideMessengerButtonLabel',
+      title: 'Messenger Button Label',
+      type: 'string',
+      initialValue: 'Join Messenger Ride Group',
+      description: 'English Visit page only. Label for the Messenger group chat button.',
+    }),
+    defineField({
+      name: 'rideMessengerUrl',
+      title: 'Messenger Group URL',
+      type: 'url',
+      description:
+        'English Visit page only. Full invite link to the Messenger group chat (e.g. https://m.me/j/…). The button is hidden until this is set.',
+    }),
+    defineField({
       name: 'rideRequestIntro',
-      title: 'Ride Request Intro',
+      title: 'Ride Request Form Intro',
       type: 'text',
       rows: 2,
+      description: 'Short intro above the email ride-request form (shown after the Messenger CTA on English).',
     }),
 
     // ── Language ──────────────────────────────────────────────────────

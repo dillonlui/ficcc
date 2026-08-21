@@ -469,7 +469,11 @@ const fallbackBackfill: Record<string, Record<string, unknown>> = {
       { _type: 'faqItem', _key: 'connect', question: 'How can I get connected during the week?', answer: "We'd love to help you find community! After the service, stop by the welcome table to learn about small groups, Bible studies, and other ways to connect. You can also reach out through our contact page." },
     ],
     rideRequestHeading: 'Need a Ride?',
-    rideRequestIntro: "Don't have a car? No problem. We'd love to pick you up! Fill out the form below and someone from our team will reach out to arrange a ride.",
+    rideMessengerMessage:
+      "Don't have a car? Sunday rides are arranged through our Messenger group chat. Join the group to request a pickup or to offer someone a ride.",
+    rideMessengerButtonLabel: 'Join Messenger Ride Group',
+    rideRequestIntro:
+      'Prefer email instead? Fill out the form below and someone from our team will reach out to arrange a ride.',
   },
   'visitPage-zh': {
     whatToExpect: blocks('visit-zh-expect', ['無論您是第一次來教會，還是曾經參加過其他教會，都歡迎您如實地來到這裡。', '穿著：隨意穿著即可，大多數人穿休閒服裝。', '主日流程：聚會包括詩歌敬拜、禱告、讀經和講道。崇拜以中文為主，部分環節為雙語。', '歡迎孩子：兒童隨時歡迎參加主堂崇拜。崇拜後我們也提供按年齡分組的主日學課程。', '聚會多長時間？主日崇拜通常約75分鐘。']),

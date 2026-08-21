@@ -142,6 +142,15 @@ const t = lang === 'zh' ? {
 
   <!-- Cloudflare Turnstile widget -->
   <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+  {!siteKey && (
+    <p class="ride-form__error" role="status">
+      {lang === 'zh'
+        ? '目前無法載入表單驗證，請改以電郵聯絡我們：'
+        : 'Spam protection is not configured on this deployment, so the form cannot be submitted yet. Please email '}
+      <a href="mailto:info@ficcc.org">info@ficcc.org</a>
+      {lang === 'zh' ? '。' : ' directly.'}
+    </p>
+  )}
   <span id="ride-turnstile-error" class="ride-form__error" data-field="turnstileToken" aria-live="polite" hidden></span>
 
   <p id="ride-privacy-note" class="ride-form__privacy">
@@ -178,6 +187,7 @@ const t = lang === 'zh' ? {
       emailError: '請輸入有效的電郵地址',
       pickupError: '請輸入接送地點（至少5個字）',
       captchaError: '請完成驗證',
+      captchaMissing: '目前無法載入表單驗證，請改以電郵聯絡我們：info@ficcc.org',
       captchaFailure: '驗證失敗，請再試一次。',
       unavailable: '表單目前暫時無法使用，請稍後再試。',
       requestFailed: '目前無法提交申請，請稍後再試。',
@@ -191,6 +201,7 @@ const t = lang === 'zh' ? {
       emailError: 'A valid email address is required',
       pickupError: 'Pickup location is required (min 5 characters)',
       captchaError: 'Please complete the captcha verification',
+      captchaMissing: 'Spam protection is not configured. Please email info@ficcc.org directly.',
       captchaFailure: 'Captcha verification failed. Please try again.',
       unavailable: 'This form is temporarily unavailable. Please try again later.',
       requestFailed: 'Unable to submit your ride request right now. Please try again later.',
@@ -300,7 +311,9 @@ const t = lang === 'zh' ? {
     var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
     var turnstileToken = turnstileInput ? turnstileInput.value : '';
     if (!turnstileToken) {
-      showFieldError('turnstileToken', copy.captchaError);
+      var turnstileContainer = form.querySelector('.cf-turnstile');
+      var siteKey = turnstileContainer ? (turnstileContainer.getAttribute('data-sitekey') || '') : '';
+      showFieldError('turnstileToken', siteKey ? copy.captchaError : copy.captchaMissing);
       return;
     }
 
