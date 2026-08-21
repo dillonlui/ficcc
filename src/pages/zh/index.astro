@@ -27,7 +27,7 @@ try {
   siteSettings = await getSiteSettings('zh', { request: Astro.request });
 } catch {}
 
-if (homePage?.isVisible === false) return Astro.redirect('/404');
+if (homePage?.isVisible === false) return Astro.rewrite('/404');
 
 const serviceTimeItems = siteSettings?.serviceTimes || [
   { label: '華語崇拜', time: '11:15 AM' },

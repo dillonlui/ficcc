@@ -139,7 +139,7 @@ export const growPage = defineType({
               description: 'A concise public summary for this listing card. Put schedules, contact details, meeting links, and longer content in the Fellowship Detail Page.',
               validation: (rule) => [
                 rule.required(),
-                rule.max(360).warning('Keep the card summary under 360 characters and move longer content to the detail page.'),
+                rule.max(360).error('Keep the card summary under 360 characters and move longer content to the detail page.'),
               ],
             }),
             defineField({

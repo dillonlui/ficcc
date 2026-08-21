@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Hero from '../../../components/Hero.astro';
 import { starterChineseFellowships } from '../../../lib/chinese-fellowships';
 import {
+  getChineseFellowshipSlugs,
   getMinistryBySlug,
   portableTextToHtml,
   urlForImage,
@@ -14,16 +15,28 @@ const { slug } = Astro.params;
 const starter = starterChineseFellowships.find((fellowship) => fellowship.slug === slug);
 
 let ministry = null;
+let cmsAvailable = false;
+let isLinkedFromGrowPage = false;
 if (slug) {
   try {
-    ministry = await getMinistryBySlug('zh', slug, { request: Astro.request });
+    const [publishedMinistry, linkedSlugs] = await Promise.all([
+      getMinistryBySlug('zh', slug, { request: Astro.request }),
+      getChineseFellowshipSlugs({ request: Astro.request }),
+    ]);
+    ministry = publishedMinistry;
+    isLinkedFromGrowPage = linkedSlugs.includes(slug);
+    cmsAvailable = true;
   } catch {
     // Keep the starter content available when Sanity is temporarily unavailable.
   }
 }
 
-if (!ministry && !starter) {
-  return Astro.redirect('/404');
+if (
+  !slug
+  || (cmsAvailable && (!ministry || !isLinkedFromGrowPage))
+  || (!cmsAvailable && !starter)
+) {
+  return Astro.rewrite('/404');
 }
 
 const name = ministry?.name || starter?.name || '團契';

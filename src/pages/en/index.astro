@@ -27,7 +27,7 @@ try {
   siteSettings = await getSiteSettings('en', { request: Astro.request });
 } catch {}
 
-if (homePage?.isVisible === false) return Astro.redirect('/404');
+if (homePage?.isVisible === false) return Astro.rewrite('/404');
 
 const serviceTimeItems = siteSettings?.serviceTimes || [
   { label: 'Sunday Gathering', time: '9:45 AM' },

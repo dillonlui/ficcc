@@ -8,6 +8,7 @@ import { getPageVisibility, getSanityPreviewContext, getSiteBranding, getSiteSet
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import Analytics from '@vercel/analytics/astro';
 import { getAlternateUrl, hasLanguageCounterpart, type Lang } from '../lib/navigation';
+import { applyPrivatePreviewCache, applyPublicPageCache } from '../lib/cache-policy';
 
 interface Props {
   title: string;
@@ -47,8 +48,10 @@ let pageVisibility: Awaited<ReturnType<typeof getPageVisibility>> = {};
 const previewContext = await getSanityPreviewContext(Astro.request);
 if (previewContext.enabled) {
   // Draft responses must never be stored by a browser, CDN, or shared proxy.
-  Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+  applyPrivatePreviewCache(Astro.response.headers);
   Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+} else {
+  applyPublicPageCache(Astro.response.headers);
 }
 if (noindex) {
   Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');

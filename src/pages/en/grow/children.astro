@@ -5,7 +5,7 @@ import { getResolvedGrowPage } from '../../../lib/grow-pages';
 export const prerender = false;
 
 const { content, isHidden } = await getResolvedGrowPage('en', 'children', Astro.request);
-if (isHidden) return Astro.redirect('/404');
+if (isHidden) return Astro.rewrite('/404');
 ---
 
 <GrowPage content={content} />

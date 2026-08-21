@@ -11,7 +11,7 @@ try {
 const errorLogoSrc = urlForFile(branding?.notFoundLogo) || '/logo/icon-light.svg';
 ---
 
-<BaseLayout title="Page Not Found | 頁面未找到" description="The page you're looking for doesn't exist.">
+<BaseLayout title="Page Not Found | 頁面未找到" description="The page you're looking for doesn't exist." noindex>
   <main id="main-content" data-pagefind-ignore="all" class="error-page">
     <img src={errorLogoSrc} alt="" class="error-icon" width="96" height="96" />
     <h1>404</h1>

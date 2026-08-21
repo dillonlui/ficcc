@@ -32,7 +32,7 @@ Click the **Publish** button in the bottom-left corner.
 
 ### 5. Verify on the Live Site
 
-Wait **2–3 minutes** for the site to rebuild, then visit the website to confirm the announcement bar appears at the top of the page.
+Visit the matching live language route and confirm the announcement bar appears. Published settings are normally visible within moments; use a private/incognito window if needed.
 
 ## Updating the Announcement
 
@@ -41,14 +41,14 @@ To change the text or link:
 1. Open the same Site Settings document.
 2. Edit the **Announcement Bar Text** or **Announcement Bar Link** fields.
 3. Click **Publish**.
-4. Wait 2–3 minutes for the rebuild.
+4. Refresh the matching live language route and verify the updated text.
 
 ## Disabling the Announcement Bar
 
 1. Open the Site Settings document.
 2. Set **Announcement Bar Enabled** to **OFF** (toggle it so it's unchecked).
 3. Click **Publish**.
-4. Wait 2–3 minutes — the bar will disappear from the site.
+4. Refresh the matching live language route and verify the bar is gone.
 
 You don't need to clear the text or link fields. They are hidden when the bar is disabled and will be preserved for next time.
 
@@ -69,4 +69,4 @@ If you only update one language variant, the other site will not show the announ
 | Only updating one language variant | The announcement only appears on one version of the site | Update and publish both EN and ZH Site Settings |
 | Leaving Enabled ON with empty text | The bar may appear empty or as a thin colored strip | Either enter text or disable the bar |
 | Entering an invalid link | The bar won't link anywhere or may show an error | Use a full URL (starting with `http://` or `https://`) or a relative path (starting with `/`) |
-| Not seeing changes on the live site | The site hasn't rebuilt yet | Wait 2–3 minutes and refresh the page |
+| Not seeing changes on the live site | The wrong language document may be open, the change may still be a draft, or the browser may be stale | Confirm the language and published status, then check the route in a private window |

@@ -215,7 +215,7 @@ Run through this checklist after DNS changes have propagated:
 
 ### em.ficcc.org Redirects (English legacy)
 
-All should return **301 Permanent Redirect**:
+All should return a permanent redirect. Vercel currently responds with **308 Permanent Redirect**:
 
 | Old URL                            | Redirects To                    |
 |------------------------------------|---------------------------------|
@@ -230,7 +230,7 @@ All should return **301 Permanent Redirect**:
 
 ### cm.ficcc.org Redirects (Chinese legacy)
 
-All should return **301 Permanent Redirect**:
+All should return **308 Permanent Redirect**:
 
 | Old URL                            | Redirects To                        |
 |------------------------------------|-------------------------------------|

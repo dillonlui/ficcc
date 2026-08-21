@@ -2,8 +2,8 @@
 
 **Site:** https://ficcc.org
 **Initial review:** 2026-08-20
-**Last updated:** 2026-08-20
-**Overall status:** High-priority code fixes and the fellowship CMS migration are live and verified; staff decisions and medium-priority work remain.
+**Last updated:** 2026-08-21
+**Overall status:** High-priority remediation and owner-confirmed operational checks are complete. Direct-404 and staff-documentation fixes are implemented locally; caching, fallback snapshots, CSP hardening, the final live smoke test, and the human VoiceOver check remain.
 
 **Release safety:** The pre-remediation baseline is commit `044a4c4a53a57f9e53635eca10b1254087c4b2f4`. The production tip immediately before this deployment is tagged `pre-launch-deploy-20260820`; the reviewed remediation commit is tagged `launch-readiness-remediation-20260820`. Application and CMS rollback procedures are documented in `docs/launch-runbook.md`.
 
@@ -116,13 +116,13 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M2 — Grow listing descriptions lack editorial guardrails
 
-- **Status:** [~] Interim remediation complete; staff editorial review remains
+- **Status:** [~] Hard publishing guardrail implemented; deployment verification pending
 - **Owner:** Site maintainer / church staff
 - **Evidence:** `sanity/schemas/singletons/growPage.ts` requires `groups[].description` but sets no maximum; `src/components/GrowPage.astro` renders the entire value on the index card.
 - **Risk:** Staff can unintentionally paste full detail content or sensitive information into a summary, producing extremely long, hard-to-scan cards.
 - **Recommended remediation:** Rename/describe the field as a short public summary, add a reasonable hard maximum, and keep long copy in the referenced Ministry detail document.
 - **Verification:** Sanity blocks over-limit summaries and the live listing remains concise at all responsive breakpoints.
-- **Notes:** The Studio field is now labeled `Card Summary`, explains what belongs on the detail page, and warns above 360 characters. The fellowship setup migration preserves each complete current description in its detail document before installing a shorter verbatim excerpt from the same staff-authored text as the interim card summary. No new Chinese summary copy is introduced. Staff can revise those excerpts after migration. The limit remains a warning rather than a publishing block until staff have reviewed the workflow.
+- **Notes:** The Studio field is labeled `Card Summary`, explains what belongs on the detail page, and now blocks publishing above 360 characters. The fellowship setup migration preserved each complete current description in its detail document before installing a shorter verbatim excerpt from the same staff-authored text as the card summary. The site owner confirmed the staff CMS workflow on 2026-08-21.
 
 ### M3 — E2E test is coupled to mutable production CMS content
 
@@ -145,39 +145,43 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### M5 — Detached fellowship detail documents remain public and indexable
 
-- **Status:** [ ] Open
+- **Status:** [~] Remediation implemented; deployment verification pending
 - **Owner:** Church staff / site administrator
 - **Evidence:** `/zh/fellowships/gospel-group` is no longer linked from the listing but still returns a public page with a canonical URL and no `noindex` directive.
 - **Risk:** Retired or stale CMS content remains discoverable by direct URL and search engines.
 - **Recommended remediation:** Staff should turn `Publicly Visible` off for retired Ministry documents. Consider distinguishing `listed` from `public-by-link` only if that is an intentional workflow.
 - **Verification:** Retired documents return a real 404/noindex response and are absent from internal links and sitemaps.
+- **Notes:** The Chinese fellowship route now requires a published Ministry document to be explicitly linked from the published Chinese Grow page. If Sanity responds successfully, detached or hidden documents return the shared 404 page directly; starter content is used only during a Sanity failure. Local Playwright verification confirmed `/zh/fellowships/gospel-group` returns 404 with no redirect.
 
 ### M6 — Hidden and missing CMS pages create soft 404s
 
-- **Status:** [ ] Open
+- **Status:** [~] Remediation implemented; deployment verification pending
 - **Owner:** Unassigned
 - **Evidence:** Dynamic routes use `Astro.redirect('/404')`; the resulting flow redirects to a normal rendered page instead of returning a direct `404` status.
 - **Risk:** Search engines and monitoring can treat missing content as successful navigation, weakening indexing and error reporting.
 - **Recommended remediation:** Return/render the 404 page with status 404 rather than redirecting, while preserving `noindex`.
 - **Verification:** `curl -I` against an unknown event/fellowship slug returns `404` with no redirect chain.
+- **Notes:** Hidden singleton routes and missing event/fellowship routes now use an internal Astro rewrite to the shared 404 page instead of a redirect. Local Playwright verification confirmed direct 404 responses with no `Location` header for an unknown event and detached fellowship across all four viewport projects.
 
 ### M7 — CMS publishing documentation is outdated
 
-- **Status:** [ ] Open
+- **Status:** [x] Verified complete
 - **Owner:** Unassigned
 - **Evidence:** Staff guides repeatedly say changes require a 2–3 minute rebuild, but public content routes are server-rendered with `useCdn: false`; published changes are normally visible immediately. The deploy webhook is not required to refresh those SSR responses.
 - **Risk:** Staff may wait unnecessarily, diagnose the wrong system, or expect a deployment to be the source of truth.
 - **Recommended remediation:** Update staff guides to say published content is normally immediate, explain when a webhook deployment is still expected, and provide a short cache/private-browser troubleshooting flow.
 - **Verification:** Publish and revert a harmless value, record observed timing, and confirm the documented workflow matches production.
+- **Notes:** Staff documentation now explains that SSR routes normally read published Sanity content within moments, distinguishes the optional deployment webhook, and gives a draft/language/private-window troubleshooting flow. The site owner confirmed the bilingual publish/edit/hide workflow on 2026-08-21.
 
 ### M8 — Public pages are uncached and depend on live Sanity queries
 
-- **Status:** [ ] Open
+- **Status:** [~] Short edge-cache policy implemented; deployment and fallback-monitoring work remain
 - **Owner:** Unassigned
 - **Evidence:** Production responses showed `x-vercel-cache: MISS` and `cache-control: public, max-age=0, must-revalidate`; most pages make several Sanity requests with `useCdn: false`.
 - **Risk:** Higher latency, extra Sanity/Vercel usage, and greater exposure to upstream outages. Code generally falls back safely, but fallback content can be stale or inconsistent with current staff content.
 - **Recommended remediation:** Establish an explicit freshness policy, such as short CDN caching with stale-while-revalidate for public responses while keeping preview responses private/no-store. Add monitoring for fallback activation and Sanity failures.
 - **Verification:** Confirm cache headers/hit behavior, staff-update latency, preview isolation, and correct fallback behavior during a controlled Sanity failure.
+- **Notes:** Public BaseLayout responses now keep browsers on `max-age=0` while using a Vercel-only 30-second fresh window, 60-second stale-while-revalidate window, and one-day stale-if-error protection. Authenticated Sanity preview responses explicitly remove all shared-cache overrides and remain `private, no-store`. Unit coverage verifies both policies; live `x-vercel-cache` behavior, controlled Sanity-failure behavior, and alerting still need production verification.
 
 ## Lower-Priority / Operational Gaps
 
@@ -189,13 +193,14 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### L2 — Legacy redirect documentation says 301, production returns 308
 
-- **Status:** [ ] Open
+- **Status:** [x] Verified complete
 - **Risk:** Low; 308 is a valid permanent redirect, but the runbook's expected status is inaccurate.
 - **Recommended remediation:** Either update the runbook to accept 308 or explicitly configure the intended status if downstream systems require 301.
+- **Notes:** The launch runbook now records Vercel's expected 308 permanent redirects.
 
 ### L3 — External operational controls remain unverified
 
-- **Status:** [ ] Open
+- **Status:** [~] Site-owner review recorded; VoiceOver and final live smoke checks remain
 - **Owner:** Site administrator
 - **Items requiring dashboard/manual verification:**
   - Real delivery and Reply-To behavior for all four forms.
@@ -205,6 +210,7 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
   - Backup/export and content recovery procedures.
   - Uptime/error monitoring and alerts for form failures and Sanity fallback activation.
   - Human Safari/VoiceOver launch check.
+- **Notes:** On 2026-08-21, the site owner confirmed real form delivery/Reply-To behavior, the bilingual CMS workflow, and the Sanity/Vercel access and security settings to the best of their knowledge. This is an owner attestation rather than an independently captured dashboard audit. The human VoiceOver check and the final post-remediation live smoke test remain open.
 
 ## Positive Findings to Preserve
 
@@ -249,7 +255,18 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 | `npm run build` | Pass | Astro 7.2.4 and Sanity 6.10.1 production build completed |
 | `npm run test:e2e` | Pass | 186 passed, 42 intentionally skipped, 0 failed across four viewport projects |
 | `npm run test:a11y` | Pass | 0 violations across all eight configured routes |
-| Live post-deploy smoke test | Targeted fellowship pass; full-site smoke pending | Production Sanity dry run reports no pending fellowship writes; the live listing exposes six distinct routes and CCCF resolves correctly. The new M1 form changes are local and not yet deployed. |
+| Live post-deploy smoke test | Targeted fellowship and M1 form passes; full-site smoke pending | Production Sanity dry run reports no pending fellowship writes; the live listing exposes six distinct routes and CCCF resolves correctly. M1 limits, WAF throttling, and Resend acceptance were verified in production on 2026-08-21. |
+
+## 2026-08-21 Follow-up Validation
+
+| Check | Result | Notes |
+|---|---|---|
+| `npm test` | Pass | 12 files, 75 tests |
+| `npm run build` | Pass | Astro/Vercel production build completed |
+| `npm run test:e2e` | Pass | 194 passed, 42 intentionally skipped, 0 failed |
+| `npm run test:a11y` | Pass | 0 violations across all eight configured routes |
+| Direct 404 regression | Pass | Detached fellowship and unknown event return 404 with no redirect across four viewports |
+| Cache-policy regression | Pass | Public browser/CDN headers and private preview isolation covered by unit and browser checks |
 
 ## Recommended Remediation Order
 
@@ -263,11 +280,11 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 Do not mark this review complete until:
 
-- [ ] All high-priority findings are verified complete or explicitly accepted by an accountable owner.
+- [x] All high-priority findings are verified complete or explicitly accepted by an accountable owner.
 - [x] `npm ci` succeeds in a fresh checkout.
 - [x] Production dependency audit passes or has documented, time-bounded exceptions.
 - [x] Build, unit, E2E, and axe checks all pass.
-- [ ] Every public form completes a confirmed real-delivery test.
-- [ ] A staff CMS publish/edit/hide workflow is verified in both languages.
-- [ ] Sanity and Vercel access/security settings have been manually reviewed.
+- [x] Every public form completes a confirmed real-delivery test. Site-owner confirmation recorded 2026-08-21.
+- [x] A staff CMS publish/edit/hide workflow is verified in both languages. Site-owner confirmation recorded 2026-08-21.
+- [x] Sanity and Vercel access/security settings have been manually reviewed. Site-owner confirmation recorded 2026-08-21.
 - [ ] The live deployment has been smoke-tested after remediation.

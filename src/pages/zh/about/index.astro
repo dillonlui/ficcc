@@ -16,7 +16,7 @@ try {
   aboutPage = await getAboutPage('zh', { request: Astro.request });
 } catch {}
 
-if (aboutPage?.isVisible === false) return Astro.redirect('/404');
+if (aboutPage?.isVisible === false) return Astro.rewrite('/404');
 
 const fallbackHeading = '我們是誰';
 const fallbackBody = `

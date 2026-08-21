@@ -42,7 +42,7 @@ Click the **Publish** button in the bottom-left corner of the editor.
 
 ### 6. Verify on the Live Site
 
-Wait **2–3 minutes** for the site to rebuild, then visit the Sermons page on the live site to confirm your sermon appears.
+Open the appropriate live Sermons page and confirm the sermon appears. Published content is normally visible within moments; use a private/incognito window if your existing tab looks stale.
 
 ## Publishing in Both Languages
 
@@ -55,4 +55,4 @@ To make a sermon available in both English and Chinese, create **two separate se
 | Forgetting to generate the Slug | The sermon won't have a URL and may not appear on the site | Edit the sermon, click **Generate** next to the Slug field, and re-publish |
 | Pasting the full YouTube URL instead of just the ID | The video embed won't work | Remove everything except the ID portion (the part after `v=`) |
 | Forgetting to set the Language | Defaults to English — won't show on the Chinese site | Edit the sermon, change Language to `zh`, and re-publish |
-| Not seeing changes on the live site | The site hasn't rebuilt yet | Wait 2–3 minutes and refresh the page |
+| Not seeing changes on the live site | The document may still be a draft, the wrong language may be selected, or the browser may be stale | Confirm it is published, check the correct language route in a private window, then review the Sanity webhook/Vercel deployment if needed |

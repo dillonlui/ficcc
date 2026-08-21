@@ -15,7 +15,7 @@ if (slug) {
   }
 }
 
-if (!event) return Astro.redirect('/404');
+if (!event) return Astro.rewrite('/404');
 ---
 
 <EventDetail event={event} lang="en" />

@@ -90,6 +90,17 @@ test.describe('Splash language gateway', () => {
   });
 });
 
+test.describe('Public SSR cache policy', () => {
+  test('keeps browsers revalidating and enables a short Vercel edge cache', async ({ page }) => {
+    const response = await page.request.get('/en/about/');
+
+    expect(response.headers()['cache-control']).toBe('public, max-age=0, must-revalidate');
+    expect(response.headers()['vercel-cdn-cache-control']).toBe(
+      'public, max-age=30, stale-while-revalidate=60, stale-if-error=86400',
+    );
+  });
+});
+
 test.describe('Chinese fellowship detail pages', () => {
   test('published Chinese Ministry detail links resolve successfully', async ({ page }) => {
     await page.goto('/zh/grow/chinese/', { waitUntil: 'domcontentloaded' });
@@ -103,6 +114,20 @@ test.describe('Chinese fellowship detail pages', () => {
       const response = await page.request.get(href);
       expect(response.status(), `${href} should return 200`).toBe(200);
     }
+  });
+
+  test('detached fellowship and unknown event routes return direct 404 responses', async ({ page }) => {
+    const detachedFellowship = await page.request.get('/zh/fellowships/gospel-group', {
+      maxRedirects: 0,
+    });
+    const missingEvent = await page.request.get('/en/events/not-a-real-event', {
+      maxRedirects: 0,
+    });
+
+    expect(detachedFellowship.status()).toBe(404);
+    expect(missingEvent.status()).toBe(404);
+    expect(detachedFellowship.headers().location).toBeUndefined();
+    expect(missingEvent.headers().location).toBeUndefined();
   });
 });
 

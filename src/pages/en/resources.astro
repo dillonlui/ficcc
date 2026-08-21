@@ -16,7 +16,7 @@ try {
   // Sanity unreachable — continue with the complete legacy-content fallback.
 }
 
-if (resourcesPage?.isVisible === false) return Astro.redirect('/404');
+if (resourcesPage?.isVisible === false) return Astro.rewrite('/404');
 
 // The fallback is the actual collection from em.ficcc.org/resources. Keeping it
 // complete makes the page useful even before the CMS document is populated.

@@ -20,7 +20,7 @@ try {
   ]);
 } catch {}
 
-if (contactPage?.isVisible === false) return Astro.redirect('/404');
+if (contactPage?.isVisible === false) return Astro.rewrite('/404');
 
 // ---------- Resolved data (CMS ▸ fallback) ----------
 const heroImage = contactPage?.heroImage

@@ -13,7 +13,7 @@ Edit the English and Chinese versions separately. They may describe the same min
 
 ## Fields
 
-- **Publicly Visible** — hides or shows this page on the public site after rebuild.
+- **Publicly Visible** — hides or shows this page on the public site after publishing.
 - **Audience** — identifies which route this document controls.
 - **Language** — controls whether the document belongs to `/en` or `/zh`.
 - **SEO Title / SEO Description** — browser and search metadata.

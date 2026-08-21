@@ -71,4 +71,4 @@ Nice photo
 
 ## Publishing
 
-After publishing, wait 2-3 minutes for the site rebuild to finish. Then refresh the homepage to confirm the change.
+After publishing, open the matching live homepage and confirm the change. Published content is normally visible within moments; use a private/incognito window if the existing tab looks stale.

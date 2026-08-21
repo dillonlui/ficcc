@@ -37,22 +37,21 @@ The website supports English (EN) and Chinese (ZH). Most content types have a **
 
 Most page documents and public collection items include a **Publicly Visible** switch.
 
-- ON means the page or item appears on the public website after the next rebuild.
-- OFF means the public page redirects away or the item is removed from public lists after the next rebuild.
+- ON means the page or item can appear on the public website once published.
+- OFF means the public page returns “Page Not Found” or the item is removed from public lists.
 - Turning visibility OFF does not delete the content from Sanity.
 
-## The Publish → Rebuild → Live Pipeline
+## The Publish → Live Pipeline
 
-**Changes are not instant.** Here's what happens when you publish content:
+Public content routes read published Sanity content directly, so edits are normally visible within moments:
 
 1. You click **Publish** in Sanity Studio.
-2. Sanity notifies the hosting platform (Vercel) that content has changed.
-3. Vercel rebuilds the entire website with the new content.
-4. The updated site goes live.
+2. Sanity makes the published version available to the website.
+3. Refresh the exact public route, preferably in a private/incognito window, and verify the change.
 
-**This takes approximately 2–3 minutes.** Don't panic if you don't see your changes right away — just wait a few minutes and refresh the page.
+The publishing webhook may also start a Vercel deployment. That deployment is useful for deployment-level caches and generated assets, but it is not normally required for an SSR page to read the new content.
 
-> **Tip:** If changes still don't appear after 5 minutes, try clearing your browser cache or opening the page in a private/incognito window.
+> **Tip:** If a published edit is not visible, first confirm that you published rather than saved a draft, check the correct language route in a private window, and then review the Sanity webhook and latest Vercel deployment.
 
 ## Workflow Guides
 

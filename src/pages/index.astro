@@ -12,12 +12,13 @@ import '../styles/global.css';
 import cjkFontsHref from '../styles/cjk-fonts.css?url';
 import Analytics from '@vercel/analytics/astro';
 import { getSanityPreviewContext, getSiteBranding, getSplashPage, urlForFile, urlForImage } from '../lib/sanity';
+import { applyPrivatePreviewCache } from '../lib/cache-policy';
 
 export const prerender = false;
 
 const previewContext = await getSanityPreviewContext(Astro.request);
 if (previewContext.enabled) {
-  Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+  applyPrivatePreviewCache(Astro.response.headers);
   Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 }
 

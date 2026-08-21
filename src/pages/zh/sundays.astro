@@ -27,7 +27,7 @@ try {
   // Sanity unreachable — continue with fallbacks
 }
 
-if (visitPage?.isVisible === false) return Astro.redirect('/404');
+if (visitPage?.isVisible === false) return Astro.rewrite('/404');
 
 // ---------- Fallback defaults ----------
 const fallbackSchedule = [

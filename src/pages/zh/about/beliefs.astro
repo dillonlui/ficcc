@@ -17,7 +17,7 @@ try {
   // Sanity unreachable — continue with fallbacks
 }
 
-if (beliefsPage?.isVisible === false) return Astro.redirect('/404');
+if (beliefsPage?.isVisible === false) return Astro.rewrite('/404');
 
 // Hero
 const heroTitle = beliefsPage?.heroTitle || '信仰與願景';

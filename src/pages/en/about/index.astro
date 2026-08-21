@@ -19,7 +19,7 @@ try {
   // Sanity unreachable — continue with fallbacks
 }
 
-if (aboutPage?.isVisible === false) return Astro.redirect('/404');
+if (aboutPage?.isVisible === false) return Astro.rewrite('/404');
 
 // ---------- Fallback defaults ----------
 const fallbackHeading = 'Who We Are';

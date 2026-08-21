@@ -70,7 +70,7 @@ English and Chinese event content are separate documents. Create one event in ea
 
 ## Verify the Result
 
-After publishing, use Sanity’s event-page preview or open the appropriate homepage. In production, allow a few minutes for the publishing webhook and deployment to complete.
+After publishing, use Sanity’s event-page preview or open the appropriate homepage and event route. Published content is normally visible within moments; the webhook may also start a Vercel deployment, but the SSR route does not normally need to wait for it.
 
 If an event does not appear, confirm that:
 
