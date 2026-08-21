@@ -3,9 +3,9 @@
 **Site:** https://ficcc.org
 **Initial review:** 2026-08-20
 **Last updated:** 2026-08-20
-**Overall status:** High-priority code fixes are complete locally; deployment verification and staff decisions remain.
+**Overall status:** High-priority code fixes and the fellowship CMS migration are complete; production deployment verification and staff decisions remain.
 
-**Release safety:** The pre-remediation production baseline is commit `044a4c4a53a57f9e53635eca10b1254087c4b2f4`. Application and CMS rollback procedures are documented in `docs/launch-runbook.md`. Do not push the fellowship-link code until the six-document Sanity migration has been applied, or the cards will intentionally render without detail links.
+**Release safety:** The pre-remediation baseline is commit `044a4c4a53a57f9e53635eca10b1254087c4b2f4`. The production tip immediately before this deployment is tagged `pre-launch-deploy-20260820`; the reviewed remediation commit is tagged `launch-readiness-remediation-20260820`. Application and CMS rollback procedures are documented in `docs/launch-runbook.md`.
 
 This is the durable tracker for findings from the post-launch code, CMS, and live-site review. Update the status, owner, notes, and verification evidence as work is completed.
 
@@ -19,7 +19,7 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 ## Immediate Actions
 
 - [!] Public email and Zoom credentials are intentionally retained for now and will move from the long card copy into the corresponding detail page.
-- [~] Deploy and verify the Chinese fellowship link fix. The cause was positional fallback logic, not an incorrect Sanity reference.
+- [~] Deploy and verify the Chinese fellowship link fix. The six-document CMS migration was applied and verified idempotent on 2026-08-20; production code deployment remains.
 - [x] Remove the unsafe `set:html` uses for CMS-authored giving descriptions and addresses in both languages.
 - [x] Repair `package-lock.json` so `npm ci` succeeds from a clean checkout.
 - [x] Upgrade/remediate production dependency advisories; unit tests and build pass.
@@ -79,7 +79,7 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 
 ### H4 — Public CMS content contains operational credentials and a bad fallback link
 
-- **Status:** [~] Public credentials accepted temporarily; link/detail migration pending application and deployment
+- **Status:** [~] Public credentials accepted temporarily; CMS migration complete, production deployment verification pending
 - **Owner:** Church staff / site administrator; site maintainer for deployment
 - **Risk:** High if the credentials were not intentionally public
 - **Evidence from `https://ficcc.org/zh/grow/chinese`:**
@@ -90,7 +90,7 @@ This is the durable tracker for findings from the post-launch code, CMS, and liv
 - **Impact:** Public meeting credentials can enable unwanted meeting access, and personal addresses can be harvested. The incorrect reference sends visitors to unrelated content.
 - **Recommended remediation:** Confirm the intended privacy policy with staff. If the credentials should not be public, remove them and rotate the passcode. If CCCF should have a detail page, staff must explicitly select the correct `Fellowship Detail Page` in Sanity; otherwise the card should remain unlinked.
 - **Verification:** After deployment, open the listing in a private browser and confirm CCCF no longer links to Senior Fellowship. Confirm the intended sensitive-content policy and click every remaining detail card to ensure each title matches its destination.
-- **Notes:** Positional fallback links were removed and regression-tested on 2026-08-20. A CMS card now receives a detail link only from an explicit, visible Chinese Ministry reference. Studio validation now rejects two cards that select the same detail document. A dry run of `npm run sanity:link:fellowships` verified six non-overwriting document/reference changes based on the currently published cards. The migration copies the complete current text, including the accepted email and Zoom details, into each detail page before installing shorter interim card summaries. Applying it still requires an authorized local write token and explicit `--apply`. Until applied, the deployed cards will intentionally remain unlinked.
+- **Notes:** Positional fallback links were removed and regression-tested on 2026-08-20. A CMS card now receives a detail link only from an explicit, visible Chinese Ministry reference. Studio validation now rejects two cards that select the same detail document. The guarded migration was applied to the production dataset on 2026-08-20: it created six detail documents, attached six explicit references, copied the complete current text (including the accepted email and Zoom details) into the corresponding detail pages, and installed shorter verbatim excerpts on the four long cards. A post-apply dry run reported `0 detail documents and 0 missing references`, confirming the migration is idempotent and no further CMS writes are pending.
 
 ### M9 — Fallback content does not reflect the populated CMS
 
